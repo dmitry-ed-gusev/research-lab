@@ -16,7 +16,7 @@
     <properties>
         <hadoop.version>2.7.1</hadoop.version>
         <jar.name>${project.artifactId}-${env}</jar.name>
-        <main.class>bigdata.hw1.words.WordsLengthCounter</main.class>
+        <main.class>bigdata.hw1.words.option1.LenCounterMainOption1</main.class>
         <assembly.dir>${project.build.directory}/bigdata</assembly.dir>
     </properties>
 

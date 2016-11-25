@@ -1,5 +1,7 @@
-package bigdata.hw1.words;
+package bigdata.hw1.words.option1;
 
+import bigdata.hw1.words.option1.TextArrayWritable;
+import bigdata.hw1.words.option1.WordsMapper;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Writable;
@@ -49,7 +51,7 @@ public class WordsMapperTest {
             // parse result map - get all needed elements
             Map.Entry<Writable, Writable> entry      = resultMap.entrySet().iterator().next();
             IntWritable                   length     = (IntWritable) entry.getKey();
-            TextArrayWritable             wordsArray = (TextArrayWritable) entry.getValue();
+            TextArrayWritable wordsArray = (TextArrayWritable) entry.getValue();
 
             // testing the other parameters
             assertEquals(String.format(MSG_MAX_LENGTH, Integer.MIN_VALUE), Integer.MIN_VALUE, length.get());
