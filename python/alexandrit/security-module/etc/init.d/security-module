@@ -1,0 +1,48 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          security-module
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     false
+# Short-Description: Security module to Antares
+# Description:       Start/stop an security module
+### END INIT INFO
+
+source /var/security-module-vars.sh
+. /lib/lsb/init-functions
+PID_FILE=/var/run/security-module.pid
+DAEMON=$INSTALL_DIR/CheckSumDaemon.py
+
+do_start()
+{
+   start-stop-daemon --start --verbose --oknodo  -b --name security-module -m --pidfile $PID_FILE --exec "$DAEMON" -- -p $CONFIG_FILE -b $BACKUP_DIR -u $DATABASE_USERNAME --password $DATABASE_PASSWORD --dbname $DATABASE_NAME --checksumfile $CHECKSUMFILE
+
+}
+
+do_stop()
+{
+   start-stop-daemon --stop  --pidfile $PID_FILE
+}
+
+
+case "$1" in
+   start)
+     do_start
+     log_end_msg $?
+     ;;
+   stop)
+     do_stop
+     log_end_msg $?
+     ;;
+   status)
+     status_of_proc -p $PID_FILE $DAEMON security-module
+     ;;
+   *)
+     log_success_msg "Usage: /etc/init.d/$MODULE_NAME {start|stop|status}"
+     exit 1
+esac
+
+exit 0
+

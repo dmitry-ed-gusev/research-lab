@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE web-app SYSTEM "web-app_2_3.dtd">
+<web-app>
+ <display-name>normDocs</display-name>
+ <description>SUPID ND RS [powered by STRUTS]</description>
+
+ <!-- Filter, that encodes all requests/responses to specified encoding -->
+ <afilter>
+  <filter-name>RequestEncodingFilter</filter-name>
+  <filter-class>normDocs.system.RequestEncodingFilter</filter-class>
+  <!--
+  <init-param>
+   <param-name>encoding</param-name>
+   <param-value>windows-1251</param-value>
+  </init-param>
+  -->
+ </afilter>
+ <filter-mapping>
+  <filter-name>RequestEncodingFilter</filter-name>
+  <url-pattern>/*</url-pattern>
+ </filter-mapping>
+    
+ <listener>
+  <listener-class>normDocs.system.SupidListener</listener-class>
+ </listener>
+
+ <!-- Servlet, that loading properties for log4j component -->
+ <servlet>
+  <servlet-name>InitServlet</servlet-name>
+  <servlet-class>normDocs.system.InitServlet</servlet-class>
+  <load-on-startup>0</load-on-startup>
+ </servlet>
+
+ <!-- STRUTS servlet declaration -->
+ <servlet>
+ <servlet-name>action</servlet-name>
+  <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+   <init-param>
+   <param-name>config</param-name>
+   <param-value>/WEB-INF/struts-config.xml</param-value>
+  </init-param>
+  <load-on-startup>2</load-on-startup>
+ </servlet>
+
+ <!-- STRUTS servlet mapping -->
+ <servlet-mapping>
+  <servlet-name>action</servlet-name>
+  <url-pattern>*.do</url-pattern>
+ </servlet-mapping>
+
+  <!-- Session timeout for this application: 10 minutes. -->
+ <session-config>
+  <session-timeout>10</session-timeout>
+ </session-config>
+
+ <resource-ref>
+  <res-ref-name>jdbc/SupidDS</res-ref-name>
+  <res-type>javax.sql.DataSource</res-type>
+  <res-auth>Container</res-auth>
+ </resource-ref>
+
+ <security-constraint>
+  <display-name>root_constraint</display-name>
+  <web-resource-collection>
+   <web-resource-name>root_resource</web-resource-name>
+   <url-pattern>/root/*</url-pattern>
+   <http-method>GET</http-method>
+   <http-method>POST</http-method>
+  </web-resource-collection>
+  <auth-constraint>
+   <role-name>nd_root</role-name>
+  </auth-constraint>
+  <user-data-constraint>
+   <transport-guarantee>NONE</transport-guarantee>
+  </user-data-constraint>
+ </security-constraint>
+ <security-constraint>
+  <display-name>admin_constraint</display-name>
+  <web-resource-collection>
+   <web-resource-name>admin_resource</web-resource-name>
+   <url-pattern>/admin/*</url-pattern>
+   <http-method>GET</http-method>
+   <http-method>POST</http-method>
+  </web-resource-collection>
+  <auth-constraint>
+   <role-name>nd_admin</role-name>
+  </auth-constraint>
+  <user-data-constraint>
+   <transport-guarantee>NONE</transport-guarantee>
+  </user-data-constraint>
+ </security-constraint>
+ <security-constraint>
+  <display-name>edit_constraint</display-name>
+  <web-resource-collection>
+   <web-resource-name>edit_resource</web-resource-name>
+   <url-pattern>/edit/*</url-pattern>
+   <http-method>GET</http-method>
+   <servlet>
+    zzz
+    <servlet>
+     <servlet>
+     </servlet>
+    </servlet>
+   </servlet>
+   <http-method>POST</http-method>
+  </web-resource-collection>
+  <auth-constraint>
+   <role-name>nd_edit</role-name>
+  </auth-constraint>
+  <user-data-constraint>
+   <transport-guarantee>NONE</transport-guarantee>
+  </user-data-constraint>
+ </security-constraint>
+
+ <login-config>
+  <auth-method>BASIC</auth-method>
+  <realm-name>[RESTRICTED AREA]</realm-name>
+ </login-config>
+
+ <security-role><role-name>nd_admin</role-name></security-role>
+ <security-role><role-name>nd_edit</role-name></security-role>
+ <security-role>
+  <role-name>nd_root</role-name>
+ </security-role>
+
+</web-app>

@@ -1,0 +1,12 @@
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  version="1.0">
+  <jaxb:bindings schemaLocation="searchresults.xsd">
+    <jaxb:bindings node="//xs:element[@name='_MimeType']">
+      <jaxb:factoryMethod name="MimeType"/>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:element[@name='mime-type']">
+      <jaxb:factoryMethod name="MimeType2"/>
+    </jaxb:bindings>
+  </jaxb:bindings>
+</jaxb:bindings>

@@ -1,0 +1,105 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev</groupId>
+        <artifactId>research</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>bigdata</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>BigData :: examples with Hadoop stack.</name>
+
+    <properties>
+        <hadoop.version>2.7.1</hadoop.version>
+        <jar.name>${project.artifactId}-${env}</jar.name>
+        <main.class>bigdata.hw1.words.WordsLengthCounter</main.class>
+        <assembly.dir>${project.build.directory}/bigdata</assembly.dir>
+    </properties>
+
+    <build>
+        <finalName>${jar.name}</finalName>
+
+        <plugins>
+
+            <!-- maven jar plugin settings (put JAR into specified folder) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${assembly.dir}</outputDirectory>
+                </configuration>
+                <version>${maven.jar.plugin}</version>
+            </plugin>
+
+            <!-- maven antrun plugin (copy and filter .sh scripts) -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>project-copy-batch-files</id>
+                        <phase>package</phase>
+                        <goals><goal>run</goal></goals>
+                        <configuration>
+                            <tasks>
+                                <!-- copy+filter shell scripts -->
+                                <copy todir="${assembly.dir}" failonerror="true">
+                                    <fileset dir="${basedir}"><include name="*.sh"/></fileset>
+                                    <filterset>
+                                        <filter token="JAR_NAME"  value="${jar.name}"/>
+                                        <filter token="MAIN_CLASS" value="${main.class}" />
+                                    </filterset>
+                                </copy>
+                                <!-- fix LF after copy -->
+                                <fixcrlf srcdir="${assembly.dir}" includes="*.sh" eol="lf" eof="remove" />
+                                <!-- copy text samples (without filtering) -->
+                                <copy todir="${assembly.dir}" failonerror="false">
+                                    <fileset dir="${basedir}">
+                                        <include name="*.txt"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3.version}</version>
+        </dependency>
+
+        <!-- Hadoop dependencies -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

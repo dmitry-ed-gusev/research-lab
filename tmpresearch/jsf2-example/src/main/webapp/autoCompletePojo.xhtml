@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.prime.com.tr/ui">
+
+<h:head/>
+
+<h:body>
+
+<h:form id="form">
+    <p:growl id="messages" showDetail="true"/>
+
+    <p:panel header="Players azzzzz">
+
+        <h:panelGrid columns="1" cellpadding="5">
+
+            <h:outputLabel value="Basic Pojo: " for="basicPojo"/>
+            <p:autoComplete value="#{autoCompleteBean.selectedPlayer1}" id="basicPojo" completeMethod="#{autoCompleteBean.getPlayersForComplete}"
+                        var="p" itemLabel="#{p.name}" itemValue="#{p}" converter="myPlayerConverter" forceSelection="true" />
+
+        </h:panelGrid>
+    </p:panel>
+
+    <br/>
+
+    <p:commandButton value="Submit" update="display" oncomplete="playersDlg.show()"/>
+    <p:dialog header="Selected Players" widgetVar="playersDlg" showEffect="fade" hideEffect="fade" modal="true">
+        <h:panelGrid columns="1" id="display">
+            <h:outputText id="txt1" value="Player 1: #{autoCompleteBean.selectedPlayer1.name}" rendered="#{not empty autoCompleteBean.selectedPlayer1}"/>
+        </h:panelGrid>
+    </p:dialog>
+
+</h:form>
+
+</h:body>
+
+</html>

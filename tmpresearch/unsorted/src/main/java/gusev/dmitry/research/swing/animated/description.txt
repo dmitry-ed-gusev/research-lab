@@ -1,0 +1,22 @@
+<class X>
+
+private boolean showTimeDialog = false;
+
+
+public void setShowTimeDialog(boolean showTimeDialog) {
+        boolean oldValue = this.showTimeDialog;
+        this.showTimeDialog = showTimeDialog;
+        changes.firePropertyChange("showTime",oldValue, showTimeDialog);
+    }
+
+
+////////////////////////////////////////////////////////////////////////////
+
+<class X object>.addPropertyChangeListener(<TimeDialog object>);
+
+////////////////////////////////////////////////////////////////////////////
+
+//show
+<class X object>.setShowTimeDialog(true);
+//hide
+<class X object>.setShowTimeDialog(false);

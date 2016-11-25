@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="yandexsearch">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="request"/>
+        <xs:element ref="response"/>
+      </xs:sequence>
+      <xs:attribute name="version" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="request">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="query"/>
+        <xs:element ref="page"/>
+        <xs:element ref="sortby"/>
+        <xs:element ref="maxpassages"/>
+        <xs:element ref="groupings"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="query" type="xs:NCName"/>
+  <xs:element name="sortby">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:NCName">
+          <xs:attribute name="order" use="required" type="xs:NCName"/>
+          <xs:attribute name="priority" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="maxpassages">
+    <xs:complexType/>
+  </xs:element>
+  <xs:element name="groupings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="groupby"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="groupby">
+    <xs:complexType>
+      <xs:attribute name="attr" use="required" type="xs:NCName"/>
+      <xs:attribute name="curcateg" use="required" type="xs:integer"/>
+      <xs:attribute name="docs-in-group" use="required" type="xs:integer"/>
+      <xs:attribute name="groups-on-page" use="required" type="xs:integer"/>
+      <xs:attribute name="mode" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="response">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="reqid"/>
+        <xs:element ref="wordstat"/>
+        <xs:element maxOccurs="unbounded" ref="found"/>
+        <xs:element ref="found-human"/>
+        <xs:element ref="is-local"/>
+        <xs:element ref="results"/>
+      </xs:sequence>
+      <xs:attribute name="date" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="reqid" type="xs:string"/>
+  <xs:element name="wordstat" type="xs:string"/>
+  <xs:element name="found-human" type="xs:string"/>
+  <xs:element name="is-local" type="xs:NCName"/>
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="grouping"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="grouping">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="found"/>
+        <xs:element maxOccurs="unbounded" ref="found-docs"/>
+        <xs:element ref="found-docs-human"/>
+        <xs:element ref="page"/>
+        <xs:element maxOccurs="unbounded" ref="group"/>
+      </xs:sequence>
+      <xs:attribute name="attr" use="required" type="xs:NCName"/>
+      <xs:attribute name="curcateg" use="required" type="xs:integer"/>
+      <xs:attribute name="docs-in-group" use="required" type="xs:integer"/>
+      <xs:attribute name="groups-on-page" use="required" type="xs:integer"/>
+      <xs:attribute name="mode" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="found-docs">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:integer">
+          <xs:attribute name="priority" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="found-docs-human" type="xs:string"/>
+  <xs:element name="group">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="categ"/>
+        <xs:element ref="doccount"/>
+        <xs:element ref="relevance"/>
+        <xs:element ref="doc"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="categ">
+    <xs:complexType>
+      <xs:attribute name="attr" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="doccount" type="xs:integer"/>
+  <xs:element name="doc">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="relevance"/>
+        <xs:element ref="url"/>
+        <xs:element ref="domain"/>
+        <xs:element ref="title"/>
+        <xs:element minOccurs="0" ref="headline"/>
+        <xs:element ref="modtime"/>
+        <xs:element ref="size"/>
+        <xs:element ref="charset"/>
+        <xs:element minOccurs="0" ref="passages"/>
+        <xs:element ref="properties"/>
+        <xs:element ref="mime-type"/>
+        <xs:element ref="highlight-cookie"/>
+        <xs:element minOccurs="0" ref="saved-copy-url"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="url" type="xs:anyURI"/>
+  <xs:element name="domain" type="xs:NCName"/>
+  <xs:element name="title">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="hlword"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="headline">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="hlword"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="modtime" type="xs:NMTOKEN"/>
+  <xs:element name="size" type="xs:integer"/>
+  <xs:element name="charset" type="xs:NCName"/>
+  <xs:element name="passages">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="passage"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="passage">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="hlword"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="properties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="BaseType"/>
+        <xs:element ref="_HilitedUrl"/>
+        <xs:element ref="_IsFake"/>
+        <xs:element maxOccurs="unbounded" ref="_MetaSearcherHostname"/>
+        <xs:element ref="_MimeType"/>
+        <xs:element ref="_PassagesType"/>
+        <xs:element ref="_Region"/>
+        <xs:element maxOccurs="unbounded" ref="_SearcherHostname"/>
+        <xs:element ref="_Shard"/>
+        <xs:element maxOccurs="unbounded" ref="_TierName"/>
+        <xs:element minOccurs="0" ref="geo"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="geoa"/>
+        <xs:element minOccurs="0" ref="lang"/>
+        <xs:element minOccurs="0" ref="noarchive"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BaseType" type="xs:NCName"/>
+  <xs:element name="_HilitedUrl">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="hlword"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="_IsFake" type="xs:integer"/>
+  <xs:element name="_MetaSearcherHostname" type="xs:NMTOKEN"/>
+  <xs:element name="_MimeType" type="xs:string"/>
+  <xs:element name="_PassagesType" type="xs:integer"/>
+  <xs:element name="_Region" type="xs:integer"/>
+  <xs:element name="_SearcherHostname" type="xs:NMTOKEN"/>
+  <xs:element name="_Shard" type="xs:NCName"/>
+  <xs:element name="_TierName" type="xs:string"/>
+  <xs:element name="geo" type="xs:integer"/>
+  <xs:element name="geoa" type="xs:integer"/>
+  <xs:element name="lang" type="xs:NCName"/>
+  <xs:element name="noarchive" type="xs:NCName"/>
+  <xs:element name="mime-type" type="xs:string"/>
+  <xs:element name="highlight-cookie" type="xs:string"/>
+  <xs:element name="saved-copy-url" type="xs:anyURI"/>
+  <xs:element name="page">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:integer">
+          <xs:attribute name="first" type="xs:integer"/>
+          <xs:attribute name="last" type="xs:integer"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="found">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:integer">
+          <xs:attribute name="priority" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="relevance">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:integer">
+          <xs:attribute name="priority" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="hlword" type="xs:NCName"/>
+</xs:schema>

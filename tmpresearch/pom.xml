@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev</groupId>
+        <artifactId>research</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>tmpresearch</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <name>TMP Research :: experimental modules (some researches).</name>
+	
+	<modules>
+		<module>xml</module>
+		<module>hibernate</module>
+		<module>jsf2-example</module>
+		<module>unsorted</module>
+	</modules>
+	
+</project>

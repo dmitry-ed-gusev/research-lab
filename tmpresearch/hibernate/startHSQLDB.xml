@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<project name="Start HSQDB: engine + dbmanager" default="hsqldb" basedir=".">
+ <!-- HSQL DB service startup -->
+ <target name="hsqldb" description="Start HSQLDB database engine.">
+  <parallel>
+   <java classname="org.hsqldb.Server" classpath="lib/hsqldb.jar" fork="true" failonerror="true"/>
+   <java classname="org.hsqldb.util.DatabaseManagerSwing" fork="true" classpath="lib/hsqldb.jar" failonerror="true">
+    <arg value="-url"/>
+    <arg value="jdbc:hsqldb:hsql://localhost/"/>
+    <arg value="-driver"/>
+    <arg value="org.hsqldb.jdbcDriver"/>
+   </java>
+  </parallel>
+ </target>
+
+</project>

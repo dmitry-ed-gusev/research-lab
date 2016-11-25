@@ -1,0 +1,18 @@
+#!/bin/sh
+
+chown -R alexandrit:alexandrit /var/www/html/ippbx/index.php
+ chmod 0700 -R /var/www/html/ippbx/index.php
+chown -R alexandrit:alexandrit /var/www/html/ippbx/tests/test_mode
+ chmod 0700 -R /var/www/html/ippbx/tests/test_mode
+chown -R alexandrit:alexandrit /var/www/html/ippbx/php/test_mode
+ chmod 0700 -R /var/www/html/ippbx/php/test_mode
+chown -R alexandrit:alexandrit /var/www/html/ippbx/php/test_mode.php
+ chmod 0700 -R /var/www/html/ippbx/php/test_mode.php
+echo "/var/www/html/ippbx/tests/test_mode/run_test_mode.sh" >> /etc/rc.local
+chmod 0740 /var/www/html/ippbx/index.php
+chmod 0750 -R /var/www/html/ippbx/php/test_mode
+setfacl -m u:a_user:r /var/www/html/ippbx/index.php
+setfacl -m u:www-data:r /var/www/html/ippbx/index.php
+setfacl -m u:www-data:r /var/www/html/ippbx/php/test_mode.php
+setfacl -R -m u:www-data:rx /var/www/html/ippbx/php/test_mode
+

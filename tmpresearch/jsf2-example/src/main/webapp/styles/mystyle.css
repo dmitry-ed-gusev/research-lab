@@ -1,0 +1,19 @@
+.ui-autocomplete-query {
+ font-style: oblique;
+    font-weight: normal;
+}
+
+.ui-autocomplete-item {
+ font-style: italic;
+ font-weight: lighter;
+}
+
+.ui-autocomplete-input {
+    font-style: normal;
+    font-weight: bolder;
+}
+
+.ui-autocomplete-items {
+ font-style: italic;
+ color: yellow;
+}

@@ -1,0 +1,134 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev</groupId>
+        <artifactId>research</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>utilities</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>Utilities :: java useful utilities library.</name>
+
+    <properties>
+        <assemblyDirectory>jutils</assemblyDirectory>
+        <common.libraries.prefix>libs</common.libraries.prefix>
+        <mainClass>gusev.dmitry.jtils.Main</mainClass>
+    </properties>
+
+    <build>
+        <plugins>
+
+            <!--
+             jar/archiver maven plugin settings: 1. put main class name in manifest,
+              2. add classpath to manifest (for all dependencies), 3. add prefix for classpath
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>${mainClass}</mainClass>
+                            <classpathPrefix>${common.libraries.prefix}/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                    <!-- put jar file into another directory -->
+                    <outputDirectory>${project.build.directory}/${assemblyDirectory}</outputDirectory>
+                </configuration>
+                <version>2.4</version>
+            </plugin>
+
+            <!-- Dependency plugin - copy dependencies to folder lib/ in output dir during package phase. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/${assemblyDirectory}/${common.libraries.prefix}</outputDirectory>
+                    <artifactItems/>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>dep-copy</id>
+                        <phase>package</phase>
+                        <goals><goal>copy-dependencies</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- ANT tasks for copying project to remote folder - to virtual machine, where this task will work. -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-files</id>
+                        <phase>install</phase>
+                        <goals><goal>run</goal></goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <tasks>
+                        <!-- ant task: clean task -->
+                        <!--<delete includeemptydirs="true" failonerror="false">-->
+                            <!--<fileset dir="${remoteFolder}" includes="**/*"/>-->
+                        <!--</delete>-->
+                        <!-- ant task: copy libraries -->
+                        <!--<copy todir="${remoteFolder}/${common.libraries.prefix}" flatten="false" overwrite="true" verbose="true" failonerror="true">-->
+                            <!--<fileset dir="${project.build.directory}/${assemblyDirectory}/${common.libraries.prefix}" includes="*.*" />-->
+                        <!--</copy>-->
+                        <!-- ant task:  -->
+                        <copy todir="${project.build.directory}/${assemblyDirectory}" flatten="false" overwrite="true" verbose="true" failonerror="true">
+                            <fileset dir="${basedir}" includes="watch.bat"/>
+                        </copy>
+                    </tasks>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- For this module we use JUnit test framework. -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Apache libraries dependencies -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons.logging.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Log4j framework dependency -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <!-- Java mail dependency -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>${java.mail.version}</version>
+        </dependency>
+        <!-- Spring framework dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.context.version}</version>
+        </dependency>
+    </dependencies>
+
+ </project>

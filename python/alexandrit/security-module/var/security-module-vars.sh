@@ -1,0 +1,9 @@
+MODULE_NAME=security-module
+PACKAGE_NAME=$MODULE_NAME.deb
+INSTALL_DIR=/usr/local/$MODULE_NAME
+CONFIG_FILE=/etc/security-module.conf.py
+BACKUP_DIR=/usr/security-module-backups
+DATABASE_USERNAME="alexandrit"
+DATABASE_PASSWORD="s12345678"
+DATABASE_NAME="asterisk"
+CHECKSUMFILE=/var/www/html/ippbx/files/checksum

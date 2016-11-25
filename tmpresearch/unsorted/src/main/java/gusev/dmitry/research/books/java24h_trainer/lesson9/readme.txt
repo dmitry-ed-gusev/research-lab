@@ -1,0 +1,1 @@
+Here was a little project calculator, now it was moved to jtils module. 21.08.2014

@@ -1,0 +1,59 @@
+<!--
+ Author: Gusev Dmitry
+ Date: 08.06.2013
+
+ Script is for start/stop/monitoring, make a report and send it for some old application. It was
+ made for KZ Petrostal old ARM system (data migration ARM->MES). ARM was written with Delphi 7
+ (very old software).
+
+ Algorithm:
+ 1. Make dir for temporary files
+ 2. Kill task "target app"
+ 3. Delete temporary files and dir for them
+-->
+
+<project name="APP monitoring script" default="default" basedir="../ant_projects">
+
+    <property name="target.application"       value="Totalcmd.exe" />
+    <property name="kill.application.command" value="taskkill /IM ${target.application} /F"/>
+
+    <tstamp>
+        <format property="CURRENT_DATETIME" pattern="HH-mm-ss_dd-MM-yyyy" />
+    </tstamp>
+
+    <property name="report.file" value="report_${CURRENT_DATETIME}"/>
+
+
+    <target name="kill_application">
+        <exec executable="taskkill" output="killtask.report">
+            <arg value="/IM"/>
+            <arg value="Totalcmd.exe"/>
+            <arg value="/F"/>
+        </exec>
+
+        <concat destfile="${report.file}" append="true" encoding="Cp866" outputencoding="UTF-8">
+            <fileset file="killtask.report" />
+        </concat>
+
+        <!--<copy file="monitor_report.txt" tofile="monitor_report1.txt"-->
+                <!--encoding="Cp866" outputencoding="UTF-8" overwrite="true"/>-->
+
+    </target>
+
+    <target name="default">
+        <mail mailhost="smtp.gmail.com" mailport="465" charset="UTF-8"
+              user="mes.ps.kz@gmail.com" password="mes_hae_kz" ssl="true"
+              subject="Test MES mailing">
+            <from address="mes.ps.kz@gmail.com"/>
+            <replyto address="mes.ps.kz@gmail.com"/>
+            <to address="dmitry.ed.gusev@gmail.com"/>
+            <message>Тест ОК!</message>
+            <!--<attachments>-->
+                <!--<fileset dir="dist">-->
+                    <!--<include name="**/*.zip"/>-->
+                <!--</fileset>-->
+            <!--</attachments>-->
+        </mail>
+    </target>
+
+</project>

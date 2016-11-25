@@ -1,0 +1,20 @@
+#!/bin/sh
+
+
+source /var/security-module-vars.sh
+
+set -e
+chkconfig --add $MODULE_NAME
+
+find /var/www/html/ippbx/ -name "*.php" -o -name "*.js" -o -name "*.html" > $INSTALL_DIR/files.list
+
+$INSTALL_DIR/CheckSumGenerator.py -l $INSTALL_DIR/files.list -c $CONFIG_FILE -b $BACKUP_DIR
+
+service $MODULE_NAME start
+
+if [ $? -eq 0 ]; then
+    echo "$(tput setaf 2)МОБ установлен$(tput sgr 0)"
+else
+    echo "$(tput setaf 1)Security module install fail$(tput sgr 0)"
+fi
+

@@ -1,0 +1,41 @@
+#! /bin/bash
+#
+# ===================================================================
+#   Restore from backup script for Redmine system. Backup structure:
+#    subversion_<date>_<time>.tar.gz
+#     |- repository.dump
+#  
+#   Created:  Gusev Dmitry, 02.11.2015
+#   Modified:
+# ===================================================================
+
+# -- Check command line arguments count - should be at least one
+if [ "$#" -ne 1 ]; then
+	echo "Illegal number of parameters"
+	exit
+fi
+
+# -- Call other script for set environment for current process
+source set_env.sh 
+
+# -- Extract Subversion backup to temporary directory
+mkdir -v /tmp/$SVN_RESTORE_TMP
+#tar -xzf $1 -C /tmp/$REDMINE_RESTORE_TMP/
+#echo "Subversion backup $1 extracted."
+# -- Clean up after restore (delete tmp restore dir)
+rm -fdr /tmp/$SVN_RESTORE_TMP
+echo "Clean up after restore done."
+
+# -- Extract Redmine backup to temporary directory
+#mkdir -v /tmp/$REDMINE_RESTORE_TMP
+#tar -xzf $1 -C /tmp/$REDMINE_RESTORE_TMP/
+#echo "Redmine backup $1 extracted."
+# -- Restore Redmine MySQL database
+#mysql --user=$REDMINE_DB_USER --password=$REDMINE_DB_PASS $REDMINE_DB_NAME < /tmp/$REDMINE_RESTORE_TMP/$REDMINE_DB_BACKUP
+#echo "Redmine MySql DB restore done."
+# -- restore Redmine files (attachements/documents)
+#cp -fr /tmp/$REDMINE_RESTORE_TMP/files $REDMINE_HOME
+#echo "Redmine files restore done."
+# -- Clean up after restore (delete tmp restore dir)
+#rm -fdr /tmp/$REDMINE_RESTORE_TMP
+#echo "Clean up after restore done."

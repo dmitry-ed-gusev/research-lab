@@ -1,0 +1,11 @@
+# -- ignore maven output directory
+target/
+# -- ignore IntelliJ IDEA project files
+*.iml
+*.ipr
+*.iws
+# -- ignore logs files
+*.log
+# -- ignore [storm] module output/input file(s)
+storm-app-output.txt
+dummy.txt
