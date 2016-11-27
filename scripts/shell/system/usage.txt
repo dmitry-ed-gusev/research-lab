@@ -1,0 +1,24 @@
+
+mysys utility, version 1.0, Dmitrii Gusev
+This utility is intended for performing some linux activities/commands.
+
+usage:
+ ./mysys.sh <option(s)> [flag(s)]
+
+Options:
+-help            Show current help/usage message.
+-stat            Show system usage statistics.
+-update          Update system, using apt-get command and reboot.
+-install-base    Install base software packages.
+-install-java    Install Oracle JDK (version see _env.sh) and java-based build tools:
+                 Apache Ant and Apache Maven (versions see _env.sh)
+-install-jenkins Install Jenkins server, java-based CI tool. It's recommended to install Java first.
+-install-sonar   Install Sonar server, java-based Code Quality and Analysis tool. It's
+                 recommended to install Java first.
+-install-hadoop  Install Hadoop, java-based BigData tool. It's recommended to install Java first.
+-install-hive    Install Hive, java-based BigData tool. It's recommended to install Java first.
+
+Flags:
+-no-reboot    Don't reboot system after update or software installing.
+-debug        Set on debug mode (useful, if debug needed). Script will do pauses during processing
+              (will wait for key press).
