@@ -1,0 +1,49 @@
+package bigdata.hw1.words.option2;
+
+import bigdata.hw1.words.TextArrayWritable;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.MapWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.mapreduce.Reducer;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
+
+/**
+ * Created by gusevdm on 11/28/2016.
+ */
+
+public class EntryReducer extends Reducer<IntWritable, TextArrayWritable, IntWritable, Text> {
+
+    @Override
+    protected void reduce(IntWritable key, Iterable<TextArrayWritable> values, Context context) throws IOException, InterruptedException {
+
+        int maxValue = Integer.MIN_VALUE;
+
+        /*
+        // iterate over input values and calculate
+        Map.Entry<Writable, Writable> entry;
+        IntWritable                   length;
+        TextArrayWritable wordsArray = new TextArrayWritable();
+        for (MapWritable map : values) {
+            entry = map.entrySet().iterator().next();
+            length     = (IntWritable) entry.getKey();
+
+            if (length.get() > maxValue) { // we've found new max value
+                maxValue = length.get();
+                wordsArray = (TextArrayWritable) entry.getValue();
+            } else if (length.get() == maxValue) { // we've the same value in different input - merge them
+                wordsArray = wordsArray.join((TextArrayWritable) entry.getValue());
+            }
+
+        }
+
+        // write output
+        context.write(new IntWritable(maxValue), new Text(Arrays.toString(wordsArray.toStrings())));
+        */
+
+    }
+
+}

@@ -35,8 +35,8 @@ public class LenCounterMainOption2 extends Configured implements Tool {
         Job job = Job.getInstance(conf, "Job #1");
         job.setJarByClass(LenCounterMainOption2.class);
         // mapper+reducer
-        //job.setMapperClass(MyMapper1.class);
-        //job.setReducerClass(MyReducer1.class);
+        job.setMapperClass(EntryMapper.class);
+        job.setReducerClass(EntryReducer.class);
         // output key-value pair
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
@@ -47,8 +47,9 @@ public class LenCounterMainOption2 extends Configured implements Tool {
         TextInputFormat.addInputPath(job, new Path(args[0]));
         TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
 
-        job.waitForCompletion(true);
+        return job.waitForCompletion(true) ? 0 : 1;
 
+        /*
         // #2nd MapReduce job (instance/mapper/reducer/key/value/etc.)
         Job job2 = Job.getInstance(conf, "Job #2");
         job2.setJarByClass(LenCounterMainOption2.class);
@@ -66,6 +67,7 @@ public class LenCounterMainOption2 extends Configured implements Tool {
         TextOutputFormat.setOutputPath(job2, new Path(args[1]));
 
         return job2.waitForCompletion(true) ? 0 : 1;
+        */
     }
 
     /**
