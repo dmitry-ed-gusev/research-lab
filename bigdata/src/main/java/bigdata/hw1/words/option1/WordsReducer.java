@@ -25,7 +25,7 @@ public class WordsReducer extends Reducer<IntWritable, MapWritable, IntWritable,
         // iterate over input values and calculate
         Map.Entry<Writable, Writable> entry;
         IntWritable                   length;
-        TextArrayWritable             wordsArray = new TextArrayWritable();
+        TextArrayWritable wordsArray = new TextArrayWritable();
         for (MapWritable map : values) {
             entry = map.entrySet().iterator().next();
             length     = (IntWritable) entry.getKey();
@@ -33,7 +33,7 @@ public class WordsReducer extends Reducer<IntWritable, MapWritable, IntWritable,
             if (length.get() > maxValue) { // we've found new max value
                 maxValue = length.get();
                 wordsArray = (TextArrayWritable) entry.getValue();
-            } else if (length.get() == maxValue) { // we've the same value in defferent input - merge them
+            } else if (length.get() == maxValue) { // we've the same value in different input - merge them
                 wordsArray = wordsArray.join((TextArrayWritable) entry.getValue());
             }
 
