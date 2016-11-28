@@ -1,6 +1,7 @@
 package bigdata.hw1.words.option1;
 
 import bigdata.hw1.words.ParseHelper;
+import bigdata.hw1.words.TextArrayWritable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.hadoop.io.*;

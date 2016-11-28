@@ -1,6 +1,6 @@
-package bigdata.hw1.words.option1;
+package bigdata.hw1.words;
 
-import bigdata.hw1.words.option1.TextArrayWritable;
+import bigdata.hw1.words.TextArrayWritable;
 import org.apache.hadoop.io.Text;
 import org.junit.Test;
 

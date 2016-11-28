@@ -1,5 +1,6 @@
 package bigdata.hw1.words.option1;
 
+import bigdata.hw1.words.TextArrayWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;

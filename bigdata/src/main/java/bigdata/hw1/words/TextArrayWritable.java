@@ -1,4 +1,4 @@
-package bigdata.hw1.words.option1;
+package bigdata.hw1.words;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.hadoop.io.ArrayWritable;
