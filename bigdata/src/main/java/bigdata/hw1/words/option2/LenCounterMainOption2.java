@@ -50,7 +50,7 @@ public class LenCounterMainOption2 extends Configured implements Tool {
         job.waitForCompletion(true);
 
         // #2nd MapReduce job (instance/mapper/reducer/key/value/etc.)
-        Job job2 = Job.getInstance(conf, "Job 2");
+        Job job2 = Job.getInstance(conf, "Job #2");
         job2.setJarByClass(LenCounterMainOption2.class);
         // mapper+reducer
         //job2.setMapperClass(MyMapper2.class);
