@@ -1,5 +1,6 @@
 package bigdata.hw1.words.option2;
 
+import bigdata.hw1.words.TextArrayWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -31,23 +32,34 @@ public class LenCounterMainOption2 extends Configured implements Tool {
         Configuration conf = getConf();
         FileSystem fs = FileSystem.get(conf);
 
-        // #1st MapReduce job (instance/mapper/reducer/key/value/etc.)
-        Job job = Job.getInstance(conf, "Job #1");
-        job.setJarByClass(LenCounterMainOption2.class);
-        // mapper+reducer
-        job.setMapperClass(EntryMapper.class);
-        job.setReducerClass(EntryReducer.class);
-        // output key-value pair
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
+        // get instance of #1st MapReduce job
+        Job job1 = Job.getInstance(conf, "Job #1");
+        // set the Jar by finding where a current class came from
+        job1.setJarByClass(LenCounterMainOption2.class);
+        // set the job name
+        job1.setJobName("The longest word: option2.");
+
+        // input text file for job1- first cmd line parameter
+        TextInputFormat.addInputPath(job1, new Path(args[0]));
+        // path (directory) for output (plain text)
+        TextOutputFormat.setOutputPath(job1, new Path(OUTPUT_PATH));
+
+        // mapper class
+        job1.setMapperClass(EntryMapper.class);
+        // reducer class
+        job1.setReducerClass(EntryReducer.class);
+
+        // mapper class output key class
+        job1.setOutputKeyClass(IntWritable.class);
+        // mapper class output value class
+        job1.setOutputValueClass(TextArrayWritable.class);
+
         // input/output format
-        job.setInputFormatClass(TextInputFormat.class);
-        job.setOutputFormatClass(TextOutputFormat.class);
+        job1.setInputFormatClass(TextInputFormat.class);
+        job1.setOutputFormatClass(TextOutputFormat.class);
 
-        TextInputFormat.addInputPath(job, new Path(args[0]));
-        TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
 
-        return job.waitForCompletion(true) ? 0 : 1;
+        return job1.waitForCompletion(true) ? 0 : 1;
 
         /*
         // #2nd MapReduce job (instance/mapper/reducer/key/value/etc.)
@@ -75,12 +87,9 @@ public class LenCounterMainOption2 extends Configured implements Tool {
      * command line and run the Job till completion
      */
     public static void main(String[] args) throws Exception {
-        // TODO Auto-generated method stub
-        if (args.length != 2) {
-            System.err.println("Enter valid number of arguments <Inputdirectory>  <Outputlocation>");
-            System.exit(0);
-        }
+
         ToolRunner.run(new Configuration(), new LenCounterMainOption2(), args);
+
     }
 
 }

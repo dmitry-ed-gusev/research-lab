@@ -24,7 +24,7 @@ public class EntryMapper extends Mapper<LongWritable, Text, IntWritable, TextArr
         if (!StringUtils.isEmpty(value.toString())) {
             // parse data
             Pair<Integer, List<Text>> pair = ParseHelper.parseDataRow(value.toString());
-            // write context
+            // write parsed data to context
             TextArrayWritable array = new TextArrayWritable();
             array.set(pair.getRight().toArray(new Text[0]));
             context.write(new IntWritable(pair.getLeft()),  array);

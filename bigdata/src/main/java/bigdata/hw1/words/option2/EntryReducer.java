@@ -12,37 +12,36 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
+ * Entry reducer class: join text arrays with words of same length, if possible -
+ * ignore (not write to output) arrays with length, shorter than already processed.
+ * Possible reduce count of data a little-bit.
  * Created by gusevdm on 11/28/2016.
  */
 
 public class EntryReducer extends Reducer<IntWritable, TextArrayWritable, IntWritable, Text> {
 
+    private int               maxValue = Integer.MIN_VALUE;       // max value
+    private TextArrayWritable words    = new TextArrayWritable(); // empty words array
+
     @Override
     protected void reduce(IntWritable key, Iterable<TextArrayWritable> values, Context context) throws IOException, InterruptedException {
 
-        int maxValue = Integer.MIN_VALUE;
-
-        /*
-        // iterate over input values and calculate
-        Map.Entry<Writable, Writable> entry;
-        IntWritable                   length;
-        TextArrayWritable wordsArray = new TextArrayWritable();
-        for (MapWritable map : values) {
-            entry = map.entrySet().iterator().next();
-            length     = (IntWritable) entry.getKey();
-
-            if (length.get() > maxValue) { // we've found new max value
-                maxValue = length.get();
-                wordsArray = (TextArrayWritable) entry.getValue();
-            } else if (length.get() == maxValue) { // we've the same value in different input - merge them
-                wordsArray = wordsArray.join((TextArrayWritable) entry.getValue());
+        if (key.get() > maxValue) { // new maximum found
+            maxValue = key.get();
+            words = new TextArrayWritable();         // reset words array
+            for (TextArrayWritable array : values) { // join with received by current key
+                words = words.join(array);
             }
-
+        } else if (key.get() == maxValue) { // found same value, as maximum
+            for (TextArrayWritable array : values) { // just join received arrays
+                words = words.join(array);
+            }
         }
 
         // write output
-        context.write(new IntWritable(maxValue), new Text(Arrays.toString(wordsArray.toStrings())));
-        */
+        if (maxValue > Integer.MIN_VALUE && words.get() != null && words.get().length > 0) {
+            context.write(new IntWritable(maxValue), new Text(Arrays.toString(words.toStrings())));
+        }
 
     }
 
