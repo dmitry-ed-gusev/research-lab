@@ -21,6 +21,8 @@
         <assembly.dir>${project.build.directory}/bigdata</assembly.dir>
     </properties>
 
+    <!-- // todo: implement building a "FAT" jar - with all needed dependencies inside (use maven shade plugin!) -->
+
     <build>
         <finalName>${jar.name}</finalName>
 
