@@ -9,11 +9,14 @@
     <name>Research :: Java/Python/Shell research/survey, self-education application.</name>
 
     <properties>
+        <!-- java-related settings/properties -->
         <java.sources.encoding>UTF-8</java.sources.encoding>
         <java.version>1.8</java.version>
-        <maven.compiler.plugin>2.3.2</maven.compiler.plugin>
-        <maven.jar.plugin>2.4</maven.jar.plugin>
-        <maven.resources.plugin>2.5</maven.resources.plugin>
+        <!-- maven plugins settings/versions -->
+        <maven.plugin.compiler>2.3.2</maven.plugin.compiler>
+        <maven.plugin.jar>2.4</maven.plugin.jar>
+        <maven.plugin.resources>2.5</maven.plugin.resources>
+        <maven.plugin.shade>2.4.3</maven.plugin.shade>
 		<!-- Apache Commons Lang3 version -->
         <commons.lang3.version>3.4</commons.lang3.version>
 		<!-- Apache commons logging version -->
@@ -33,7 +36,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin}</version>
+                <version>${maven.plugin.compiler}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -43,7 +46,7 @@
 
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven.resources.plugin}</version>
+                <version>${maven.plugin.resources}</version>
                 <configuration>
                     <encoding>${java.sources.encoding}</encoding>
                 </configuration>
