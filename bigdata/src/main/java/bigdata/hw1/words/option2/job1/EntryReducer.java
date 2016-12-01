@@ -1,15 +1,12 @@
-package bigdata.hw1.words.option2;
+package bigdata.hw1.words.option2.job1;
 
 import bigdata.hw1.words.TextArrayWritable;
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
 
 /**
  * Entry reducer class: join text arrays with words of same length, if possible -

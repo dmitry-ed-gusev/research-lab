@@ -21,8 +21,6 @@
         <assembly.dir>${project.build.directory}/bigdata</assembly.dir>
     </properties>
 
-    <!-- // todo: implement building a "FAT" jar - with all needed dependencies inside (use maven shade plugin!) -->
-
     <build>
         <finalName>${jar.name}</finalName>
 
@@ -35,9 +33,41 @@
                 <configuration>
                     <outputDirectory>${assembly.dir}</outputDirectory>
                 </configuration>
-                <version>${maven.jar.plugin}</version>
+                <version>${maven.plugin.jar}</version>
             </plugin>
 
+            <!-- maven shade plugin - creating a "FAT" jar with dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven.plugin.shade}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>true</minimizeJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.apache.commons:commons-lang3</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>org.apache.commons:commons-lang3</artifact>
+                                    <includes>
+                                        <include>org/apache/commons/lang3/StringUtils.class</include>
+                                        <include>org/apache/commons/lang3/tuple/Pair.class</include>
+                                        <include>org/apache/commons/lang3/tuple/ImmutablePair.class</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- maven antrun plugin (copy and filter .sh scripts) -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>

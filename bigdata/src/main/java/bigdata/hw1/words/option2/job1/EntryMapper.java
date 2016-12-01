@@ -1,10 +1,12 @@
-package bigdata.hw1.words.option2;
+package bigdata.hw1.words.option2.job1;
 
 import bigdata.hw1.words.ParseHelper;
 import bigdata.hw1.words.TextArrayWritable;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.hadoop.io.*;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
