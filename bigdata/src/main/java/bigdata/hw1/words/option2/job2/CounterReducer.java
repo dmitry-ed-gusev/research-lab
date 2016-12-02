@@ -6,6 +6,9 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
 
+import static bigdata.hw1.words.option2.LenCounterDefaults.COUNTER_GROUP;
+import static bigdata.hw1.words.option2.LenCounterDefaults.COUNTER_NAME;
+
 /**
  * This reducer (singleton) receives all length and find the maximum length.
  * Created by gusevdm on 12/1/2016.
@@ -25,8 +28,8 @@ public class CounterReducer extends Reducer<IntWritable, IntWritable, IntWritabl
         } // end of FOR cycle
 
         // write output
-        context.write(new IntWritable(maxValue), new Text());
-
+        //context.write(new IntWritable(maxValue), new Text()); // we don't need to write to context - just put counter
+        context.getCounter(COUNTER_GROUP, COUNTER_NAME).setValue(maxValue);
     }
 
 }
