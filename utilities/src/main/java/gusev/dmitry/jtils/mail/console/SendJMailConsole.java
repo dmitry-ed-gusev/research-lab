@@ -1,6 +1,5 @@
 package gusev.dmitry.jtils.mail.console;
 
-import gusev.dmitry.jtils.JTilsException;
 import gusev.dmitry.jtils.utils.CommandLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -91,7 +90,7 @@ public class SendJMailConsole {
             // sending email
             sendMail.sendMessage();
             log.info(String.format("Email to [%s] was sent.", recipients));
-        } catch (JTilsException /* create SendMail instance */ | NumberFormatException /* port parse */ | MessagingException /* sending message */ e) {
+        } catch (NumberFormatException /* port parse */ | MessagingException /* sending message */ e) {
             log.error("Can't create SendMail instance!", e);
         }
     }

@@ -4,7 +4,9 @@ import org.junit.Test;
 
 import java.util.TreeMap;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Пара тестов для тестирования методов модуля ReverseDictionary.

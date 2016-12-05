@@ -1,6 +1,7 @@
 package gusev.dmitry.jtils;
 
 /**
+ * CMD line options for utilities application.
  * @author Gusev Dmitry (Чебурашка)
  * @version 1.0 (DATE: 21.12.2014)
 */
@@ -10,7 +11,8 @@ public enum Options {
     WATCH    ("-watch",     "Presentation Watch (timer) application."),
     DLMANAGER("-dlmanager", "Download Manager application.");
 
-    private Options(String optionName, String description) {
+    /***/
+    Options(String optionName, String description) {
         this.optionName  = optionName;
         this.description = description;
     }
