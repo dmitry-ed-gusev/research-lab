@@ -26,6 +26,7 @@
 		<java.mail.version>1.4.5</java.mail.version>
 		<!-- Spring framework [context] module version -->
 		<spring.context.version>4.3.3.RELEASE</spring.context.version>
+        <apache.httpclient.version>4.5.2</apache.httpclient.version>
     </properties>
 
     <build>
@@ -73,6 +74,7 @@
                 <module>chat-app</module>
                 <module>utilities</module>
                 <module>bigdata</module>
+				<module>socialnet</module>
             </modules>
         </profile>
 
@@ -90,6 +92,7 @@
                 <module>chat-app</module>
                 <module>utilities</module>
                 <module>bigdata</module>
+				<module>socialnet</module>
             </modules>
         </profile>
 
@@ -102,6 +105,7 @@
             <!-- Some of modules to build -->
             <modules>
                 <module>bigdata</module>
+				<module>socialnet</module>
             </modules>
         </profile>
 
