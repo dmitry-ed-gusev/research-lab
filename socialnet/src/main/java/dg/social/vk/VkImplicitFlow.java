@@ -4,14 +4,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HeaderIterator;
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URI;
 
@@ -20,6 +20,8 @@ import java.net.URI;
  * Created by gusevdm on 12/6/2016.
  */
 public class VkImplicitFlow {
+
+    public static final String PROXY_HOST = "webproxy.merck.com";
 
     public static final String APP_ID = "5761788";
     public static final String REDIRECT_URI = "http://oauth.vk.com/blank.html";
@@ -36,15 +38,23 @@ public class VkImplicitFlow {
         URI uri = new URIBuilder()
                 .setScheme("http")
                 .setHost("bash.im")
-                //.setPath("")
-                //.setParameter("" ,"")
+                //.setPath("/")
+                //.setParameter("" ,"") // <- empty parameter adds [?=] symbols to uri
                 .build();
         log.debug(String.format("Generated URI [%s].",uri.toString()));
 
+        //
+        HttpHost proxyHost = new HttpHost(PROXY_HOST, 8080);
+
         // create default http client
         CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        RequestConfig requestConfig = RequestConfig.custom().setProxy(proxyHost).build();
+
         // create get request
         HttpGet httpget = new HttpGet(uri);
+        httpget.setConfig(requestConfig);
+
         // execute GET request with http client
         CloseableHttpResponse response = httpclient.execute(httpget);
 
@@ -63,10 +73,11 @@ public class VkImplicitFlow {
             IOUtils.copy(response.getEntity().getContent(), writer, "windows-1251");
             String theString = writer.toString();
 
-            //System.out.println("-> " + theString);
+            System.out.println("-> " + theString);
 
         } finally {
             response.close();
+            httpclient.close();
         }
     }
 
