@@ -95,7 +95,7 @@ public final class HttpUtilities {
 
         post.setEntity(new UrlEncodedFormEntity(postParams));
 
-        HttpResponse response = null /*client.execute(post);*/
+        HttpResponse response = null; /*client.execute(post);*/
 
         int responseCode = response.getStatusLine().getStatusCode();
 
