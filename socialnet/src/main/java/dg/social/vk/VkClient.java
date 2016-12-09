@@ -1,4 +1,4 @@
-package dg.social;
+package dg.social.vk;
 
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
