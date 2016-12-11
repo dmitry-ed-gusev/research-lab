@@ -30,17 +30,13 @@ public final class HttpUtilities {
 
     private static final Log LOG = LogFactory.getLog(HttpUtilities.class);
 
-    private static final String FORM_INPUT_ELEMENT    = "input";
-    private static final String FORM_INPUT_ATTR_KEY   = "name";
-    private static final String FORM_INPUT_ATTR_VALUE = "value";
-
     private HttpUtilities() {} // utility class, can't instantiate
 
     /***/
     public static String getPageContent(HttpEntity httpEntity, String encoding) throws IOException {
         LOG.debug("HttpUtilities.getPageContent() working.");
 
-        if (httpEntity == null) {
+        if (httpEntity == null) { // return empty string for null entity
             return "";
         }
 
@@ -49,32 +45,6 @@ public final class HttpUtilities {
         return writer.toString();
     }
 
-    /***/
-    public static List<NameValuePair> getFormParamsByClass(String html, String elementClass, String username, String password) throws UnsupportedEncodingException {
-        LOG.debug("HttpUtilities.getFormParams() working.");
-
-
-        Document doc = Jsoup.parse(html); // parse page content
-        Element loginform = doc.getElementsByClass(elementClass).first(); // get first element with specified class
-        Elements inputElements = loginform.getElementsByTag(FORM_INPUT_ELEMENT); // get all form elements with type <input>
-
-        //
-        List<NameValuePair> paramList = new ArrayList<>();
-        for (Element inputElement : inputElements) {
-            String key = inputElement.attr(FORM_INPUT_ATTR_KEY);
-            String value = inputElement.attr(FORM_INPUT_ATTR_VALUE);
-
-            if (key.equals("Email"))
-                value = username;
-            else if (key.equals("Passwd"))
-                value = password;
-
-            paramList.add(new BasicNameValuePair(key, value));
-
-        }
-
-        return paramList;
-    }
 
     /***/
     public static void sendPost(String url, List<NameValuePair> postParams)
