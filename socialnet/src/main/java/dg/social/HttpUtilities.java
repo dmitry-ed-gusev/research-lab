@@ -45,22 +45,20 @@ public final class HttpUtilities {
         return writer.toString();
     }
 
-    /***/
-    public static void sendPost(String url, List<NameValuePair> postParams)
-            throws Exception {
+    /** Sends POST HTTP request to URL with list of parameters. */
+    public static void sendPost(String url, List<NameValuePair> postParams) throws IOException {
 
         HttpPost post = new HttpPost(url);
 
         // add header
-        post.setHeader("Host", "accounts.google.com");
+        //post.setHeader("Host", "accounts.google.com");
         post.setHeader("User-Agent", USER_AGENT);
-        post.setHeader("Accept",
-                "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        post.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
         post.setHeader("Accept-Language", "en-US,en;q=0.5");
         //post.setHeader("Cookie", getCookies());
         post.setHeader("Connection", "keep-alive");
-        post.setHeader("Referer", "https://accounts.google.com/ServiceLoginAuth");
-        post.setHeader("Content-Type", "application/x-www-form-urlencoded");
+        //post.setHeader("Referer", "https://accounts.google.com/ServiceLoginAuth");
+        //post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
         post.setEntity(new UrlEncodedFormEntity(postParams));
 

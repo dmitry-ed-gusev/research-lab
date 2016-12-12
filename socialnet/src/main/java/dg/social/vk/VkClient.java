@@ -125,6 +125,7 @@ public class VkClient {
 
         // create http get request
         HttpGet httpGet = new HttpGet(vkTokenRequest);
+        // todo: add constants with BasicHeader
         //set get request headers
         httpGet.setHeader("User-Agent",      HTTP_HEADER_USER_AGENT);
         httpGet.setHeader("Accept",          HTTP_HEADER_ACCEPT);
@@ -151,7 +152,7 @@ public class VkClient {
             // prepare and print response
             String pageContent = HttpUtilities.getPageContent(response.getEntity(), DEFAULT_ENCODING);
             if (LOG.isDebugEnabled()) {
-                LOG.debug("-->\n" + pageContent);
+                LOG.debug(String.format("Received response:%n%s", pageContent));
             }
 
             // parse returned page
@@ -207,7 +208,7 @@ public class VkClient {
     public final static void main(String[] args) throws Exception {
 
         Log log = LogFactory.getLog(VkClient.class);
-        log.info("VK client starting...");
+        log.info("VK Client starting.");
 
         // create VK config and client (with config)
         VkClientConfig config = new VkClientConfig(VK_USER_LOGIN, VK_USER_PASS, VK_APP_ID);
@@ -215,6 +216,8 @@ public class VkClient {
 
         // get access token for specified application (API_ID)
         String access_token = vkClient.getAccessToken();
+
+        log.info("VK Client finished.");
 
         // create default http client
         //CloseableHttpClient httpclient = HttpClients.createDefault();
