@@ -28,11 +28,11 @@ import static org.apache.http.HttpHeaders.USER_AGENT;
 
 public final class HttpUtilities {
 
-    private static final Log LOG = LogFactory.getLog(HttpUtilities.class);
+    private static final Log LOG = LogFactory.getLog(HttpUtilities.class); // module logger
 
     private HttpUtilities() {} // utility class, can't instantiate
 
-    /***/
+    /** Return content of http response as string. */
     public static String getPageContent(HttpEntity httpEntity, String encoding) throws IOException {
         LOG.debug("HttpUtilities.getPageContent() working.");
 
@@ -44,7 +44,6 @@ public final class HttpUtilities {
         IOUtils.copy(httpEntity.getContent(), writer, StringUtils.isBlank(encoding) ? "UTF-8" : encoding);
         return writer.toString();
     }
-
 
     /***/
     public static void sendPost(String url, List<NameValuePair> postParams)
