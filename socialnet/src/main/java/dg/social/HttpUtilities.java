@@ -4,9 +4,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
@@ -19,6 +21,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dg.social.SocialNetsDefaults.HTTP_HEADERS;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 
 /**
@@ -46,23 +49,32 @@ public final class HttpUtilities {
     }
 
     /** Sends POST HTTP request to URL with list of parameters. */
-    public static void sendPost(String url, List<NameValuePair> postParams) throws IOException {
+    public static void sendPost(HttpClient httpClient, String url, List<NameValuePair> postParams, Header[] cookies) throws IOException {
+        LOG.debug("HttpUtilities.sendPost() working.");
 
-        HttpPost post = new HttpPost(url);
+        // prepare post request to submit a form
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.setHeaders(HTTP_HEADERS);
+        httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        for (Header header : cookies) {
+            httpPost.setHeader("Cookie", header.getValue());
+        }
 
         // add header
         //post.setHeader("Host", "accounts.google.com");
-        post.setHeader("User-Agent", USER_AGENT);
-        post.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        post.setHeader("Accept-Language", "en-US,en;q=0.5");
+        //httpPost.setHeader("User-Agent", USER_AGENT);
+        //httpPost.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        //httpPost.setHeader("Accept-Language", "en-US,en;q=0.5");
         //post.setHeader("Cookie", getCookies());
-        post.setHeader("Connection", "keep-alive");
+        //httpPost.setHeader("Connection", "keep-alive");
         //post.setHeader("Referer", "https://accounts.google.com/ServiceLoginAuth");
-        //post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
-        post.setEntity(new UrlEncodedFormEntity(postParams));
+        // set entity
+        httpPost.setEntity(new UrlEncodedFormEntity(postParams));
 
-        HttpResponse response = null; /*client.execute(post);*/
+        // execute query
+        HttpResponse response = httpClient.execute(httpPost);
 
         int responseCode = response.getStatusLine().getStatusCode();
 
@@ -70,6 +82,9 @@ public final class HttpUtilities {
         System.out.println("Post parameters : " + postParams);
         System.out.println("Response Code : " + responseCode);
 
+        System.out.println("--->%n" + HttpUtilities.getPageContent(response.getEntity(), "UTF-8"));
+
+        /*
         BufferedReader rd = new BufferedReader(
                 new InputStreamReader(response.getEntity().getContent()));
 
@@ -79,8 +94,8 @@ public final class HttpUtilities {
             result.append(line);
         }
 
-        // System.out.println(result.toString());
-
+        System.out.println(result.toString());
+        */
     }
 
 }
