@@ -49,7 +49,7 @@ public final class HttpUtilities {
     }
 
     /** Sends POST HTTP request to URL with list of parameters. */
-    public static void sendPost(HttpClient httpClient, String url, List<NameValuePair> postParams, Header[] cookies) throws IOException {
+    public static void sendHttpPost(HttpClient httpClient, String url, List<NameValuePair> postParams, Header[] cookies) throws IOException {
         LOG.debug("HttpUtilities.sendPost() working.");
 
         // prepare post request to submit a form

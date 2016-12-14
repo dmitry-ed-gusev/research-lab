@@ -5,21 +5,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.*;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.*;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.impl.client.RedirectLocations;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,15 +25,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.CookieHandler;
-import java.net.CookieManager;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dg.social.SocialNetsDefaults.DEFAULT_ENCODING;
-import static dg.social.SocialNetsDefaults.HTTP_HEADERS;
-import static dg.social.SocialNetsDefaults.MERCK_PROXY;
+import static dg.social.SocialNetsDefaults.*;
 
 /**
  * Implementation of receiving ACCESS_TOKEN (for VK API access) using Implicit Flow.
@@ -48,13 +42,17 @@ import static dg.social.SocialNetsDefaults.MERCK_PROXY;
 // todo: implement config for concrete social network, with common interface
 // todo: implement concrete methods for social network, with common interface
 
+// todo: processing of form "Allow rights for application"
+
 public class VkClient {
 
     private static final Log LOG = LogFactory.getLog(VkClient.class); // module logger
 
     // http client instance (own instance of client for each instance of VkClient)
     //private final CloseableHttpClient HTTP_CLIENT = HttpClients.createDefault();
-    private final CloseableHttpClient HTTP_CLIENT = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
+    private final CloseableHttpClient HTTP_CLIENT  = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
+    private final HttpContext         HTTP_CONTEXT = new BasicHttpContext();
+    private final RequestConfig       HTTP_REQUEST_CONFIG;
 
     // VK user/app credentials (user, pass, api_id)
     private static final String VK_USER_LOGIN               = "+79618011494";
@@ -78,6 +76,13 @@ public class VkClient {
     public VkClient(VkClientConfig config, HttpHost proxyHost) {
         this.config    = config;
         this.proxyHost = proxyHost;
+        // init http request config (through builder)
+        RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
+        // set proxy (if needed)
+        if (this.proxyHost != null) { // add proxyHost to get http request
+            requestConfigBuilder.setProxy(this.proxyHost).build();
+        }
+        this.HTTP_REQUEST_CONFIG = requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
     }
 
     /** Create VkClient instance, working directly (without proxy). */
@@ -135,28 +140,14 @@ public class VkClient {
     public String getAccessToken() throws IOException {
         LOG.debug("VkClient.getAccessToken() working.");
 
-        // make sure cookies is turn on
-        //CookieHandler.setDefault(new CookieManager());
-
         // generate and execute ACCESS_TOKEN request
         String vkTokenRequest = this.config.getAccessTokenRequest();
         LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", vkTokenRequest));
 
-        // create http get request with default headers
+        // create and execute http get request with default headers and config
         HttpGet httpGet = new HttpGet(vkTokenRequest);
         httpGet.setHeaders(HTTP_HEADERS);
-
-        // builder for http request config
-        RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
-
-        if (this.proxyHost != null) { // add proxyHost to get http request
-            requestConfigBuilder.setProxy(this.proxyHost).build();
-        }
-
-        RequestConfig requestConfig = requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
-        httpGet.setConfig(requestConfig);
-
-        //HttpClientContext context = HttpClientContext.create();
+        httpGet.setConfig(HTTP_REQUEST_CONFIG);
         CloseableHttpResponse responseGet = HTTP_CLIENT.execute(httpGet);
 
         Header[] cookies = responseGet.getHeaders("Set-Cookie");
@@ -215,13 +206,13 @@ public class VkClient {
                 for (Header header : cookies) {
                     httpPost.setHeader("Cookie", header.getValue());
                 }
-                httpPost.setConfig(requestConfig);
+                httpPost.setConfig(HTTP_REQUEST_CONFIG);
                 // set entity
                 httpPost.setEntity(new UrlEncodedFormEntity(paramList));
 
                 // execute query #2
-                HttpContext context = new BasicHttpContext();
-                HttpResponse responsePost = HTTP_CLIENT.execute(httpPost, context);
+
+                HttpResponse responsePost = HTTP_CLIENT.execute(httpPost, HTTP_CONTEXT);
                 Header[] cookies2 = responsePost.getHeaders("Set-Cookie");
                 for (Header header : cookies2) {
                     System.out.println("===> " + header.getName() + ":::" + header.getValue());
@@ -252,7 +243,7 @@ public class VkClient {
                 URI finalUrl = httpPost.getURI();
                 System.out.println("1************************* = " + finalUrl);
 
-                RedirectLocations locations = (RedirectLocations) context.getAttribute(HttpClientContext.REDIRECT_LOCATIONS);
+                RedirectLocations locations = (RedirectLocations) HTTP_CONTEXT.getAttribute(HttpClientContext.REDIRECT_LOCATIONS);
                 if (locations != null) {
                     finalUrl = locations.getAll().get(locations.getAll().size() - 1);
                     System.out.println("2************************* = " + finalUrl);
@@ -282,7 +273,7 @@ public class VkClient {
                     for (Header header : cookies2) {
                         httpPost2.setHeader("Cookie", header.getValue());
                     }
-                    httpPost2.setConfig(requestConfig);
+                    httpPost2.setConfig(HTTP_REQUEST_CONFIG);
                     // set entity
                     httpPost2.setEntity(new UrlEncodedFormEntity(paramList2));
 
@@ -321,38 +312,11 @@ public class VkClient {
     }
 
     /***/
-    public void login() throws IOException {
-        HttpGet httpGet = new HttpGet("https://vk.com/login");
-        httpGet.setHeaders(HTTP_HEADERS);
-
-        httpGet.setHeaders(HTTP_HEADERS);
-
-        if (this.proxyHost != null) { // add proxyHost to get http request
-            RequestConfig requestConfig = RequestConfig.custom().setProxy(this.proxyHost).build();
-            httpGet.setConfig(requestConfig);
-        }
-
-        // execute ACCESS_TOKEN http request
-        CloseableHttpResponse response = HTTP_CLIENT.execute(httpGet);
-
-        try {
-
-            // prepare and print response
-            String pageContent = HttpUtilities.getPageContent(response.getEntity(), "windows-1251");
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(String.format("Received response:%n%s", pageContent));
-            }
-
-        } finally {
-            response.close();
-        }
-
-
-    }
-
-    /***/
     public boolean isTokenAlive(String token) {
         LOG.debug("VkClient.isTokenAlive() working.");
+
+        // todo: implementation
+
         return false;
     }
 
