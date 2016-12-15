@@ -29,7 +29,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dg.social.SocialNetsDefaults.*;
+import static dg.social.HttpUtilities.*;
 
 /**
  * Implementation of receiving ACCESS_TOKEN (for VK API access) using Implicit Flow.
@@ -137,6 +137,7 @@ public class VkClient {
     }
 
     /***/
+    // todo: take a look at exceptions processing
     public String getAccessToken() throws IOException {
         LOG.debug("VkClient.getAccessToken() working.");
 
@@ -144,35 +145,31 @@ public class VkClient {
         String vkTokenRequest = this.config.getAccessTokenRequest();
         LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", vkTokenRequest));
 
-        // create and execute http get request with default headers and config
-        HttpGet httpGet = new HttpGet(vkTokenRequest);
-        httpGet.setHeaders(HTTP_HEADERS);
-        httpGet.setConfig(HTTP_REQUEST_CONFIG);
-        CloseableHttpResponse responseGet = HTTP_CLIENT.execute(httpGet);
+        // HTTP request #1: execute http get request to token request URI
+        HttpGet httpGetInitial = new HttpGet(vkTokenRequest);
+        httpGetInitial.setHeaders(HTTP_DEFAULT_HEADERS);
+        httpGetInitial.setConfig(HTTP_REQUEST_CONFIG);
+        // execute request
+        CloseableHttpResponse httpResponseInitial = HTTP_CLIENT.execute(httpGetInitial);
+        // save initial cookies
+        Header[] httpInitialCookies = httpResponseInitial.getHeaders(HTTP_GET_COOKIES_HEADER);
 
-        Header[] cookies = responseGet.getHeaders("Set-Cookie");
-
-        for (Header header : cookies) {
-            System.out.println("===> " + header.getName() + ":::" + header.getValue());
-        }
-
+        //for (Header header : cookies) {
+        //    System.out.println("===> " + header.getName() + ":::" + header.getValue());
+       // }
         //System.exit(777);
 
         try {
 
-            if (LOG.isDebugEnabled()) { // debug output of received headers
-                // print response headers
-                HeaderIterator hIterator = responseGet.headerIterator();
-                while (hIterator.hasNext()) {
-                    LOG.debug(String.format("Header [%s].", hIterator.next()));
-                }
+            if (LOG.isDebugEnabled()) { // just debug output
+                HttpUtilities.httpResponseToString(httpResponseInitial, true);
             }
 
-            // prepare and print response
-            String pageContent = HttpUtilities.getPageContent(responseGet.getEntity(), DEFAULT_ENCODING);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(String.format("Received response:%n%s", pageContent));
-            }
+            // get page content for parsing
+            String pageContent = HttpUtilities.getPageContent(httpResponseInitial.getEntity(), HTTP_DEFAULT_CONTENT_ENCODING);
+            //if (LOG.isDebugEnabled()) {
+            //    LOG.debug(String.format("Received response:%n%s", pageContent));
+            //}
 
             // parse returned page
             Document doc = Jsoup.parse(pageContent);
@@ -201,10 +198,10 @@ public class VkClient {
                 // prepare post request to submit a form
 
                 HttpPost httpPost = new HttpPost(actionUrl);
-                httpPost.setHeaders(HTTP_HEADERS);
-                httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-                for (Header header : cookies) {
-                    httpPost.setHeader("Cookie", header.getValue());
+                httpPost.setHeaders(HTTP_DEFAULT_HEADERS);
+                httpPost.setHeader(HTTP_CONTENT_TYPE_HEADER, HTTP_CONTENT_TYPE_FORM);
+                for (Header header : httpInitialCookies) {
+                    httpPost.setHeader(HTTP_SET_COOKIES_HEADER, header.getValue());
                 }
                 httpPost.setConfig(HTTP_REQUEST_CONFIG);
                 // set entity
@@ -213,7 +210,7 @@ public class VkClient {
                 // execute query #2
 
                 HttpResponse responsePost = HTTP_CLIENT.execute(httpPost, HTTP_CONTEXT);
-                Header[] cookies2 = responsePost.getHeaders("Set-Cookie");
+                Header[] cookies2 = responsePost.getHeaders(HTTP_GET_COOKIES_HEADER);
                 for (Header header : cookies2) {
                     System.out.println("===> " + header.getName() + ":::" + header.getValue());
                 }
@@ -268,10 +265,10 @@ public class VkClient {
 
                     // prepare and run 3rd query - add missed digits to form
                     HttpPost httpPost2 = new HttpPost("https://vk.com" + actionUrl2);
-                    httpPost2.setHeaders(HTTP_HEADERS);
-                    httpPost2.setHeader("Content-Type", "application/x-www-form-urlencoded");
+                    httpPost2.setHeaders(HTTP_DEFAULT_HEADERS);
+                    httpPost2.setHeader(HTTP_CONTENT_TYPE_HEADER, HTTP_CONTENT_TYPE_FORM);
                     for (Header header : cookies2) {
-                        httpPost2.setHeader("Cookie", header.getValue());
+                        httpPost2.setHeader(HTTP_SET_COOKIES_HEADER, header.getValue());
                     }
                     httpPost2.setConfig(HTTP_REQUEST_CONFIG);
                     // set entity
@@ -279,7 +276,7 @@ public class VkClient {
 
                     // execute query #3
                     HttpResponse responsePost2 = HTTP_CLIENT.execute(httpPost2);
-                    Header[] cookies3 = responsePost2.getHeaders("Set-Cookie");
+                    Header[] cookies3 = responsePost2.getHeaders(HTTP_GET_COOKIES_HEADER);
                     for (Header header : cookies3) {
                         System.out.println("===> " + header.getName() + ":::" + header.getValue());
                     }
@@ -304,7 +301,7 @@ public class VkClient {
             }
 
         } finally {
-            responseGet.close();
+            httpResponseInitial.close();
             //httpclient.close();
         }
 
@@ -329,7 +326,7 @@ public class VkClient {
         // create VK config and client (with config)
         VkClientConfig config = new VkClientConfig(VK_USER_LOGIN, VK_USER_PASS, VK_APP_ID);
         //VkClient vkClient = new VkClient(config); // client works without proxy
-        VkClient vkClient = new VkClient(config, MERCK_PROXY); // client works through proxy
+        VkClient vkClient = new VkClient(config, HTTP_DEFAULT_PROXY); // client works through proxy
 
         // get access token for specified application (API_ID)
         String access_token = vkClient.getAccessToken();

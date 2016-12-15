@@ -4,34 +4,53 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.apache.http.message.BasicHeader;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
-
-import static dg.social.SocialNetsDefaults.HTTP_HEADERS;
-import static org.apache.http.HttpHeaders.USER_AGENT;
 
 /**
  * Some useful HTTP-related utilities.
  * Created by gusevdm on 12/9/2016.
  */
 
+// todo: move defaults to other (separate) class?
+
 public final class HttpUtilities {
 
     private static final Log LOG = LogFactory.getLog(HttpUtilities.class); // module logger
+
+    /** Default encoding for content. */
+    public static final String   HTTP_DEFAULT_CONTENT_ENCODING = "UTF-8";
+
+    /** Default http proxy server (Merck). */
+    public static final HttpHost HTTP_DEFAULT_PROXY = new HttpHost("webproxy.merck.com", 8080);
+
+    /** Default http headers for http client. */
+    public static final Header[] HTTP_DEFAULT_HEADERS = {
+            new BasicHeader("User-Agent",      "Mozilla/5.0"),
+            new BasicHeader("Accept",          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
+            //new BasicHeader("Accept-Language", "en-US,en;q=0.5"),
+            new BasicHeader("Accept-Language", "ru-RU,ru;q=0.5"),
+            new BasicHeader("Connection",      "keep-alive")
+    };
+
+    /***/
+    public static final String HTTP_GET_COOKIES_HEADER  = "Set-Cookie";
+
+    /***/
+    public static final String HTTP_SET_COOKIES_HEADER  = "Cookie";
+
+    /***/
+    public static final String HTTP_CONTENT_TYPE_HEADER = "Content-Type";
+
+    /***/
+    public static final String HTTP_CONTENT_TYPE_FORM   = "application/x-www-form-urlencoded";
 
     private HttpUtilities() {} // utility class, can't instantiate
 
@@ -44,8 +63,41 @@ public final class HttpUtilities {
         }
 
         StringWriter writer = new StringWriter();
-        IOUtils.copy(httpEntity.getContent(), writer, StringUtils.isBlank(encoding) ? "UTF-8" : encoding);
+        IOUtils.copy(httpEntity.getContent(), writer, StringUtils.isBlank(encoding) ? HTTP_DEFAULT_CONTENT_ENCODING : encoding);
         return writer.toString();
+    }
+
+    /** Method for debug purposes - printing http response. */
+    public static String httpResponseToString(HttpResponse response, boolean printPageContent) throws IOException {
+        LOG.debug("HttpUtilities.httpResponseToString() working.");
+
+        if (response == null) { // check - is it null?
+            return "[http request is null!]";
+        }
+
+        // processing http response
+        StringBuilder result = new StringBuilder();
+        result.append("HTTP Response:%n");
+
+        // get cookies and add them to result
+        Header[] cookies = response.getHeaders(HTTP_GET_COOKIES_HEADER);
+        for (Header cookie : cookies) {
+            result.append(String.format("Cookie: [%s=%s]%n", cookie.getName(), cookie.getValue()));
+        }
+
+        // get headers and add them
+        HeaderIterator headerIterator = response.headerIterator();
+        while (headerIterator.hasNext()) {
+            result.append(String.format("Header: [%s]%n", headerIterator.next()));
+        }
+
+        // get page content (http entity)
+        if (printPageContent) {
+            result.append(String.format("Page content: %n%s%n",
+                    HttpUtilities.getPageContent(response.getEntity(), HTTP_DEFAULT_CONTENT_ENCODING)));
+        }
+
+        return result.toString();
     }
 
     /** Sends POST HTTP request to URL with list of parameters. */
@@ -54,7 +106,7 @@ public final class HttpUtilities {
 
         // prepare post request to submit a form
         HttpPost httpPost = new HttpPost(url);
-        httpPost.setHeaders(HTTP_HEADERS);
+        //httpPost.setHeaders(HTTP_HEADERS);
         httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
         for (Header header : cookies) {
