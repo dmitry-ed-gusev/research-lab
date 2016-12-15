@@ -12,6 +12,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static dg.social.HttpUtilities.*;
+import static dg.social.vk.VkFormType.LOGIN_FORM;
 
 /**
  * Implementation of receiving ACCESS_TOKEN (for VK API access) using Implicit Flow.
@@ -50,31 +52,33 @@ public class VkClient {
 
     // http client instance (own instance of client for each instance of VkClient)
     //private final CloseableHttpClient HTTP_CLIENT = HttpClients.createDefault();
-    private final CloseableHttpClient HTTP_CLIENT  = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
-    private final HttpContext         HTTP_CONTEXT = new BasicHttpContext();
-    private final RequestConfig       HTTP_REQUEST_CONFIG;
+    private final CloseableHttpClient HTTP_CLIENT = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
+    private final HttpContext HTTP_CONTEXT = new BasicHttpContext();
+    private final RequestConfig HTTP_REQUEST_CONFIG;
 
     // VK user/app credentials (user, pass, api_id)
-    private static final String VK_USER_LOGIN               = "+79618011494";
+    private static final String VK_USER_LOGIN = "+79618011494";
     private static final String VK_USER_LOGIN_MISSED_DIGITS = "96180114";
-    private static final String VK_USER_PASS                = "vinny-bot13";
-    private static final String VK_APP_ID                   = "5761788";
+    private static final String VK_USER_PASS = "vinny-bot13";
+    private static final String VK_APP_ID = "5761788";
 
     // <div> element class (div with this class holds login form for VK)
-    private static final String LOGIN_FORM_DIV_CLASS         = "form_item fi_fat";
+    private static final String LOGIN_FORM_DIV_CLASS = "form_item fi_fat";
     // VK login form email/pass elements
-    private static final String LOGIN_FORM_EMAIL_KEY        = "email";
-    private static final String LOGIN_FORM_PASS_KEY         = "pass";
-    private static final String LOGIN_FORM_INPUT_ELEMENT    = "input";
-    private static final String LOGIN_FORM_INPUT_ATTR_KEY   = "name";
+    private static final String LOGIN_FORM_EMAIL_KEY = "email";
+    private static final String LOGIN_FORM_PASS_KEY = "pass";
+    private static final String LOGIN_FORM_INPUT_ELEMENT = "input";
+    private static final String LOGIN_FORM_INPUT_ATTR_KEY = "name";
     private static final String LOGIN_FORM_INPUT_ATTR_VALUE = "value";
 
     private VkClientConfig config;    // VK client configuration
-    private HttpHost       proxyHost; // proxy for working trough
+    private HttpHost proxyHost; // proxy for working trough
 
-    /** Create VkClient instance, working through proxy. */
+    /**
+     * Create VkClient instance, working through proxy.
+     */
     public VkClient(VkClientConfig config, HttpHost proxyHost) {
-        this.config    = config;
+        this.config = config;
         this.proxyHost = proxyHost;
         // init http request config (through builder)
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
@@ -82,10 +86,13 @@ public class VkClient {
         if (this.proxyHost != null) { // add proxyHost to get http request
             requestConfigBuilder.setProxy(this.proxyHost).build();
         }
+        // add cookies policy into
         this.HTTP_REQUEST_CONFIG = requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
     }
 
-    /** Create VkClient instance, working directly (without proxy). */
+    /**
+     * Create VkClient instance, working directly (without proxy).
+     */
     public VkClient(VkClientConfig config) {
         this(config, null);
     }
@@ -95,7 +102,7 @@ public class VkClient {
      */
     private static String getVKLoginFormActionURL(Document document) {
         LOG.debug("VkClient.getVKLoginFormActionURL() working.");
-        Element loginForm   = document.getElementsByClass(LOGIN_FORM_DIV_CLASS).first();
+        Element loginForm = document.getElementsByClass(LOGIN_FORM_DIV_CLASS).first();
         Element formElement = loginForm.getElementsByTag("form").first();
         return formElement.attr("action");
     }
@@ -137,6 +144,27 @@ public class VkClient {
     }
 
     /***/
+    private static VkFormType getVkFormType(Document doc) {
+        LOG.debug("VkClient.getVkFormType() working.");
+
+        if (doc == null) { // quick check
+            return VkFormType.UNKNOWN_FORM;
+        }
+
+        String formTitle = doc.title(); // get form page title
+        System.out.println("title -> " + formTitle);
+
+        System.out.println("XXX -> " + doc.getElementsByTag("title").isEmpty());
+        System.out.println("YYY -> " + doc.getElementsByClass(LOGIN_FORM_DIV_CLASS).first());
+        // if title match and there is div with specified class - we've found
+        if (LOGIN_FORM.getFormTitle().equalsIgnoreCase(formTitle) && !doc.getElementsByClass(LOGIN_FORM_DIV_CLASS).isEmpty()) {
+            return LOGIN_FORM;
+        }
+
+        return VkFormType.UNKNOWN_FORM;
+    }
+
+    /***/
     // todo: take a look at exceptions processing
     public String getAccessToken() throws IOException {
         LOG.debug("VkClient.getAccessToken() working.");
@@ -151,18 +179,20 @@ public class VkClient {
         httpGetInitial.setConfig(HTTP_REQUEST_CONFIG);
         // execute request
         CloseableHttpResponse httpResponseInitial = HTTP_CLIENT.execute(httpGetInitial);
+        // buffer received entity into memory
+        HttpEntity entity = httpResponseInitial.getEntity();
+        if (entity != null) {
+            //entity = new BufferedHttpEntity(entity);
+            httpResponseInitial.setEntity(new BufferedHttpEntity(entity));
+        }
         // save initial cookies
         Header[] httpInitialCookies = httpResponseInitial.getHeaders(HTTP_GET_COOKIES_HEADER);
 
-        //for (Header header : cookies) {
-        //    System.out.println("===> " + header.getName() + ":::" + header.getValue());
-       // }
-        //System.exit(777);
-
         try {
 
+
             if (LOG.isDebugEnabled()) { // just debug output
-                HttpUtilities.httpResponseToString(httpResponseInitial, true);
+                //LOG.debug(HttpUtilities.httpResponseToString(httpResponseInitial, true));
             }
 
             // get page content for parsing
@@ -171,8 +201,18 @@ public class VkClient {
             //    LOG.debug(String.format("Received response:%n%s", pageContent));
             //}
 
+            System.out.println("SSSSSSSSSSSSSSS -> " + pageContent);
+
+            if (LOG.isDebugEnabled()) { // just debug output
+                LOG.debug("67676767676767 -> " + HttpUtilities.httpResponseToString(httpResponseInitial, true));
+            }
+
             // parse returned page
             Document doc = Jsoup.parse(pageContent);
+            System.out.println("form type -> " + VkClient.getVkFormType(doc));
+            System.out.println("?????? -> " + VkClient.getVKLoginFormActionURL(doc));
+
+            System.exit(777);
 
             if (!doc.getElementsByClass(LOGIN_FORM_DIV_CLASS).isEmpty()) { // we've get login form - perform login
                 LOG.debug("Received VK login form. Performing login.");

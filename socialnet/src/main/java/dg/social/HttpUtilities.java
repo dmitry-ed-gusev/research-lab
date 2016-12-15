@@ -77,7 +77,7 @@ public final class HttpUtilities {
 
         // processing http response
         StringBuilder result = new StringBuilder();
-        result.append("HTTP Response:%n");
+        result.append("\n========== HTTP Response: ==========\n");
 
         // get cookies and add them to result
         Header[] cookies = response.getHeaders(HTTP_GET_COOKIES_HEADER);
@@ -85,15 +85,19 @@ public final class HttpUtilities {
             result.append(String.format("Cookie: [%s=%s]%n", cookie.getName(), cookie.getValue()));
         }
 
+        result.append("\n");
+
         // get headers and add them
         HeaderIterator headerIterator = response.headerIterator();
         while (headerIterator.hasNext()) {
             result.append(String.format("Header: [%s]%n", headerIterator.next()));
         }
 
+        result.append("\n");
+
         // get page content (http entity)
         if (printPageContent) {
-            result.append(String.format("Page content: %n%s%n",
+            result.append(String.format("=== Page content: ===%n%s%n",
                     HttpUtilities.getPageContent(response.getEntity(), HTTP_DEFAULT_CONTENT_ENCODING)));
         }
 
