@@ -67,8 +67,11 @@ public final class HttpUtilities {
         return writer.toString();
     }
 
-    /** Method for debug purposes - printing http response. */
-    public static String httpResponseToString(HttpResponse response, boolean printPageContent) throws IOException {
+    /**
+     * Method for debug purposes - printing http response.
+     * Page content passed separately, because entity in http response could be consumed only once.
+     */
+    public static String httpResponseToString(HttpResponse response, String pageContent) throws IOException {
         LOG.debug("HttpUtilities.httpResponseToString() working.");
 
         if (response == null) { // check - is it null?
@@ -96,9 +99,8 @@ public final class HttpUtilities {
         result.append("\n");
 
         // get page content (http entity)
-        if (printPageContent) {
-            result.append(String.format("=== Page content: ===%n%s%n",
-                    HttpUtilities.getPageContent(response.getEntity(), HTTP_DEFAULT_CONTENT_ENCODING)));
+        if (!StringUtils.isBlank(pageContent)) {
+            result.append(String.format("=== Page content: ===%n%s%n", pageContent));
         }
 
         return result.toString();
