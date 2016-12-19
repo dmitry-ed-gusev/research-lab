@@ -11,12 +11,10 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.http.impl.client.RedirectLocations;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -26,7 +24,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +31,7 @@ import java.util.Map;
 
 import static dg.social.HttpUtilities.*;
 import static dg.social.vk.VkFormType.LOGIN_FORM;
+import static dg.social.vk.VkFormType.UNKNOWN_FORM;
 
 /**
  * Implementation of receiving ACCESS_TOKEN (for VK API access) using Implicit Flow.
@@ -67,7 +65,10 @@ public class VkClient {
     private static final String VK_APP_ID = "5761788";
 
     // <div> element class (div with this class holds login form for VK)
-    private static final String LOGIN_FORM_DIV_CLASS = "form_item fi_fat";
+    private static final String VK_LOGIN_FORM_DIV_CLASS = "form_item fi_fat";
+    // todo: recognizing the form - add checking <div class="op_info">
+    //
+    private static final String VK_OP_INFO_CLASS_NAME = "op_info";
     // VK login form email/pass elements
     private static final String LOGIN_FORM_EMAIL_KEY = "email";
     private static final String LOGIN_FORM_PASS_KEY = "pass";
@@ -106,7 +107,7 @@ public class VkClient {
      */
     private static String getVKLoginFormActionURL(Document document) {
         LOG.debug("VkClient.getVKLoginFormActionURL() working.");
-        Element loginForm = document.getElementsByClass(LOGIN_FORM_DIV_CLASS).first();
+        Element loginForm = document.getElementsByClass(VK_LOGIN_FORM_DIV_CLASS).first();
         Element formElement = loginForm.getElementsByTag("form").first();
         return formElement.attr("action");
     }
@@ -117,7 +118,7 @@ public class VkClient {
     private static List<NameValuePair> getVKLoginFormParams(Document document, Map<String, String> formItems) {
         LOG.debug("VkClient.getVKLoginFormParams() working.");
 
-        Element loginForm = document.getElementsByClass(LOGIN_FORM_DIV_CLASS).first(); // get first element with specified class
+        Element loginForm = document.getElementsByClass(VK_LOGIN_FORM_DIV_CLASS).first(); // get first element with specified class
         Elements inputElements = loginForm.getElementsByTag(LOGIN_FORM_INPUT_ELEMENT); // get all form elements with type <input>
 
         // iterate over all input elements
@@ -135,17 +136,17 @@ public class VkClient {
                 }
             }
 
-            if (inputKey.equals(LOGIN_FORM_EMAIL_KEY)) { // user in login form
-                inputValue = VK_USER_LOGIN;
-            }
+            //if (inputKey.equals(LOGIN_FORM_EMAIL_KEY)) { // user in login form
+            //    inputValue = VK_USER_LOGIN;
+            //}
 
-            if (inputKey.equals(LOGIN_FORM_PASS_KEY)) { // pass in login form
-                inputValue = VK_USER_PASS;
-            }
+            //if (inputKey.equals(LOGIN_FORM_PASS_KEY)) { // pass in login form
+            //    inputValue = VK_USER_PASS;
+            //}
 
-            if (inputKey.equals("code")) { // put missed digits here
-                inputValue = VK_USER_LOGIN_MISSED_DIGITS;
-            }
+            //if (inputKey.equals("code")) { // put missed digits here
+            //    inputValue = VK_USER_LOGIN_MISSED_DIGITS;
+            //}
 
             // add found parameter to parameters list
             if (!StringUtils.isBlank(inputKey)) {
@@ -167,8 +168,9 @@ public class VkClient {
         String formTitle = doc.title(); // get form page <title> value
         LOG.debug(String.format("Form title: [%s].", formTitle));
 
+
         // if title match and there is div with specified class - we've found
-        if (LOGIN_FORM.getFormTitle().equalsIgnoreCase(formTitle) && !doc.getElementsByClass(LOGIN_FORM_DIV_CLASS).isEmpty()) {
+        if (LOGIN_FORM.getFormTitle().equalsIgnoreCase(formTitle) && !doc.getElementsByClass(VK_LOGIN_FORM_DIV_CLASS).isEmpty()) {
             return LOGIN_FORM;
         }
 
@@ -184,39 +186,47 @@ public class VkClient {
         String vkTokenRequest = this.config.getAccessTokenRequest();
         LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", vkTokenRequest));
 
-        // HTTP request #1: execute http get request to token request URI
+        // some tech variables
+        CloseableHttpResponse httpResponse       = null;         // store the whole http response
+        Header[]              httpCookies        = null;         // store http response cookies
+        HttpEntity            httpEntity         = null;         // store http response entity
+        String                httpPageContent    = null;         // store http response page content
+        String                httpStringResponse = null;         // store http response as a string (for dubug)
+        VkFormType            receivedFormType   = UNKNOWN_FORM; // store received VK form type
+
+        // Initial HTTP request: execute http get request to token request URI
         HttpGet httpGetInitial = new HttpGet(vkTokenRequest);
         httpGetInitial.setHeaders(HTTP_DEFAULT_HEADERS);
         httpGetInitial.setConfig(HTTP_REQUEST_CONFIG);
-        // execute request
-        CloseableHttpResponse httpResponseInitial = HTTP_CLIENT.execute(httpGetInitial);
-        // buffer received entity into memory
-        HttpEntity httpEntityInitial = httpResponseInitial.getEntity();
-        if (httpEntityInitial != null) {
-            httpEntityInitial = new BufferedHttpEntity(httpEntityInitial);
-        }
-        // save initial cookies
-        Header[] httpInitialCookies = httpResponseInitial.getHeaders(HTTP_GET_COOKIES_HEADER);
+        httpResponse = HTTP_CLIENT.execute(httpGetInitial); // execute request
 
         try {
-            // get page content for parsing
-            String pageContentInitial = HttpUtilities.getPageContent(httpEntityInitial, HTTP_DEFAULT_CONTENT_ENCODING);
-
-            if (LOG.isDebugEnabled()) { // just debug output
-                LOG.debug(HttpUtilities.httpResponseToString(httpResponseInitial, pageContentInitial));
-            }
-
-            // parse returned page into Document object
-            Document doc = Jsoup.parse(pageContentInitial);
-
-            // check received form type
-            VkFormType formType = VkClient.getVkFormType(doc);
-            LOG.debug(String.format("Got VK form: [%s].", formType));
-
 
             // process login/access/add digits forms
             for (int counter = 1; counter <= VK_ACCESS_ATTEMPTS_COUNT; counter++) {
-                switch (formType) { // select action, based on form type
+
+                // buffer initial received entity into memory
+                httpEntity = httpResponse.getEntity();
+                if (httpEntity != null) {
+                    httpEntity = new BufferedHttpEntity(httpEntity);
+                }
+
+                httpCookies = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER); // save cookies
+
+                // get page content for parsing
+                httpPageContent = HttpUtilities.getPageContent(httpEntity, HTTP_DEFAULT_CONTENT_ENCODING);
+                httpStringResponse = HttpUtilities.httpResponseToString(httpResponse, httpPageContent);
+                if (LOG.isDebugEnabled()) { // just debug output
+                    LOG.debug(httpStringResponse);
+                }
+
+                Document doc = Jsoup.parse(httpPageContent); // parse returned page into Document object
+                // check received form type
+                receivedFormType = VkClient.getVkFormType(doc);
+                LOG.debug(String.format("Got VK form: [%s].", receivedFormType));
+
+                switch (receivedFormType) { // select action, based on form type
+
                     case LOGIN_FORM:
                         // gets form action URL
                         String actionUrl = VkClient.getVKLoginFormActionURL(doc);
@@ -228,6 +238,7 @@ public class VkClient {
                             put(LOGIN_FORM_PASS_KEY,  VK_USER_PASS);
                         }};
 
+                        // get from and fill it in
                         List<NameValuePair> paramList = VkClient.getVKLoginFormParams(doc, loginForm);
                         if (LOG.isDebugEnabled()) { // just a debug
                             StringBuilder pairs = new StringBuilder();
@@ -235,28 +246,43 @@ public class VkClient {
                             LOG.debug(String.format("Found name-value pairs in VK login form:%n%s", pairs.toString()));
                         }
 
+                        // prepare and execute next http request (send form)
+                        HttpPost httpPost = new HttpPost(actionUrl);
+                        httpPost.setHeaders(HTTP_DEFAULT_HEADERS);
+                        httpPost.setHeader(HTTP_CONTENT_TYPE_HEADER, HTTP_CONTENT_TYPE_FORM);
+                        for (Header header : httpCookies) {
+                            httpPost.setHeader(HTTP_SET_COOKIES_HEADER, header.getValue());
+                        }
+                        httpPost.setConfig(HTTP_REQUEST_CONFIG);                    // set http request config
+                        httpPost.setEntity(new UrlEncodedFormEntity(paramList));    // set http request entity
+                        httpResponse = HTTP_CLIENT.execute(httpPost, HTTP_CONTEXT); // execute http post request (send form)
                         break;
-                    default: LOG.error(String.format("Got unknown type of form: [%s].", formType));
+
+                    default:
+                        LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
+                        System.exit(888);
                 }
-            }
+
+            } // end of FOR cycle
 
             // todo: remove!
             System.exit(777);
 
-            if (!doc.getElementsByClass(LOGIN_FORM_DIV_CLASS).isEmpty()) { // we've get login form - perform login
+            Document doc = null;
+            if (!doc.getElementsByClass(VK_LOGIN_FORM_DIV_CLASS).isEmpty()) { // we've get login form - perform login
                 LOG.debug("Received VK login form. Performing login.");
 
                 // get action attribute from html form
-                String actionUrl = VkClient.getVKLoginFormActionURL(doc);
-                LOG.debug(String.format("Form action: [%s].", actionUrl));
+                //String actionUrl = VkClient.getVKLoginFormActionURL(doc);
+                //LOG.debug(String.format("Form action: [%s].", actionUrl));
 
                 // get vk login form parameters
-                List<NameValuePair> paramList = VkClient.getVKLoginFormParams(doc, null);
-                if (LOG.isDebugEnabled()) { // just a debug
-                    StringBuilder pairs = new StringBuilder();
-                    paramList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
-                    LOG.debug(String.format("Found name-value pairs in VK login form:%n%s", pairs.toString()));
-                }
+                //List<NameValuePair> paramList = VkClient.getVKLoginFormParams(doc, null);
+                //if (LOG.isDebugEnabled()) { // just a debug
+                //    StringBuilder pairs = new StringBuilder();
+                //    paramList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
+                //    LOG.debug(String.format("Found name-value pairs in VK login form:%n%s", pairs.toString()));
+                //}
 
                 // save cookies
                 //String cookies = response.getFirstHeader("Set-Cookie") == null ? "" : response.getFirstHeader("Set-Cookie").toString();
@@ -266,19 +292,19 @@ public class VkClient {
                 //HttpUtilities.sendPost(HTTP_CLIENT, actionUrl, paramList, cookies);
                 // prepare post request to submit a form
 
-                HttpPost httpPost = new HttpPost(actionUrl);
-                httpPost.setHeaders(HTTP_DEFAULT_HEADERS);
-                httpPost.setHeader(HTTP_CONTENT_TYPE_HEADER, HTTP_CONTENT_TYPE_FORM);
-                for (Header header : httpInitialCookies) {
-                    httpPost.setHeader(HTTP_SET_COOKIES_HEADER, header.getValue());
-                }
-                httpPost.setConfig(HTTP_REQUEST_CONFIG);
+                //HttpPost httpPost = new HttpPost(actionUrl);
+                //httpPost.setHeaders(HTTP_DEFAULT_HEADERS);
+                //httpPost.setHeader(HTTP_CONTENT_TYPE_HEADER, HTTP_CONTENT_TYPE_FORM);
+                //for (Header header : httpInitialCookies) {
+                //    httpPost.setHeader(HTTP_SET_COOKIES_HEADER, header.getValue());
+                //}
+                //httpPost.setConfig(HTTP_REQUEST_CONFIG);
                 // set entity
-                httpPost.setEntity(new UrlEncodedFormEntity(paramList));
-
+                //httpPost.setEntity(new UrlEncodedFormEntity(paramList));
                 // execute query #2
+                //HttpResponse responsePost = HTTP_CLIENT.execute(httpPost, HTTP_CONTEXT);
 
-                HttpResponse responsePost = HTTP_CLIENT.execute(httpPost, HTTP_CONTEXT);
+                /*
                 Header[] cookies2 = responsePost.getHeaders(HTTP_GET_COOKIES_HEADER);
                 for (Header header : cookies2) {
                     System.out.println("===> " + header.getName() + ":::" + header.getValue());
@@ -315,9 +341,12 @@ public class VkClient {
                     System.out.println("2************************* = " + finalUrl);
                 }
 
+                */
+
+                Document doc2 = null;
 
                 // todo: the same check for form as previous one! (???)
-                if (!doc2.getElementsByClass(LOGIN_FORM_DIV_CLASS).isEmpty()) { // we've get new form - add missed digits
+                if (!doc2.getElementsByClass(VK_LOGIN_FORM_DIV_CLASS).isEmpty()) { // we've get new form - add missed digits
                     LOG.debug("Received VK login form (#2). Performing login.");
 
                     // get action attribute from html form
@@ -336,9 +365,9 @@ public class VkClient {
                     HttpPost httpPost2 = new HttpPost("https://vk.com" + actionUrl2);
                     httpPost2.setHeaders(HTTP_DEFAULT_HEADERS);
                     httpPost2.setHeader(HTTP_CONTENT_TYPE_HEADER, HTTP_CONTENT_TYPE_FORM);
-                    for (Header header : cookies2) {
-                        httpPost2.setHeader(HTTP_SET_COOKIES_HEADER, header.getValue());
-                    }
+                    //for (Header header : cookies2) {
+                    //    httpPost2.setHeader(HTTP_SET_COOKIES_HEADER, header.getValue());
+                   // }
                     httpPost2.setConfig(HTTP_REQUEST_CONFIG);
                     // set entity
                     httpPost2.setEntity(new UrlEncodedFormEntity(paramList2));
@@ -370,8 +399,9 @@ public class VkClient {
             }
 
         } finally {
-            httpResponseInitial.close();
-            //httpclient.close();
+            if (httpResponse != null) {
+                httpResponse.close();
+            }
         }
 
         return null;
