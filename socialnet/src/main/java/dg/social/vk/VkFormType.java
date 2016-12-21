@@ -7,11 +7,11 @@ package dg.social.vk;
 
 public enum VkFormType {
 
-    LOGIN_FORM ("Получение доступа к ВКонтакте", "Для продолжения Вам необходимо войти ВКонтакте.", "form_item fi_fat"),
-    ADD_PHONE_DIGITS_FORM("", "", ""),
-    APPROVE_ACCESS_RIGHTS_FORM("Получение доступа к ВКонтакте", "запрашивает доступ к Вашему аккаунту", "form_item"),
-    ACCESS_TOKEN_FORM("", "", ""),
-    UNKNOWN_FORM("UNKNOWN FORM", "UNKNOWN INFO", "UNKNOWN CLASS");
+    LOGIN_FORM ("Получение доступа к ВКонтакте", "Для продолжения Вам необходимо войти ВКонтакте."),
+    ADD_PHONE_DIGITS_FORM("", ""),
+    APPROVE_ACCESS_RIGHTS_FORM("Получение доступа к ВКонтакте", "запрашивает доступ к Вашему аккаунту"),
+    ACCESS_TOKEN_FORM("OAuth Blank", ""),
+    UNKNOWN_FORM("UNKNOWN FORM", "UNKNOWN INFO");
 
     /***/
     public static final String VK_OP_INFO_CLASS_NAME   = "op_info";
@@ -20,12 +20,12 @@ public enum VkFormType {
 
     private String formTitle;       // title for form page
     private String opInfoClassText; // <div> class name for action
-    private String formDivClass;    // class name for <div> element, that contains form
+    //private String formDivClass;    // class name for <div> element, that contains form
 
-    VkFormType(String formTitle, String opInfoClassText, String formDivClass) {
+    VkFormType(String formTitle, String opInfoClassText/*, String formDivClass*/) {
         this.formTitle       = formTitle;
         this.opInfoClassText = opInfoClassText;
-        this.formDivClass    = formDivClass;
+        //this.formDivClass    = formDivClass;
     }
 
     public String getFormTitle() {
@@ -36,8 +36,8 @@ public enum VkFormType {
         return opInfoClassText;
     }
 
-    public String getFormDivClass() {
-        return formDivClass;
-    }
+    //public String getFormDivClass() {
+    //    return formDivClass;
+    //}
 
 }

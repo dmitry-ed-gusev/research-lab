@@ -11,10 +11,12 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.impl.client.RedirectLocations;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -24,6 +26,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -146,12 +149,17 @@ public class VkClient {
         LOG.debug("VkClient.getVkFormType() working.");
 
         if (doc == null) { // quick check
+            LOG.warn("Received document is null!");
             return VkFormType.UNKNOWN_FORM;
         }
 
-        String formTitle = doc.title(); // get form page <title> value
+        // get form page <title> value
+        String formTitle = doc.title();
         LOG.debug(String.format("Form title: [%s].", formTitle));
-        String opInfoText = doc.body().getElementsByClass(VK_OP_INFO_CLASS_NAME).first().text();
+
+        // get text from first element with op_info class
+        Element firstOpInfo = doc.body().getElementsByClass(VK_OP_INFO_CLASS_NAME).first();
+        String opInfoText = (firstOpInfo == null ? "" : firstOpInfo.text());
         LOG.debug(String.format("DIV by class [%s] text: [%s].", VK_OP_INFO_CLASS_NAME, opInfoText));
 
         // if title match and there is div with specified class - we've found
@@ -164,6 +172,11 @@ public class VkClient {
         if (APPROVE_ACCESS_RIGHTS_FORM.getFormTitle().equalsIgnoreCase(formTitle) && APPROVE_ACCESS_RIGHTS_FORM.getOpInfoClassText().equalsIgnoreCase(opInfoText) &&
                 !doc.getElementsByTag(HTTP_FORM_TAG).isEmpty()) {
             return APPROVE_ACCESS_RIGHTS_FORM;
+        }
+
+        // page with access token
+        if (ACCESS_TOKEN_FORM.getFormTitle().equalsIgnoreCase(formTitle) && opInfoText.isEmpty() && doc.getElementsByTag(HTTP_FORM_TAG).isEmpty()) {
+            return ACCESS_TOKEN_FORM;
         }
 
         return VkFormType.UNKNOWN_FORM;
@@ -183,7 +196,7 @@ public class VkClient {
         Header[]              httpCookies        = null;         // store http response cookies
         HttpEntity            httpEntity         = null;         // store http response entity
         String                httpPageContent    = null;         // store http response page content
-        String                httpStringResponse = null;         // store http response as a string (for dubug)
+        //String                httpStringResponse = null;         // store http response as a string (for dubug)
         VkFormType            receivedFormType   = UNKNOWN_FORM; // store received VK form type
 
         // Initial HTTP request: execute http get request to token request URI
@@ -195,11 +208,14 @@ public class VkClient {
         try {
 
             // process login/access/add digits forms
+            String actionUrl;
+            List<NameValuePair> formParamsList;
             for (int counter = 1; counter <= VK_ACCESS_ATTEMPTS_COUNT; counter++) {
 
                 // buffer initial received entity into memory
                 httpEntity = httpResponse.getEntity();
                 if (httpEntity != null) {
+                    LOG.debug("Buffering received HTTP Entity.");
                     httpEntity = new BufferedHttpEntity(httpEntity);
                 }
 
@@ -207,9 +223,9 @@ public class VkClient {
 
                 // get page content for parsing
                 httpPageContent = HttpUtilities.getPageContent(httpEntity, HTTP_DEFAULT_CONTENT_ENCODING);
-                httpStringResponse = HttpUtilities.httpResponseToString(httpResponse, httpPageContent);
+                //httpStringResponse = HttpUtilities.httpResponseToString(httpResponse, httpPageContent);
                 if (LOG.isDebugEnabled()) { // just debug output
-                    LOG.debug(httpStringResponse);
+                    LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
                 }
 
                 Document doc = Jsoup.parse(httpPageContent); // parse returned page into Document object
@@ -219,30 +235,63 @@ public class VkClient {
 
                 switch (receivedFormType) { // select action, based on form type
 
-                    case LOGIN_FORM:
-                        // gets form action URL
-                        String actionUrl = HttpUtilities.getFirstFormActionURL(doc); //VkClient.getVKLoginFormActionURL(doc);
+                    case LOGIN_FORM: // VK Login form
+                        LOG.debug(String.format("Processing [%s].", LOGIN_FORM));
+
+                        actionUrl = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
                         LOG.debug(String.format("Form action: [%s].", actionUrl));
 
-                        // get vk login form and fill it in
-                        Map<String, String> loginForm = new HashMap<String, String>() {{
+                        Map<String, String> loginFormParams = new HashMap<String, String>() {{ // add values to form
                             put(LOGIN_FORM_EMAIL_KEY, VK_USER_LOGIN);
                             put(LOGIN_FORM_PASS_KEY,  VK_USER_PASS);
                         }};
 
-                        // get from and fill it in
-                        List<NameValuePair> paramList = HttpUtilities.getFirstFormParams(doc, loginForm); //VkClient.getVKLoginFormParams(doc, loginForm);
+                        formParamsList = HttpUtilities.getFirstFormParams(doc, loginFormParams); // get from and fill it in
                         if (LOG.isDebugEnabled()) { // just a debug
                             StringBuilder pairs = new StringBuilder();
-                            paramList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
+                            formParamsList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
                             LOG.debug(String.format("Found name-value pairs in VK login form:%n%s", pairs.toString()));
                         }
 
                         // prepare and execute next http request (send form)
-                        httpResponse = HttpUtilities.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl, paramList, httpCookies);
+                        httpResponse = HttpUtilities.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl, formParamsList, httpCookies);
                         break;
 
-                    default:
+                    case APPROVE_ACCESS_RIGHTS_FORM: // VK approve application rights
+                        LOG.debug(String.format("Processing [%s].", APPROVE_ACCESS_RIGHTS_FORM));
+
+                        actionUrl = HttpUtilities.getFirstFormActionURL(doc); // get form action URL
+                        LOG.debug(String.format("Form action: [%s].", actionUrl));
+
+                        formParamsList = HttpUtilities.getFirstFormParams(doc, null); // get from and fill it in
+                        if (LOG.isDebugEnabled()) { // just a debug
+                            StringBuilder pairs = new StringBuilder();
+                            formParamsList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
+                            LOG.debug(String.format("Found name-value pairs in VK login form:%n%s", pairs.toString()));
+                        }
+
+                        // prepare and execute next http request (send form)
+                        httpResponse = HttpUtilities.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl, formParamsList, httpCookies);
+                        break;
+
+                    case ACCESS_TOKEN_FORM: // VK
+                        LOG.debug(String.format("Processing [%s].", ACCESS_TOKEN_FORM));
+
+                        // parse redirect and get access token from URL
+                        RedirectLocations locations = (RedirectLocations) HTTP_CONTEXT.getAttribute(HttpClientContext.REDIRECT_LOCATIONS);
+
+                        if (locations != null) {
+                            for (URI uri : locations.getAll()) {
+                                System.out.println("Redirect URI -> " + uri);
+                            }
+                            //finalUrl = locations.getAll().get(locations.getAll().size() - 1);
+                            //System.out.println("2************************* = " + finalUrl);
+                        }
+                        System.exit(727272);
+
+                        break;
+
+                    default: // default case - unknown form
                         LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
                         System.exit(888);
                 }
