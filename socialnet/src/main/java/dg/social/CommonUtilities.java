@@ -64,7 +64,7 @@ public final class CommonUtilities {
     public static Pair<Date, String> readAccessToken(String accessTokenFile) throws IOException, ParseException {
         LOG.debug("VkClient.readAccessToken() working.");
 
-        if (StringUtils.isBlank(accessTokenFile) || !new File(accessTokenFile).exists()) { // fail-fast
+        if (StringUtils.isBlank(accessTokenFile)) { // fail-fast
             throw new IllegalArgumentException(String.format("File name [%s] is null or file doesn't exist!", accessTokenFile));
         }
 
@@ -77,6 +77,7 @@ public final class CommonUtilities {
 
             return new ImmutablePair<>(tokenDate, token);
         }
+
     }
 
 }

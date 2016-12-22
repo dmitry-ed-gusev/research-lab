@@ -23,9 +23,12 @@ public class VkClientConfig extends AbstractSocialNetConfig {
     // request for access token
     private static final String ACCESS_TOKEN_REQUEST =
             "https://oauth.vk.com/authorize?client_id=%s&display=%s&redirect_uri=%s&scope=%s&response_type=token&v=5.60&state=123456";
+    //
+    private static final String ACCESS_TOKEN_FILE = "vk_token.dat";
 
     private String appApiKey; // application API_ID key
 
+    /***/
     public VkClientConfig(String username, String password, String appApiKey) {
         super(username, password);
 
@@ -34,12 +37,17 @@ public class VkClientConfig extends AbstractSocialNetConfig {
     }
 
     public String getAppApiKey() {
-        return appApiKey;
+        return this.appApiKey;
     }
 
     /** Generates and return string http request for getting application ACCESS_TOKEN. */
     public String getAccessTokenRequest() {
         return String.format(ACCESS_TOKEN_REQUEST, this.getAppApiKey(), DISPLAY_TYPE, REDIRECT_URI, REQUEST_SCOPE);
+    }
+
+    /***/
+    public String getAccessTokenFileName() {
+        return ACCESS_TOKEN_FILE;
     }
 
 }

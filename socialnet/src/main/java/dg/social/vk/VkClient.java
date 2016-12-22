@@ -27,13 +27,16 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static dg.social.CommonsDefaults.DATE_TIME_FORMAT;
 import static dg.social.CommonsDefaults.DEFAULT_ENCODING;
 import static dg.social.HttpUtilities.*;
 import static dg.social.vk.VkFormType.*;
@@ -43,6 +46,7 @@ import static dg.social.vk.VkFormType.*;
  * Created by gusevdm on 12/6/2016.
  */
 
+// todo: implement periodically check of access token
 public class VkClient {
 
     private static final Log LOG = LogFactory.getLog(VkClient.class); // module logger
@@ -64,37 +68,54 @@ public class VkClient {
     private static final String LOGIN_FORM_EMAIL_KEY = "email";
     private static final String LOGIN_FORM_PASS_KEY = "pass";
 
-    private VkClientConfig config;      // VK client configuration
-    private HttpHost       proxyHost;   // proxy for working trough
-    private String         accessToken; // VK access token for API requests
+    private VkClientConfig     config;      // VK client configuration
+    private HttpHost           proxyHost;   // proxy for working trough // todo: do we need this field?
+    private Pair<Date, String> accessToken; // VK access token date/time and token value
 
     // todo: implement checking validity (by time) access token from file
 
-    /**
-     * Create VkClient instance, working through proxy.
-     */
-    public VkClient(VkClientConfig config, HttpHost proxyHost) {
+    /** Create VkClient instance, working through proxy. */
+    public VkClient(VkClientConfig config, HttpHost proxyHost) throws IOException {
         this.config    = config;
         this.proxyHost = proxyHost;
         // init http request config (through builder)
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
-        // set proxy (if needed)
+        // set proxy (if needed) for http request config
         if (this.proxyHost != null) { // add proxyHost to get http request
             requestConfigBuilder.setProxy(this.proxyHost).build();
         }
-        // add cookies policy into
+        // add cookies policy into http request config
         this.HTTP_REQUEST_CONFIG = requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
         // create vk login form credentials
         this.VK_LOGIN_FORM_CREDENTIALS = new HashMap<String, String>() {{
             put(LOGIN_FORM_EMAIL_KEY, VK_USER_LOGIN);
             put(LOGIN_FORM_PASS_KEY,  VK_USER_PASS);
         }};
+
+        // read or get (obtain) VK access token
+        try {
+            Pair<Date, String> token = CommonUtilities.readAccessToken(config.getAccessTokenFileName());
+            // check access token validity (by time)
+            // todo: implement validation
+            if (true) { // token is valid (by date/time)
+                this.accessToken = token;
+            } else { // token is invalid
+                // todo: implement
+            }
+        } catch (IOException | ParseException e) {
+            LOG.warn(String.format("Can't read access token from file: [%s]. Reason: [%s].",
+                    config.getAccessTokenFileName(), e.getMessage()));
+            // If we can't read access token from file - get (obtain) new token.
+            // IOException will be thrown outside constructor.
+            this.accessToken = this.getAccessToken();
+            // write new obtained token (overwrite existing file)
+            CommonUtilities.saveAccessToken(this.accessToken, this.config.getAccessTokenFileName(), true);
+        }
+
     }
 
-    /**
-     * Create VkClient instance, working directly (without proxy).
-     */
-    public VkClient(VkClientConfig config) {
+    /** Create VkClient instance, working directly (without proxy). */
+    public VkClient(VkClientConfig config) throws IOException {
         this(config, null);
     }
 
@@ -256,7 +277,7 @@ public class VkClient {
     /***/
     public void search() {
         LOG.debug("VkClient.search() working.");
-
+        // todo: implement
     }
 
     /***/
@@ -267,8 +288,8 @@ public class VkClient {
 
         // create VK config and client (with config)
         VkClientConfig config = new VkClientConfig(VK_USER_LOGIN, VK_USER_PASS, VK_APP_ID);
-        //VkClient vkClient = new VkClient(config); // client works without proxy
-        VkClient vkClient = new VkClient(config, HTTP_DEFAULT_PROXY); // client works through proxy
+        VkClient vkClient = new VkClient(config); // client works without proxy
+        //VkClient vkClient = new VkClient(config, HTTP_DEFAULT_PROXY); // client works through proxy
 
         /*
         // get access token for specified application (API_ID)
@@ -279,12 +300,11 @@ public class VkClient {
         CommonUtilities.saveAccessToken(vkAccessToken, "vk_token.dat", true);
         log.info(String.format("VK access_token: (date -> [%s], token -> [%s]) saved to file [%s].",
                 vkAccessToken.getLeft(), vkAccessToken.getRight(), "vk_token.dat"));
-        */
 
         Pair<Date, String> accessToken = CommonUtilities.readAccessToken("vk_token.dat");
         log.info(String.format("VK access_token: (date -> [%s], token -> [%s]) has been read from file [%s].",
                 accessToken.getLeft(), accessToken.getRight(), "vk_token.dat"));
-
+        */
 
         log.info("VK Client finished.");
 
