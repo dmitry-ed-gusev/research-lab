@@ -1,7 +1,9 @@
 package dg.social.vk;
 
+import dg.social.CommonUtilities;
 import dg.social.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,10 +29,12 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static dg.social.CommonsDefaults.DEFAULT_ENCODING;
 import static dg.social.HttpUtilities.*;
 import static dg.social.vk.VkFormType.*;
 
@@ -60,14 +64,17 @@ public class VkClient {
     private static final String LOGIN_FORM_EMAIL_KEY = "email";
     private static final String LOGIN_FORM_PASS_KEY = "pass";
 
-    private VkClientConfig config;    // VK client configuration
-    private HttpHost       proxyHost; // proxy for working trough
+    private VkClientConfig config;      // VK client configuration
+    private HttpHost       proxyHost;   // proxy for working trough
+    private String         accessToken; // VK access token for API requests
+
+    // todo: implement checking validity (by time) access token from file
 
     /**
      * Create VkClient instance, working through proxy.
      */
     public VkClient(VkClientConfig config, HttpHost proxyHost) {
-        this.config = config;
+        this.config    = config;
         this.proxyHost = proxyHost;
         // init http request config (through builder)
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
@@ -129,9 +136,8 @@ public class VkClient {
         return VkFormType.UNKNOWN_FORM;
     }
 
-    /***/
-    // todo: take a look at exceptions processing
-    public String getAccessToken() throws IOException {
+    /** Request and get VK access token (for using with API calls). With token method returns date/time, when token received. */
+    private Pair<Date, String> getAccessToken() throws IOException {
         LOG.debug("VkClient.getAccessToken() working.");
 
         // generate and execute ACCESS_TOKEN request
@@ -168,7 +174,7 @@ public class VkClient {
                 httpCookies = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER); // save cookies
 
                 // get page content for parsing
-                httpPageContent = HttpUtilities.getPageContent(httpEntity, HTTP_DEFAULT_CONTENT_ENCODING);
+                httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
                 //httpStringResponse = HttpUtilities.httpResponseToString(httpResponse, httpPageContent);
                 if (LOG.isDebugEnabled()) { // just debug output
                     LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
@@ -225,7 +231,7 @@ public class VkClient {
                             URI finalUri = locations.getAll().get(locations.getAll().size() - 1);
                             String accessToken = StringUtils.split(StringUtils.split(finalUri.getFragment(), "&")[0], "=")[1];
                             LOG.debug(String.format("Received ACCESS_TOKEN: [%s].", accessToken));
-                            return accessToken;
+                            return new ImmutablePair<>(new Date(), accessToken);
                         } else { //
                             LOG.error("Can't find last redirect locations (list is null)!");
                         }
@@ -247,26 +253,6 @@ public class VkClient {
         return null;
     }
 
-    /**
-     * Writes access token and its date from specified file.
-     * If file already exist - throw exception or overwrite it (if overwrite = true).
-     */
-    public void saveAccessToken(String accessToken, String accessTokenFile, String overwrite) {
-        LOG.debug("VkClient.saveAccessToken() working.");
-
-
-    }
-
-    /**
-     * Reads access token and its date from specified file.
-     * If file doesn't exist throw exception.
-     */
-    public Pair<String, String> readAccessToken(String accessTokenFile) {
-        LOG.debug("VkClient.readAccessToken() working.");
-
-        return null;
-    }
-
     /***/
     public void search() {
         LOG.debug("VkClient.search() working.");
@@ -283,9 +269,22 @@ public class VkClient {
         VkClientConfig config = new VkClientConfig(VK_USER_LOGIN, VK_USER_PASS, VK_APP_ID);
         //VkClient vkClient = new VkClient(config); // client works without proxy
         VkClient vkClient = new VkClient(config, HTTP_DEFAULT_PROXY); // client works through proxy
+
+        /*
         // get access token for specified application (API_ID)
-        String vkAccessToken = vkClient.getAccessToken();
-        log.info(String.format("Got access token: [%s].", vkAccessToken));
+        Pair<Date, String> vkAccessToken = vkClient.getAccessToken();
+        log.info(String.format("Got access token: [%s], date/time: [%s].", vkAccessToken.getRight(), DATE_TIME_FORMAT.format(vkAccessToken.getLeft())));
+
+        // save vk access token to file
+        CommonUtilities.saveAccessToken(vkAccessToken, "vk_token.dat", true);
+        log.info(String.format("VK access_token: (date -> [%s], token -> [%s]) saved to file [%s].",
+                vkAccessToken.getLeft(), vkAccessToken.getRight(), "vk_token.dat"));
+        */
+
+        Pair<Date, String> accessToken = CommonUtilities.readAccessToken("vk_token.dat");
+        log.info(String.format("VK access_token: (date -> [%s], token -> [%s]) has been read from file [%s].",
+                accessToken.getLeft(), accessToken.getRight(), "vk_token.dat"));
+
 
         log.info("VK Client finished.");
 

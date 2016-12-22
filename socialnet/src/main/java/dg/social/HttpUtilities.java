@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static dg.social.CommonsDefaults.DEFAULT_ENCODING;
+
 /**
  * Some useful HTTP-related utilities.
  * Created by gusevdm on 12/9/2016.
@@ -32,12 +34,8 @@ public final class HttpUtilities {
 
     private static final Log LOG = LogFactory.getLog(HttpUtilities.class); // module logger
 
-    /** Default encoding for content. */
-    public static final String   HTTP_DEFAULT_CONTENT_ENCODING = "UTF-8";
-
     /** Default http proxy server (Merck). */
     public static final HttpHost HTTP_DEFAULT_PROXY = new HttpHost("webproxy.merck.com", 8080);
-
     /** Default http headers for http client. */
     public static final Header[] HTTP_DEFAULT_HEADERS = {
             new BasicHeader("User-Agent",      "Mozilla/5.0"),
@@ -46,17 +44,17 @@ public final class HttpUtilities {
             new BasicHeader("Accept-Language", "ru-RU,ru;q=0.5"),
             new BasicHeader("Connection",      "keep-alive")
     };
-
+    /***/
+    public static final String HTTP_FORM_TAG              = "form";
     /***/
     public static final String HTTP_GET_COOKIES_HEADER    = "Set-Cookie";
+
     /***/
     private static final String HTTP_SET_COOKIES_HEADER    = "Cookie";
     /***/
     private static final String HTTP_CONTENT_TYPE_HEADER   = "Content-Type";
     /***/
     private static final String HTTP_CONTENT_TYPE_FORM     = "application/x-www-form-urlencoded";
-    /***/
-    public static final String HTTP_FORM_TAG              = "form";
     /***/
     private static final String HTTP_FORM_ACTION_ATTR      = "action";
     /***/
@@ -77,7 +75,7 @@ public final class HttpUtilities {
         }
 
         StringWriter writer = new StringWriter();
-        IOUtils.copy(httpEntity.getContent(), writer, StringUtils.isBlank(encoding) ? HTTP_DEFAULT_CONTENT_ENCODING : encoding);
+        IOUtils.copy(httpEntity.getContent(), writer, StringUtils.isBlank(encoding) ? DEFAULT_ENCODING : encoding);
         return writer.toString();
     }
 
