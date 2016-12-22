@@ -23,14 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static dg.social.vk.VkFormType.VK_LOGIN_FORM_DIV_CLASS;
-
 /**
  * Some useful HTTP-related utilities.
  * Created by gusevdm on 12/9/2016.
  */
-
-// todo: move defaults to other (separate) class?
 
 public final class HttpUtilities {
 
@@ -54,21 +50,21 @@ public final class HttpUtilities {
     /***/
     public static final String HTTP_GET_COOKIES_HEADER    = "Set-Cookie";
     /***/
-    public static final String HTTP_SET_COOKIES_HEADER    = "Cookie";
+    private static final String HTTP_SET_COOKIES_HEADER    = "Cookie";
     /***/
-    public static final String HTTP_CONTENT_TYPE_HEADER   = "Content-Type";
+    private static final String HTTP_CONTENT_TYPE_HEADER   = "Content-Type";
     /***/
-    public static final String HTTP_CONTENT_TYPE_FORM     = "application/x-www-form-urlencoded";
+    private static final String HTTP_CONTENT_TYPE_FORM     = "application/x-www-form-urlencoded";
     /***/
     public static final String HTTP_FORM_TAG              = "form";
     /***/
-    public static final String HTTP_FORM_ACTION_ATTR      = "action";
+    private static final String HTTP_FORM_ACTION_ATTR      = "action";
     /***/
-    public static final String HTTP_FORM_INPUT_TAG        = "input";
+    private static final String HTTP_FORM_INPUT_TAG        = "input";
     /***/
-    public static final String HTTP_FORM_INPUT_KEY_ATTR   = "name";
+    private static final String HTTP_FORM_INPUT_KEY_ATTR   = "name";
     /***/
-    public static final String HTTP_FORM_INPUT_VALUE_ATTR = "value";
+    private static final String HTTP_FORM_INPUT_VALUE_ATTR = "value";
 
     private HttpUtilities() {} // utility class, can't instantiate
 
@@ -125,7 +121,8 @@ public final class HttpUtilities {
     }
 
     /** Sends POST HTTP request to URL with list of parameters. */
-    public static CloseableHttpResponse sendHttpPost(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig, String url, List<NameValuePair> postParams, Header[] cookies) throws IOException {
+    public static CloseableHttpResponse sendHttpPost(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
+                                                     String url, List<NameValuePair> postParams, Header[] cookies) throws IOException {
         LOG.debug("HttpUtilities.sendPost() working.");
 
         if (httpClient == null) { // fail-fast

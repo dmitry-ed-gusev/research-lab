@@ -7,25 +7,26 @@ package dg.social.vk;
 
 public enum VkFormType {
 
+    // simple login form
     LOGIN_FORM ("Получение доступа к ВКонтакте", "Для продолжения Вам необходимо войти ВКонтакте."),
-    ADD_PHONE_DIGITS_FORM("", ""),
+    // unknown place - add missed digits to phone number
+    ADD_PHONE_DIGITS_FORM("", ""), // todo: implementation!
+    // change application access rights list form
     APPROVE_ACCESS_RIGHTS_FORM("Получение доступа к ВКонтакте", "запрашивает доступ к Вашему аккаунту"),
+    // final form - blank page with access token
     ACCESS_TOKEN_FORM("OAuth Blank", ""),
+    // unknown form
     UNKNOWN_FORM("UNKNOWN FORM", "UNKNOWN INFO");
 
-    /***/
+    /** Html info elements class (usually - <div/>).*/
     public static final String VK_OP_INFO_CLASS_NAME   = "op_info";
-    /** <div> element class (div with this class holds login form for VK) */
-    public static final String VK_LOGIN_FORM_DIV_CLASS = "form_item fi_fat"; // todo: move to enum (see above)
 
     private String formTitle;       // title for form page
     private String opInfoClassText; // <div> class name for action
-    //private String formDivClass;    // class name for <div> element, that contains form
 
-    VkFormType(String formTitle, String opInfoClassText/*, String formDivClass*/) {
+    VkFormType(String formTitle, String opInfoClassText) {
         this.formTitle       = formTitle;
         this.opInfoClassText = opInfoClassText;
-        //this.formDivClass    = formDivClass;
     }
 
     public String getFormTitle() {
@@ -35,9 +36,5 @@ public enum VkFormType {
     public String getOpInfoClassText() {
         return opInfoClassText;
     }
-
-    //public String getFormDivClass() {
-    //    return formDivClass;
-    //}
 
 }
