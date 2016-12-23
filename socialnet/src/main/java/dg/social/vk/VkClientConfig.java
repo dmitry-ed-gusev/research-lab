@@ -18,7 +18,7 @@ public class VkClientConfig extends AbstractSocialNetConfig {
     // default redirect URI for Implicit flow
     private static final String REDIRECT_URI  = "http://oauth.vk.com/blank.html";
     // scope for requesting access token (see https://vk.com/dev/permissions)
-    private static final String REQUEST_SCOPE = "friends,photos,audio";
+    private static final String REQUEST_SCOPE = "friends,groups,photos,audio";
             //"friends,photos,audio,video,pages,status,notes,messages,offline,docs,groups,notifications,stats,email";
     // request for access token
     private static final String ACCESS_TOKEN_REQUEST =

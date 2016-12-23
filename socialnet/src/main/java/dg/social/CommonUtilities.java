@@ -65,7 +65,7 @@ public final class CommonUtilities {
         LOG.debug("VkClient.readAccessToken() working.");
 
         if (StringUtils.isBlank(accessTokenFile)) { // fail-fast
-            throw new IllegalArgumentException(String.format("File name [%s] is null or file doesn't exist!", accessTokenFile));
+            throw new IllegalArgumentException("File name is null!");
         }
 
         // reading token from file

@@ -23,11 +23,13 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.client.RedirectLocations;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
@@ -36,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static dg.social.CommonsDefaults.DATE_TIME_FORMAT;
 import static dg.social.CommonsDefaults.DEFAULT_ENCODING;
 import static dg.social.HttpUtilities.*;
 import static dg.social.vk.VkFormType.*;
@@ -67,12 +68,12 @@ public class VkClient {
     // VK login form email/pass elements
     private static final String LOGIN_FORM_EMAIL_KEY = "email";
     private static final String LOGIN_FORM_PASS_KEY = "pass";
+    // token validity period (default)
+    private static final long   TOKEN_VALIDITY_SECONDS = 60 * 60 * 24;
 
     private VkClientConfig     config;      // VK client configuration
     private HttpHost           proxyHost;   // proxy for working trough // todo: do we need this field?
-    private Pair<Date, String> accessToken; // VK access token date/time and token value
-
-    // todo: implement checking validity (by time) access token from file
+    private Pair<Date, String> accessToken = null; // VK access token date/time and token value
 
     /** Create VkClient instance, working through proxy. */
     public VkClient(VkClientConfig config, HttpHost proxyHost) throws IOException {
@@ -92,23 +93,21 @@ public class VkClient {
             put(LOGIN_FORM_PASS_KEY,  VK_USER_PASS);
         }};
 
-        // read or get (obtain) VK access token
+        // try to read VK access token from file
         try {
             Pair<Date, String> token = CommonUtilities.readAccessToken(config.getAccessTokenFileName());
             // check access token validity (by time)
-            // todo: implement validation
-            if (true) { // token is valid (by date/time)
+            if ((System.currentTimeMillis() - token.getLeft().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS) { // token is valid (by date/time)
                 this.accessToken = token;
-            } else { // token is invalid
-                // todo: implement
             }
         } catch (IOException | ParseException e) {
             LOG.warn(String.format("Can't read access token from file: [%s]. Reason: [%s].",
                     config.getAccessTokenFileName(), e.getMessage()));
-            // If we can't read access token from file - get (obtain) new token.
-            // IOException will be thrown outside constructor.
+        }
+
+        // if we haven't read token from file - get new token (and write it to file)
+        if (this.accessToken == null) {
             this.accessToken = this.getAccessToken();
-            // write new obtained token (overwrite existing file)
             CommonUtilities.saveAccessToken(this.accessToken, this.config.getAccessTokenFileName(), true);
         }
 
@@ -275,9 +274,39 @@ public class VkClient {
     }
 
     /***/
-    public void search() {
+    public void search() throws IOException, org.json.simple.parser.ParseException {
         LOG.debug("VkClient.search() working.");
-        // todo: implement
+
+        String requestString = String.format("https://api.vk.com/method/%s?%s&access_token=%s",
+                "search.getHints", "q=Гусев%20Дмитрий&limit=200", this.accessToken.getRight());
+
+        HttpGet httpGet = new HttpGet(requestString);
+        httpGet.setHeaders(HTTP_DEFAULT_HEADERS);
+        httpGet.setConfig(HTTP_REQUEST_CONFIG);
+        CloseableHttpResponse httpResponse = HTTP_CLIENT.execute(httpGet); // execute request
+
+        // buffer initial received entity into memory
+        HttpEntity httpEntity = httpResponse.getEntity();
+        if (httpEntity != null) {
+            LOG.debug("Buffering received HTTP Entity.");
+            httpEntity = new BufferedHttpEntity(httpEntity);
+        }
+
+        // get page content for parsing
+        String httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
+        if (LOG.isDebugEnabled()) { // just debug output
+            LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
+        }
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(httpPageContent);
+
+        System.out.println("---> \n" + jsonObject);
+    }
+
+    /***/
+    public void usersSearch() {
+        // todo: implement!
     }
 
     /***/
@@ -287,9 +316,18 @@ public class VkClient {
         log.info("VK Client starting.");
 
         // create VK config and client (with config)
-        VkClientConfig config = new VkClientConfig(VK_USER_LOGIN, VK_USER_PASS, VK_APP_ID);
-        VkClient vkClient = new VkClient(config); // client works without proxy
+        //VkClientConfig config = new VkClientConfig(VK_USER_LOGIN, VK_USER_PASS, VK_APP_ID);
+        //VkClient vkClient = new VkClient(config); // client works without proxy
         //VkClient vkClient = new VkClient(config, HTTP_DEFAULT_PROXY); // client works through proxy
+
+        //vkClient.search();
+
+        String json = "{\"response\":[{\"type\":\"profile\",\"profile\":{\"uid\":1736209,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Омск\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":126644173,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"30 лет, Кривой Рог\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":31338697,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Санкт-Петербург\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":20887004,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Смоленск\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":89385871,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Калининград\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":27158976,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"23 года, Санкт-Петербург\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":75192522,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Череповец\",\"global\":1}]}";
+
+        JSONParser parser = new JSONParser();
+        JSONObject object = (JSONObject) parser.parse(json);
+
+        System.out.println("response -> " + ((JSONArray) object.get("response")).get(0));
 
         /*
         // get access token for specified application (API_ID)
