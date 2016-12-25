@@ -16,6 +16,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -32,6 +33,7 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,7 +63,7 @@ public class VkClient {
     // attempts to get access token
     private final static int VK_ACCESS_ATTEMPTS_COUNT = 4;
     // VK user/app credentials (user, pass, api_id)
-    private static final String VK_USER_LOGIN = "+79618011494";
+    private static final String VK_USER_LOGIN               = "+79618011494";
     private static final String VK_USER_LOGIN_MISSED_DIGITS = "96180114";
     private static final String VK_USER_PASS = "vinny-bot13";
     private static final String VK_APP_ID = "5761788";
@@ -274,13 +276,24 @@ public class VkClient {
     }
 
     /***/
-    public void search() throws IOException, org.json.simple.parser.ParseException {
-        LOG.debug("VkClient.search() working.");
+    public String searchUsers(String userString, String fieldsList) throws IOException, org.json.simple.parser.ParseException, URISyntaxException {
+        LOG.debug(String.format("VkClient.searchUsers() working. Search string: [%s].", userString));
 
-        String requestString = String.format("https://api.vk.com/method/%s?%s&access_token=%s",
-                "search.getHints", "q=Гусев%20Дмитрий&limit=200", this.accessToken.getRight());
+        if (StringUtils.isBlank(userString)) { // fail-fast
+            throw new IllegalArgumentException("Cant' search users with empty search string!");
+        }
 
-        HttpGet httpGet = new HttpGet(requestString);
+        // generating query URI
+        URI uri = new URI(new URIBuilder("https://api.vk.com/method/users.search")
+                .addParameter("q", userString)
+                .addParameter("count", "1000")
+                .addParameter("fields", (StringUtils.isBlank(fieldsList) ? "" : fieldsList))
+                .addParameter("access_token", this.accessToken.getRight())
+                .toString());
+        LOG.debug(String.format("Generated URI: [%s].", uri));
+
+        // execute http GET query
+        HttpGet httpGet = new HttpGet(uri);
         httpGet.setHeaders(HTTP_DEFAULT_HEADERS);
         httpGet.setConfig(HTTP_REQUEST_CONFIG);
         CloseableHttpResponse httpResponse = HTTP_CLIENT.execute(httpGet); // execute request
@@ -298,15 +311,8 @@ public class VkClient {
             LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
         }
 
-        JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) jsonParser.parse(httpPageContent);
-
-        System.out.println("---> \n" + jsonObject);
-    }
-
-    /***/
-    public void usersSearch() {
-        // todo: implement!
+        // return received JSON
+        return httpPageContent;
     }
 
     /***/
@@ -316,18 +322,21 @@ public class VkClient {
         log.info("VK Client starting.");
 
         // create VK config and client (with config)
-        //VkClientConfig config = new VkClientConfig(VK_USER_LOGIN, VK_USER_PASS, VK_APP_ID);
-        //VkClient vkClient = new VkClient(config); // client works without proxy
+        VkClientConfig config = new VkClientConfig(VK_USER_LOGIN, VK_USER_PASS, VK_APP_ID);
+        VkClient vkClient = new VkClient(config); // client works without proxy
         //VkClient vkClient = new VkClient(config, HTTP_DEFAULT_PROXY); // client works through proxy
 
-        //vkClient.search();
+        String result = vkClient.searchUsers("Гусев", null);
+        System.out.println("==> " + result);
 
+        /*
         String json = "{\"response\":[{\"type\":\"profile\",\"profile\":{\"uid\":1736209,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Омск\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":126644173,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"30 лет, Кривой Рог\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":31338697,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Санкт-Петербург\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":20887004,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Смоленск\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":89385871,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Калининград\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":27158976,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"23 года, Санкт-Петербург\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":75192522,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Череповец\",\"global\":1}]}";
 
         JSONParser parser = new JSONParser();
         JSONObject object = (JSONObject) parser.parse(json);
 
         System.out.println("response -> " + ((JSONArray) object.get("response")).get(0));
+        */
 
         /*
         // get access token for specified application (API_ID)
