@@ -2,6 +2,8 @@ package dg.social.vk;
 
 import dg.social.CommonUtilities;
 import dg.social.HttpUtilities;
+import dg.social.domain.VkUser;
+import dg.social.parsing.VkParser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -24,9 +26,6 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.client.RedirectLocations;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -42,6 +41,8 @@ import java.util.Map;
 
 import static dg.social.CommonsDefaults.DEFAULT_ENCODING;
 import static dg.social.HttpUtilities.*;
+import static dg.social.vk.VkClientConfig.VK_API_REQUEST_URI;
+import static dg.social.vk.VkClientConfig.VK_API_VERSION;
 import static dg.social.vk.VkFormType.*;
 
 /**
@@ -62,16 +63,12 @@ public class VkClient {
 
     // attempts to get access token
     private final static int VK_ACCESS_ATTEMPTS_COUNT = 4;
-    // VK user/app credentials (user, pass, api_id)
-    private static final String VK_USER_LOGIN               = "+79618011494";
-    private static final String VK_USER_LOGIN_MISSED_DIGITS = "96180114";
-    private static final String VK_USER_PASS = "vinny-bot13";
-    private static final String VK_APP_ID = "5761788";
+    //private static final String VK_USER_LOGIN_MISSED_DIGITS = "96180114"; // todo: needed by 'add missed digits' form
+
     // VK login form email/pass elements
     private static final String LOGIN_FORM_EMAIL_KEY = "email";
-    private static final String LOGIN_FORM_PASS_KEY = "pass";
-    // token validity period (default)
-    private static final long   TOKEN_VALIDITY_SECONDS = 60 * 60 * 24;
+    private static final String LOGIN_FORM_PASS_KEY  = "pass";
+    private static final long   TOKEN_VALIDITY_SECONDS = 60 * 60 * 24; // token validity period (default)
 
     private VkClientConfig     config;      // VK client configuration
     private HttpHost           proxyHost;   // proxy for working trough // todo: do we need this field?
@@ -79,6 +76,11 @@ public class VkClient {
 
     /** Create VkClient instance, working through proxy. */
     public VkClient(VkClientConfig config, HttpHost proxyHost) throws IOException {
+
+        if (config == null) { // fail-safe
+            throw new IllegalArgumentException("Can't create VkClient instance with NULL config!");
+        }
+
         this.config    = config;
         this.proxyHost = proxyHost;
         // init http request config (through builder)
@@ -91,8 +93,8 @@ public class VkClient {
         this.HTTP_REQUEST_CONFIG = requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
         // create vk login form credentials
         this.VK_LOGIN_FORM_CREDENTIALS = new HashMap<String, String>() {{
-            put(LOGIN_FORM_EMAIL_KEY, VK_USER_LOGIN);
-            put(LOGIN_FORM_PASS_KEY,  VK_USER_PASS);
+            put(LOGIN_FORM_EMAIL_KEY, config.getUsername());
+            put(LOGIN_FORM_PASS_KEY,  config.getPassword());
         }};
 
         // try to read VK access token from file
@@ -275,8 +277,13 @@ public class VkClient {
         return null;
     }
 
-    /***/
-    public String searchUsers(String userString, String fieldsList) throws IOException, org.json.simple.parser.ParseException, URISyntaxException {
+    /**
+     * Search for VK users.
+     * @param userString String search string, can't be empty
+     * @param fieldsList String list (comma separated) of fields for response
+     * @param count int results count, if negative or equals to zero or greater, than 1000 - will be returned 1000 results
+     */
+    public String searchUsers(String userString, String fieldsList, int count) throws IOException, org.json.simple.parser.ParseException, URISyntaxException {
         LOG.debug(String.format("VkClient.searchUsers() working. Search string: [%s].", userString));
 
         if (StringUtils.isBlank(userString)) { // fail-fast
@@ -284,11 +291,12 @@ public class VkClient {
         }
 
         // generating query URI
-        URI uri = new URI(new URIBuilder("https://api.vk.com/method/users.search")
+        URI uri = new URI(new URIBuilder(String.format(VK_API_REQUEST_URI, "users.search"))
                 .addParameter("q", userString)
-                .addParameter("count", "1000")
+                .addParameter("count", String.valueOf(count > 0 && count <= 1000 ? count : 1000))
                 .addParameter("fields", (StringUtils.isBlank(fieldsList) ? "" : fieldsList))
                 .addParameter("access_token", this.accessToken.getRight())
+                .addParameter("v", VK_API_VERSION)
                 .toString());
         LOG.debug(String.format("Generated URI: [%s].", uri));
 
@@ -316,45 +324,30 @@ public class VkClient {
     }
 
     /***/
+    public List<VkUser> searchUsers(VkUser user) {
+        // todo: implement search using user template parameter
+
+        return null;
+    }
+
+    /***/
     public final static void main(String[] args) throws Exception {
 
         Log log = LogFactory.getLog(VkClient.class);
         log.info("VK Client starting.");
 
         // create VK config and client (with config)
-        VkClientConfig config = new VkClientConfig(VK_USER_LOGIN, VK_USER_PASS, VK_APP_ID);
-        VkClient vkClient = new VkClient(config); // client works without proxy
-        //VkClient vkClient = new VkClient(config, HTTP_DEFAULT_PROXY); // client works through proxy
+        VkClientConfig config = new VkClientConfig("+79618011494", "vinny-bot13", "5761788");
+        //VkClient vkClient = new VkClient(config); // client works without proxy
+        VkClient vkClient = new VkClient(config, HTTP_DEFAULT_PROXY); // client works through proxy
 
-        String result = vkClient.searchUsers("Гусев", null);
-        System.out.println("==> " + result);
+        // search for users
+        String result = vkClient.searchUsers("Абрамов Дмитрий", "connections", 1000);
+        log.debug(String.format("Search result: %s", result));
 
-        /*
-        String json = "{\"response\":[{\"type\":\"profile\",\"profile\":{\"uid\":1736209,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Омск\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":126644173,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"30 лет, Кривой Рог\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":31338697,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Санкт-Петербург\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":20887004,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Смоленск\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":89385871,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Калининград\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":27158976,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"23 года, Санкт-Петербург\",\"global\":1},{\"type\":\"profile\",\"profile\":{\"uid\":75192522,\"first_name\":\"Дмитрий\",\"last_name\":\"Гусев\"},\"section\":\"people\",\"description\":\"Череповец\",\"global\":1}]}";
-
-        JSONParser parser = new JSONParser();
-        JSONObject object = (JSONObject) parser.parse(json);
-
-        System.out.println("response -> " + ((JSONArray) object.get("response")).get(0));
-        */
-
-        /*
-        // get access token for specified application (API_ID)
-        Pair<Date, String> vkAccessToken = vkClient.getAccessToken();
-        log.info(String.format("Got access token: [%s], date/time: [%s].", vkAccessToken.getRight(), DATE_TIME_FORMAT.format(vkAccessToken.getLeft())));
-
-        // save vk access token to file
-        CommonUtilities.saveAccessToken(vkAccessToken, "vk_token.dat", true);
-        log.info(String.format("VK access_token: (date -> [%s], token -> [%s]) saved to file [%s].",
-                vkAccessToken.getLeft(), vkAccessToken.getRight(), "vk_token.dat"));
-
-        Pair<Date, String> accessToken = CommonUtilities.readAccessToken("vk_token.dat");
-        log.info(String.format("VK access_token: (date -> [%s], token -> [%s]) has been read from file [%s].",
-                accessToken.getLeft(), accessToken.getRight(), "vk_token.dat"));
-        */
+        List<VkUser> users = VkParser.parseUsers(result);
 
         log.info("VK Client finished.");
-
     }
 
 

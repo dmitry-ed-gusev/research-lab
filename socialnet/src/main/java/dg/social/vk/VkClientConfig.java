@@ -23,8 +23,13 @@ public class VkClientConfig extends AbstractSocialNetConfig {
     // request for access token
     private static final String ACCESS_TOKEN_REQUEST =
             "https://oauth.vk.com/authorize?client_id=%s&display=%s&redirect_uri=%s&scope=%s&response_type=token&v=5.60&state=123456";
-    //
+    // file for read/write received access token
     private static final String ACCESS_TOKEN_FILE = "vk_token.dat";
+
+    /** VK API URL. Here you should set method name (use String.format()). */
+    public static final String VK_API_REQUEST_URI = "https://api.vk.com/method/%s";
+    /** VK API version. */
+    public static final String VK_API_VERSION     = "5.60";
 
     private String appApiKey; // application API_ID key
 
