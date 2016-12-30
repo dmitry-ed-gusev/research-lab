@@ -1,7 +1,7 @@
 package dg.social.vk;
 
-import dg.social.CommonUtilities;
-import dg.social.HttpUtilities;
+import dg.social.utilities.CommonUtilities;
+import dg.social.utilities.HttpUtilities;
 import dg.social.domain.VkUser;
 import dg.social.parsing.VkParser;
 import org.apache.commons.lang3.StringUtils;
@@ -39,8 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static dg.social.CommonsDefaults.DEFAULT_ENCODING;
-import static dg.social.HttpUtilities.*;
+import static dg.social.CommonDefaults.DEFAULT_ENCODING;
+import static dg.social.utilities.HttpUtilities.*;
 import static dg.social.vk.VkClientConfig.VK_API_REQUEST_URI;
 import static dg.social.vk.VkClientConfig.VK_API_VERSION;
 import static dg.social.vk.VkFormType.*;
@@ -71,24 +71,24 @@ public class VkClient {
     private static final long   TOKEN_VALIDITY_SECONDS = 60 * 60 * 24; // token validity period (default)
 
     private VkClientConfig     config;      // VK client configuration
-    private HttpHost           proxyHost;   // proxy for working trough // todo: do we need this field?
     private Pair<Date, String> accessToken = null; // VK access token date/time and token value
 
     /** Create VkClient instance, working through proxy. */
-    public VkClient(VkClientConfig config, HttpHost proxyHost) throws IOException {
+    public VkClient(VkClientConfig config) throws IOException {
 
         if (config == null) { // fail-safe
             throw new IllegalArgumentException("Can't create VkClient instance with NULL config!");
         }
 
         this.config    = config;
-        this.proxyHost = proxyHost;
         // init http request config (through builder)
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
+
         // set proxy (if needed) for http request config
         if (this.proxyHost != null) { // add proxyHost to get http request
             requestConfigBuilder.setProxy(this.proxyHost).build();
         }
+
         // add cookies policy into http request config
         this.HTTP_REQUEST_CONFIG = requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
         // create vk login form credentials
@@ -99,20 +99,20 @@ public class VkClient {
 
         // try to read VK access token from file
         try {
-            Pair<Date, String> token = CommonUtilities.readAccessToken(config.getAccessTokenFileName());
+            Pair<Date, String> token = CommonUtilities.readAccessToken(config.getTokenFileName());
             // check access token validity (by time)
             if ((System.currentTimeMillis() - token.getLeft().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS) { // token is valid (by date/time)
                 this.accessToken = token;
             }
         } catch (IOException | ParseException e) {
             LOG.warn(String.format("Can't read access token from file: [%s]. Reason: [%s].",
-                    config.getAccessTokenFileName(), e.getMessage()));
+                    config.getTokenFileName(), e.getMessage()));
         }
 
         // if we haven't read token from file - get new token (and write it to file)
         if (this.accessToken == null) {
             this.accessToken = this.getAccessToken();
-            CommonUtilities.saveAccessToken(this.accessToken, this.config.getAccessTokenFileName(), true);
+            CommonUtilities.saveAccessToken(this.accessToken, this.config.getTokenFileName(), true);
         }
 
     }
@@ -326,7 +326,6 @@ public class VkClient {
     /***/
     public List<VkUser> searchUsers(VkUser user) {
         // todo: implement search using user template parameter
-
         return null;
     }
 
@@ -337,12 +336,12 @@ public class VkClient {
         log.info("VK Client starting.");
 
         // create VK config and client (with config)
-        VkClientConfig config = new VkClientConfig("+79618011494", "vinny-bot13", "5761788");
+        VkClientConfig config = new VkClientConfig("+79618011494", "vinny-bot13", "5761788", "vk_token.dat");
         //VkClient vkClient = new VkClient(config); // client works without proxy
         VkClient vkClient = new VkClient(config, HTTP_DEFAULT_PROXY); // client works through proxy
 
         // search for users
-        String result = vkClient.searchUsers("Абрамов Дмитрий", "connections", 1000);
+        String result = vkClient.searchUsers("Гусев Дмитрий", "connections", 1000);
         log.debug(String.format("Search result: %s", result));
 
         List<VkUser> users = VkParser.parseUsers(result);

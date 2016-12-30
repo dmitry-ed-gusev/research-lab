@@ -7,9 +7,9 @@ import java.text.SimpleDateFormat;
  * Created by gusevdm on 12/12/2016.
  */
 
-public final class CommonsDefaults {
+public final class CommonDefaults {
 
-    private CommonsDefaults() {} // can't instantiate utility class
+    private CommonDefaults() {} // can't instantiate utility class
 
     /** Default encoding for content. */
     public static final String           DEFAULT_ENCODING = "UTF-8";
