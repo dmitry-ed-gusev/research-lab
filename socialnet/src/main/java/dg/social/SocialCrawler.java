@@ -1,5 +1,7 @@
 package dg.social;
 
+import dg.social.domain.VkUser;
+import dg.social.parsing.VkParser;
 import dg.social.utilities.CmdLine;
 import dg.social.vk.VkClient;
 import dg.social.vk.VkClientConfig;
@@ -10,6 +12,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Properties;
 
 import static dg.social.utilities.CmdLineOption.CONFIG_FILE;
@@ -51,8 +54,13 @@ public class SocialCrawler {
             VkClient vkClient = new VkClient(vkClientConfig);
 
             // search and parse results
-            String jsonResult = vkClient.searchUsers("Гусев Дмитрий", null, 1000);
-            System.out.println("-> " + jsonResult);
+            String jsonResult = vkClient.usersSearch("Гусев Дмитрий",
+                    "about,activities,bdate,books,career,city,contacts,country,education,exports,games," +
+                            "home_town,interests,home_town,maiden_name,movies,music,nickname,occupation,personal,quotes," +
+                            "relatives,relation,schools,sex,site,status,tv,universities", 1000);
+            //System.out.println("-> " + jsonResult);
+            List<VkUser> users = VkParser.parseUsers(jsonResult);
+            System.out.println("-> " + users);
 
         } catch (IOException | ParseException | URISyntaxException e) {
             LOG.error(e);

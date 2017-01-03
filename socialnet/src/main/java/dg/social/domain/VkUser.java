@@ -1,23 +1,35 @@
 package dg.social.domain;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 /**
- *
  * Domain object - VK user (human).
  * Created by vinnypuhh on 24.12.16.
  */
-// todo: implement "Builder" pattern
 public class VkUser {
 
+    // mai mandatory fields
     private long   id;        // user identity
     private String firstName; // user first name
     private String lastName;  // user last name
 
-    private long   cytyId;    // used in search
-    private long   countryId; // used in search
-
+    // additional fields (simple strings)
+    private String maidenName;
     private String about;
-    private String activities;
+    private String birthDay;
     private String books;
+    private String games;
+    private String interests;
+    private String movies;
+    private String music;
+    private String nickname;
+    private String quotes;
+    private String screenName;
+    private String site;
+    private String status;
+    private String tv;
+    private String homeTown;
 
     /***/
     public VkUser(long id, String firstName, String lastName) {
@@ -50,6 +62,14 @@ public class VkUser {
         this.lastName = lastName;
     }
 
+    public String getMaidenName() {
+        return maidenName;
+    }
+
+    public void setMaidenName(String maidenName) {
+        this.maidenName = maidenName;
+    }
+
     public String getAbout() {
         return about;
     }
@@ -58,12 +78,12 @@ public class VkUser {
         this.about = about;
     }
 
-    public String getActivities() {
-        return activities;
+    public String getBirthDay() {
+        return birthDay;
     }
 
-    public void setActivities(String activities) {
-        this.activities = activities;
+    public void setBirthDay(String birthDay) {
+        this.birthDay = birthDay;
     }
 
     public String getBooks() {
@@ -73,4 +93,117 @@ public class VkUser {
     public void setBooks(String books) {
         this.books = books;
     }
+
+    public String getGames() {
+        return games;
+    }
+
+    public void setGames(String games) {
+        this.games = games;
+    }
+
+    public String getInterests() {
+        return interests;
+    }
+
+    public void setInterests(String interests) {
+        this.interests = interests;
+    }
+
+    public String getMovies() {
+        return movies;
+    }
+
+    public void setMovies(String movies) {
+        this.movies = movies;
+    }
+
+    public String getMusic() {
+        return music;
+    }
+
+    public void setMusic(String music) {
+        this.music = music;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getQuotes() {
+        return quotes;
+    }
+
+    public void setQuotes(String quotes) {
+        this.quotes = quotes;
+    }
+
+    public String getScreenName() {
+        return screenName;
+    }
+
+    public void setScreenName(String screenName) {
+        this.screenName = screenName;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getTv() {
+        return tv;
+    }
+
+    public void setTv(String tv) {
+        this.tv = tv;
+    }
+
+    public String getHomeTown() {
+        return homeTown;
+    }
+
+    public void setHomeTown(String homeTown) {
+        this.homeTown = homeTown;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id", id)
+                .append("firstName", firstName)
+                .append("lastName", lastName)
+                .append("maidenName", maidenName)
+                .append("about", about)
+                .append("birthDay", birthDay)
+                .append("books", books)
+                .append("games", games)
+                .append("interests", interests)
+                .append("movies", movies)
+                .append("music", music)
+                .append("nickname", nickname)
+                .append("quotes", quotes)
+                .append("screenName", screenName)
+                .append("site", site)
+                .append("status", status)
+                .append("tv", tv)
+                .append("homeTown", homeTown)
+                .toString();
+    }
+
 }

@@ -1,9 +1,8 @@
 package dg.social.vk;
 
+import dg.social.domain.VkUser;
 import dg.social.utilities.CommonUtilities;
 import dg.social.utilities.HttpUtilities;
-import dg.social.domain.VkUser;
-import dg.social.parsing.VkParser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,7 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -85,8 +83,8 @@ public class VkClient {
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
 
         // set proxy (if needed) for http request config
-        if (this.proxyHost != null) { // add proxyHost to get http request
-            requestConfigBuilder.setProxy(this.proxyHost).build();
+        if (this.config.getProxy() != null) { // add proxyHost to get http request
+            requestConfigBuilder.setProxy(this.config.getProxy()).build();
         }
 
         // add cookies policy into http request config
@@ -115,11 +113,6 @@ public class VkClient {
             CommonUtilities.saveAccessToken(this.accessToken, this.config.getTokenFileName(), true);
         }
 
-    }
-
-    /** Create VkClient instance, working directly (without proxy). */
-    public VkClient(VkClientConfig config) throws IOException {
-        this(config, null);
     }
 
     /***/
@@ -278,13 +271,13 @@ public class VkClient {
     }
 
     /**
-     * Search for VK users.
+     * Search for VK users. Uses VK API method [users.search].
      * @param userString String search string, can't be empty
      * @param fieldsList String list (comma separated) of fields for response
      * @param count int results count, if negative or equals to zero or greater, than 1000 - will be returned 1000 results
      */
-    public String searchUsers(String userString, String fieldsList, int count) throws IOException, org.json.simple.parser.ParseException, URISyntaxException {
-        LOG.debug(String.format("VkClient.searchUsers() working. Search string: [%s].", userString));
+    public String usersSearch(String userString, String fieldsList, int count) throws IOException, org.json.simple.parser.ParseException, URISyntaxException {
+        LOG.debug(String.format("VkClient.usersSearch() working. Search string: [%s].", userString));
 
         if (StringUtils.isBlank(userString)) { // fail-fast
             throw new IllegalArgumentException("Cant' search users with empty search string!");
@@ -324,30 +317,9 @@ public class VkClient {
     }
 
     /***/
-    public List<VkUser> searchUsers(VkUser user) {
+    public List<VkUser> usersSearch(VkUser user) {
         // todo: implement search using user template parameter
         return null;
     }
-
-    /***/
-    public final static void main(String[] args) throws Exception {
-
-        Log log = LogFactory.getLog(VkClient.class);
-        log.info("VK Client starting.");
-
-        // create VK config and client (with config)
-        VkClientConfig config = new VkClientConfig("+79618011494", "vinny-bot13", "5761788", "vk_token.dat");
-        //VkClient vkClient = new VkClient(config); // client works without proxy
-        VkClient vkClient = new VkClient(config, HTTP_DEFAULT_PROXY); // client works through proxy
-
-        // search for users
-        String result = vkClient.searchUsers("Гусев Дмитрий", "connections", 1000);
-        log.debug(String.format("Search result: %s", result));
-
-        List<VkUser> users = VkParser.parseUsers(result);
-
-        log.info("VK Client finished.");
-    }
-
 
 }
