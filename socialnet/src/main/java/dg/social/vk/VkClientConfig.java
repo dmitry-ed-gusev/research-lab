@@ -1,5 +1,6 @@
 package dg.social.vk;
 
+import dg.social.AbstractClientConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,7 +13,7 @@ import java.util.Properties;
  * Created by gusevdm on 12/12/2016.
  */
 // todo: many parameters, maybe its better to implement Builder pattern?
-public class VkClientConfig {
+public class VkClientConfig extends AbstractClientConfig {
 
     private static final Log LOG = LogFactory.getLog(VkClientConfig.class);
 
@@ -41,7 +42,7 @@ public class VkClientConfig {
     /** VK API URL. Here you should set method name (use String.format()). */
     public static final String VK_API_REQUEST_URI    = "https://api.vk.com/method/%s";
     /** VK API version. */
-    public static final String VK_API_VERSION        = "5.60"; // last version, 27.12.2016
+    public static final String VK_API_VERSION        = "5.60"; // last API version, 27.12.2016
 
     private String   username;      // username for vk client
     private String   password;      // password for vk client
@@ -107,6 +108,7 @@ public class VkClientConfig {
         return tokenFileName;
     }
 
+    @Override
     public HttpHost getProxy() {
         return proxy;
     }

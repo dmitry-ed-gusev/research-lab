@@ -44,7 +44,10 @@ import static dg.social.vk.VkClientConfig.VK_API_VERSION;
 import static dg.social.vk.VkFormType.*;
 
 /**
- * Implementation of receiving ACCESS_TOKEN (for VK API access) using Implicit Flow.
+ * VK social network client.
+ * Implemented:
+ *  - receiving access token
+ *  - search for users by simplequery string
  * Created by gusevdm on 12/6/2016.
  */
 
@@ -57,8 +60,9 @@ public class VkClient {
     private final CloseableHttpClient HTTP_CLIENT  = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
     private final HttpContext         HTTP_CONTEXT = new BasicHttpContext();
     private final RequestConfig       HTTP_REQUEST_CONFIG;
-    private final Map<String, String> VK_LOGIN_FORM_CREDENTIALS;
 
+    // VK login form credentials
+    private final Map<String, String> VK_LOGIN_FORM_CREDENTIALS;
     // attempts to get access token
     private final static int VK_ACCESS_ATTEMPTS_COUNT = 4;
     //private static final String VK_USER_LOGIN_MISSED_DIGITS = "96180114"; // todo: needed by 'add missed digits' form
@@ -73,6 +77,7 @@ public class VkClient {
 
     /** Create VkClient instance, working through proxy. */
     public VkClient(VkClientConfig config) throws IOException {
+        LOG.debug("VkClient constructor() working.");
 
         if (config == null) { // fail-safe
             throw new IllegalArgumentException("Can't create VkClient instance with NULL config!");
