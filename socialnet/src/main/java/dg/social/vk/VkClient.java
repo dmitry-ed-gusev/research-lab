@@ -160,7 +160,7 @@ public class VkClient {
 
     /** Request and get VK access token (for using with API calls). With token method returns date/time, when token received. */
     private Pair<Date, String> getAccessToken() throws IOException {
-        LOG.debug("VkClient.getAccessToken() working.");
+        LOG.debug("VkClient.getAccessToken() working. [PRIVATE]");
 
         // generate and execute ACCESS_TOKEN request
         String vkTokenRequest = this.config.getAccessTokenRequest();
