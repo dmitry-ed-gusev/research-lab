@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 public final class CalcFunctions {
 
-    private CalcFunctions() {}
+    private CalcFunctions() {} // no instances for utility class
 
     /***/
     public static String convertDecimalToNotation(BigInteger sourceNumber, int radix) {

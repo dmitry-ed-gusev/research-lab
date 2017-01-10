@@ -1,4 +1,4 @@
-package gusev.dmitry.research.java24h.lesson12;
+package gusev.dmitry.research.books.java24h_trainer.lesson12;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;

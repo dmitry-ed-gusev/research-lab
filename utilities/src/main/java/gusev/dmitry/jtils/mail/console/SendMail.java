@@ -1,6 +1,5 @@
 package gusev.dmitry.jtils.mail.console;
 
-import gusev.dmitry.jtils.JTilsException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +21,7 @@ import java.util.Properties;
  * @author Gusev Dmitry (gusevd)
  * @version 2.0 (DATE: 20.02.2014)
 */
-
+// todo: working trough proxy???
 public final class SendMail {
 
     private Log log = LogFactory.getLog(SendMail.class);
@@ -42,12 +41,14 @@ public final class SendMail {
     private Session session    = null; // internal state - mail session
 
     /***/
-    public SendMail(String host, int port, String user, String pass, String email) throws JTilsException {
-        if (StringUtils.isBlank(host) || StringUtils.isBlank(user) || StringUtils.isBlank(pass) ||
-                StringUtils.isBlank(email)) {
-            throw new JTilsException(String.format("Invalid SendMail config: host=[%s], " +
+    public SendMail(String host, int port, String user, String pass, String email) {
+
+        // fail-fast behaviour
+        if (StringUtils.isBlank(host) || StringUtils.isBlank(user) || StringUtils.isBlank(pass) || StringUtils.isBlank(email)) {
+            throw new IllegalArgumentException(String.format("Invalid SendMail config: host=[%s], " +
                     "user=[%s], pass=[%s], email=[%s].", host, user, pass, email));
         }
+
         // mail session properties
         Properties sessionProperties = new Properties();
         sessionProperties.put("mail.smtp.host", host);
@@ -136,7 +137,7 @@ public final class SendMail {
     }
 
     /** Just for test. */
-    public static void main(String[] args) throws MessagingException, IOException, JTilsException {
+    public static void main(String[] args) throws MessagingException, IOException {
         Log log = LogFactory.getLog(SendMail.class);
         log.info("SendMail starting.");
 
