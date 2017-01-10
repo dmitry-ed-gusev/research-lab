@@ -151,7 +151,7 @@ public class VkClient extends AbstractClient {
             return ACCESS_TOKEN_FORM;
         }
 
-        return VkFormType.UNKNOWN_FORM;
+        return VkFormType.UNKNOWN_FORM; // can't determine form type
     }
 
     /** Request and get VK access token (for using with API calls). With token method returns date/time, when token received. */
@@ -267,8 +267,7 @@ public class VkClient extends AbstractClient {
             }
         }
 
-        // we cannot get access token
-        return null;
+        return null; // can't get access token
     }
 
     /**

@@ -73,6 +73,7 @@ public class SocialCrawler {
 
         } catch (IOException /*| ParseException | URISyntaxException*/ e) {
             LOG.error(e);
+            // e.printStackTrace(); // <- for deep debug
         }
     }
 
