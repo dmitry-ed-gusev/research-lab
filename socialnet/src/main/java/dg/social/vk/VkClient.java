@@ -1,5 +1,6 @@
 package dg.social.vk;
 
+import dg.social.AbstractClient;
 import dg.social.domain.VkUser;
 import dg.social.utilities.CommonUtilities;
 import dg.social.utilities.HttpUtilities;
@@ -39,23 +40,22 @@ import java.util.Map;
 
 import static dg.social.CommonDefaults.DEFAULT_ENCODING;
 import static dg.social.utilities.HttpUtilities.*;
-import static dg.social.vk.VkClientConfig.VK_API_REQUEST_URI;
-import static dg.social.vk.VkClientConfig.VK_API_VERSION;
 import static dg.social.vk.VkFormType.*;
 
 /**
- * VK social network client.
+ * VK (VKontakte) social network client.
  * Implemented:
  *  - receiving access token
- *  - search for users by simplequery string
+ *  - search for users by simple query string
  * Created by gusevdm on 12/6/2016.
  */
 
 // todo: implement periodically check of access token
-public class VkClient {
+public class VkClient extends AbstractClient {
 
     private static final Log LOG = LogFactory.getLog(VkClient.class); // module logger
 
+    // todo: move it to abstract class
     // http client instance (own instance of client for each instance of VkClient)
     private final CloseableHttpClient HTTP_CLIENT  = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
     private final HttpContext         HTTP_CONTEXT = new BasicHttpContext();
@@ -72,24 +72,20 @@ public class VkClient {
     private static final String LOGIN_FORM_PASS_KEY  = "pass";
     private static final long   TOKEN_VALIDITY_SECONDS = 60 * 60 * 24; // token validity period (default)
 
-    private VkClientConfig     config;      // VK client configuration
     private Pair<Date, String> accessToken = null; // VK access token date/time and token value
 
     /** Create VkClient instance, working through proxy. */
     public VkClient(VkClientConfig config) throws IOException {
+        super(config);
+
         LOG.debug("VkClient constructor() working.");
 
-        if (config == null) { // fail-safe
-            throw new IllegalArgumentException("Can't create VkClient instance with NULL config!");
-        }
-
-        this.config    = config;
         // init http request config (through builder)
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
 
         // set proxy (if needed) for http request config
-        if (this.config.getProxy() != null) { // add proxyHost to get http request
-            requestConfigBuilder.setProxy(this.config.getProxy()).build();
+        if (this.getConfig().getProxy() != null) { // add proxyHost to get http request
+            requestConfigBuilder.setProxy(this.getConfig().getProxy()).build();
         }
 
         // add cookies policy into http request config
@@ -115,7 +111,7 @@ public class VkClient {
         // if we haven't read token from file - get new token (and write it to file)
         if (this.accessToken == null) {
             this.accessToken = this.getAccessToken();
-            CommonUtilities.saveAccessToken(this.accessToken, this.config.getTokenFileName(), true);
+            CommonUtilities.saveAccessToken(this.accessToken, this.getConfig().getTokenFileName(), true);
         }
 
     }
@@ -163,7 +159,7 @@ public class VkClient {
         LOG.debug("VkClient.getAccessToken() working. [PRIVATE]");
 
         // generate and execute ACCESS_TOKEN request
-        String vkTokenRequest = this.config.getAccessTokenRequest();
+        String vkTokenRequest = this.getConfig().getAccessTokenRequest();
         LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", vkTokenRequest));
 
         // some tech variables
@@ -289,12 +285,12 @@ public class VkClient {
         }
 
         // generating query URI
-        URI uri = new URI(new URIBuilder(String.format(VK_API_REQUEST_URI, "users.search"))
+        URI uri = new URI(new URIBuilder(String.format(this.getConfig().getBaseApiRequest(), "users.search"))
                 .addParameter("q", userString)
                 .addParameter("count", String.valueOf(count > 0 && count <= 1000 ? count : 1000))
                 .addParameter("fields", (StringUtils.isBlank(fieldsList) ? "" : fieldsList))
                 .addParameter("access_token", this.accessToken.getRight())
-                .addParameter("v", VK_API_VERSION)
+                .addParameter("v", this.getConfig().getApiVersion())
                 .toString());
         LOG.debug(String.format("Generated URI: [%s].", uri));
 

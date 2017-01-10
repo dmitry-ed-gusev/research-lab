@@ -1,6 +1,8 @@
 package dg.social;
 
 import dg.social.domain.VkUser;
+import dg.social.ok.OkClient;
+import dg.social.ok.OkClientConfig;
 import dg.social.parsing.VkParser;
 import dg.social.utilities.CmdLine;
 import dg.social.vk.VkClient;
@@ -48,11 +50,11 @@ public class SocialCrawler {
             properties.load(br);
             LOG.debug(String.format("Properties from [%s] file: %s.", configFile, properties));
 
+            /*
             // create vk client config
             VkClientConfig vkClientConfig = new VkClientConfig(properties);
             // create vk client
             VkClient vkClient = new VkClient(vkClientConfig);
-
             // search and parse results
             String jsonResult = vkClient.usersSearch("Гусев Дмитрий",
                     "about,activities,bdate,books,career,city,contacts,country,education,exports,games," +
@@ -61,8 +63,15 @@ public class SocialCrawler {
             //System.out.println("-> " + jsonResult);
             List<VkUser> users = VkParser.parseUsers(jsonResult);
             System.out.println("-> " + users);
+            */
 
-        } catch (IOException | ParseException | URISyntaxException e) {
+            // create ok client config
+            OkClientConfig okClientConfig = new OkClientConfig(properties);
+            // create ok client
+            OkClient okClient = new OkClient(okClientConfig);
+
+
+        } catch (IOException /*| ParseException | URISyntaxException*/ e) {
             LOG.error(e);
         }
     }

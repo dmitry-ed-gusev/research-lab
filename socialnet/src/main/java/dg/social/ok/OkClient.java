@@ -1,5 +1,6 @@
 package dg.social.ok;
 
+import dg.social.AbstractClient;
 import dg.social.utilities.HttpUtilities;
 import dg.social.vk.VkFormType;
 import org.apache.commons.logging.Log;
@@ -28,38 +29,36 @@ import static dg.social.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
  * Created by gusevdm on 1/3/2017.
  */
 
-public class OkClient {
+public class OkClient extends AbstractClient {
 
     private static final Log LOG = LogFactory.getLog(OkClient.class);
 
+    // todo: move it to abstract class
     // http client instance (own instance of client for each instance of VkClient)
     private final CloseableHttpClient HTTP_CLIENT  = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
     private final HttpContext         HTTP_CONTEXT = new BasicHttpContext();
     private final RequestConfig       HTTP_REQUEST_CONFIG;
 
-    private OkClientConfig config;      // OK client configuration
     private String         accessToken; // OK client access token
 
     /***/
-    public OkClient(OkClientConfig config) {
+    public OkClient(OkClientConfig config) throws IOException {
+        super(config);
+
         LOG.debug("OkClient constructor() working.");
-
-        if (config == null) { // fail-safe
-            throw new IllegalArgumentException("Can't create VkClient instance with NULL config!");
-        }
-
-        this.config = config;
 
         // init http request config (through builder)
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
 
         // set proxy (if needed) for http request config
-        if (this.config.getProxy() != null) { // add proxyHost to get http request
-            requestConfigBuilder.setProxy(this.config.getProxy()).build();
+        if (this.getConfig().getProxy() != null) { // add proxyHost to get http request
+            requestConfigBuilder.setProxy(this.getConfig().getProxy()).build();
         }
 
         // add cookies policy into http request config
         this.HTTP_REQUEST_CONFIG = requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
+
+        System.out.println("OK access token -> " + this.getAccessToken());
     }
 
     /***/
@@ -67,7 +66,7 @@ public class OkClient {
         LOG.debug("OkClient.getAccessToken() working. [PRIVATE]");
 
         // generate and execute ACCESS_TOKEN request
-        String vkTokenRequest = this.config.getAccessTokenRequest();
+        String vkTokenRequest = this.getConfig().getAccessTokenRequest();
         LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", vkTokenRequest));
 
         System.exit(777);
