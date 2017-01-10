@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import static gusev.dmitry.jtils.calc.CalcAction.*;
 
 /**
  * @author Gusev Dmitry (gusevd)
@@ -26,7 +27,7 @@ public class Calculator {
         // Calculator engine instance - for performing actions
         CalculatorEngine engine = new CalculatorEngine(this);
         // initializing main frame (JFrame)
-        JFrame mainCalcFrame = new JFrame(Consts.APP_TITLE);
+        JFrame mainCalcFrame = new JFrame(CalculatorDefaults.APP_TITLE);
 
         // main panel-container
         JPanel mainCalcPanel = new JPanel();
@@ -37,7 +38,7 @@ public class Calculator {
         mainCalcPanel.setLayout(bl);
 
         // calc display
-        calcDisplay = new JTextField(Consts.DISPLAY_SIZE);
+        calcDisplay = new JTextField(CalculatorDefaults.DISPLAY_SIZE);
         calcDisplay.setEditable(false);  // field not editable
         calcDisplay.setHorizontalAlignment(JTextField.RIGHT); // text aligned to right side
         mainCalcPanel.add(BorderLayout.NORTH, calcDisplay);
@@ -45,7 +46,7 @@ public class Calculator {
         calcDisplay.addKeyListener(engine);
 
         // initial text for display
-        calcDisplay.setText(Consts.DISPLAY_INITIAL_VALUE);
+        calcDisplay.setText(CalculatorDefaults.DISPLAY_INITIAL_VALUE);
 
         // digital buttons panel
         JPanel buttonsPanel = new JPanel();
@@ -60,24 +61,21 @@ public class Calculator {
         //gbc.weighty = 1.0; // proportion of vertical space taken by this component
         gbc.anchor = GridBagConstraints.CENTER; // position of the component within the cell
 
+        // add action buttons (MC, MR, MS, M+, M-, ← (Alt-27), CE, C, ±, √ (Alt-251)) to the top of buttons panel
         gbc.insets = new Insets(1, 1, 5, 1); // spacing between cells in four dimensions
-        // array of action buttons - MC, MR, MS, M+, M-, ← (Alt-27), CE, C, ±, √ (Alt-251)
-        String[] specButtons = {CalculatorEngine.CalcAction.MC.getValue(), CalculatorEngine.CalcAction.MR.getValue(), CalculatorEngine.CalcAction.MS.getValue(),
-                CalculatorEngine.CalcAction.MPLUS.getValue(), CalculatorEngine.CalcAction.MMINUS.getValue(), CalculatorEngine.CalcEraseAction.BACKSPACE.getValue(),
-                CalculatorEngine.CalcEraseAction.ERASE_CURRENT.getValue(), CalculatorEngine.CalcEraseAction.ERASE_ALL.getValue(),
-                CalculatorEngine.CalcAction.SIGN.getValue(), CalculatorEngine.CalcAction.SQRT.getValue()};
+        CalcAction[] specButtons = {MC, MR, MS, MPLUS, MMINUS, BACKSPACE, ERASE_CURRENT, ERASE_ALL, SIGN, SQRT};
         for (int i = 0; i < specButtons.length; i++ ) {
             gbc.gridx = (i + 1)%5 == 0 ? 5 : (i + 1)%5;
             gbc.gridy = i/5 + 1;
-            CalcButton specButton = new CalcButton(specButtons[i], engine);
+            CalcButton specButton = new CalcButton(specButtons[i].getValue(), engine);
             gb.setConstraints(specButton, gbc);
             buttonsPanel.add(specButton);
         }
 
-        // arithmetic actions buttons
+        // add arithmetic actions buttons to buttons panel
         gbc.insets = new Insets(1, 5, 1, 1);
         gbc.gridx = 4;
-        CalculatorEngine.CalcAction[] actionButtons = {CalculatorEngine.CalcAction.DIV, CalculatorEngine.CalcAction.MUL, CalculatorEngine.CalcAction.SUB, CalculatorEngine.CalcAction.ADD};
+        CalcAction[] actionButtons = {DIV, MUL, SUB, ADD};
         for (int i = 0; i < actionButtons.length; i++) {
             gbc.gridy = i + 3;
             CalcButton actionButton = new CalcButton(actionButtons[i].getValue(), engine);
@@ -88,20 +86,20 @@ public class Calculator {
         // Buttons %, 1/x and =
         gbc.gridx = 5;
         gbc.insets = new Insets(1, 1, 1, 1);
-        // Button %
+        // Button [%]
         gbc.gridy = 3;
-        CalcButton percentButton = new CalcButton(CalculatorEngine.CalcAction.PERCENT.getValue(), engine);
+        CalcButton percentButton = new CalcButton(PERCENT.getValue(), engine);
         gb.setConstraints(percentButton, gbc);
         buttonsPanel.add(percentButton);
-        // Button 1/x
+        // Button [1/x]
         gbc.gridy = 4;
-        CalcButton divByXButton = new CalcButton(CalculatorEngine.CalcAction.ONE_DIV.getValue(), engine);
+        CalcButton divByXButton = new CalcButton(ONE_DIV.getValue(), engine);
         gb.setConstraints(divByXButton, gbc);
         buttonsPanel.add(divByXButton);
-        // Button =
+        // Button [=]
         gbc.gridy = 5;
         gbc.gridheight = 2;
-        CalcButton eqButton = new CalcButton(CalculatorEngine.CalcAction.EQUALS.getValue(), engine);
+        CalcButton eqButton = new CalcButton(EQUALS.getValue(), engine);
         gb.setConstraints(eqButton, gbc);
         buttonsPanel.add(eqButton);
 

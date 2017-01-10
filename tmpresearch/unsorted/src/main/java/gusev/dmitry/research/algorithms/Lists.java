@@ -9,7 +9,6 @@ import org.apache.commons.logging.LogFactory;
  * @version 1.0 (DATE: 07.11.2015)
  */
 
-@SuppressWarnings("MethodWithMultipleReturnPoints")
 public class Lists {
 
     private static final Log log = LogFactory.getLog(Lists.class);
