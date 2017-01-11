@@ -1,6 +1,7 @@
 package dg.social.vk;
 
 import dg.social.AbstractClient;
+import dg.social.HttpFormType;
 import dg.social.domain.VkUser;
 import dg.social.utilities.CommonUtilities;
 import dg.social.utilities.HttpUtilities;
@@ -27,7 +28,6 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.net.URI;
@@ -39,8 +39,11 @@ import java.util.List;
 import java.util.Map;
 
 import static dg.social.CommonDefaults.DEFAULT_ENCODING;
-import static dg.social.utilities.HttpUtilities.*;
-import static dg.social.vk.VkFormType.*;
+import static dg.social.HttpFormType.ACCESS_TOKEN_FORM;
+import static dg.social.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
+import static dg.social.HttpFormType.LOGIN_FORM;
+import static dg.social.utilities.HttpUtilities.HTTP_DEFAULT_HEADERS;
+import static dg.social.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
 
 /**
  * VK (VKontakte) social network client.
@@ -75,8 +78,8 @@ public class VkClient extends AbstractClient {
     private Pair<Date, String> accessToken = null; // VK access token date/time and token value
 
     /** Create VkClient instance, working through proxy. */
-    public VkClient(VkClientConfig config) throws IOException {
-        super(config);
+    public VkClient(VkClientConfig config, VkFormsRecognizer formsRecognizer) throws IOException {
+        super(config, formsRecognizer);
 
         LOG.debug("VkClient constructor() working.");
 
@@ -116,44 +119,6 @@ public class VkClient extends AbstractClient {
 
     }
 
-    /***/
-    private static VkFormType getVkFormType(Document doc) {
-        LOG.debug("VkClient.getVkFormType() working.");
-
-        if (doc == null) { // quick check
-            LOG.warn("Received document is null!");
-            return VkFormType.UNKNOWN_FORM;
-        }
-
-        // get form page <title> value
-        String formTitle = doc.title();
-        LOG.debug(String.format("Form title: [%s].", formTitle));
-
-        // get text from first element with op_info class
-        Element firstOpInfo = doc.body().getElementsByClass(VK_OP_INFO_CLASS_NAME).first();
-        String opInfoText = (firstOpInfo == null ? "" : firstOpInfo.text());
-        LOG.debug(String.format("DIV by class [%s] text: [%s].", VK_OP_INFO_CLASS_NAME, opInfoText));
-
-        // if title match and there is div with specified class - we've found
-        if (LOGIN_FORM.getFormTitle().equalsIgnoreCase(formTitle) && LOGIN_FORM.getOpInfoClassText().equalsIgnoreCase(opInfoText) &&
-                !doc.getElementsByTag(HTTP_FORM_TAG).isEmpty()) {
-            return LOGIN_FORM;
-        }
-
-        // approve rights form (adding new right for application)
-        if (APPROVE_ACCESS_RIGHTS_FORM.getFormTitle().equalsIgnoreCase(formTitle) && APPROVE_ACCESS_RIGHTS_FORM.getOpInfoClassText().equalsIgnoreCase(opInfoText) &&
-                !doc.getElementsByTag(HTTP_FORM_TAG).isEmpty()) {
-            return APPROVE_ACCESS_RIGHTS_FORM;
-        }
-
-        // page with access token
-        if (ACCESS_TOKEN_FORM.getFormTitle().equalsIgnoreCase(formTitle) && opInfoText.isEmpty() && doc.getElementsByTag(HTTP_FORM_TAG).isEmpty()) {
-            return ACCESS_TOKEN_FORM;
-        }
-
-        return VkFormType.UNKNOWN_FORM; // can't determine form type
-    }
-
     /** Request and get VK access token (for using with API calls). With token method returns date/time, when token received. */
     private Pair<Date, String> getAccessToken() throws IOException {
         LOG.debug("VkClient.getAccessToken() working. [PRIVATE]");
@@ -167,7 +132,7 @@ public class VkClient extends AbstractClient {
         Header[]              httpCookies;      // store http response cookies
         HttpEntity            httpEntity;       // store http response entity
         String                httpPageContent;  // store http response page content
-        VkFormType            receivedFormType; // store received VK form type
+        HttpFormType          receivedFormType; // store received VK form type
 
         // Initial HTTP request: execute http get request to token request URI
         HttpGet httpGetInitial = new HttpGet(vkTokenRequest);
@@ -200,7 +165,7 @@ public class VkClient extends AbstractClient {
 
                 Document doc = Jsoup.parse(httpPageContent); // parse returned page into Document object
                 // check received form type
-                receivedFormType = VkClient.getVkFormType(doc);
+                receivedFormType = this.getHttpFormType(doc);
                 LOG.debug(String.format("Got VK form: [%s].", receivedFormType));
 
                 switch (receivedFormType) { // select action, based on form type

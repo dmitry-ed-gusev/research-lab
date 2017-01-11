@@ -1,11 +1,9 @@
 package dg.social.ok;
 
 import dg.social.AbstractClient;
+import dg.social.HttpFormType;
 import dg.social.utilities.HttpUtilities;
-import dg.social.vk.VkClient;
-import dg.social.vk.VkFormType;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
@@ -25,18 +23,21 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Date;
 import java.util.List;
 
 import static dg.social.CommonDefaults.DEFAULT_ENCODING;
+import static dg.social.HttpFormType.ACCESS_TOKEN_FORM;
+import static dg.social.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
+import static dg.social.HttpFormType.LOGIN_FORM;
 import static dg.social.utilities.HttpUtilities.HTTP_DEFAULT_HEADERS;
 import static dg.social.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
-import static dg.social.vk.VkFormType.ACCESS_TOKEN_FORM;
-import static dg.social.vk.VkFormType.APPROVE_ACCESS_RIGHTS_FORM;
-import static dg.social.vk.VkFormType.LOGIN_FORM;
 
 /**
  * OK (Odnoklassniki) social network client.
@@ -59,8 +60,8 @@ public class OkClient extends AbstractClient {
     private String         accessToken; // OK client access token
 
     /***/
-    public OkClient(OkClientConfig config) throws IOException {
-        super(config);
+    public OkClient(OkClientConfig config, OkFormsRecognizer formsRecognizer) throws IOException {
+        super(config, formsRecognizer);
 
         LOG.debug("OkClient constructor() working.");
 
@@ -79,21 +80,6 @@ public class OkClient extends AbstractClient {
     }
 
     /***/
-    private static OkFormType getOkFormType(Document doc) {
-        LOG.debug("OkClient.getOkFormType() working.");
-
-        if (doc == null) { // quick check
-            LOG.warn("Received document is null!");
-            return OkFormType.UNKNOWN_FORM;
-        }
-
-        // recognizing the form
-        // todo: implementation!
-
-        return OkFormType.UNKNOWN_FORM; // can't determine form type
-    }
-
-    /***/
     private String getAccessToken() throws IOException {
         LOG.debug("OkClient.getAccessToken() working. [PRIVATE]");
 
@@ -106,7 +92,7 @@ public class OkClient extends AbstractClient {
         Header[]              httpCookies;      // store http response cookies
         HttpEntity            httpEntity;       // store http response entity
         String                httpPageContent;  // store http response page content
-        OkFormType            receivedFormType; // store received VK form type
+        HttpFormType          receivedFormType; // store received VK form type
 
         // Initial HTTP request: execute http get request to token request URI
         HttpGet httpGetInitial = new HttpGet(vkTokenRequest);
@@ -139,7 +125,7 @@ public class OkClient extends AbstractClient {
 
                 Document doc = Jsoup.parse(httpPageContent); // parse returned page into Document object
                 // check received form type
-                receivedFormType = OkClient.getOkFormType(doc);
+                receivedFormType = this.getHttpFormType(doc);
                 LOG.debug(String.format("Got OK form: [%s].", receivedFormType));
 
                 switch (receivedFormType) { // select action, based on form type
@@ -207,6 +193,40 @@ public class OkClient extends AbstractClient {
         }
 
         return null; // can't get access token
+    }
+
+    /***/
+    public static void main(String[] args) throws IOException {
+        LOG.info("OkClient starting...");
+
+        // reading token from file
+        StringBuilder strFile;
+        try (FileReader fr = new FileReader("c:/temp/zzz.txt");
+             BufferedReader br = new BufferedReader(fr)) {
+
+            strFile = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                strFile.append(line).append("\n");
+            }
+        }
+        LOG.debug(String.format("File has been read. Content: \n%s", strFile.toString()));
+
+        Document form = Jsoup.parse(strFile.toString());
+        LOG.debug("Form parsed.");
+
+        System.out.println("form action -> " + HttpUtilities.getFirstFormActionURL(form));
+        System.out.println("form params -> " + HttpUtilities.getFirstFormParams(form, null));
+
+        Elements elements = form.getElementsByTag("label");
+        System.out.println("->\n" + elements);
+
+        for (Element element : elements) {
+            System.out.println(element.attr("for") + " -> " + element.text());
+        }
+
+        OkFormsRecognizer formsRecognizer = new OkFormsRecognizer();
+        System.out.println("***> " + formsRecognizer.getHttpFormType(form));
     }
 
 }

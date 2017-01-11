@@ -40,7 +40,7 @@ public final class VkParser {
         // parsing JSON with search results
         JSONObject jsonObject = (JSONObject) JSON_PARSER.parse(jsonSearchResult);
         JSONObject response   = (JSONObject) jsonObject.get(JSON_RESPONSE_KEY);
-        JSONArray  items       = (JSONArray)  response.get(JSON_ITEMS_KEY);
+        JSONArray  items      = (JSONArray)  response.get(JSON_ITEMS_KEY);
         LOG.debug(String.format("Response contains [%s] items, total [%s] items.", items.size(), response.get("count")));
 
         // iterate over found items and create list of users

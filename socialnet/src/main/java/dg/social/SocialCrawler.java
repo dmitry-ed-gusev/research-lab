@@ -3,6 +3,7 @@ package dg.social;
 import dg.social.domain.VkUser;
 import dg.social.ok.OkClient;
 import dg.social.ok.OkClientConfig;
+import dg.social.ok.OkFormsRecognizer;
 import dg.social.parsing.VkParser;
 import dg.social.utilities.CmdLine;
 import dg.social.vk.VkClient;
@@ -68,7 +69,7 @@ public class SocialCrawler {
             // create ok client config
             OkClientConfig okClientConfig = new OkClientConfig(properties);
             // create ok client
-            OkClient okClient = new OkClient(okClientConfig);
+            OkClient okClient = new OkClient(okClientConfig, new OkFormsRecognizer());
 
 
         } catch (IOException /*| ParseException | URISyntaxException*/ e) {
