@@ -48,12 +48,6 @@ public class OkClient extends AbstractClient {
 
     private static final Log LOG = LogFactory.getLog(OkClient.class);
 
-    // todo: move it to abstract class
-    // http client instance (own instance of client for each instance of VkClient)
-    private final CloseableHttpClient HTTP_CLIENT  = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
-    private final HttpContext         HTTP_CONTEXT = new BasicHttpContext();
-    private final RequestConfig       HTTP_REQUEST_CONFIG;
-
     // attempts to get access token
     private final static int OK_ACCESS_ATTEMPTS_COUNT = 4;
 
@@ -65,17 +59,6 @@ public class OkClient extends AbstractClient {
 
         LOG.debug("OkClient constructor() working.");
 
-        // init http request config (through builder)
-        RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
-
-        // set proxy (if needed) for http request config
-        if (this.getConfig().getProxy() != null) { // add proxyHost to get http request
-            requestConfigBuilder.setProxy(this.getConfig().getProxy()).build();
-        }
-
-        // add cookies policy into http request config
-        this.HTTP_REQUEST_CONFIG = requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
-
         System.out.println("OK access token -> " + this.getAccessToken());
     }
 
@@ -84,8 +67,8 @@ public class OkClient extends AbstractClient {
         LOG.debug("OkClient.getAccessToken() working. [PRIVATE]");
 
         // generate and execute ACCESS_TOKEN request
-        String vkTokenRequest = this.getConfig().getAccessTokenRequest();
-        LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", vkTokenRequest));
+        String okTokenRequest = this.getAccessTokenRequest();
+        LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", okTokenRequest));
 
         // some tech variables
         CloseableHttpResponse httpResponse;     // store the whole http response
@@ -95,10 +78,7 @@ public class OkClient extends AbstractClient {
         HttpFormType          receivedFormType; // store received VK form type
 
         // Initial HTTP request: execute http get request to token request URI
-        HttpGet httpGetInitial = new HttpGet(vkTokenRequest);
-        httpGetInitial.setHeaders(HTTP_DEFAULT_HEADERS);
-        httpGetInitial.setConfig(HTTP_REQUEST_CONFIG);
-        httpResponse = HTTP_CLIENT.execute(httpGetInitial); // execute request
+        httpResponse = this.sendHttpGet(okTokenRequest);
 
         try {
 
@@ -168,7 +148,7 @@ public class OkClient extends AbstractClient {
                         LOG.debug(String.format("Processing [%s].", ACCESS_TOKEN_FORM));
 
                         // parse redirect and get access token from URL
-                        RedirectLocations locations = (RedirectLocations) HTTP_CONTEXT.getAttribute(HttpClientContext.REDIRECT_LOCATIONS);
+                        RedirectLocations locations = this.getContextRedirectLocations();
                         if (locations != null) { // parse last redirect locations and get access token
                             // get the last redirect URI - it's what we need
                             URI finalUri = locations.getAll().get(locations.getAll().size() - 1);

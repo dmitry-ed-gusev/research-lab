@@ -8,7 +8,9 @@ import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
@@ -19,6 +21,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +38,8 @@ public final class HttpUtilities {
     private static final Log LOG = LogFactory.getLog(HttpUtilities.class); // module logger
 
     /** Default http proxy server (Merck). */
-    public static final HttpHost HTTP_DEFAULT_PROXY = new HttpHost("webproxy.merck.com", 8080);
+    //public static final HttpHost HTTP_DEFAULT_PROXY = new HttpHost("webproxy.merck.com", 8080);
+
     /** Default http headers for http client. */
     public static final Header[] HTTP_DEFAULT_HEADERS = {
             new BasicHeader("User-Agent",      "Mozilla/5.0"),
@@ -118,20 +122,64 @@ public final class HttpUtilities {
         return result.toString();
     }
 
-    /** Sends POST HTTP request to URL with list of parameters. */
+    /**
+     * Sends GET HTTP request to specified URI (of type URI).
+     * By default http entity is buffered (wrapped into  BufferedHttpEntity).
+     */
+    public static CloseableHttpResponse sendHttpGet(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
+                                                    URI uri) throws IOException {
+        LOG.debug("HttpUtilities.sendHttpGet");
+
+        if (httpClient == null || uri == null) { // fail-fast
+            throw new IllegalArgumentException(
+                    String.format("HTTP Client is null [%s] or URI is empty [%s]!", httpClient == null, uri));
+        }
+
+        HttpGet httpGet = new HttpGet(uri);       // create http get request
+        httpGet.setHeaders(HTTP_DEFAULT_HEADERS); // set default http headers
+        // add request config
+        if (requestConfig != null) {
+            httpGet.setConfig(requestConfig);
+        }
+
+        CloseableHttpResponse response = httpClient.execute(httpGet, httpContext); // execute http request
+
+        // buffer initial received entity into memory
+        HttpEntity httpEntity = response.getEntity();
+        if (httpEntity != null) {
+            LOG.debug("HTTP Entity isn't null. Buffering received HTTP Entity.");
+            response.setEntity(new BufferedHttpEntity(httpEntity));
+        } else {
+            LOG.warn("Received HTTP Entity is NULL!");
+            //response.setEntity(httpEntity); // <- // todo: do we need it??? check...
+        }
+
+        return response;
+    }
+
+    /**
+     * Sends GET HTTP request to specified URI (of type String).
+     * By default http entity is buffered (wrapped into  BufferedHttpEntity).
+     */
+    public static CloseableHttpResponse sendHttpGet(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
+                                                    String uri) throws IOException {
+        return HttpUtilities.sendHttpGet(httpClient, httpContext, requestConfig, URI.create(uri));
+    }
+
+    /**
+     * Sends POST HTTP request to URI (of type URI) with list of parameters.
+     * By default http entity is buffered (wrapped into  BufferedHttpEntity).
+     */
     public static CloseableHttpResponse sendHttpPost(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
-                                                     String url, List<NameValuePair> postParams, Header[] cookies) throws IOException {
-        LOG.debug("HttpUtilities.sendPost() working.");
+                                                     URI uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
+        LOG.debug("HttpUtilities.sendHttpPost() working.");
 
-        if (httpClient == null) { // fail-fast
-            throw new IllegalArgumentException("Can't execute http request via null http client!");
+        if (httpClient == null || uri == null) { // fail-fast
+            throw new IllegalArgumentException(
+                    String.format("HTTP Client is null [%s] or URI is empty [%s]!", httpClient == null, uri));
         }
 
-        if (StringUtils.isBlank(url)) { // fail-fast
-            throw new IllegalArgumentException("Can't send http post request to empty url!");
-        }
-
-        HttpPost httpPost = new HttpPost(url);     // prepare post request to submit a form
+        HttpPost httpPost = new HttpPost(uri);     // prepare post request to submit a form
         httpPost.setHeaders(HTTP_DEFAULT_HEADERS); // set default http headers
         httpPost.setHeader(HTTP_CONTENT_TYPE_HEADER, HTTP_CONTENT_TYPE_FORM); // set content type
         // add cookies
@@ -148,8 +196,28 @@ public final class HttpUtilities {
 
         httpPost.setEntity(new UrlEncodedFormEntity(postParams)); // set http request entity
 
-        // execute request and return response
-        return httpClient.execute(httpPost, httpContext);
+        CloseableHttpResponse response = httpClient.execute(httpPost, httpContext); // execute http request
+
+        // buffer initial received entity into memory
+        HttpEntity httpEntity = response.getEntity();
+        if (httpEntity != null) {
+            LOG.debug("HTTP Entity isn't null. Buffering received HTTP Entity.");
+            response.setEntity(new BufferedHttpEntity(httpEntity));
+        } else {
+            LOG.warn("Received HTTP Entity is NULL!");
+            //response.setEntity(httpEntity); // <- // todo: do we need it??? check...
+        }
+
+        return response;
+    }
+
+    /**
+     * Sends POST HTTP request to URI (of type String) with list of parameters.
+     * By default http entity is buffered (wrapped into  BufferedHttpEntity).
+     */
+    public static CloseableHttpResponse sendHttpPost(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
+                                                     String uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
+        return HttpUtilities.sendHttpPost(httpClient, httpContext, requestConfig, URI.create(uri), postParams, cookies);
     }
 
     /** Returns action URL from first found html form. */

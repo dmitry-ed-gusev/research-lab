@@ -1,19 +1,19 @@
 package dg.social;
 
 import dg.social.domain.VkUser;
-import dg.social.ok.OkClient;
-import dg.social.ok.OkClientConfig;
-import dg.social.ok.OkFormsRecognizer;
 import dg.social.parsing.VkParser;
 import dg.social.utilities.CmdLine;
 import dg.social.vk.VkClient;
 import dg.social.vk.VkClientConfig;
+import dg.social.vk.VkFormsRecognizer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.parser.ParseException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Properties;
@@ -51,11 +51,10 @@ public class SocialCrawler {
             properties.load(br);
             LOG.debug(String.format("Properties from [%s] file: %s.", configFile, properties));
 
-            /*
             // create vk client config
             VkClientConfig vkClientConfig = new VkClientConfig(properties);
             // create vk client
-            VkClient vkClient = new VkClient(vkClientConfig);
+            VkClient vkClient = new VkClient(vkClientConfig, new VkFormsRecognizer());
             // search and parse results
             String jsonResult = vkClient.usersSearch("Гусев Дмитрий",
                     "about,activities,bdate,books,career,city,contacts,country,education,exports,games," +
@@ -64,15 +63,14 @@ public class SocialCrawler {
             //System.out.println("-> " + jsonResult);
             List<VkUser> users = VkParser.parseUsers(jsonResult);
             System.out.println("-> " + users);
-            */
 
             // create ok client config
-            OkClientConfig okClientConfig = new OkClientConfig(properties);
+            //OkClientConfig okClientConfig = new OkClientConfig(properties);
             // create ok client
-            OkClient okClient = new OkClient(okClientConfig, new OkFormsRecognizer());
+            //OkClient okClient = new OkClient(okClientConfig, new OkFormsRecognizer());
 
 
-        } catch (IOException /*| ParseException | URISyntaxException*/ e) {
+        } catch (IOException | ParseException | URISyntaxException e) {
             LOG.error(e);
             // e.printStackTrace(); // <- for deep debug
         }

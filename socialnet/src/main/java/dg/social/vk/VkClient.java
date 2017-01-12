@@ -13,19 +13,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.client.RedirectLocations;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -39,10 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static dg.social.CommonDefaults.DEFAULT_ENCODING;
-import static dg.social.HttpFormType.ACCESS_TOKEN_FORM;
-import static dg.social.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
-import static dg.social.HttpFormType.LOGIN_FORM;
-import static dg.social.utilities.HttpUtilities.HTTP_DEFAULT_HEADERS;
+import static dg.social.HttpFormType.*;
 import static dg.social.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
 
 /**
@@ -58,18 +45,11 @@ public class VkClient extends AbstractClient {
 
     private static final Log LOG = LogFactory.getLog(VkClient.class); // module logger
 
-    // todo: move it to abstract class
-    // http client instance (own instance of client for each instance of VkClient)
-    private final CloseableHttpClient HTTP_CLIENT  = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
-    private final HttpContext         HTTP_CONTEXT = new BasicHttpContext();
-    private final RequestConfig       HTTP_REQUEST_CONFIG;
-
     // VK login form credentials
     private final Map<String, String> VK_LOGIN_FORM_CREDENTIALS;
     // attempts to get access token
     private final static int VK_ACCESS_ATTEMPTS_COUNT = 4;
     //private static final String VK_USER_LOGIN_MISSED_DIGITS = "96180114"; // todo: needed by 'add missed digits' form
-
     // VK login form email/pass elements
     private static final String LOGIN_FORM_EMAIL_KEY = "email";
     private static final String LOGIN_FORM_PASS_KEY  = "pass";
@@ -83,16 +63,6 @@ public class VkClient extends AbstractClient {
 
         LOG.debug("VkClient constructor() working.");
 
-        // init http request config (through builder)
-        RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
-
-        // set proxy (if needed) for http request config
-        if (this.getConfig().getProxy() != null) { // add proxyHost to get http request
-            requestConfigBuilder.setProxy(this.getConfig().getProxy()).build();
-        }
-
-        // add cookies policy into http request config
-        this.HTTP_REQUEST_CONFIG = requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
         // create vk login form credentials
         this.VK_LOGIN_FORM_CREDENTIALS = new HashMap<String, String>() {{
             put(LOGIN_FORM_EMAIL_KEY, config.getUsername());
@@ -114,7 +84,7 @@ public class VkClient extends AbstractClient {
         // if we haven't read token from file - get new token (and write it to file)
         if (this.accessToken == null) {
             this.accessToken = this.getAccessToken();
-            CommonUtilities.saveAccessToken(this.accessToken, this.getConfig().getTokenFileName(), true);
+            CommonUtilities.saveAccessToken(this.accessToken, this.getTokenFileName(), true);
         }
 
     }
@@ -124,7 +94,7 @@ public class VkClient extends AbstractClient {
         LOG.debug("VkClient.getAccessToken() working. [PRIVATE]");
 
         // generate and execute ACCESS_TOKEN request
-        String vkTokenRequest = this.getConfig().getAccessTokenRequest();
+        String vkTokenRequest = this.getAccessTokenRequest();
         LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", vkTokenRequest));
 
         // some tech variables
@@ -135,10 +105,7 @@ public class VkClient extends AbstractClient {
         HttpFormType          receivedFormType; // store received VK form type
 
         // Initial HTTP request: execute http get request to token request URI
-        HttpGet httpGetInitial = new HttpGet(vkTokenRequest);
-        httpGetInitial.setHeaders(HTTP_DEFAULT_HEADERS);
-        httpGetInitial.setConfig(HTTP_REQUEST_CONFIG);
-        httpResponse = HTTP_CLIENT.execute(httpGetInitial); // execute request
+        httpResponse = this.sendHttpGet(vkTokenRequest);
 
         try {
 
@@ -149,10 +116,10 @@ public class VkClient extends AbstractClient {
 
                 // buffer initial received entity into memory
                 httpEntity = httpResponse.getEntity();
-                if (httpEntity != null) {
-                    LOG.debug("Buffering received HTTP Entity.");
-                    httpEntity = new BufferedHttpEntity(httpEntity);
-                }
+                //if (httpEntity != null) {
+                //    LOG.debug("Buffering received HTTP Entity.");
+                //    httpEntity = new BufferedHttpEntity(httpEntity);
+                //}
 
                 httpCookies = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER); // save cookies
 
@@ -184,7 +151,7 @@ public class VkClient extends AbstractClient {
                         }
 
                         // prepare and execute next http request (send form)
-                        httpResponse = HttpUtilities.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl, formParamsList, httpCookies);
+                        httpResponse = this.sendHttpPost(actionUrl, formParamsList, httpCookies);
                         break;
 
                     case APPROVE_ACCESS_RIGHTS_FORM: // VK approve application rights
@@ -201,14 +168,15 @@ public class VkClient extends AbstractClient {
                         }
 
                         // prepare and execute next http request (send form)
-                        httpResponse = HttpUtilities.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl, formParamsList, httpCookies);
+                        httpResponse = this.sendHttpPost(actionUrl, formParamsList, httpCookies);
                         break;
 
                     case ACCESS_TOKEN_FORM: // VK
                         LOG.debug(String.format("Processing [%s].", ACCESS_TOKEN_FORM));
 
                         // parse redirect and get access token from URL
-                        RedirectLocations locations = (RedirectLocations) HTTP_CONTEXT.getAttribute(HttpClientContext.REDIRECT_LOCATIONS);
+                        //RedirectLocations locations = (RedirectLocations) HTTP_CONTEXT.getAttribute(HttpClientContext.REDIRECT_LOCATIONS);
+                        RedirectLocations locations = this.getContextRedirectLocations();
                         if (locations != null) { // parse last redirect locations and get access token
                             // get the last redirect URI - it's what we need
                             URI finalUri = locations.getAll().get(locations.getAll().size() - 1);
@@ -249,27 +217,23 @@ public class VkClient extends AbstractClient {
         }
 
         // generating query URI
-        URI uri = new URI(new URIBuilder(String.format(this.getConfig().getBaseApiRequest(), "users.search"))
+        URI uri = new URI(new URIBuilder(String.format(this.getBaseApiRequest(), "users.search"))
                 .addParameter("q", userString)
                 .addParameter("count", String.valueOf(count > 0 && count <= 1000 ? count : 1000))
                 .addParameter("fields", (StringUtils.isBlank(fieldsList) ? "" : fieldsList))
                 .addParameter("access_token", this.accessToken.getRight())
-                .addParameter("v", this.getConfig().getApiVersion())
+                .addParameter("v", this.getApiVersion())
                 .toString());
         LOG.debug(String.format("Generated URI: [%s].", uri));
-
-        // execute http GET query
-        HttpGet httpGet = new HttpGet(uri);
-        httpGet.setHeaders(HTTP_DEFAULT_HEADERS);
-        httpGet.setConfig(HTTP_REQUEST_CONFIG);
-        CloseableHttpResponse httpResponse = HTTP_CLIENT.execute(httpGet); // execute request
+        // execute search query
+        CloseableHttpResponse httpResponse = this.sendHttpGet(uri);
 
         // buffer initial received entity into memory
         HttpEntity httpEntity = httpResponse.getEntity();
-        if (httpEntity != null) {
-            LOG.debug("Buffering received HTTP Entity.");
-            httpEntity = new BufferedHttpEntity(httpEntity);
-        }
+        //if (httpEntity != null) {
+        //    LOG.debug("Buffering received HTTP Entity.");
+        //    httpEntity = new BufferedHttpEntity(httpEntity);
+        //}
 
         // get page content for parsing
         String httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);

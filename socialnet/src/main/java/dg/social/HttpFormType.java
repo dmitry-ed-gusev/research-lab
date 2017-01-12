@@ -7,6 +7,9 @@ package dg.social;
 
 public enum HttpFormType {
 
-    LOGIN_FORM, APPROVE_ACCESS_RIGHTS_FORM, ACCESS_TOKEN_FORM, UNKNOWN_FORM
+    LOGIN_FORM,                 // simple login form
+    APPROVE_ACCESS_RIGHTS_FORM, // approve application access rights form
+    ACCESS_TOKEN_FORM,          // form/page with new access token
+    UNKNOWN_FORM                // completely unknown form
 
 }
