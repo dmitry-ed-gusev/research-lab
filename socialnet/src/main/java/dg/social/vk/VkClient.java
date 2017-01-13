@@ -45,15 +45,16 @@ public class VkClient extends AbstractClient {
 
     private static final Log LOG = LogFactory.getLog(VkClient.class); // module logger
 
-    // VK login form credentials
-    private final Map<String, String> VK_LOGIN_FORM_CREDENTIALS;
+    private final Map<String, String> VK_LOGIN_FORM_CREDENTIALS;         // VK login form credentials
+    private static final String LOGIN_FORM_EMAIL_KEY        = "email";          // VK login form email element
+    private static final String LOGIN_FORM_PASS_KEY         = "pass";           // VK login form pass element
+
+    private final Map<String, String> VK_MISSED_DIGITS_FORM_CREDENTIALS; // Missed phone number digits
+    private static final String MISSED_DIGITS_FORM_CODE_KEY = "code";
+
     // attempts to get access token
-    private final static int VK_ACCESS_ATTEMPTS_COUNT = 4;
-    //private static final String VK_USER_LOGIN_MISSED_DIGITS = "96180114"; // todo: needed by 'add missed digits' form
-    // VK login form email/pass elements
-    private static final String LOGIN_FORM_EMAIL_KEY = "email";
-    private static final String LOGIN_FORM_PASS_KEY  = "pass";
-    private static final long   TOKEN_VALIDITY_SECONDS = 60 * 60 * 24; // token validity period (default)
+    private static final int  VK_ACCESS_ATTEMPTS_COUNT = 4;
+    private static final long TOKEN_VALIDITY_SECONDS   = 60 * 60 * 24; // token validity period (default)
 
     private Pair<Date, String> accessToken = null; // VK access token date/time and token value
 
@@ -63,11 +64,18 @@ public class VkClient extends AbstractClient {
 
         LOG.debug("VkClient constructor() working.");
 
-        // create vk login form credentials
+        // init vk login form credentials
         this.VK_LOGIN_FORM_CREDENTIALS = new HashMap<String, String>() {{
-            put(LOGIN_FORM_EMAIL_KEY, config.getUsername());
-            put(LOGIN_FORM_PASS_KEY,  config.getPassword());
+            put(LOGIN_FORM_EMAIL_KEY, VkClient.this.getUsername());
+            put(LOGIN_FORM_PASS_KEY,  VkClient.this.getPassword());
         }};
+
+        // init missed phone digits field
+        String username = this.getUsername();
+        this.VK_MISSED_DIGITS_FORM_CREDENTIALS = new HashMap<String, String>() {{
+            put(MISSED_DIGITS_FORM_CODE_KEY, username.substring(username.startsWith("+") ? 2 : 1, username.length() - 2));
+        }};
+        LOG.debug(String.format("Calculated missed phone digits: [%s].", this.VK_MISSED_DIGITS_FORM_CREDENTIALS));
 
         // try to read VK access token from file
         try {
@@ -75,6 +83,9 @@ public class VkClient extends AbstractClient {
             // check access token validity (by time)
             if ((System.currentTimeMillis() - token.getLeft().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS) { // token is valid (by date/time)
                 this.accessToken = token;
+                LOG.debug(String.format("VK access token successfully read from file [%s].", this.getTokenFileName()));
+            } else {
+                LOG.warn(String.format("VK access token from file [%s] expired! Its date/time: [%s].", this.getTokenFileName(), token.getLeft()));
             }
         } catch (IOException | ParseException e) {
             LOG.warn(String.format("Can't read access token from file: [%s]. Reason: [%s].",
@@ -83,8 +94,14 @@ public class VkClient extends AbstractClient {
 
         // if we haven't read token from file - get new token (and write it to file)
         if (this.accessToken == null) {
+            LOG.debug("Trying to get new VK access token.");
             this.accessToken = this.getAccessToken();
-            CommonUtilities.saveAccessToken(this.accessToken, this.getTokenFileName(), true);
+
+            if (this.accessToken == null) { // fail-fast -> check that we really got token
+                throw new IllegalStateException("Can't get VK access token!");
+            }
+
+            CommonUtilities.saveAccessToken(this.accessToken, this.getTokenFileName(), true); // save received token
         }
 
     }
@@ -114,13 +131,8 @@ public class VkClient extends AbstractClient {
             List<NameValuePair> formParamsList;
             for (int counter = 1; counter <= VK_ACCESS_ATTEMPTS_COUNT; counter++) {
 
-                // buffer initial received entity into memory
+                // get http entity and cookies
                 httpEntity = httpResponse.getEntity();
-                //if (httpEntity != null) {
-                //    LOG.debug("Buffering received HTTP Entity.");
-                //    httpEntity = new BufferedHttpEntity(httpEntity);
-                //}
-
                 httpCookies = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER); // save cookies
 
                 // get page content for parsing
@@ -144,11 +156,6 @@ public class VkClient extends AbstractClient {
                         LOG.debug(String.format("Form action: [%s].", actionUrl));
 
                         formParamsList = HttpUtilities.getFirstFormParams(doc, VK_LOGIN_FORM_CREDENTIALS); // get from and fill it in
-                        if (LOG.isDebugEnabled()) { // just a debug
-                            StringBuilder pairs = new StringBuilder();
-                            formParamsList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
-                            LOG.debug(String.format("Found name-value pairs in VK login form:%n%s", pairs.toString()));
-                        }
 
                         // prepare and execute next http request (send form)
                         httpResponse = this.sendHttpPost(actionUrl, formParamsList, httpCookies);
@@ -161,21 +168,32 @@ public class VkClient extends AbstractClient {
                         LOG.debug(String.format("Form action: [%s].", actionUrl));
 
                         formParamsList = HttpUtilities.getFirstFormParams(doc, null); // get from and fill it in
-                        if (LOG.isDebugEnabled()) { // just a debug
-                            StringBuilder pairs = new StringBuilder();
-                            formParamsList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
-                            LOG.debug(String.format("Found name-value pairs in VK login form:%n%s", pairs.toString()));
-                        }
 
                         // prepare and execute next http request (send form)
                         httpResponse = this.sendHttpPost(actionUrl, formParamsList, httpCookies);
                         break;
 
-                    case ACCESS_TOKEN_FORM: // VK
+                    case ADD_MISSED_DIGITS_FORM: // VK add missed phone number digits form
+                        LOG.debug(String.format("Processing [%s].", ADD_MISSED_DIGITS_FORM));
+
+                        actionUrl = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
+                        LOG.debug(String.format("Form action: [%s].", actionUrl));
+
+                        if (actionUrl.startsWith("/")) { // fix action URL, if necessary
+                            actionUrl = "https://vk.com" + actionUrl;
+                            LOG.debug(String.format("Action URI fixed: [%s].", actionUrl));
+                        }
+
+                        formParamsList = HttpUtilities.getFirstFormParams(doc, VK_MISSED_DIGITS_FORM_CREDENTIALS); // get from and fill it in
+
+                        // prepare and execute next http request (send form)
+                        httpResponse = this.sendHttpPost(actionUrl, formParamsList, httpCookies);
+                        break;
+
+                    case ACCESS_TOKEN_FORM: // VK token page/form
                         LOG.debug(String.format("Processing [%s].", ACCESS_TOKEN_FORM));
 
                         // parse redirect and get access token from URL
-                        //RedirectLocations locations = (RedirectLocations) HTTP_CONTEXT.getAttribute(HttpClientContext.REDIRECT_LOCATIONS);
                         RedirectLocations locations = this.getContextRedirectLocations();
                         if (locations != null) { // parse last redirect locations and get access token
                             // get the last redirect URI - it's what we need
@@ -190,6 +208,7 @@ public class VkClient extends AbstractClient {
 
                     default: // default case - unknown form
                         LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
+                        return null; // no access token!
                 }
 
             } // end of FOR cycle
@@ -225,16 +244,11 @@ public class VkClient extends AbstractClient {
                 .addParameter("v", this.getApiVersion())
                 .toString());
         LOG.debug(String.format("Generated URI: [%s].", uri));
+
         // execute search query
         CloseableHttpResponse httpResponse = this.sendHttpGet(uri);
-
-        // buffer initial received entity into memory
+        // get http entity
         HttpEntity httpEntity = httpResponse.getEntity();
-        //if (httpEntity != null) {
-        //    LOG.debug("Buffering received HTTP Entity.");
-        //    httpEntity = new BufferedHttpEntity(httpEntity);
-        //}
-
         // get page content for parsing
         String httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
         if (LOG.isDebugEnabled()) { // just debug output

@@ -58,7 +58,7 @@ public final class HttpUtilities {
     /***/
     private static final String HTTP_CONTENT_TYPE_HEADER   = "Content-Type";
     /***/
-    private static final String HTTP_CONTENT_TYPE_FORM     = "application/x-www-form-urlencoded";
+    private static final String HTTP_CONTENT_TYPE_FORM     = "application/x-www-form-urlencoded"; //"x-www-form-urlencoded";
     /***/
     private static final String HTTP_FORM_ACTION_ATTR      = "action";
     /***/
@@ -228,7 +228,10 @@ public final class HttpUtilities {
             throw new IllegalArgumentException("Can't extract action URL from null html document!");
         }
 
-        return document.getElementsByTag(HTTP_FORM_TAG).first().attr(HTTP_FORM_ACTION_ATTR);
+        String actionUrl = document.getElementsByTag(HTTP_FORM_TAG).first().attr(HTTP_FORM_ACTION_ATTR);
+        LOG.debug(String.format("Found form action URL: [%s].", actionUrl));
+
+        return actionUrl;
     }
 
     /** Return all parameters from VK login form (with email/pass added). */
@@ -243,7 +246,7 @@ public final class HttpUtilities {
         Elements formInputElements = document.getElementsByTag(HTTP_FORM_TAG).first().getElementsByTag(HTTP_FORM_INPUT_TAG);
 
         // iterate over all found input elements
-        List<NameValuePair> paramList = new ArrayList<>();
+        List<NameValuePair> paramsList = new ArrayList<>();
         for (Element formInputElement : formInputElements) {
             String inputKey = formInputElement.attr(HTTP_FORM_INPUT_KEY_ATTR);
             String inputValue = formInputElement.attr(HTTP_FORM_INPUT_VALUE_ATTR);
@@ -258,12 +261,18 @@ public final class HttpUtilities {
             }
 
             // add found parameter to parameters list
-            if (!StringUtils.isBlank(inputKey)) {
-                paramList.add(new BasicNameValuePair(inputKey, inputValue));
-            }
+            //if (!StringUtils.isBlank(inputKey)) {
+                paramsList.add(new BasicNameValuePair(inputKey, inputValue));
+            //}
         } // end of FOR
 
-        return paramList;
+        if (LOG.isDebugEnabled()) { // just a debug
+            StringBuilder pairs = new StringBuilder();
+            paramsList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
+            LOG.debug(String.format("Found name-value pairs in html form:%n%s", pairs.toString()));
+        }
+
+        return paramsList;
     }
 
 }

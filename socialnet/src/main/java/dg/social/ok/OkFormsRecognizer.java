@@ -42,12 +42,11 @@ public class OkFormsRecognizer implements HttpFormRecognizer {
 
         // get <label> elements from document
         Elements elements = document.getElementsByTag(FORM_LABEL_TAG_NAME);
-        LOG.debug(String.format("Form <%s> tags: %s.", FORM_LABEL_TAG_NAME, elements));
+        LOG.debug(String.format("Form <%s> tags:%n%s.", FORM_LABEL_TAG_NAME, elements));
 
-        // check - is it login form
+        // check for LOGIN_FORM (for standard login window - mode/layout "w")
         if (elements.size() == 3) {
             LOG.debug(String.format("Found 3 <%s> tags. Checking for LOGIN FORM.", FORM_LABEL_TAG_NAME));
-
             boolean result = true;
             for (Element element : elements) {
                 if (!FORM_LABEL_VALUES.get(element.attr(FORM_LABEL_TAG_ATTRIBUTE)).equalsIgnoreCase(element.text())) {
@@ -55,10 +54,13 @@ public class OkFormsRecognizer implements HttpFormRecognizer {
                     break;
                 }
             }
-
             if (result) { // we've found login form
                 return LOGIN_FORM;
             }
+        }
+
+        // check for LOGIN_FORM (for mobile login window - mode/layout "m")
+        if (true) {
 
         }
 

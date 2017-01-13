@@ -3,6 +3,7 @@ package dg.social.ok;
 import dg.social.AbstractClient;
 import dg.social.HttpFormType;
 import dg.social.utilities.HttpUtilities;
+import dg.social.vk.VkClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +31,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static dg.social.CommonDefaults.DEFAULT_ENCODING;
 import static dg.social.HttpFormType.ACCESS_TOKEN_FORM;
@@ -48,6 +51,9 @@ public class OkClient extends AbstractClient {
 
     private static final Log LOG = LogFactory.getLog(OkClient.class);
 
+    private final Map<String, String> OK_LOGIN_FORM_CREDENTIALS;         // VK login form credentials
+    private static final String LOGIN_FORM_EMAIL_KEY = "fr.email";          // VK login form email element
+    private static final String LOGIN_FORM_PASS_KEY  = "fr.password";           // VK login form pass element
     // attempts to get access token
     private final static int OK_ACCESS_ATTEMPTS_COUNT = 4;
 
@@ -58,6 +64,12 @@ public class OkClient extends AbstractClient {
         super(config, formsRecognizer);
 
         LOG.debug("OkClient constructor() working.");
+
+        // init vk login form credentials
+        this.OK_LOGIN_FORM_CREDENTIALS = new HashMap<String, String>() {{
+            put(LOGIN_FORM_EMAIL_KEY, OkClient.this.getUsername());
+            put(LOGIN_FORM_PASS_KEY,  OkClient.this.getPassword());
+        }};
 
         System.out.println("OK access token -> " + this.getAccessToken());
     }
@@ -112,19 +124,17 @@ public class OkClient extends AbstractClient {
 
                     case LOGIN_FORM: // OK -> simple login form
                         LOG.debug(String.format("Processing [%s].", LOGIN_FORM));
+                        actionUrl      = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
 
-                        actionUrl = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
-                        LOG.debug(String.format("Form action: [%s].", actionUrl));
-
-                        formParamsList = HttpUtilities.getFirstFormParams(doc, null); // get from and fill it in
-                        if (LOG.isDebugEnabled()) { // just a debug
-                            StringBuilder pairs = new StringBuilder();
-                            formParamsList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
-                            LOG.debug(String.format("Found name-value pairs in OK login form:%n%s", pairs.toString()));
+                        if (actionUrl.startsWith("/")) { // fix action URL, if necessary
+                            actionUrl = "https://connect.ok.ru" + actionUrl;
+                            LOG.debug(String.format("Action URI fixed: [%s].", actionUrl));
                         }
 
+                        formParamsList = HttpUtilities.getFirstFormParams(doc, OK_LOGIN_FORM_CREDENTIALS); // get from and fill it in
+
                         // prepare and execute next http request (send form)
-                        //httpResponse = HttpUtilities.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl, formParamsList, httpCookies);
+                        httpResponse = this.sendHttpPost(actionUrl, formParamsList, httpCookies);
                         break;
 
                     case APPROVE_ACCESS_RIGHTS_FORM: // OK -> approve application rights form
@@ -162,6 +172,7 @@ public class OkClient extends AbstractClient {
 
                     default: // default case - unknown form
                         LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
+                        return null; // can't get access token
                 }
 
             } // end of FOR cycle
@@ -173,40 +184,6 @@ public class OkClient extends AbstractClient {
         }
 
         return null; // can't get access token
-    }
-
-    /***/
-    public static void main(String[] args) throws IOException {
-        LOG.info("OkClient starting...");
-
-        // reading token from file
-        StringBuilder strFile;
-        try (FileReader fr = new FileReader("c:/temp/zzz.txt");
-             BufferedReader br = new BufferedReader(fr)) {
-
-            strFile = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                strFile.append(line).append("\n");
-            }
-        }
-        LOG.debug(String.format("File has been read. Content: \n%s", strFile.toString()));
-
-        Document form = Jsoup.parse(strFile.toString());
-        LOG.debug("Form parsed.");
-
-        System.out.println("form action -> " + HttpUtilities.getFirstFormActionURL(form));
-        System.out.println("form params -> " + HttpUtilities.getFirstFormParams(form, null));
-
-        Elements elements = form.getElementsByTag("label");
-        System.out.println("->\n" + elements);
-
-        for (Element element : elements) {
-            System.out.println(element.attr("for") + " -> " + element.text());
-        }
-
-        OkFormsRecognizer formsRecognizer = new OkFormsRecognizer();
-        System.out.println("***> " + formsRecognizer.getHttpFormType(form));
     }
 
 }

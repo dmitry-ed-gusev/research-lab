@@ -62,6 +62,16 @@ public class AbstractClient {
     }
 
     /***/
+    public String getUsername() {
+        return this.config.getUsername();
+    }
+
+    /***/
+    public String getPassword() {
+        return this.config.getPassword();
+    }
+
+    /***/
     public String getAccessTokenRequest() {
         return this.config.getAccessTokenRequest();
     }

@@ -32,7 +32,7 @@ public final class CommonUtilities {
 
         if (accessToken == null || accessToken.getLeft() == null || StringUtils.isBlank(accessToken.getRight()) || StringUtils.isBlank(accessTokenFile)) { // check input parameters
             throw new IllegalArgumentException(
-                    String.format("Empty token date/time [%s],  access token [%s] or file name [%s]!", accessToken.getLeft(), accessToken.getRight(), accessTokenFile));
+                    String.format("Empty access token (or its part): [%s] or token file name: [%s]!", accessToken, accessTokenFile));
         }
 
         // check for file existence (delete if needed)

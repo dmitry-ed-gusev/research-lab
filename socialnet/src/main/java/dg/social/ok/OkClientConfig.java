@@ -14,7 +14,7 @@ public class OkClientConfig extends AbstractClientConfig {
     // keys for config parameters (for Properties object)
     private static final String DEFAULT_CONFIG_PREFIX = "ok";
     // auth window style: w - std window for full site version, m - mobile auth, a - simplified mobile without header
-    private static final String DISPLAY_TYPE  = "w";
+    private static final String DISPLAY_TYPE  = "m";
     // default redirect URI
     private static final String REDIRECT_URI  = "https://api.ok.ru/blank.html";
     // scope for requesting access token (see https://apiok.ru/ext/oauth/permissions)
