@@ -28,7 +28,7 @@ public final class CommonUtilities {
      * If file already exist - throw exception or overwrite it (if overwrite = true).
      */
     public static void saveAccessToken(Pair<Date, String> accessToken, String accessTokenFile, boolean overwrite) throws IOException {
-        LOG.debug(String.format("VkClient.saveAccessToken() working. Token: [%s], file: [%s], overwrite: [%s].", accessToken, accessTokenFile, overwrite));
+        LOG.debug(String.format("CommonUtilities.saveAccessToken() working. Token: [%s], file: [%s], overwrite: [%s].", accessToken, accessTokenFile, overwrite));
 
         if (accessToken == null || accessToken.getLeft() == null || StringUtils.isBlank(accessToken.getRight()) || StringUtils.isBlank(accessTokenFile)) { // check input parameters
             throw new IllegalArgumentException(
@@ -62,7 +62,7 @@ public final class CommonUtilities {
      * If file doesn't exist throw exception.
      */
     public static Pair<Date, String> readAccessToken(String accessTokenFile) throws IOException, ParseException {
-        LOG.debug("VkClient.readAccessToken() working.");
+        LOG.debug("CommonUtilities.readAccessToken() working.");
 
         if (StringUtils.isBlank(accessTokenFile)) { // fail-fast
             throw new IllegalArgumentException("File name is null!");
@@ -78,6 +78,30 @@ public final class CommonUtilities {
             return new ImmutablePair<>(tokenDate, token);
         }
 
+    }
+
+    /**
+     * Saves string to file with auto-generated file name (based on time). Returns generated file name.
+     * If received string is empty throws run-time exception.
+     */
+    // todo: thread safety!
+    public static String saveStringToFile(String string) throws IOException {
+        LOG.debug("CommonUtilities.saveStringToFile() working.");
+
+        if (StringUtils.isBlank(string)) {
+            throw new IllegalArgumentException("Can't save empty string to file!");
+        }
+
+        // generate file name
+        String fileName = String.valueOf(System.currentTimeMillis()) + "_data_file.tmp";
+        // write data to file
+        try (FileWriter fw = new FileWriter(fileName);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+            out.print(string); // write data to file
+        }
+
+        return fileName;
     }
 
 }

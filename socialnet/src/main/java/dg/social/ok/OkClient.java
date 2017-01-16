@@ -2,6 +2,7 @@ package dg.social.ok;
 
 import dg.social.AbstractClient;
 import dg.social.HttpFormType;
+import dg.social.utilities.CommonUtilities;
 import dg.social.utilities.HttpUtilities;
 import dg.social.vk.VkClient;
 import org.apache.commons.lang3.StringUtils;
@@ -93,48 +94,31 @@ public class OkClient extends AbstractClient {
         httpResponse = this.sendHttpGet(okTokenRequest);
 
         try {
-
             // process login/access/add digits forms
             String actionUrl;
             List<NameValuePair> formParamsList;
             for (int counter = 1; counter <= OK_ACCESS_ATTEMPTS_COUNT; counter++) {
 
-                // buffer initial received entity into memory
-                httpEntity = httpResponse.getEntity();
-                if (httpEntity != null) {
-                    LOG.debug("Buffering received HTTP Entity.");
-                    httpEntity = new BufferedHttpEntity(httpEntity);
-                }
+                httpEntity = httpResponse.getEntity();                                        // get http entity
+                httpCookies = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER);               // save cookies
+                httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING); // get html page content
 
-                httpCookies = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER); // save cookies
-
-                // get page content for parsing
-                httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
-                //httpStringResponse = HttpUtilities.httpResponseToString(httpResponse, httpPageContent);
                 if (LOG.isDebugEnabled()) { // just debug output
                     LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
                 }
 
-                Document doc = Jsoup.parse(httpPageContent); // parse returned page into Document object
-                // check received form type
-                receivedFormType = this.getHttpFormType(doc);
+                Document doc = Jsoup.parse(httpPageContent);  // parse returned page into Document object
+                receivedFormType = this.getHttpFormType(doc); // check received form type
                 LOG.debug(String.format("Got OK form: [%s].", receivedFormType));
 
+                // todo: extract method for some actions
                 switch (receivedFormType) { // select action, based on form type
 
                     case LOGIN_FORM: // OK -> simple login form
                         LOG.debug(String.format("Processing [%s].", LOGIN_FORM));
-                        actionUrl      = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
-
-                        if (actionUrl.startsWith("/")) { // fix action URL, if necessary
-                            actionUrl = "https://connect.ok.ru" + actionUrl;
-                            LOG.debug(String.format("Action URI fixed: [%s].", actionUrl));
-                        }
-
+                        actionUrl      = HttpUtilities.getFirstFormActionURL(doc, "https://connect.ok.ru"); // gets form action URL
                         formParamsList = HttpUtilities.getFirstFormParams(doc, OK_LOGIN_FORM_CREDENTIALS); // get from and fill it in
-
-                        // prepare and execute next http request (send form)
-                        httpResponse = this.sendHttpPost(actionUrl, formParamsList, httpCookies);
+                        httpResponse   = this.sendHttpPost(actionUrl, formParamsList, httpCookies); // execute next http request (send form)
                         break;
 
                     case APPROVE_ACCESS_RIGHTS_FORM: // OK -> approve application rights form
@@ -172,6 +156,7 @@ public class OkClient extends AbstractClient {
 
                     default: // default case - unknown form
                         LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
+                        CommonUtilities.saveStringToFile(httpPageContent); // save unknown form to file (for analysis)
                         return null; // can't get access token
                 }
 

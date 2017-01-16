@@ -54,28 +54,29 @@ public class SocialCrawler {
             properties.load(br);
             LOG.debug(String.format("Properties from [%s] file: %s.", configFile, properties));
 
-            /*
-            // create vk client config
-            VkClientConfig vkClientConfig = new VkClientConfig(properties);
-            // create vk client
-            VkClient vkClient = new VkClient(vkClientConfig, new VkFormsRecognizer());
-            // search and parse results
-            String jsonResult = vkClient.usersSearch("Гусев Дмитрий",
-                    "about,activities,bdate,books,career,city,contacts,country,education,exports,games," +
-                            "home_town,interests,home_town,maiden_name,movies,music,nickname,occupation,personal,quotes," +
-                            "relatives,relation,schools,sex,site,status,tv,universities", 1000);
-            //System.out.println("-> " + jsonResult);
-            List<VkUser> users = VkParser.parseUsers(jsonResult);
-            System.out.println("-> " + users);
-            */
+            if (true) {
+                // create vk client config
+                VkClientConfig vkClientConfig = new VkClientConfig(properties);
+                // create vk client
+                VkClient vkClient = new VkClient(vkClientConfig, new VkFormsRecognizer());
+                // search and parse results
+                String jsonResult = vkClient.usersSearch("Гусев Дмитрий",
+                        "about,activities,bdate,books,career,city,contacts,country,education,exports,games," +
+                                "home_town,interests,home_town,maiden_name,movies,music,nickname,occupation,personal,quotes," +
+                                "relatives,relation,schools,sex,site,status,tv,universities", 1000);
+                //System.out.println("-> " + jsonResult);
+                List<VkUser> users = VkParser.parseUsers(jsonResult);
+                System.out.println("-> " + users);
+            }
 
-            // create ok client config
-            OkClientConfig okClientConfig = new OkClientConfig(properties);
-            // create ok client
-            OkClient okClient = new OkClient(okClientConfig, new OkFormsRecognizer());
+            if (false) {
+                // create ok client config
+                OkClientConfig okClientConfig = new OkClientConfig(properties);
+                // create ok client
+                OkClient okClient = new OkClient(okClientConfig, new OkFormsRecognizer());
+            }
 
-
-        } catch (IOException /*| ParseException | URISyntaxException*/ e) {
+        } catch (IOException | ParseException | URISyntaxException e) {
             LOG.error(e);
             // e.printStackTrace(); // <- for deep debug
         }

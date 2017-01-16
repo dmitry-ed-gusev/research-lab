@@ -125,69 +125,45 @@ public class VkClient extends AbstractClient {
         httpResponse = this.sendHttpGet(vkTokenRequest);
 
         try {
-
             // process login/access/add digits forms
             String actionUrl;
             List<NameValuePair> formParamsList;
             for (int counter = 1; counter <= VK_ACCESS_ATTEMPTS_COUNT; counter++) {
 
-                // get http entity and cookies
-                httpEntity = httpResponse.getEntity();
-                httpCookies = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER); // save cookies
+                httpEntity      = httpResponse.getEntity();                                   // get http entity
+                httpCookies     = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER);           // save cookies
+                httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING); // get html page content as string
 
-                // get page content for parsing
-                httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
-                //httpStringResponse = HttpUtilities.httpResponseToString(httpResponse, httpPageContent);
                 if (LOG.isDebugEnabled()) { // just debug output
                     LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
                 }
 
-                Document doc = Jsoup.parse(httpPageContent); // parse returned page into Document object
-                // check received form type
-                receivedFormType = this.getHttpFormType(doc);
+                Document doc = Jsoup.parse(httpPageContent);  // parse returned page into Document object
+                receivedFormType = this.getHttpFormType(doc); // check received form type
                 LOG.debug(String.format("Got VK form: [%s].", receivedFormType));
 
+                // todo: extract method for some actions
                 switch (receivedFormType) { // select action, based on form type
 
-                    case LOGIN_FORM: // VK Login form
+                    case LOGIN_FORM: // VK -> simple login form
                         LOG.debug(String.format("Processing [%s].", LOGIN_FORM));
-
-                        actionUrl = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
-                        LOG.debug(String.format("Form action: [%s].", actionUrl));
-
+                        actionUrl      = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
                         formParamsList = HttpUtilities.getFirstFormParams(doc, VK_LOGIN_FORM_CREDENTIALS); // get from and fill it in
-
-                        // prepare and execute next http request (send form)
-                        httpResponse = this.sendHttpPost(actionUrl, formParamsList, httpCookies);
+                        httpResponse   = this.sendHttpPost(actionUrl, formParamsList, httpCookies); // execute next http request (send form)
                         break;
 
                     case APPROVE_ACCESS_RIGHTS_FORM: // VK approve application rights
                         LOG.debug(String.format("Processing [%s].", APPROVE_ACCESS_RIGHTS_FORM));
-
-                        actionUrl = HttpUtilities.getFirstFormActionURL(doc); // get form action URL
-                        LOG.debug(String.format("Form action: [%s].", actionUrl));
-
-                        formParamsList = HttpUtilities.getFirstFormParams(doc, null); // get from and fill it in
-
-                        // prepare and execute next http request (send form)
-                        httpResponse = this.sendHttpPost(actionUrl, formParamsList, httpCookies);
+                        actionUrl      = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
+                        formParamsList = HttpUtilities.getFirstFormParams(doc, null); // get form and fill it in
+                        httpResponse   = this.sendHttpPost(actionUrl, formParamsList, httpCookies); // execute next http request (send form)
                         break;
 
                     case ADD_MISSED_DIGITS_FORM: // VK add missed phone number digits form
                         LOG.debug(String.format("Processing [%s].", ADD_MISSED_DIGITS_FORM));
-
-                        actionUrl = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
-                        LOG.debug(String.format("Form action: [%s].", actionUrl));
-
-                        if (actionUrl.startsWith("/")) { // fix action URL, if necessary
-                            actionUrl = "https://vk.com" + actionUrl;
-                            LOG.debug(String.format("Action URI fixed: [%s].", actionUrl));
-                        }
-
+                        actionUrl      = HttpUtilities.getFirstFormActionURL(doc, "https://vk.com"); // gets form action URL (and fix it)
                         formParamsList = HttpUtilities.getFirstFormParams(doc, VK_MISSED_DIGITS_FORM_CREDENTIALS); // get from and fill it in
-
-                        // prepare and execute next http request (send form)
-                        httpResponse = this.sendHttpPost(actionUrl, formParamsList, httpCookies);
+                        httpResponse   = this.sendHttpPost(actionUrl, formParamsList, httpCookies); // execute next http request (send form)
                         break;
 
                     case ACCESS_TOKEN_FORM: // VK token page/form
@@ -196,18 +172,18 @@ public class VkClient extends AbstractClient {
                         // parse redirect and get access token from URL
                         RedirectLocations locations = this.getContextRedirectLocations();
                         if (locations != null) { // parse last redirect locations and get access token
-                            // get the last redirect URI - it's what we need
-                            URI finalUri = locations.getAll().get(locations.getAll().size() - 1);
+                            URI finalUri = locations.getAll().get(locations.getAll().size() - 1); // get the last redirect URI - it's what we need
                             String accessToken = StringUtils.split(StringUtils.split(finalUri.getFragment(), "&")[0], "=")[1];
                             LOG.debug(String.format("Received ACCESS_TOKEN: [%s].", accessToken));
                             return new ImmutablePair<>(new Date(), accessToken);
-                        } else { //
+                        } else { // last redirect locations is empty
                             LOG.error("Can't find last redirect locations (list is null)!");
                         }
                         break;
 
                     default: // default case - unknown form
                         LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
+                        CommonUtilities.saveStringToFile(httpPageContent); // save unknown form to file (for analysis)
                         return null; // no access token!
                 }
 

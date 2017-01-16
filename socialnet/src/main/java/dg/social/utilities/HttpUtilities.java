@@ -220,18 +220,33 @@ public final class HttpUtilities {
         return HttpUtilities.sendHttpPost(httpClient, httpContext, requestConfig, URI.create(uri), postParams, cookies);
     }
 
-    /** Returns action URL from first found html form. */
-    public static String getFirstFormActionURL(Document document) {
+    /**
+     * Returns action URL from first found html form in received Document.
+     * If fixPrefix isn't null/empty and calculated URL starts with "/" - prefix will be added.
+     */
+    public static String getFirstFormActionURL(Document document, String fixPrefix) {
         LOG.debug("HttpUtilities.getFirstFormActionURL() working.");
 
         if (document == null) { // fail-fast
             throw new IllegalArgumentException("Can't extract action URL from null html document!");
         }
 
+        // extract form action URL
         String actionUrl = document.getElementsByTag(HTTP_FORM_TAG).first().attr(HTTP_FORM_ACTION_ATTR);
         LOG.debug(String.format("Found form action URL: [%s].", actionUrl));
 
+        // fix extracted URL (if necessary)
+        if (actionUrl.startsWith("/") && !StringUtils.isBlank(fixPrefix)) {
+            actionUrl = fixPrefix + actionUrl;
+            LOG.debug(String.format("Fixed extracted action URL: [%s].", actionUrl));
+        }
+
         return actionUrl;
+    }
+
+    /** Returns action URL from first found html form in received Document. */
+    public static String getFirstFormActionURL(Document document) {
+        return HttpUtilities.getFirstFormActionURL(document, null);
     }
 
     /** Return all parameters from VK login form (with email/pass added). */
@@ -260,6 +275,7 @@ public final class HttpUtilities {
                 }
             }
 
+            // todo !!!!
             // add found parameter to parameters list
             //if (!StringUtils.isBlank(inputKey)) {
                 paramsList.add(new BasicNameValuePair(inputKey, inputValue));
