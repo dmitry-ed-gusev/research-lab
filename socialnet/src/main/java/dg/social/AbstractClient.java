@@ -9,10 +9,7 @@ import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.http.impl.client.RedirectLocations;
+import org.apache.http.impl.client.*;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.jsoup.nodes.Document;
@@ -20,13 +17,14 @@ import org.jsoup.nodes.Document;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Base abstract class for social networks clients.
  * Created by gusevdm on 1/10/2017.
  */
 
-public class AbstractClient {
+public abstract class AbstractClient {
 
     private static final Log LOG = LogFactory.getLog(AbstractClient.class);
 
@@ -36,10 +34,10 @@ public class AbstractClient {
     private final RequestConfig       HTTP_REQUEST_CONFIG;
 
     private AbstractClientConfig config;
-    private HttpFormRecognizer   formRecognizer;
+    private HtmlFormRecognizer formRecognizer;
 
     /***/
-    public AbstractClient(AbstractClientConfig config, HttpFormRecognizer formRecognizer) {
+    public AbstractClient(AbstractClientConfig config, HtmlFormRecognizer formRecognizer) {
         LOG.debug("AbstractClient constructor() working.");
 
         if (config == null || formRecognizer == null) { // fail-fast
@@ -93,7 +91,7 @@ public class AbstractClient {
 
     /***/
     public HttpFormType getHttpFormType(Document document) {
-        return this.formRecognizer.getHttpFormType(document);
+        return this.formRecognizer.getHtmlFormType(document);
     }
 
     /***/
@@ -109,16 +107,16 @@ public class AbstractClient {
     }
 
     /***/
-    public CloseableHttpResponse sendHttpPost(String uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
-        LOG.debug("AbstractClient.sendHttpPost(String) working.");
-        return HttpUtilities.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri, postParams, cookies);
-    }
+    //public CloseableHttpResponse sendHttpPost(String uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
+    //    LOG.debug("AbstractClient.sendHttpPost(String) working.");
+    //    return HttpUtilities.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri, postParams, cookies);
+    //}
 
     /***/
-    public CloseableHttpResponse sendHttpPost(URI uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
-        LOG.debug("AbstractClient.sendHttpPost(URI) working.");
-        return HttpUtilities.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri, postParams, cookies);
-    }
+    //public CloseableHttpResponse sendHttpPost(URI uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
+    //    LOG.debug("AbstractClient.sendHttpPost(URI) working.");
+    //    return HttpUtilities.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri, postParams, cookies);
+    //}
 
     /***/
     public RedirectLocations getContextRedirectLocations() {
@@ -126,5 +124,30 @@ public class AbstractClient {
         return (RedirectLocations) this.HTTP_CONTEXT.getAttribute(HttpClientContext.REDIRECT_LOCATIONS);
     }
 
+    /***/
+    public CloseableHttpResponse submitForm(Document document, String actionPrefix, Map<String, String> additionalFormParams, Header[] cookies) throws IOException {
+        LOG.debug("AbstractClient.submitForm() working.");
+
+        if (document == null) { // fail-fast
+            throw new IllegalArgumentException("Can't submit null-form!");
+        }
+
+        // prepare some parameters
+        String              actionUrl      = HttpUtilities.getFirstFormActionURL(document, actionPrefix);
+        List<NameValuePair> formParamsList = HttpUtilities.getFirstFormParams(document, additionalFormParams);
+        // submit form and return http response
+        //return this.sendHttpPost(actionUrl, formParamsList, cookies);
+        return HttpUtilities.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, actionUrl, formParamsList, cookies);
+    }
+
+    /***/
+    public CloseableHttpResponse submitForm(Document document, Map<String, String> additionalFormParams, Header[] cookies) throws IOException {
+        return this.submitForm(document, null, additionalFormParams, cookies);
+    }
+
+    /***/
+    public CloseableHttpResponse submitForm(Document document, Header[] cookies) throws IOException {
+        return this.submitForm(document, null, cookies);
+    }
 
 }

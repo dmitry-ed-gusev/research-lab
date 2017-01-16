@@ -4,43 +4,27 @@ import dg.social.AbstractClient;
 import dg.social.HttpFormType;
 import dg.social.utilities.CommonUtilities;
 import dg.social.utilities.HttpUtilities;
-import dg.social.vk.VkClient;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.client.RedirectLocations;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static dg.social.CommonDefaults.DEFAULT_ENCODING;
 import static dg.social.HttpFormType.ACCESS_TOKEN_FORM;
-import static dg.social.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
 import static dg.social.HttpFormType.LOGIN_FORM;
-import static dg.social.utilities.HttpUtilities.HTTP_DEFAULT_HEADERS;
 import static dg.social.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
 
 /**
@@ -76,7 +60,7 @@ public class OkClient extends AbstractClient {
     }
 
     /***/
-    private String getAccessToken() throws IOException {
+    private Pair<Date, String> getAccessToken() throws IOException {
         LOG.debug("OkClient.getAccessToken() working. [PRIVATE]");
 
         // generate and execute ACCESS_TOKEN request
@@ -95,8 +79,6 @@ public class OkClient extends AbstractClient {
 
         try {
             // process login/access/add digits forms
-            String actionUrl;
-            List<NameValuePair> formParamsList;
             for (int counter = 1; counter <= OK_ACCESS_ATTEMPTS_COUNT; counter++) {
 
                 httpEntity = httpResponse.getEntity();                                        // get http entity
@@ -111,36 +93,16 @@ public class OkClient extends AbstractClient {
                 receivedFormType = this.getHttpFormType(doc); // check received form type
                 LOG.debug(String.format("Got OK form: [%s].", receivedFormType));
 
-                // todo: extract method for some actions
                 switch (receivedFormType) { // select action, based on form type
 
                     case LOGIN_FORM: // OK -> simple login form
                         LOG.debug(String.format("Processing [%s].", LOGIN_FORM));
-                        actionUrl      = HttpUtilities.getFirstFormActionURL(doc, "https://connect.ok.ru"); // gets form action URL
-                        formParamsList = HttpUtilities.getFirstFormParams(doc, OK_LOGIN_FORM_CREDENTIALS); // get from and fill it in
-                        httpResponse   = this.sendHttpPost(actionUrl, formParamsList, httpCookies); // execute next http request (send form)
-                        break;
-
-                    case APPROVE_ACCESS_RIGHTS_FORM: // OK -> approve application rights form
-                        LOG.debug(String.format("Processing [%s].", APPROVE_ACCESS_RIGHTS_FORM));
-
-                        actionUrl = HttpUtilities.getFirstFormActionURL(doc); // get form action URL
-                        LOG.debug(String.format("Form action: [%s].", actionUrl));
-
-                        formParamsList = HttpUtilities.getFirstFormParams(doc, null); // get from and fill it in
-                        if (LOG.isDebugEnabled()) { // just a debug
-                            StringBuilder pairs = new StringBuilder();
-                            formParamsList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
-                            LOG.debug(String.format("Found name-value pairs in OK form:%n%s", pairs.toString()));
-                        }
-
-                        // prepare and execute next http request (send form)
-                        //httpResponse = HttpUtilities.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl, formParamsList, httpCookies);
+                        httpResponse = this.submitForm(doc, "https://connect.ok.ru", OK_LOGIN_FORM_CREDENTIALS, httpCookies);
                         break;
 
                     case ACCESS_TOKEN_FORM: // OK -> access token form (final)
+                        // todo: implement getting secret_session_key
                         LOG.debug(String.format("Processing [%s].", ACCESS_TOKEN_FORM));
-
                         // parse redirect and get access token from URL
                         RedirectLocations locations = this.getContextRedirectLocations();
                         if (locations != null) { // parse last redirect locations and get access token
@@ -148,7 +110,7 @@ public class OkClient extends AbstractClient {
                             URI finalUri = locations.getAll().get(locations.getAll().size() - 1);
                             String accessToken = StringUtils.split(StringUtils.split(finalUri.getFragment(), "&")[0], "=")[1];
                             LOG.debug(String.format("Received ACCESS_TOKEN: [%s].", accessToken));
-                            //return new ImmutablePair<>(new Date(), accessToken);
+                            return new ImmutablePair<>(new Date(), accessToken);
                         } else { //
                             LOG.error("Can't find last redirect locations (list is null)!");
                         }
@@ -156,7 +118,8 @@ public class OkClient extends AbstractClient {
 
                     default: // default case - unknown form
                         LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
-                        CommonUtilities.saveStringToFile(httpPageContent); // save unknown form to file (for analysis)
+                        String unknownFormFile = CommonUtilities.saveStringToFile(httpPageContent); // save unknown form to file (for analysis)
+                        LOG.info(String.format("Unknown form save to file [%s].", unknownFormFile));
                         return null; // can't get access token
                 }
 

@@ -1,6 +1,6 @@
 package dg.social.vk;
 
-import dg.social.HttpFormRecognizer;
+import dg.social.HtmlFormRecognizer;
 import dg.social.HttpFormType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,7 +16,7 @@ import static dg.social.utilities.HttpUtilities.HTTP_FORM_TAG;
  * Created by gusevdm on 1/11/2017.
  */
 
-public class VkFormsRecognizer implements HttpFormRecognizer {
+public class VkFormsRecognizer implements HtmlFormRecognizer {
 
     private static final Log LOG = LogFactory.getLog(VkFormsRecognizer.class);
 
@@ -38,8 +38,8 @@ public class VkFormsRecognizer implements HttpFormRecognizer {
     private static final String ACCESS_TOKEN_FORM_TITLE         = "OAuth Blank";
 
     @Override
-    public HttpFormType getHttpFormType(Document document) {
-        LOG.debug("VkFormsRecognizer.getHttpFormType() working.");
+    public HttpFormType getHtmlFormType(Document document) {
+        LOG.debug("VkFormsRecognizer.getHtmlFormType() working.");
 
         if (document == null) { // quick check
             LOG.warn("Received document is null!");

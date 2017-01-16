@@ -18,7 +18,7 @@ public class OkClientConfig extends AbstractClientConfig {
     // default redirect URI
     private static final String REDIRECT_URI  = "https://api.ok.ru/blank.html";
     // scope for requesting access token (see https://apiok.ru/ext/oauth/permissions)
-    private static final String REQUEST_SCOPE = "VALUABLE_ACCESS";
+    private static final String REQUEST_SCOPE = "VALUABLE_ACCESS,PHOTO_CONTENT";
     // request for access token
     private static final String ACCESS_TOKEN_REQUEST =
             "https://connect.ok.ru/oauth/authorize?client_id=%s&scope=%s&response_type=token&redirect_uri=%s&layout=%s&state=123456";

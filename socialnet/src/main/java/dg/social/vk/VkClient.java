@@ -12,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.RedirectLocations;
@@ -46,8 +45,8 @@ public class VkClient extends AbstractClient {
     private static final Log LOG = LogFactory.getLog(VkClient.class); // module logger
 
     private final Map<String, String> VK_LOGIN_FORM_CREDENTIALS;         // VK login form credentials
-    private static final String LOGIN_FORM_EMAIL_KEY        = "email";          // VK login form email element
-    private static final String LOGIN_FORM_PASS_KEY         = "pass";           // VK login form pass element
+    private static final String LOGIN_FORM_EMAIL_KEY        = "email";   // VK login form email element
+    private static final String LOGIN_FORM_PASS_KEY         = "pass";    // VK login form pass element
 
     private final Map<String, String> VK_MISSED_DIGITS_FORM_CREDENTIALS; // Missed phone number digits
     private static final String MISSED_DIGITS_FORM_CODE_KEY = "code";
@@ -126,8 +125,6 @@ public class VkClient extends AbstractClient {
 
         try {
             // process login/access/add digits forms
-            String actionUrl;
-            List<NameValuePair> formParamsList;
             for (int counter = 1; counter <= VK_ACCESS_ATTEMPTS_COUNT; counter++) {
 
                 httpEntity      = httpResponse.getEntity();                                   // get http entity
@@ -147,23 +144,17 @@ public class VkClient extends AbstractClient {
 
                     case LOGIN_FORM: // VK -> simple login form
                         LOG.debug(String.format("Processing [%s].", LOGIN_FORM));
-                        actionUrl      = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
-                        formParamsList = HttpUtilities.getFirstFormParams(doc, VK_LOGIN_FORM_CREDENTIALS); // get from and fill it in
-                        httpResponse   = this.sendHttpPost(actionUrl, formParamsList, httpCookies); // execute next http request (send form)
+                        httpResponse = this.submitForm(doc, VK_LOGIN_FORM_CREDENTIALS, httpCookies);
                         break;
 
                     case APPROVE_ACCESS_RIGHTS_FORM: // VK approve application rights
                         LOG.debug(String.format("Processing [%s].", APPROVE_ACCESS_RIGHTS_FORM));
-                        actionUrl      = HttpUtilities.getFirstFormActionURL(doc); // gets form action URL
-                        formParamsList = HttpUtilities.getFirstFormParams(doc, null); // get form and fill it in
-                        httpResponse   = this.sendHttpPost(actionUrl, formParamsList, httpCookies); // execute next http request (send form)
+                        httpResponse = this.submitForm(doc, httpCookies);
                         break;
 
                     case ADD_MISSED_DIGITS_FORM: // VK add missed phone number digits form
                         LOG.debug(String.format("Processing [%s].", ADD_MISSED_DIGITS_FORM));
-                        actionUrl      = HttpUtilities.getFirstFormActionURL(doc, "https://vk.com"); // gets form action URL (and fix it)
-                        formParamsList = HttpUtilities.getFirstFormParams(doc, VK_MISSED_DIGITS_FORM_CREDENTIALS); // get from and fill it in
-                        httpResponse   = this.sendHttpPost(actionUrl, formParamsList, httpCookies); // execute next http request (send form)
+                        httpResponse = this.submitForm(doc, "https://vk.com", VK_MISSED_DIGITS_FORM_CREDENTIALS, httpCookies);
                         break;
 
                     case ACCESS_TOKEN_FORM: // VK token page/form

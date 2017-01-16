@@ -7,9 +7,9 @@ import org.jsoup.nodes.Document;
  * Created by gusevdm on 1/11/2017.
  */
 
-public interface HttpFormRecognizer {
+public interface HtmlFormRecognizer {
 
     /***/
-    HttpFormType getHttpFormType(Document document);
+    HttpFormType getHtmlFormType(Document document);
 
 }

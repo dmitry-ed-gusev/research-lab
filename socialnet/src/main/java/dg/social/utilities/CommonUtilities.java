@@ -85,6 +85,7 @@ public final class CommonUtilities {
      * If received string is empty throws run-time exception.
      */
     // todo: thread safety!
+    // todo: add file name prefix - to determine source (social network client) for current file
     public static String saveStringToFile(String string) throws IOException {
         LOG.debug("CommonUtilities.saveStringToFile() working.");
 

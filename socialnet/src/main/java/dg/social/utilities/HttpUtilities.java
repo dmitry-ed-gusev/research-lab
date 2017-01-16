@@ -37,9 +37,6 @@ public final class HttpUtilities {
 
     private static final Log LOG = LogFactory.getLog(HttpUtilities.class); // module logger
 
-    /** Default http proxy server (Merck). */
-    //public static final HttpHost HTTP_DEFAULT_PROXY = new HttpHost("webproxy.merck.com", 8080);
-
     /** Default http headers for http client. */
     public static final Header[] HTTP_DEFAULT_HEADERS = {
             new BasicHeader("User-Agent",      "Mozilla/5.0"),
