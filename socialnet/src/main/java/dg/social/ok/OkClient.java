@@ -106,8 +106,11 @@ public class OkClient extends AbstractClient {
                         // parse redirect and get access token from URL
                         RedirectLocations locations = this.getContextRedirectLocations();
                         if (locations != null) { // parse last redirect locations and get access token
-                            // get the last redirect URI - it's what we need
+                            // get the last redirect URI (params) - it's what we need
+                            //String uriParams =
+                            //finalUri
                             URI finalUri = locations.getAll().get(locations.getAll().size() - 1);
+                            //finalUri.get
                             String accessToken = StringUtils.split(StringUtils.split(finalUri.getFragment(), "&")[0], "=")[1];
                             LOG.debug(String.format("Received ACCESS_TOKEN: [%s].", accessToken));
                             return new ImmutablePair<>(new Date(), accessToken);
