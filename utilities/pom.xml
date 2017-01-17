@@ -58,7 +58,7 @@
                 <executions>
                     <execution>
                         <id>dep-copy</id>
-                        <phase>package</phase>
+                        <phase>${prod.build.phase}</phase>
                         <goals><goal>copy-dependencies</goal></goals>
                     </execution>
                 </executions>
@@ -70,7 +70,7 @@
                 <executions>
                     <execution>
                         <id>copy-files</id>
-                        <phase>install</phase>
+                        <phase>${prod.build.phase}</phase>
                         <goals><goal>run</goal></goals>
                     </execution>
                 </executions>
