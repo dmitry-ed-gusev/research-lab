@@ -43,7 +43,7 @@
                 <!-- execution configuration for this plugin (when this module should be executed - phase, goal) -->
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <phase>${prod.build.phase}</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>

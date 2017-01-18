@@ -169,4 +169,10 @@ public class MoneyAmount {
         if (n1 == 1) return f1;
         return f5;
     }
+
+    public static void main(String[] args) {
+        MoneyAmount amount = new MoneyAmount(13_000_000_00.09);
+        System.out.println(amount.num2str());
+    }
+
 }
