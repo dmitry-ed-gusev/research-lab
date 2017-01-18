@@ -2,7 +2,7 @@ package dg.social.vk;
 
 import dg.social.AbstractClient;
 import dg.social.HttpFormType;
-import dg.social.domain.VkUser;
+import dg.social.domain.Person;
 import dg.social.utilities.CommonUtilities;
 import dg.social.utilities.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
@@ -174,7 +174,8 @@ public class VkClient extends AbstractClient {
 
                     default: // default case - unknown form
                         LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
-                        CommonUtilities.saveStringToFile(httpPageContent); // save unknown form to file (for analysis)
+                        String fileName = String.valueOf(System.currentTimeMillis()) + "_data_file.tmp";
+                        CommonUtilities.saveStringToFile(httpPageContent, fileName, false); // save unknown form to file (for analysis)
                         return null; // no access token!
                 }
 
@@ -218,16 +219,17 @@ public class VkClient extends AbstractClient {
         HttpEntity httpEntity = httpResponse.getEntity();
         // get page content for parsing
         String httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
-        if (LOG.isDebugEnabled()) { // just debug output
-            LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
-        }
+
+        //if (LOG.isDebugEnabled()) { // just debug output <- too much output
+        //    LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
+        //}
 
         // return received JSON
         return httpPageContent;
     }
 
     /***/
-    public List<VkUser> usersSearch(VkUser user) {
+    public List<Person> usersSearch(Person user) {
         // todo: implement search using user template parameter
         return null;
     }

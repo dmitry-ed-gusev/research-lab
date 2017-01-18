@@ -81,20 +81,30 @@ public final class CommonUtilities {
     }
 
     /**
-     * Saves string to file with auto-generated file name (based on time). Returns generated file name.
+     * Saves string to file with specified or auto-generated file name (based on time).
+     * Returns file name.
      * If received string is empty throws run-time exception.
      */
     // todo: thread safety!
     // todo: add file name prefix - to determine source (social network client) for current file
-    public static String saveStringToFile(String string) throws IOException {
+    public static void saveStringToFile(String string, String fileName, boolean overwrite) throws IOException {
         LOG.debug("CommonUtilities.saveStringToFile() working.");
 
-        if (StringUtils.isBlank(string)) {
-            throw new IllegalArgumentException("Can't save empty string to file!");
+        if (StringUtils.isBlank(string) || StringUtils.isBlank(fileName)) {
+            throw new IllegalArgumentException(
+                    String.format("String to save [%s] and/or file name [%s] is empty!", string, fileName));
         }
 
-        // generate file name
-        String fileName = String.valueOf(System.currentTimeMillis()) + "_data_file.tmp";
+        // check for file existence (delete if needed)
+        File file = new File(fileName);
+        if (file.exists() && overwrite) {
+            boolean isDeleteOK = file.delete();
+            LOG.info(String.format("File [%s] exists. Removing -> [%s].", fileName, isDeleteOK ? "OK" : "Fail"));
+            if (!isDeleteOK) { // if can't delete - we won't process.
+                throw new IllegalStateException(String.format("Cant't delete file [%s]!", fileName));
+            }
+        }
+
         // write data to file
         try (FileWriter fw = new FileWriter(fileName);
              BufferedWriter bw = new BufferedWriter(fw);
@@ -102,7 +112,6 @@ public final class CommonUtilities {
             out.print(string); // write data to file
         }
 
-        return fileName;
     }
 
 }

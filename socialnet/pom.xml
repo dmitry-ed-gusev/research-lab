@@ -85,8 +85,16 @@
                         </goals>
                         <configuration>
                             <tasks>
+                                <!-- copy .properties file -->
                                 <copy todir="${assembly.dir}" failonerror="true">
                                     <fileset dir="${basedir}"><include name="crawler.properties"/></fileset>
+                                </copy>
+                                <!-- copy+filter .bat file -->
+                                <copy todir="${assembly.dir}" failonerror="true">
+                                    <fileset dir="${basedir}"><include name="crawler.bat"/></fileset>
+                                    <filterset>
+                                        <filter token="JAR_NAME"  value="${jar.name}"/>
+                                    </filterset>
                                 </copy>
                             </tasks>
                         </configuration>

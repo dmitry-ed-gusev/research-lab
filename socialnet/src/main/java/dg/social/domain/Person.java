@@ -4,10 +4,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * Domain object - VK user (human).
+ * Domain object - one person user (human).
  * Created by vinnypuhh on 24.12.16.
  */
-public class VkUser {
+public class Person {
 
     // mai mandatory fields
     private long   id;        // user identity
@@ -32,7 +32,7 @@ public class VkUser {
     private String homeTown;
 
     /***/
-    public VkUser(long id, String firstName, String lastName) {
+    public Person(long id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

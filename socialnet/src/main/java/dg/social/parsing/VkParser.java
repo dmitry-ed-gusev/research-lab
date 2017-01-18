@@ -1,6 +1,6 @@
 package dg.social.parsing;
 
-import dg.social.domain.VkUser;
+import dg.social.domain.Person;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,14 +28,14 @@ public final class VkParser {
     private VkParser() {}
 
     /***/
-    public static List<VkUser> parseUsers(String jsonSearchResult) throws ParseException {
+    public static List<Person> parseUsers(String jsonSearchResult) throws ParseException {
         LOG.debug("VkParser.parseUsers() working.");
 
         if (StringUtils.isBlank(jsonSearchResult)) { // fail-fast
             throw new IllegalArgumentException("Can't parse empty search results!");
         }
 
-        List<VkUser> usersList = new ArrayList<>(); // resulting list of users
+        List<Person> usersList = new ArrayList<>(); // resulting list of users
 
         // parsing JSON with search results
         JSONObject jsonObject = (JSONObject) JSON_PARSER.parse(jsonSearchResult);
@@ -44,14 +44,14 @@ public final class VkParser {
         LOG.debug(String.format("Response contains [%s] items, total [%s] items.", items.size(), response.get("count")));
 
         // iterate over found items and create list of users
-        VkUser     user;
+        Person user;
         JSONObject item;
         for (Object object : items) {
 
-            System.out.println("item -> " + object);
+            //System.out.println("item -> " + object); // <- too much output
 
             item = (JSONObject) object;
-            user = new VkUser((Long) item.get("id"), (String) item.get("first_name"), (String) item.get("last_name"));
+            user = new Person((Long) item.get("id"), (String) item.get("first_name"), (String) item.get("last_name"));
 
             // additional fields
             user.setAbout(String.valueOf(item.get("about")));

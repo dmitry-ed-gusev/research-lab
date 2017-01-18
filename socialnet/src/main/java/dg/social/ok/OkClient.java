@@ -121,8 +121,8 @@ public class OkClient extends AbstractClient {
 
                     default: // default case - unknown form
                         LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
-                        String unknownFormFile = CommonUtilities.saveStringToFile(httpPageContent); // save unknown form to file (for analysis)
-                        LOG.info(String.format("Unknown form save to file [%s].", unknownFormFile));
+                        //String unknownFormFile = CommonUtilities.saveStringToFile(httpPageContent); // save unknown form to file (for analysis)
+                        //LOG.info(String.format("Unknown form save to file [%s].", unknownFormFile));
                         return null; // can't get access token
                 }
 
