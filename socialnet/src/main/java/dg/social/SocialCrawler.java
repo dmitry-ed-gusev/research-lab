@@ -94,11 +94,11 @@ public class SocialCrawler {
             System.exit(1);
         }
 
-        try {
-            searchString = new String(searchString.getBytes(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e);
-        }
+        //try {
+        //    searchString = new String(searchString.getBytes(), "UTF-8");
+        //} catch (UnsupportedEncodingException e) {
+        //    LOG.error(e);
+        //}
 
         // get output file value and force option
         boolean forceOutput = cmdLine.hasOption(OUTPUT_FORCE.getOptionName());
