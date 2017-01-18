@@ -15,16 +15,22 @@ import java.util.Arrays;
  * Created by gusevdm on 28/12/2016.
 */
 
+// todo: immutability (copy ArrayList on instance creation)
 public class CmdLine {
 
     private static final Log LOG = LogFactory.getLog(CmdLine.class); // module logger
 
-    private ArrayList<String> cmdLine = new ArrayList<>(); // cmd line internal storage
+    private boolean           isLoggingEnabled = true;              // enable/disable class internal logging
+    private ArrayList<String> cmdLine          = new ArrayList<>(); // cmd line internal storage
 
     /** If args is null, constructor will throw IllegalArgumentException. */
-    public CmdLine(String[] args) {
-        LOG.debug(String.format("CmdLine constructor() working. Cmd line: %s.",
-                (args != null ? Arrays.toString(args) : "null")));
+    public CmdLine(String[] args, boolean isLoggingEnabled) {
+
+        this.isLoggingEnabled = isLoggingEnabled;
+
+        if (isLoggingEnabled) {
+            LOG.debug(String.format("CmdLine constructor() working. Cmd line: %s.", (args != null ? Arrays.toString(args) : "null")));
+        }
 
         if (args == null) { // fail-fast
             throw new IllegalArgumentException("Empty command line string!");
@@ -35,10 +41,7 @@ public class CmdLine {
 
     /** Check presence of option with "-" (minus) sign. */
     public boolean hasOption(String option) {
-        if (!cmdLine.isEmpty() && !StringUtils.isBlank(option) && cmdLine.contains(option)) {
-            return true;
-        }
-        return false;
+        return !cmdLine.isEmpty() && !StringUtils.isBlank(option) && cmdLine.contains(option);
     }
 
     /** Returns first found value for specified option. In option use "-" (minus) sign. */

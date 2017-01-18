@@ -13,7 +13,6 @@ public final class CommonDefaults {
 
     /** Default encoding for content. */
     public static final String           DEFAULT_ENCODING = "UTF-8";
-
     /** Default date/time format. */
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
