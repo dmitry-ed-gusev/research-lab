@@ -41,7 +41,7 @@
                 <executions>
                     <execution>
                         <id>project-copy-batch-files</id>
-                        <phase>package</phase>
+                        <phase>${prod.build.phase}</phase>
                         <goals><goal>run</goal></goals>
                         <configuration>
                             <tasks>

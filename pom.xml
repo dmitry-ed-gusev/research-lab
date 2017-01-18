@@ -64,6 +64,7 @@
             </activation>
             <properties>
                 <env>dev</env>
+                <prod.build.phase>none</prod.build.phase>
             </properties>
             <!-- All modules to build -->
             <modules>
@@ -81,6 +82,7 @@
             <id>env-prod-all</id>
             <properties>
                 <env>prod</env>
+                <prod.build.phase>package</prod.build.phase>
             </properties>
             <!-- All modules to build -->
             <modules>
@@ -98,6 +100,7 @@
             <id>env-dev-simple</id>
             <properties>
                 <env>dev</env>
+                <prod.build.phase>none</prod.build.phase>
             </properties>
             <!-- Some of modules to build -->
             <modules>
