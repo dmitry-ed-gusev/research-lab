@@ -1,14 +1,15 @@
-package gusev.dmitry.research.utils;
+package gusev.dmitry.jtils.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.math.BigDecimal;
  
 /**
- * Класс для работы с деньгами
- * @author runcore
+ * Process money amount (digits) and write it in words (russian).
+ * @author Gusevd D.
  */
-public class MoneyAmount {
+
+public class MoneyAmountInWords {
  
     /**
      * Сумма денег
@@ -18,7 +19,7 @@ public class MoneyAmount {
     /**
      * Конструктор из Long
      */
-    public MoneyAmount(long l) {
+    public MoneyAmountInWords(long l) {
         String s = String.valueOf(l);
         if (!s.contains(".") )
             s += ".0";
@@ -28,7 +29,7 @@ public class MoneyAmount {
     /**
      * Конструктор из Double
      */
-    public MoneyAmount(double l) {
+    public MoneyAmountInWords(double l) {
         String s = String.valueOf(l);
         if (!s.contains(".") )
             s += ".0";
@@ -38,7 +39,7 @@ public class MoneyAmount {
     /**
      * Конструктор из String
      */
-    public MoneyAmount(String s) {
+    public MoneyAmountInWords(String s) {
         if (!s.contains(".") )
             s += ".0";
         this.amount = new BigDecimal( s );
@@ -168,11 +169,6 @@ public class MoneyAmount {
         if (n1 > 1 && n1 < 5) return f2;
         if (n1 == 1) return f1;
         return f5;
-    }
-
-    public static void main(String[] args) {
-        MoneyAmount amount = new MoneyAmount(13_000_000_00.09);
-        System.out.println(amount.num2str());
     }
 
 }
