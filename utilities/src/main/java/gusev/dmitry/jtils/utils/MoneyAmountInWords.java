@@ -40,6 +40,11 @@ public class MoneyAmountInWords {
      * Конструктор из String
      */
     public MoneyAmountInWords(String s) {
+
+        if (s == null) { // fail-fast
+            throw new IllegalArgumentException("Can't convert to words NULL amount!");
+        }
+
         if (!s.contains(".") )
             s += ".0";
         this.amount = new BigDecimal( s );
