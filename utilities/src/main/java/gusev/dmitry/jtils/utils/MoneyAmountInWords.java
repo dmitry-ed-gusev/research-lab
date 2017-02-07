@@ -9,8 +9,13 @@ import java.math.BigDecimal;
  * @author Gusevd D.
  */
 
+// todo: move message to constant
+// todo: maybe change "00 копеек" -> "0 копеек" for any case
+
 public class MoneyAmountInWords {
- 
+
+    private static final String NEGATIVE_VALUE = "Can't process negative value [%s]!";
+
     /**
      * Сумма денег
      */
@@ -70,6 +75,8 @@ public class MoneyAmountInWords {
      * @return String Сумма прописью
      */
     public String num2str(boolean stripkop) {
+
+        // todo: move to constants
         String[][] sex = {
             {"","один","два","три","четыре","пять","шесть","семь","восемь","девять"},
             {"","одна","две","три","четыре","пять","шесть","семь","восемь","девять"},
@@ -86,14 +93,22 @@ public class MoneyAmountInWords {
             {"триллион","триллиона","триллионов","0"},
             // можно добавлять дальше секстиллионы и т.д.
         };
+
+        if (amount.signum() == -1) { // check argument
+            throw new IllegalArgumentException(String.format(NEGATIVE_VALUE, amount));
+        }
+
         // получаем отдельно рубли и копейки
         long rub = amount.longValue();
         String[] moi = amount.toString().split("\\.");
-        long kop = Long.valueOf(moi[1]);
-        if (!moi[1].substring( 0,1).equals("0") ){// начинается не с нуля
+
+        long kop = (moi.length > 1 ? Long.valueOf(moi[1]) : 0L); // for case xx.
+
+        if (moi.length > 1 && !moi[1].substring( 0,1).equals("0")) { // начинается не с нуля
             if (kop<10 )
                 kop *=10;
         }
+
         String kops = String.valueOf(kop);
         if (kops.length()==1 )
             kops = "0"+kops;
@@ -107,6 +122,7 @@ public class MoneyAmountInWords {
         }
         segments.add( rub_tmp );
         Collections.reverse(segments);
+
         // Анализируем сегменты
         String o = "";
         if (rub== 0) {// если Ноль
@@ -116,6 +132,7 @@ public class MoneyAmountInWords {
             else
                 return o +" "+kop+" "+morph(kop,forms[ 0][ 0],forms[ 0][1],forms[ 0][2]);
         }
+
         // Больше нуля
         int lev = segments.size();
         for (int i= 0; i<segments.size(); i++ ) {// перебираем сегменты
@@ -125,10 +142,13 @@ public class MoneyAmountInWords {
                 lev--;
                 continue;
             }
+
             String rs = String.valueOf(ri); // число в строку
+
             // нормализация
             if (rs.length()==1) rs = "00"+rs;// два нулика в префикс?
             if (rs.length()==2) rs = "0"+rs; // или лучше один?
+
             // получаем циферки для анализа
             int r1 = (int)Integer.valueOf( rs.substring( 0,1) ); //первая цифра
             int r2 = (int)Integer.valueOf( rs.substring(1,2) ); //вторая
@@ -167,7 +187,7 @@ public class MoneyAmountInWords {
      * @param f5 String вариант словоформы для пяти объектов
      * @return String правильный вариант словоформы для указанного количества объектов
      */
-    public static String morph(long n, String f1, String f2, String f5) {
+    private static String morph(long n, String f1, String f2, String f5) {
         n = Math.abs(n) % 100;
         long n1 = n % 10;
         if (n > 10 && n < 20) return f5;
