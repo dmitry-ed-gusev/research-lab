@@ -1,15 +1,15 @@
-package dg.social.vk;
+package dg.social.crawler.vk;
 
-import dg.social.HtmlFormRecognizer;
-import dg.social.HttpFormType;
+import dg.social.crawler.HtmlFormRecognizer;
+import dg.social.crawler.HttpFormType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import static dg.social.HttpFormType.*;
-import static dg.social.utilities.HttpUtilities.HTTP_FORM_TAG;
+import static dg.social.crawler.HttpFormType.*;
+import static dg.social.crawler.utilities.HttpUtilities.HTTP_FORM_TAG;
 
 /**
  * Recognizer for VK http forms.

@@ -1,4 +1,4 @@
-package dg.social;
+package dg.social.crawler;
 
 import org.jsoup.nodes.Document;
 

@@ -1,16 +1,16 @@
-package dg.social;
+package dg.social.crawler;
 
-import dg.social.domain.Person;
-import dg.social.ok.OkClient;
-import dg.social.ok.OkClientConfig;
-import dg.social.ok.OkFormsRecognizer;
-import dg.social.parsing.VkParser;
-import dg.social.utilities.CmdLine;
-import dg.social.utilities.CmdLineOption;
-import dg.social.utilities.CommonUtilities;
-import dg.social.vk.VkClient;
-import dg.social.vk.VkClientConfig;
-import dg.social.vk.VkFormsRecognizer;
+import dg.social.crawler.domain.Person;
+import dg.social.crawler.ok.OkClient;
+import dg.social.crawler.ok.OkClientConfig;
+import dg.social.crawler.ok.OkFormsRecognizer;
+import dg.social.crawler.parsing.VkParser;
+import dg.social.crawler.utilities.CmdLine;
+import dg.social.crawler.utilities.CmdLineOption;
+import dg.social.crawler.utilities.CommonUtilities;
+import dg.social.crawler.vk.VkClient;
+import dg.social.crawler.vk.VkClientConfig;
+import dg.social.crawler.vk.VkFormsRecognizer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,14 +21,12 @@ import org.json.simple.parser.ParseException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import static dg.social.utilities.CmdLineOption.*;
+import static dg.social.crawler.utilities.CmdLineOption.*;
 
 /**
  * Crawler for social networks. This class uses social networks clients for mining info
@@ -44,7 +42,12 @@ public class SocialCrawler {
     private static final String LOGGER_ROOT = "dg.social";
     private static final Log    LOG         = LogFactory.getLog(SocialCrawler.class);
 
-    private CmdLine cmdLine;
+    //private CmdLine cmdLine;
+    private String  configFile;
+    private String  searchString;
+    private String  outputFile;
+    private boolean forceOutput;
+
 
     /***/
     public SocialCrawler(CmdLine cmdLine) {
@@ -53,30 +56,29 @@ public class SocialCrawler {
             throw new IllegalArgumentException("Can't work with empty cmd line!");
         }
 
-        this.cmdLine = cmdLine;
+        //this.cmdLine = cmdLine;
     }
 
     /***/
     public static void main(String[] args) {
         LOG.info("SocialCrawler starting.");
 
-        // parse cmd line and disable internal logging
-        CmdLine cmdLine = new CmdLine(args, false);
-
-        // get logger level option
-        String logLevel = cmdLine.optionValue(LOGGER_LEVEL.getOptionName());
-        if (!StringUtils.isBlank(logLevel)) {
-            LogManager.getLogger(LOGGER_ROOT).setLevel(Level.toLevel(logLevel.toUpperCase()));
-        }
-
-        // just debug - cmd line output
-        LOG.debug(String.format("Received command line: %s.", (args != null ? Arrays.toString(args) : "null")));
+        CmdLine cmdLine = new CmdLine(args, false); // parse cmd line and disable internal logging
 
         // if here is -help option - show usage text and exit
         if (cmdLine.hasOption(CmdLineOption.HELP.getOptionName())) {
             System.out.println(CmdLineOption.getHelpText()); // show help/usage text
             System.exit(0); // force exit with code 0 (all OK)
         }
+
+        // get logger level option (for override, if needed)
+        String logLevel = cmdLine.optionValue(LOGGER_LEVEL.getOptionName());
+        if (!StringUtils.isBlank(logLevel)) {
+            LogManager.getLogger(LOGGER_ROOT).setLevel(Level.toLevel(logLevel.toUpperCase()));
+        }
+        // just debug - cmd line output
+        LOG.debug(String.format("Received command line: %s.", (args != null ? Arrays.toString(args) : "null")));
+
 
         // get config file value
         String configFile = cmdLine.optionValue(CONFIG_FILE.getOptionName());
@@ -93,12 +95,6 @@ public class SocialCrawler {
             System.out.println(CmdLineOption.getHelpText()); // show help/usage text
             System.exit(1);
         }
-
-        //try {
-        //    searchString = new String(searchString.getBytes(), "UTF-8");
-        //} catch (UnsupportedEncodingException e) {
-        //    LOG.error(e);
-        //}
 
         // get output file value and force option
         boolean forceOutput = cmdLine.hasOption(OUTPUT_FORCE.getOptionName());
@@ -135,12 +131,15 @@ public class SocialCrawler {
                 List<Person> users = VkParser.parseUsers(jsonResult);
                 //System.out.println("-> " + users);
 
-                // save search results to file
-                StringBuilder builder = new StringBuilder();
-                for (Person person : users) {
-                    builder.append(person.toString()).append("\n");
+                if (!users.isEmpty()) { // save only if there is anything
+                    // save search results to file
+                    StringBuilder builder = new StringBuilder();
+                    for (Person person : users) {
+                        builder.append(person.toString()).append("\n");
+                    }
+                    CommonUtilities.saveStringToFile(builder.toString(), outputFile, forceOutput);
                 }
-                CommonUtilities.saveStringToFile(builder.toString(), outputFile, forceOutput);
+
             }
 
             if (false) {

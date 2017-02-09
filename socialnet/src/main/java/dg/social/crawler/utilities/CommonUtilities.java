@@ -1,4 +1,4 @@
-package dg.social.utilities;
+package dg.social.crawler.utilities;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -10,7 +10,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.util.Date;
 
-import static dg.social.CommonDefaults.DATE_TIME_FORMAT;
+import static dg.social.crawler.CommonDefaults.DATE_TIME_FORMAT;
 
 /**
  * Some common utilities.

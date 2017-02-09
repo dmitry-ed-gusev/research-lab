@@ -1,4 +1,4 @@
-package dg.social.utilities;
+package dg.social.crawler.utilities;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;

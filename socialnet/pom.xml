@@ -15,7 +15,7 @@
 
     <properties>
         <jar.name>${project.artifactId}-${env}</jar.name>
-        <main.class>dg.social.SocialCrawler</main.class>
+        <main.class>dg.social.crawler.SocialCrawler</main.class>
         <assembly.dir>${project.build.directory}/scrawler</assembly.dir>
         <libraries.prefix>lib</libraries.prefix>
     </properties>

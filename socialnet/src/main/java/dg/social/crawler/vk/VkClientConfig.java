@@ -1,6 +1,6 @@
-package dg.social.vk;
+package dg.social.crawler.vk;
 
-import dg.social.AbstractClientConfig;
+import dg.social.crawler.AbstractClientConfig;
 
 import java.util.Properties;
 

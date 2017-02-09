@@ -1,4 +1,4 @@
-package dg.social;
+package dg.social.crawler;
 
 /**
  * Common http forms types.

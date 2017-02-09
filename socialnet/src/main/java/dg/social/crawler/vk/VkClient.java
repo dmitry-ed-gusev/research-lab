@@ -1,10 +1,10 @@
-package dg.social.vk;
+package dg.social.crawler.vk;
 
-import dg.social.AbstractClient;
-import dg.social.HttpFormType;
-import dg.social.domain.Person;
-import dg.social.utilities.CommonUtilities;
-import dg.social.utilities.HttpUtilities;
+import dg.social.crawler.AbstractClient;
+import dg.social.crawler.HttpFormType;
+import dg.social.crawler.domain.Person;
+import dg.social.crawler.utilities.CommonUtilities;
+import dg.social.crawler.utilities.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static dg.social.CommonDefaults.DEFAULT_ENCODING;
-import static dg.social.HttpFormType.*;
-import static dg.social.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
+import static dg.social.crawler.CommonDefaults.DEFAULT_ENCODING;
+import static dg.social.crawler.HttpFormType.*;
+import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
 
 /**
  * VK (VKontakte) social network client.

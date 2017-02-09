@@ -1,6 +1,6 @@
-package dg.social.parsing;
+package dg.social.crawler.parsing;
 
-import dg.social.domain.Person;
+import dg.social.crawler.domain.Person;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

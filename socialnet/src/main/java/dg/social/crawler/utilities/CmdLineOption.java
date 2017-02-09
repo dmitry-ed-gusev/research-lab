@@ -1,4 +1,4 @@
-package dg.social.utilities;
+package dg.social.crawler.utilities;
 
 /**
  * Command line options enumeration. Every option contains name and description.

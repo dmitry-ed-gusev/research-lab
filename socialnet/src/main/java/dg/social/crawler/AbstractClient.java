@@ -1,6 +1,6 @@
-package dg.social;
+package dg.social.crawler;
 
-import dg.social.utilities.HttpUtilities;
+import dg.social.crawler.utilities.HttpUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;

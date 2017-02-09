@@ -1,4 +1,4 @@
-package dg.social.utilities;
+package dg.social.crawler.utilities;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static dg.social.CommonDefaults.DEFAULT_ENCODING;
+import static dg.social.crawler.CommonDefaults.DEFAULT_ENCODING;
 
 /**
  * Some useful HTTP-related utilities.
