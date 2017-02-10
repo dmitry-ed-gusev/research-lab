@@ -91,13 +91,6 @@
     </build>
 
     <dependencies>
-        <!-- For this module we use JUnit test framework. -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
         <!-- Apache libraries dependencies -->
         <dependency>
             <groupId>org.apache.commons</groupId>
