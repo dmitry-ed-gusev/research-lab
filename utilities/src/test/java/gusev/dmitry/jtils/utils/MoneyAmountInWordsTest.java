@@ -36,6 +36,7 @@ public class MoneyAmountInWordsTest {
         put(0.D,       ZERO_AMOUNT);
         put(.0D,       ZERO_AMOUNT);
         put(00.00D,    ZERO_AMOUNT);
+        put(0D,        ZERO_AMOUNT);
     }};
 
     // good money amounts - long
@@ -52,13 +53,17 @@ public class MoneyAmountInWordsTest {
 
     // good money amounts - string
     private final Map<String, String> amountsGoodString = new HashMap<String, String> () {{
-        put("1234.6", "одна тысяча двести тридцать четыре рубля 60 копеек");
-        put("32",     "тридцать два рубля 00 копеек");
-        put("234.",   "двести тридцать четыре рубля 00 копеек");
-        put(".45",    "ноль рублей 45 копеек");
-        put(".00",    ZERO_AMOUNT);
-        put("0",      ZERO_AMOUNT);
-        put("00.00",  ZERO_AMOUNT);
+        put("  1234.6",  "одна тысяча двести тридцать четыре рубля 60 копеек");
+        put("32  ",      "тридцать два рубля 00 копеек");
+        put("   234.",   "двести тридцать четыре рубля 00 копеек");
+        put(".45  ",     "ноль рублей 45 копеек");
+        put("  .00",     ZERO_AMOUNT);
+        put("0",         ZERO_AMOUNT);
+        put("00.00  ",   ZERO_AMOUNT);
+        put("         ", ZERO_AMOUNT);
+        put("",          ZERO_AMOUNT);
+        put(null,        ZERO_AMOUNT);
+        put("9.123",     "девять рублей 123 копейки");
     }};
 
     @Test
@@ -83,17 +88,6 @@ public class MoneyAmountInWordsTest {
             MoneyAmountInWords amount = new MoneyAmountInWords(entry.getKey());
             assertEquals("Amounts should be equals!", entry.getValue(), amount.num2str());
         });
-    }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void testNullStringAmount() {
-        new MoneyAmountInWords(null);
-    }
-
-    @Test
-    public void testEmptyStringAmount() {
-        MoneyAmountInWords amount = new MoneyAmountInWords("");
-        assertEquals("Amounts should be equals!", ZERO_AMOUNT, amount.num2str());
     }
 
     @Test (expected = IllegalArgumentException.class)

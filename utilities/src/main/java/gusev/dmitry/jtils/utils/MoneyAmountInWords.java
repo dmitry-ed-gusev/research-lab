@@ -16,6 +16,35 @@ public class MoneyAmountInWords {
 
     private static final String NEGATIVE_VALUE = "Can't process negative value [%s]!";
 
+    private static final String[][] SEX = {
+            {"", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"},
+            {"", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"},
+    };
+
+    private static final String[]   STR100 = {
+            "", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"
+    };
+
+    private static final String[]   STR11 = {
+            "", "десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать",
+            "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать", "двадцать"
+    };
+
+    private static final String[]   STR10 = {
+            "", "десять", "двадцать", "тридцать", "сорок", "пятьдесят",
+            "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
+    };
+
+    private static final String[][] FORMS = {
+            {"копейка", "копейки", "копеек", "1"},
+            {"рубль", "рубля", "рублей", "0"},
+            {"тысяча", "тысячи", "тысяч", "1"},
+            {"миллион", "миллиона", "миллионов", "0"},
+            {"миллиард","миллиарда","миллиардов","0"},
+            {"триллион","триллиона","триллионов","0"},
+            // можно добавлять дальше секстиллионы и т.д.
+    };
+
     /**
      * Сумма денег
      */
@@ -46,13 +75,13 @@ public class MoneyAmountInWords {
      */
     public MoneyAmountInWords(String s) {
 
-        if (s == null) { // fail-fast
-            throw new IllegalArgumentException("Can't convert to words NULL amount!");
+        String tmpString = (s == null ? "" : s.trim());
+
+        if (!tmpString.contains(".") ) {
+            tmpString += ".0";
         }
 
-        if (!s.contains(".") )
-            s += ".0";
-        this.amount = new BigDecimal( s );
+        this.amount = new BigDecimal(tmpString);
     }
  
     /**
@@ -75,24 +104,6 @@ public class MoneyAmountInWords {
      * @return String Сумма прописью
      */
     public String num2str(boolean stripkop) {
-
-        // todo: move to constants
-        String[][] sex = {
-            {"","один","два","три","четыре","пять","шесть","семь","восемь","девять"},
-            {"","одна","две","три","четыре","пять","шесть","семь","восемь","девять"},
-        };
-        String[] str100= {"","сто","двести","триста","четыреста","пятьсот","шестьсот","семьсот", "восемьсот","девятьсот"};
-        String[] str11 = {"","десять","одиннадцать","двенадцать","тринадцать","четырнадцать", "пятнадцать","шестнадцать","семнадцать","восемнадцать","девятнадцать","двадцать"};
-        String[] str10 = {"","десять","двадцать","тридцать","сорок","пятьдесят","шестьдесят", "семьдесят","восемьдесят","девяносто"};
-        String[][] forms = {
-            {"копейка", "копейки", "копеек", "1"},
-            {"рубль", "рубля", "рублей", "0"},
-            {"тысяча", "тысячи", "тысяч", "1"},
-            {"миллион", "миллиона", "миллионов", "0"},
-            {"миллиард","миллиарда","миллиардов","0"},
-            {"триллион","триллиона","триллионов","0"},
-            // можно добавлять дальше секстиллионы и т.д.
-        };
 
         if (amount.signum() == -1) { // check argument
             throw new IllegalArgumentException(String.format(NEGATIVE_VALUE, amount));
@@ -126,17 +137,17 @@ public class MoneyAmountInWords {
         // Анализируем сегменты
         String o = "";
         if (rub== 0) {// если Ноль
-            o = "ноль "+morph( 0, forms[1][ 0],forms[1][1],forms[1][2]);
+            o = "ноль "+morph( 0, FORMS[1][ 0], FORMS[1][1], FORMS[1][2]);
             if (stripkop)
                 return o;
             else
-                return o +" "+kop+" "+morph(kop,forms[ 0][ 0],forms[ 0][1],forms[ 0][2]);
+                return o +" "+kop+" "+morph(kop, FORMS[ 0][ 0], FORMS[ 0][1], FORMS[ 0][2]);
         }
 
         // Больше нуля
         int lev = segments.size();
         for (int i= 0; i<segments.size(); i++ ) {// перебираем сегменты
-            int sexi = (int)Integer.valueOf( forms[lev][3].toString() );// определяем род
+            int sexi = (int)Integer.valueOf( FORMS[lev][3].toString() );// определяем род
             int ri = (int)Integer.valueOf( segments.get(i).toString() );// текущий сегмент
             if (ri== 0 && lev>1) {// если сегмент ==0 И не последний уровень(там Units)
                 lev--;
@@ -155,17 +166,17 @@ public class MoneyAmountInWords {
             int r3 = (int)Integer.valueOf( rs.substring(2,3) ); //третья
             int r22= (int)Integer.valueOf( rs.substring(1,3) ); //вторая и третья
             // Супер-нано-анализатор циферок
-            if (ri>99) o += str100[r1]+" "; // Сотни
+            if (ri>99) o += STR100[r1]+" "; // Сотни
             if (r22>20) {// >20
-                o += str10[r2]+" ";
-                o += sex[ sexi ][r3]+" ";
+                o += STR10[r2]+" ";
+                o += SEX[ sexi ][r3]+" ";
             }
             else { // <=20
-                if (r22>9) o += str11[r22-9]+" "; // 10-20
-                else o += sex[ sexi ][r3]+" "; // 0-9
+                if (r22>9) o += STR11[r22-9]+" "; // 10-20
+                else o += SEX[ sexi ][r3]+" "; // 0-9
             }
             // Единицы измерения (рубли...)
-            o += morph(ri, forms[lev][ 0],forms[lev][1],forms[lev][2])+" ";
+            o += morph(ri, FORMS[lev][ 0], FORMS[lev][1], FORMS[lev][2])+" ";
             lev--;
         }
         // Копейки в цифровом виде
@@ -173,7 +184,7 @@ public class MoneyAmountInWords {
             o = o.replaceAll(" {2,}", " ");
         }
         else {
-            o = o+""+kops+" "+morph(kop,forms[ 0][ 0],forms[ 0][1],forms[ 0][2]);
+            o = o+""+kops+" "+morph(kop, FORMS[ 0][ 0], FORMS[ 0][1], FORMS[ 0][2]);
             o = o.replaceAll(" {2,}", " ");
         }
         return o;
