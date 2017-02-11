@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html class="">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Одноклассники</title>
+<link href="//st.mycdn.me/res/css/prod/widget/oauth_login_mob.2b0ffd19.css" type="text/css" rel="stylesheet">
+</head>
+<script type="text/javascript">try {    top.location.toString(); } catch(e) {    top.location = location; }</script>
+
+<body>
+<div id="hook_Block_OAuth2Login" class="hookBlock">
+<div class="login-w">
+<div class="login">
+
+<form method="post" action="/dk?cmd=OAuth2Login&amp;st.cmd=OAuth2Login&amp;st.layout=m&amp;st.redirect=%252Fdk%253Fst.cmd%253DOAuth2Permissions%2526amp%253Bst.layout%253Dm%2526amp%253Bst.scope%253DVALUABLE_ACCESS%2526amp%253Bst.response_type%253Dtoken%2526amp%253Bst.show_permissions%253Doff%2526amp%253Bst.redirect_uri%253Dhttps%25253A%25252F%25252Fapi.ok.ru%25252Fblank.html%2526amp%253Bst.state%253D123456%2526amp%253Bst.client_id%253D1249360384&amp;st.client_id=1249360384" class="login_form">
+<input name="fr.posted" type="hidden" value="set"></input>
+<input placeholder="логин, адрес эл. почты или телефон" name="fr.email" id="field_email" type="text" value=""></input>
+<input placeholder="пароль" name="fr.password" id="field_password" type="password"></input>
+<button type="submit" class="pbtn">Войти</button>
+<div class="actions"><a href="https://m.ok.ru/dk?st.cmd=accountRecoverEntry&amp;_aid=OAuthRecoveryPassword" target="_blank">Забыли пароль или логин?</a></div>
+<div class="footer"></div>
+</form>
+
+</div>
+</div>
+
+<div class="actions"><a href="https://m.ok.ru/dk?st.cmd=newRegEnterPhone&amp;_aid=OAuthRegister" target="_blank">Бесплатная регистрация</a></div>
+
+</div>
+
+</body>
+</html>
