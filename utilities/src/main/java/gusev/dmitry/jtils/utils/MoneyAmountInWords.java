@@ -161,10 +161,10 @@ public class MoneyAmountInWords {
             if (rs.length()==2) rs = "0"+rs; // или лучше один?
 
             // получаем циферки для анализа
-            int r1 = (int)Integer.valueOf( rs.substring( 0,1) ); //первая цифра
-            int r2 = (int)Integer.valueOf( rs.substring(1,2) ); //вторая
-            int r3 = (int)Integer.valueOf( rs.substring(2,3) ); //третья
-            int r22= (int)Integer.valueOf( rs.substring(1,3) ); //вторая и третья
+            int r1 = Integer.valueOf( rs.substring( 0,1) ); //первая цифра
+            int r2 = Integer.valueOf( rs.substring(1,2) );  //вторая
+            int r3 = Integer.valueOf( rs.substring(2,3) );  //третья
+            int r22= Integer.valueOf( rs.substring(1,3) );  //вторая и третья
             // Супер-нано-анализатор циферок
             if (ri>99) o += STR100[r1]+" "; // Сотни
             if (r22>20) {// >20

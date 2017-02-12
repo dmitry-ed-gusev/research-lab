@@ -58,7 +58,7 @@ public class MoneyAmountInWordsTest {
         put("   234.",   "двести тридцать четыре рубля 00 копеек");
         put(".45  ",     "ноль рублей 45 копеек");
         put("  .00",     ZERO_AMOUNT);
-        put("0",         ZERO_AMOUNT);
+        put("   0",      ZERO_AMOUNT);
         put("00.00  ",   ZERO_AMOUNT);
         put("         ", ZERO_AMOUNT);
         put("",          ZERO_AMOUNT);
