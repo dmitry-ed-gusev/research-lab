@@ -10,11 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>socialnet</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
-    <name>Social Net :: integration/working with social networks.</name>
+    <version>0.1.0</version>
+    <name>Social Crawler :: integration/working with social networks.</name>
 
     <properties>
-        <jar.name>${project.artifactId}-${env}</jar.name>
+        <jar.name>crawler-${env}-${version}</jar.name>
         <main.class>dg.social.crawler.SocialCrawler</main.class>
         <assembly.dir>${project.build.directory}/scrawler</assembly.dir>
         <libraries.prefix>lib</libraries.prefix>
@@ -88,6 +88,7 @@
                                 <!-- copy .properties file -->
                                 <copy todir="${assembly.dir}" failonerror="true">
                                     <fileset dir="${basedir}"><include name="crawler.properties"/></fileset>
+                                    <fileset dir="${basedir}"><include name="crawler-versions.txt"/></fileset>
                                 </copy>
                                 <!-- copy+filter .bat file -->
                                 <copy todir="${assembly.dir}" failonerror="true">

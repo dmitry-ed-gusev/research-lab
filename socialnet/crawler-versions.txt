@@ -1,0 +1,31 @@
+=====================================================================================================
+
+XX.03.2017. Version X.X.X
+
+Properties of current version:
+*
+
+=====================================================================================================
+
+XX.02.2017. Version X.X.X
+
+Properties of current version:
+* preserved all properties from previous
+*
+
+=====================================================================================================
+
+19.01.2017. Version 0.1.0
+First version of crawler. It's intended for "crawling" social networks and gather
+needed information about people.
+
+Properties of current version:
+* work from console (cmd line), both in Windows/Linux. Tested with Windows 7, Ubuntu 16 Desktop.
+* uses external config file (.properties)
+* can login into VKontakte social network (using existing VK profile)
+* can search VK network for users by search string (specified as cmd line parameter)
+* can work through proxy-server (specified in config file)
+* can out search results to console or to specified output file
+* save VK api access token (received from VK) to external file (for reusing)
+* if found unknown VK form, will save it to temporary file (for further analyses)
+

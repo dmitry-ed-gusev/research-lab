@@ -9,6 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import java.io.*;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static dg.social.crawler.CommonDefaults.DATE_TIME_FORMAT;
 
@@ -110,6 +112,74 @@ public final class CommonUtilities {
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
             out.print(string); // write data to file
+        }
+
+    }
+
+    /**
+     * Unzip ZIP archive and output its content to outputFolder. If there are files - they will be overwritten.
+     * @param zipFile input zip file
+     * @param outputFolder zip file output folder
+     */
+    public static void unZipIt(String zipFile, String outputFolder) {
+
+        if (StringUtils.isBlank(zipFile)) { // fail-fast
+            throw new IllegalArgumentException(String.format("Empty ZIP file name [%s]!", zipFile));
+        }
+
+        byte[] buffer = new byte[1024]; // unzip process buffer
+
+        try {
+
+            if (!StringUtils.isBlank(outputFolder)) {
+                //create output directory is not exists
+                File folder = new File(outputFolder);
+                if (!folder.exists()) {
+                    LOG.info(String.format("Destination output folder [%s] doesn't exists! Creating.", outputFolder));
+                    // todo: mkdirs() creates full path with needed parent!
+                    if (folder.mkdirs()) {
+                        LOG.info(String.format("Destination output folder [%s] created successfully!", outputFolder));
+                    } else {
+                        throw new IllegalStateException(String.format("Can't create zip output folder [%s]!", outputFolder));
+                    }
+                }
+            }
+
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile)); //get the zip file content
+            ZipEntry       ze  = zis.getNextEntry();                               //get the zipped file list entry
+
+            while(ze != null) {
+
+                String fileName = ze.getName();
+                File newFile = new File((StringUtils.isBlank(outputFolder) ? "" : (outputFolder + File.separator)) + fileName);
+                LOG.debug(String.format("Unzipping file [%s].", newFile.getAbsoluteFile()));
+
+                //System.out.println("file unzip : "+ newFile.getAbsoluteFile());
+
+                //create all non exists folders else you will hit FileNotFoundException for compressed folder
+                // todo: !!!
+                //new File(newFile.getParent()).mkdirs();
+
+                FileOutputStream fos = new FileOutputStream(newFile);
+
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+
+                fos.close();
+                ze = zis.getNextEntry();
+            }
+
+            zis.closeEntry();
+            zis.close();
+
+            LOG.info(String.format("Archive [%s] unzipped successfully.", zipFile));
+            //System.out.println("Done");
+
+        } catch(IOException ex) {
+            LOG.error(ex);
+            //ex.printStackTrace();
         }
 
     }

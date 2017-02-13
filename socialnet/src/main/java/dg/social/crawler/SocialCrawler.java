@@ -114,7 +114,14 @@ public class SocialCrawler {
             properties.load(br);
             LOG.debug(String.format("Properties from [%s] file: %s.", configFile, properties));
 
-            if (true) {
+            if (true) { // unzip data fil from Telescope system
+
+                CommonUtilities.unZipIt("people.zip", "");
+                System.exit(777);
+            }
+
+
+            if (true) { // load VK client and search
                 // create vk client config
                 VkClientConfig vkClientConfig = new VkClientConfig(properties);
                 // create vk client
@@ -142,7 +149,7 @@ public class SocialCrawler {
 
             }
 
-            if (false) {
+            if (false) { // load OK client and search
                 // create ok client config
                 OkClientConfig okClientConfig = new OkClientConfig(properties);
                 // create ok client
