@@ -114,7 +114,7 @@ public class SocialCrawler {
             properties.load(br);
             LOG.debug(String.format("Properties from [%s] file: %s.", configFile, properties));
 
-            if (true) { // unzip data fil from Telescope system
+            if (false) { // unzip data fil from Telescope system
 
                 CommonUtilities.unZipIt("people.zip", "");
                 System.exit(777);
