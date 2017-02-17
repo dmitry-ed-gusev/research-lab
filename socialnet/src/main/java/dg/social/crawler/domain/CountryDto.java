@@ -23,8 +23,7 @@ import javax.persistence.Table;
 @Table(name = "COUNTRIES")
 public class CountryDto extends AbstractEntity {
 
-    @NotNull
-    @Column(name = "EXTERNAL_ID", nullable = false)
+    @NotNull @Column(name = "EXTERNAL_ID", nullable = false)
     private long          externalId;
     @NotNull @Column(name = "COUNTRY_NAME", nullable = false)
     private String        countryName;

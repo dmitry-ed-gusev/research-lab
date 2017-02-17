@@ -20,7 +20,7 @@ import java.util.List;
 @Transactional
 public abstract class AbstractHibernateDao<T extends AbstractEntity> {
 
-    private static final Log log = LogFactory.getLog(AbstractHibernateDao.class);
+    private static final Log LOG = LogFactory.getLog(AbstractHibernateDao.class);
 
     @Autowired @Qualifier("crawlerHsqlSessionFactory")
     private SessionFactory sessionFactory;
@@ -33,37 +33,37 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> {
     /** Find all objects. */
     @SuppressWarnings("unchecked")
     public List<T> findAll() {
-        log.debug(String.format("Retrieving all [%s] objects.", this.clazz.getSimpleName()));
+        LOG.debug(String.format("Retrieving all [%s] objects.", this.clazz.getSimpleName()));
         return this.sessionFactory.getCurrentSession().createQuery("FROM " + clazz.getName()).list();
     }
 
     /** Find one entity by ID. */
     public T findById(Long id) {
-        log.debug(String.format("Search object [%s] by ID = [%s].", this.clazz.getSimpleName(), id));
+        LOG.debug(String.format("Search object [%s] by ID = [%s].", this.clazz.getSimpleName(), id));
         return this.sessionFactory.getCurrentSession().get(clazz, id);
     }
 
     /** Save (persist) entity. */
     public void save(T entity) {
-        log.debug(String.format("Saving new object [%s].", this.clazz.getSimpleName()));
+        LOG.debug(String.format("Saving new object [%s].", this.clazz.getSimpleName()));
         this.sessionFactory.getCurrentSession().save(entity);
     }
 
     /** Update entity (in persistent storage). */
     public void update(T entity) {
-        log.debug(String.format("Updating existing object [%s].", this.clazz.getSimpleName()));
+        LOG.debug(String.format("Updating existing object [%s].", this.clazz.getSimpleName()));
         this.sessionFactory.getCurrentSession().update(entity);
     }
 
     /** Save or update entity (in persistent storage) based on primary key value. */
     public void saveOrUpdate(T entity) {
-        log.debug(String.format("Saving or updating entity [%s].", this.clazz.getSimpleName()));
+        LOG.debug(String.format("Saving or updating entity [%s].", this.clazz.getSimpleName()));
         this.sessionFactory.getCurrentSession().saveOrUpdate(entity);
     }
 
     /** Delete an existing entity object. */
     public void delete(T entity) {
-        log.debug(String.format("Deleting existing object [%s].", this.clazz.getSimpleName()));
+        LOG.debug(String.format("Deleting existing object [%s].", this.clazz.getSimpleName()));
         this.sessionFactory.getCurrentSession().delete(entity);
     }
 
@@ -72,13 +72,13 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> {
      * @param id the id of the existing category.
      */
     public void deleteById(Long id) {
-        log.debug(String.format("Deleting existing object [%s] by ID = [%s].", this.clazz.getSimpleName(), id));
+        LOG.debug(String.format("Deleting existing object [%s] by ID = [%s].", this.clazz.getSimpleName(), id));
         this.delete(this.findById(id));
     }
 
     /***/
     public void merge (T entity) {
-        log.debug(String.format("Merging object [%s].", this.clazz.getSimpleName()));
+        LOG.debug(String.format("Merging object [%s].", this.clazz.getSimpleName()));
         this.sessionFactory.getCurrentSession().merge(entity);
     }
 

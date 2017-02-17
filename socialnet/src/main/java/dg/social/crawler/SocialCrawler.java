@@ -1,10 +1,12 @@
 package dg.social.crawler;
 
+import dg.social.crawler.domain.CountryDto;
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.ok.OkClient;
 import dg.social.crawler.ok.OkClientConfig;
 import dg.social.crawler.ok.OkFormsRecognizer;
 import dg.social.crawler.parsing.VkParser;
+import dg.social.crawler.persistence.CountriesDao;
 import dg.social.crawler.utilities.CmdLine;
 import dg.social.crawler.utilities.CmdLineOption;
 import dg.social.crawler.utilities.CommonUtilities;
@@ -134,6 +136,19 @@ public class SocialCrawler {
                 // create vk client
                 VkClient vkClient = new VkClient(vkClientConfig, new VkFormsRecognizer());
 
+                String jsonResult = vkClient.getCountries();
+                //System.out.println("-> " + jsonResult);
+                // parse search results
+                List<CountryDto> countries = VkParser.parseCountries(jsonResult);
+                System.out.println("countries -> " + countries);
+
+                CountriesDao countriesDao = (CountriesDao) context.getBean("countriesDao");
+
+                for (CountryDto country : countries) {
+                    countriesDao.saveOrUpdate(country);
+                    //countriesDao.update(country);
+                }
+
                 /*
                 // search for simple search string
                 String jsonResult = vkClient.usersSearch(searchString,
@@ -156,8 +171,6 @@ public class SocialCrawler {
                 }
                 */
 
-                String jsonResult = vkClient.getCountries();
-                System.out.println("-> " + jsonResult);
             }
 
             if (false) { // load OK client and search
@@ -167,7 +180,7 @@ public class SocialCrawler {
                 OkClient okClient = new OkClient(okClientConfig, new OkFormsRecognizer());
             }
 
-        } catch (IOException | /*ParseException |*/ URISyntaxException e) {
+        } catch (IOException | ParseException | URISyntaxException e) {
             LOG.error(e);
             // e.printStackTrace(); // <- for deep debug
         }
