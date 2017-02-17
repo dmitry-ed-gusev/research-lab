@@ -2,7 +2,7 @@ package dg.social.crawler.vk;
 
 import dg.social.crawler.AbstractClient;
 import dg.social.crawler.HttpFormType;
-import dg.social.crawler.domain.Person;
+import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.utilities.CommonUtilities;
 import dg.social.crawler.utilities.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
@@ -196,7 +196,7 @@ public class VkClient extends AbstractClient {
      * @param fieldsList String list (comma separated) of fields for response
      * @param count int results count, if negative or equals to zero or greater, than 1000 - will be returned 1000 results
      */
-    public String usersSearch(String userString, String fieldsList, int count) throws IOException, org.json.simple.parser.ParseException, URISyntaxException {
+    public String usersSearch(String userString, String fieldsList, int count) throws IOException, URISyntaxException {
         LOG.debug(String.format("VkClient.usersSearch() working. Search string: [%s].", userString));
 
         if (StringUtils.isBlank(userString)) { // fail-fast
@@ -228,8 +228,33 @@ public class VkClient extends AbstractClient {
         return httpPageContent;
     }
 
+    /**
+     * Get all Countries list from VK. Uses API method [database.getCountries].
+     */
+    public String getCountries() throws URISyntaxException, IOException {
+        LOG.debug("VkClient.getCountries() is working.");
+
+        // generate query URI
+        URI uri = new URI(new URIBuilder(String.format(this.getBaseApiRequest(), "database.getCountries"))
+                .addParameter("need_all",     "1")
+                .addParameter("count",        "1000")
+                .addParameter("access_token", this.accessToken.getRight())
+                .addParameter("v",            this.getApiVersion())
+                .toString());
+        LOG.debug(String.format("Generated URI: [%s].", uri));
+
+        // execute search query
+        CloseableHttpResponse httpResponse = this.sendHttpGet(uri);
+        // get http entity
+        HttpEntity httpEntity = httpResponse.getEntity();
+        // get page content for parsing
+        String httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
+
+        return httpPageContent;
+    }
+
     /***/
-    public List<Person> usersSearch(Person user) {
+    public List<PersonDto> usersSearch(PersonDto user) {
         // todo: implement search using user template parameter
         return null;
     }

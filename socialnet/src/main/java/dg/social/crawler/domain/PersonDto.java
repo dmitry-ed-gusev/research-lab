@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * Domain object - one person user (human).
  * Created by vinnypuhh on 24.12.16.
  */
-public class Person {
+public class PersonDto {
 
     // mai mandatory fields
     private long   id;        // user identity
@@ -32,7 +32,7 @@ public class Person {
     private String homeTown;
 
     /***/
-    public Person(long id, String firstName, String lastName) {
+    public PersonDto(long id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

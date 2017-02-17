@@ -8,7 +8,9 @@ This version of crawler preserves all properties of previous version.
 Business (user) properties of current version:
 *
 Tech properties:
-*
+* added ORM level (Hibernate)
+* added DI/IoC level (Spring)
+* added HSql DB support
 
 =====================================================================================================
 19.01.2017. Version 0.1.0

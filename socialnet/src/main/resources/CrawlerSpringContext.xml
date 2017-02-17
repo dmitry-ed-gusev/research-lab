@@ -19,7 +19,7 @@
     <bean class="org.springframework.orm.hibernate5.HibernateExceptionTranslator"/>
     <!-- Spring controlled Hibernate 5 transaction manager (bean) for database -->
     <bean id="crawlerTXManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="crawlerSessionFactory"/>
+        <property name="sessionFactory" ref="crawlerHsqlSessionFactory"/>
     </bean>
 
     <!--
@@ -28,14 +28,9 @@
     -->
     <tx:annotation-driven transaction-manager="crawlerTXManager" proxy-target-class="true"/>
 
-    <!-- session factory bean -->
-    <bean id="crawlerSessionFactory" parent="crawlerHsqlSessionFactory"/>
-
     <!-- hsql dbms config for application -->
     <import resource="_hsqlConfig.xml" />
-    <!-- GUI application config -->
-    <import resource="_guiConfig.xml" />
-    <!-- some additional beans definitions -->
+    <!-- some additional beans definitions (Spring container) -->
     <import resource="_beans.xml" />
 
 </beans>

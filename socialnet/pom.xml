@@ -14,13 +14,14 @@
     <name>Social Crawler :: integration/working with social networks.</name>
 
     <properties>
-        <jar.name>crawler-${env}-${version}</jar.name>
+        <jar.name>crawler-${env}-${project.version}</jar.name>
         <main.class>dg.social.crawler.SocialCrawler</main.class>
         <assembly.dir>${project.build.directory}/scrawler</assembly.dir>
         <libraries.prefix>lib</libraries.prefix>
 
         <spring.version>4.3.2.RELEASE</spring.version>
         <org.hibernate.version>5.0.6.Final</org.hibernate.version>
+        <apache.dbcp.version>1.4</apache.dbcp.version>
 
     </properties>
 
@@ -112,6 +113,8 @@
     </build>
 
     <dependencies>
+
+        <!-- Apache Commons components (lang3/io/logging/log4j/dbcp/http) -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -132,8 +135,11 @@
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
         </dependency>
-
-        <!-- Apache Http Components -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>${apache.dbcp.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -147,7 +153,7 @@
             <version>1.10.1</version>
         </dependency>
 
-        <!-- json-simple google JSON parsing library -->
+        <!-- json-simple Google JSON parsing library -->
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
@@ -155,9 +161,42 @@
         </dependency>
 
         <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.1.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <!-- Spring/Hibernate dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${org.hibernate.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.2</version>
         </dependency>
 
     </dependencies>

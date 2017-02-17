@@ -9,11 +9,16 @@ import java.text.SimpleDateFormat;
 
 public final class CommonDefaults {
 
-    private CommonDefaults() {} // can't instantiate utility class
+    private CommonDefaults() {} // mustn't instantiate utility class
 
     /** Default encoding for content. */
     public static final String           DEFAULT_ENCODING = "UTF-8";
     /** Default date/time format. */
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+
+    /** Social networks types. */
+    public enum SocialNetwork {
+        VK
+    }
 
 }

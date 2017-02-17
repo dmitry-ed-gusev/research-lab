@@ -1,6 +1,6 @@
 package dg.social.crawler;
 
-import dg.social.crawler.domain.Person;
+import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.ok.OkClient;
 import dg.social.crawler.ok.OkClientConfig;
 import dg.social.crawler.ok.OkFormsRecognizer;
@@ -17,6 +17,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.json.simple.parser.ParseException;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -34,13 +36,14 @@ import static dg.social.crawler.utilities.CmdLineOption.*;
  * Created by gusevdm on 12/27/2016.
  */
 
-// todo: extract parse cmd line method
+// todo: extract parse cmd line utility method/class
 // todo: move functionality to SocialCrawler instance
 
 public class SocialCrawler {
 
-    private static final String LOGGER_ROOT = "dg.social";
-    private static final Log    LOG         = LogFactory.getLog(SocialCrawler.class);
+    private static final String LOGGER_ROOT   = "dg.social";
+    private static final Log    LOG           = LogFactory.getLog(SocialCrawler.class);
+    private static final String SPRING_CONFIG = "CrawlerSpringContext.xml";
 
     //private CmdLine cmdLine;
     private String  configFile;
@@ -114,6 +117,10 @@ public class SocialCrawler {
             properties.load(br);
             LOG.debug(String.format("Properties from [%s] file: %s.", configFile, properties));
 
+            // initialize and load Spring application context
+            AbstractApplicationContext context = new ClassPathXmlApplicationContext(new String[] {SPRING_CONFIG}, false);
+            context.refresh();
+
             if (false) { // unzip data fil from Telescope system
 
                 CommonUtilities.unZipIt("people.zip", "");
@@ -127,6 +134,7 @@ public class SocialCrawler {
                 // create vk client
                 VkClient vkClient = new VkClient(vkClientConfig, new VkFormsRecognizer());
 
+                /*
                 // search for simple search string
                 String jsonResult = vkClient.usersSearch(searchString,
                         "about,activities,bdate,books,career,city,contacts,country,education,exports,games," +
@@ -135,18 +143,21 @@ public class SocialCrawler {
                 //System.out.println("-> " + jsonResult);
 
                 // parse search results
-                List<Person> users = VkParser.parseUsers(jsonResult);
+                List<PersonDto> users = VkParser.parseUsers(jsonResult);
                 //System.out.println("-> " + users);
 
                 if (!users.isEmpty()) { // save only if there is anything
                     // save search results to file
                     StringBuilder builder = new StringBuilder();
-                    for (Person person : users) {
+                    for (PersonDto person : users) {
                         builder.append(person.toString()).append("\n");
                     }
                     CommonUtilities.saveStringToFile(builder.toString(), outputFile, forceOutput);
                 }
+                */
 
+                String jsonResult = vkClient.getCountries();
+                System.out.println("-> " + jsonResult);
             }
 
             if (false) { // load OK client and search
@@ -156,7 +167,7 @@ public class SocialCrawler {
                 OkClient okClient = new OkClient(okClientConfig, new OkFormsRecognizer());
             }
 
-        } catch (IOException | ParseException | URISyntaxException e) {
+        } catch (IOException | /*ParseException |*/ URISyntaxException e) {
             LOG.error(e);
             // e.printStackTrace(); // <- for deep debug
         }
