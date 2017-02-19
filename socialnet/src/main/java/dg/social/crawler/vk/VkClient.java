@@ -17,6 +17,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.RedirectLocations;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -40,6 +42,8 @@ import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
  */
 
 // todo: implement periodically check of access token
+
+@Service
 public class VkClient extends AbstractClient {
 
     private static final Log LOG = LogFactory.getLog(VkClient.class); // module logger
@@ -58,6 +62,7 @@ public class VkClient extends AbstractClient {
     private Pair<Date, String> accessToken = null; // VK access token date/time and token value
 
     /** Create VkClient instance, working through proxy. */
+    @Autowired
     public VkClient(VkClientConfig config, VkFormsRecognizer formsRecognizer) throws IOException {
         super(config, formsRecognizer);
 

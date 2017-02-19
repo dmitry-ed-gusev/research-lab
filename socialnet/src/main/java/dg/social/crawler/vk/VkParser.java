@@ -1,4 +1,4 @@
-package dg.social.crawler.parsing;
+package dg.social.crawler.vk;
 
 import dg.social.crawler.domain.CountryDto;
 import dg.social.crawler.domain.PersonDto;

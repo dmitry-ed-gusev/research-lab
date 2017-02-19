@@ -1,6 +1,9 @@
 package dg.social.crawler.vk;
 
 import dg.social.crawler.AbstractClientConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.util.Properties;
 
@@ -8,6 +11,8 @@ import java.util.Properties;
  * Config for VK (VKontakte) client.
  * Created by gusevdm on 12/12/2016.
  */
+
+@Service
 public class VkClientConfig extends AbstractClientConfig {
 
     // config prefix for VK parameters (for Properties)
@@ -33,7 +38,8 @@ public class VkClientConfig extends AbstractClientConfig {
     }
 
     /** Init instance with values from properties object. */
-    public VkClientConfig(Properties properties) {
+    @Autowired
+    public VkClientConfig(@Qualifier ("vk.properties") Properties properties) {
         super(DEFAULT_CONFIG_PREFIX, properties);
     }
 

@@ -16,7 +16,7 @@ import java.util.List;
  * Created by gusevdm on 2/17/2017.
 */
 
-@Repository
+@Repository // special kind of @Component (for DAO)
 @Transactional
 public abstract class AbstractHibernateDao<T extends AbstractEntity> {
 
@@ -28,6 +28,10 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> {
 
     public AbstractHibernateDao(Class<T> clazz) {
         this.clazz = clazz;
+    }
+
+    SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 
     /** Find all objects. */
@@ -80,6 +84,12 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> {
     public void merge (T entity) {
         LOG.debug(String.format("Merging object [%s].", this.clazz.getSimpleName()));
         this.sessionFactory.getCurrentSession().merge(entity);
+    }
+
+    /***/
+    public void persist(T entity) {
+        LOG.debug(String.format("Persisting object [%s].", this.clazz.getSimpleName()));
+        this.sessionFactory.getCurrentSession().persist(entity);
     }
 
 }

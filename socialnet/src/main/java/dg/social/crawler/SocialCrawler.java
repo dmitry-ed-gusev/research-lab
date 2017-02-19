@@ -1,18 +1,10 @@
 package dg.social.crawler;
 
-import dg.social.crawler.domain.CountryDto;
-import dg.social.crawler.domain.PersonDto;
-import dg.social.crawler.ok.OkClient;
-import dg.social.crawler.ok.OkClientConfig;
-import dg.social.crawler.ok.OkFormsRecognizer;
-import dg.social.crawler.parsing.VkParser;
-import dg.social.crawler.persistence.CountriesDao;
+import dg.social.crawler.components.VkComponent;
 import dg.social.crawler.utilities.CmdLine;
 import dg.social.crawler.utilities.CmdLineOption;
 import dg.social.crawler.utilities.CommonUtilities;
-import dg.social.crawler.vk.VkClient;
-import dg.social.crawler.vk.VkClientConfig;
-import dg.social.crawler.vk.VkFormsRecognizer;
+import dg.social.crawler.utilities.CustomSpringProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,13 +14,9 @@ import org.json.simple.parser.ParseException;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
 
 import static dg.social.crawler.utilities.CmdLineOption.*;
 
@@ -40,12 +28,12 @@ import static dg.social.crawler.utilities.CmdLineOption.*;
 
 // todo: extract parse cmd line utility method/class
 // todo: move functionality to SocialCrawler instance
-
 public class SocialCrawler {
 
-    private static final String LOGGER_ROOT   = "dg.social";
-    private static final Log    LOG           = LogFactory.getLog(SocialCrawler.class);
-    private static final String SPRING_CONFIG = "CrawlerSpringContext.xml";
+    private static final String LOGGER_ROOT            = "dg.social";
+    private static final Log    LOG                    = LogFactory.getLog(SocialCrawler.class);
+    private static final String SPRING_CONFIG          = "CrawlerSpringContext.xml";
+    private static final String CRAWLER_DEFAULT_CONFIG = "crawler.default.config";
 
     //private CmdLine cmdLine;
     private String  configFile;
@@ -87,11 +75,11 @@ public class SocialCrawler {
 
         // get config file value
         String configFile = cmdLine.optionValue(CONFIG_FILE.getOptionName());
-        if (StringUtils.isBlank(configFile)) { // fail-fast -> can't work without config
-            LOG.error("You have to specify config file with option: [-config <filename>].");
-            System.out.println(CmdLineOption.getHelpText()); // show help/usage text
-            System.exit(1);
-        }
+        //if (StringUtils.isBlank(configFile)) { // fail-fast -> can't work without config
+        //    LOG.error("You have to specify config file with option: [-config <filename>].");
+        //    System.out.println(CmdLineOption.getHelpText()); // show help/usage text
+        //    System.exit(1);
+        //}
 
         // get search string value
         String searchString = cmdLine.optionValue(SEARCH_STRING.getOptionName());
@@ -111,17 +99,30 @@ public class SocialCrawler {
         }
 
         // Config file option isn't empty - go ahead
-        try (FileReader fr = new FileReader(configFile);
-             BufferedReader br = new BufferedReader(fr)) {
+        try //(FileReader fr = new FileReader(configFile);
+            // BufferedReader br = new BufferedReader(fr))
+          {
 
             // load properties from config file
-            Properties properties = new Properties();
-            properties.load(br);
-            LOG.debug(String.format("Properties from [%s] file: %s.", configFile, properties));
+            //Properties properties = new Properties();
+            //properties.load(br);
+            //LOG.debug(String.format("Properties from [%s] file: %s.", configFile, properties));
 
-            // initialize and load Spring application context
-            AbstractApplicationContext context = new ClassPathXmlApplicationContext(new String[] {SPRING_CONFIG}, false);
-            context.refresh();
+            // initialize Spring application context
+            AbstractApplicationContext crawlerContext = new ClassPathXmlApplicationContext(new String[] {SPRING_CONFIG}, false);
+
+            // change default config file for Crawler
+            if (!StringUtils.isBlank(configFile)) { // add new value for custom property
+                crawlerContext.getEnvironment().getPropertySources().addLast(
+                        new CustomSpringProperty("custom_config", CRAWLER_DEFAULT_CONFIG, configFile)
+                );
+            }
+
+            // load Spring application context
+            crawlerContext.refresh();
+
+            VkComponent vkComponent = (VkComponent) crawlerContext.getBean("vkComponent");
+            vkComponent.updateCountries();
 
             if (false) { // unzip data fil from Telescope system
 
@@ -130,24 +131,25 @@ public class SocialCrawler {
             }
 
 
-            if (true) { // load VK client and search
+            if (false) { // load VK client and search
                 // create vk client config
-                VkClientConfig vkClientConfig = new VkClientConfig(properties);
+                //VkClientConfig vkClientConfig = new VkClientConfig(properties);
                 // create vk client
-                VkClient vkClient = new VkClient(vkClientConfig, new VkFormsRecognizer());
+                //VkClient vkClient = new VkClient(vkClientConfig, new VkFormsRecognizer());
 
+                /*
                 String jsonResult = vkClient.getCountries();
                 //System.out.println("-> " + jsonResult);
                 // parse search results
                 List<CountryDto> countries = VkParser.parseCountries(jsonResult);
                 System.out.println("countries -> " + countries);
 
-                CountriesDao countriesDao = (CountriesDao) context.getBean("countriesDao");
+                CountriesDao countriesDao = (CountriesDao) crawlerContext.getBean("countriesDao");
 
                 for (CountryDto country : countries) {
-                    countriesDao.saveOrUpdate(country);
-                    //countriesDao.update(country);
+                    countriesDao.addCountry(country);
                 }
+*/
 
                 /*
                 // search for simple search string
@@ -175,9 +177,9 @@ public class SocialCrawler {
 
             if (false) { // load OK client and search
                 // create ok client config
-                OkClientConfig okClientConfig = new OkClientConfig(properties);
+                //OkClientConfig okClientConfig = new OkClientConfig(properties);
                 // create ok client
-                OkClient okClient = new OkClient(okClientConfig, new OkFormsRecognizer());
+                //OkClient okClient = new OkClient(okClientConfig, new OkFormsRecognizer());
             }
 
         } catch (IOException | ParseException | URISyntaxException e) {

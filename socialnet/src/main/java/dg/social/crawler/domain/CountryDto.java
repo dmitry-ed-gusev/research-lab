@@ -2,6 +2,7 @@ package dg.social.crawler.domain;
 
 import javax.validation.constraints.NotNull;
 import dg.social.crawler.CommonDefaults.SocialNetwork;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -34,6 +35,13 @@ public class CountryDto extends AbstractEntity {
 
     public CountryDto(long id, long externalId, String countryName, SocialNetwork networkType) {
         super(id);
+
+        if (StringUtils.isBlank(countryName) || networkType == null) { // fail-fast
+            throw new IllegalArgumentException(
+                    String.format("Invalid country name [%s] or social net type [%s]!",
+                            countryName, networkType));
+        }
+
         this.externalId  = externalId;
         this.countryName = countryName;
         this.networkType = networkType;
@@ -43,24 +51,12 @@ public class CountryDto extends AbstractEntity {
         return externalId;
     }
 
-    public void setExternalId(long externalId) {
-        this.externalId = externalId;
-    }
-
     public String getCountryName() {
         return countryName;
     }
 
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
     public SocialNetwork getNetworkType() {
         return networkType;
-    }
-
-    public void setNetworkType(SocialNetwork networkType) {
-        this.networkType = networkType;
     }
 
     @Override

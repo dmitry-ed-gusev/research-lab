@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Service;
 
 import static dg.social.crawler.HttpFormType.*;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_FORM_TAG;
@@ -16,6 +17,7 @@ import static dg.social.crawler.utilities.HttpUtilities.HTTP_FORM_TAG;
  * Created by gusevdm on 1/11/2017.
  */
 
+@Service
 public class VkFormsRecognizer implements HtmlFormRecognizer {
 
     private static final Log LOG = LogFactory.getLog(VkFormsRecognizer.class);
@@ -35,7 +37,7 @@ public class VkFormsRecognizer implements HtmlFormRecognizer {
     private static final String ADD_MISSED_DIGITS_FORM_FI_ROW_TEXT =
             "Чтобы подтвердить, что Вы действительно являетесь владельцем страницы, пожалуйста, укажите все недостающие цифры номера телефона, к которому привязана страница.";
     // receiving access token form params
-    private static final String ACCESS_TOKEN_FORM_TITLE         = "OAuth Blank";
+    private static final String ACCESS_TOKEN_FORM_TITLE            = "OAuth Blank";
 
     @Override
     public HttpFormType getHtmlFormType(Document document) {
