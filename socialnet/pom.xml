@@ -145,6 +145,12 @@
             <artifactId>httpclient</artifactId>
             <version>${apache.httpclient.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.0</version>
+        </dependency>
+
 
         <!-- jsoup HTML parser library @ http://jsoup.org/ -->
         <dependency>

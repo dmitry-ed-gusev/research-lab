@@ -1,9 +1,12 @@
 package dg.social.crawler.components;
 
 import dg.social.crawler.domain.CountryDto;
+import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.persistence.CountriesDao;
+import dg.social.crawler.utilities.CommonUtilities;
 import dg.social.crawler.vk.VkClient;
 import dg.social.crawler.vk.VkParser;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.parser.ParseException;
@@ -25,6 +28,12 @@ import java.util.List;
 public class VkComponent {
 
     private static final Log LOG = LogFactory.getLog(VkComponent.class);
+
+    private static final String SEARCH_FIELDS_LIST =
+            "about,activities,bdate,books,career,city,contacts,country,education,exports,games, home_town," +
+            "interests,home_town,maiden_name,movies,music,nickname,occupation,personal,quotes, " +
+            "relatives,relation,schools,sex,site,status,tv,universities";
+    private static final int    SEARCH_RESULTS_COUNT = 1000;
 
     @Autowired
     private VkClient vkClient;
@@ -66,9 +75,20 @@ public class VkComponent {
         // todo: implement!
     }
 
-    /***/
-    public void searchByString(String searchString) {
-        // todo: implement!
+    /**
+     * Simple search by search string.
+     */
+    public List<PersonDto> searchByString(String searchString) throws IOException, URISyntaxException, ParseException {
+        LOG.debug(String.format("VkComponent.searchByString() is working. Search string:%n%s", searchString));
+
+        if (StringUtils.isBlank(searchString)) { // fail-fast
+            throw new IllegalArgumentException("Can't search by empty string!");
+        }
+
+        // do the search, parse results and return list of found people
+        String jsonResult = this.vkClient.usersSearch(searchString, SEARCH_FIELDS_LIST , SEARCH_RESULTS_COUNT);
+
+        return VkParser.parseUsers(jsonResult);
     }
 
     /***/

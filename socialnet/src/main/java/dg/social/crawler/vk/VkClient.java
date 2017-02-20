@@ -42,6 +42,7 @@ import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
  */
 
 // todo: implement periodically check of access token
+// todo: tries to get access token during creating an instance - change it (get token by external request)
 
 @Service
 public class VkClient extends AbstractClient {

@@ -5,6 +5,7 @@ import dg.social.crawler.utilities.CmdLine;
 import dg.social.crawler.utilities.CmdLineOption;
 import dg.social.crawler.utilities.CommonUtilities;
 import dg.social.crawler.utilities.CustomSpringProperty;
+import dg.social.crawler.utilities.TelescopeCSVParser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -98,6 +99,23 @@ public class SocialCrawler {
             System.exit(1);
         }
 
+        // initialize Spring application context
+        AbstractApplicationContext crawlerContext = new ClassPathXmlApplicationContext(new String[] {SPRING_CONFIG}, false);
+
+        // change default config file for Crawler
+        if (!StringUtils.isBlank(configFile)) { // add new value for custom property
+            crawlerContext.getEnvironment().getPropertySources().addLast(
+                    new CustomSpringProperty("custom_config", CRAWLER_DEFAULT_CONFIG, configFile)
+            );
+        }
+
+        // load Spring application context
+        crawlerContext.refresh();
+
+        //
+        CommonUtilities.unZipIt("people.zip", "");
+        TelescopeCSVParser.parseCSV();
+
         // Config file option isn't empty - go ahead
         try //(FileReader fr = new FileReader(configFile);
             // BufferedReader br = new BufferedReader(fr))
@@ -108,21 +126,10 @@ public class SocialCrawler {
             //properties.load(br);
             //LOG.debug(String.format("Properties from [%s] file: %s.", configFile, properties));
 
-            // initialize Spring application context
-            AbstractApplicationContext crawlerContext = new ClassPathXmlApplicationContext(new String[] {SPRING_CONFIG}, false);
 
-            // change default config file for Crawler
-            if (!StringUtils.isBlank(configFile)) { // add new value for custom property
-                crawlerContext.getEnvironment().getPropertySources().addLast(
-                        new CustomSpringProperty("custom_config", CRAWLER_DEFAULT_CONFIG, configFile)
-                );
-            }
 
-            // load Spring application context
-            crawlerContext.refresh();
-
-            VkComponent vkComponent = (VkComponent) crawlerContext.getBean("vkComponent");
-            vkComponent.updateCountries();
+            //VkComponent vkComponent = (VkComponent) crawlerContext.getBean("vkComponent");
+            //vkComponent.updateCountries();
 
             if (false) { // unzip data fil from Telescope system
 
@@ -152,25 +159,15 @@ public class SocialCrawler {
 */
 
                 /*
-                // search for simple search string
-                String jsonResult = vkClient.usersSearch(searchString,
-                        "about,activities,bdate,books,career,city,contacts,country,education,exports,games," +
-                                "home_town,interests,home_town,maiden_name,movies,music,nickname,occupation,personal,quotes," +
-                                "relatives,relation,schools,sex,site,status,tv,universities", 1000);
-                //System.out.println("-> " + jsonResult);
+        if (!users.isEmpty()) { // save only if there is anything
+            // save search results to file
+            StringBuilder builder = new StringBuilder();
+            for (PersonDto person : users) {
+                builder.append(person.toString()).append("\n");
+            }
+            CommonUtilities.saveStringToFile(builder.toString(), outputFile, forceOutput);
+        }
 
-                // parse search results
-                List<PersonDto> users = VkParser.parseUsers(jsonResult);
-                //System.out.println("-> " + users);
-
-                if (!users.isEmpty()) { // save only if there is anything
-                    // save search results to file
-                    StringBuilder builder = new StringBuilder();
-                    for (PersonDto person : users) {
-                        builder.append(person.toString()).append("\n");
-                    }
-                    CommonUtilities.saveStringToFile(builder.toString(), outputFile, forceOutput);
-                }
                 */
 
             }
@@ -182,7 +179,7 @@ public class SocialCrawler {
                 //OkClient okClient = new OkClient(okClientConfig, new OkFormsRecognizer());
             }
 
-        } catch (IOException | ParseException | URISyntaxException e) {
+        } catch (Throwable /*IOException | ParseException | URISyntaxException*/ e) {
             LOG.error(e);
             // e.printStackTrace(); // <- for deep debug
         }
