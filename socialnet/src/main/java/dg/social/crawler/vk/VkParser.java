@@ -54,9 +54,11 @@ public final class VkParser {
             //System.out.println("item -> " + object); // <- too much output
 
             item = (JSONObject) object;
-            user = new PersonDto((Long) item.get("id"), (String) item.get("first_name"), (String) item.get("last_name"));
+            user = new PersonDto(0, (Long) item.get("id"), VK);
 
             // additional fields
+            user.setFirstName(String.valueOf(item.get("first_name")));
+            user.setLastName(String.valueOf(item.get("last_name")));
             user.setAbout(String.valueOf(item.get("about")));
             user.setBirthDay(String.valueOf(item.get("bdate")));
             user.setBooks(String.valueOf(item.get("books")));

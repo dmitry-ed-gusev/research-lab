@@ -74,12 +74,19 @@ public class TelescopeCSVParser {
                 String endDate = record.get(TELESCOPE_END_WORK_DATE);
 
                 if (StringUtils.isBlank(endDate)) { // process only current working employees
-                    TelescopePersonDto telePerson = new TelescopePersonDto();
-                    telePerson.setId(Long.parseLong(record.get(TELESCOPE_ID)));
-                    telePerson.setFullName(record.get(TELESCOPE_FULL_NAME));
+
+                    System.out.println(record.get(TELESCOPE_CITY));
+                    System.out.println(record.get(TELESCOPE_CITY_SUM));
+                    System.out.println();
+
+
+                    //TelescopePersonDto telePerson = new TelescopePersonDto();
+                    //telePerson.setId(Long.parseLong(record.get(TELESCOPE_ID)));
+                    //telePerson.setFullName(record.get(TELESCOPE_FULL_NAME));
                     //telePerson.setEndWorkDate(endDate);
-                    telePeople.add(telePerson);
-                    System.out.println("-> " + telePerson);
+                    //telePeople.add(telePerson);
+                    //System.out.println("-> " + telePerson);
+
                 }
             }
 

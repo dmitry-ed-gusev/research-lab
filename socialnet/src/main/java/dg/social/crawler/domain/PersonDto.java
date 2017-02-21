@@ -3,47 +3,62 @@ package dg.social.crawler.domain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import static dg.social.crawler.CommonDefaults.SocialNetwork;
+
 /**
  * Domain object - one person user (human).
  * Created by vinnypuhh on 24.12.16.
  */
-public class PersonDto {
 
-    // mai mandatory fields
-    private long   id;        // user identity
+@Entity
+@Table(name = "PEOPLE")
+public class PersonDto extends AbstractEntity {
+
+    @Transient
     private String firstName; // user first name
+    @Transient
     private String lastName;  // user last name
-
-    // additional fields (simple strings)
+    @Transient
     private String maidenName;
+    @Transient
     private String about;
+    @Transient
     private String birthDay;
+    @Transient
     private String books;
+    @Transient
     private String games;
+    @Transient
     private String interests;
+    @Transient
     private String movies;
+    @Transient
     private String music;
+    @Transient
     private String nickname;
+    @Transient
     private String quotes;
+    @Transient
     private String screenName;
+    @Transient
     private String site;
+    @Transient
     private String status;
+    @Transient
     private String tv;
+    @Transient
     private String homeTown;
 
     /***/
-    public PersonDto(long id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
+    public PersonDto() {}
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    /***/
+    public PersonDto(long id, long externalId, SocialNetwork socialNetwork) {
+        super(id, externalId, socialNetwork);
     }
 
     public String getFirstName() {
@@ -185,7 +200,6 @@ public class PersonDto {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", id)
                 .append("firstName", firstName)
                 .append("lastName", lastName)
                 .append("maidenName", maidenName)

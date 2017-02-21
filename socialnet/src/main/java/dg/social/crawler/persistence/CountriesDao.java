@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Dao component for working with Country domain object.
+ * Dao component for working with CountryDto domain object.
  * Created by gusevdm on 2/17/2017.
  */
 
@@ -36,7 +36,7 @@ public class CountriesDao extends AbstractHibernateDao <CountryDto> {
         CountryDto tmpCountry = (CountryDto) session.createQuery(hql)
                 .setString("externalId",  String.valueOf(country.getExternalId()))
                 .setString("countryName", country.getCountryName())
-                .setString("networkType", String.valueOf(country.getNetworkType()))
+                .setString("networkType", String.valueOf(country.getSocialNetwork()))
                 .uniqueResult();
 
         if (tmpCountry == null) { // not found - saving
