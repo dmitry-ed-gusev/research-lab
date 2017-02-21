@@ -1,7 +1,6 @@
 package dg.social.crawler.vk;
 
 import dg.social.crawler.HtmlFormRecognizer;
-import dg.social.crawler.HttpFormType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
@@ -9,7 +8,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import static dg.social.crawler.HttpFormType.*;
+import static dg.social.crawler.CommonDefaults.HttpFormType;
+import static dg.social.crawler.CommonDefaults.HttpFormType.ACCESS_TOKEN_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.ADD_MISSED_DIGITS_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.LOGIN_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.UNKNOWN_FORM;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_FORM_TAG;
 
 /**

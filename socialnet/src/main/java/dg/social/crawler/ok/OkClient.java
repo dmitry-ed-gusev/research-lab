@@ -1,7 +1,6 @@
 package dg.social.crawler.ok;
 
 import dg.social.crawler.AbstractClient;
-import dg.social.crawler.HttpFormType;
 import dg.social.crawler.utilities.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -22,9 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static dg.social.crawler.CommonDefaults.DEFAULT_ENCODING;
-import static dg.social.crawler.HttpFormType.ACCESS_TOKEN_FORM;
-import static dg.social.crawler.HttpFormType.LOGIN_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.ACCESS_TOKEN_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.LOGIN_FORM;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
+import static dg.social.crawler.CommonDefaults.HttpFormType;
 
 /**
  * OK (Odnoklassniki) social network client.

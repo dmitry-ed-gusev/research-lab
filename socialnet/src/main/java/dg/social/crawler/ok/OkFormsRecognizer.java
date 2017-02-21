@@ -1,7 +1,6 @@
 package dg.social.crawler.ok;
 
 import dg.social.crawler.HtmlFormRecognizer;
-import dg.social.crawler.HttpFormType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
@@ -11,9 +10,10 @@ import org.jsoup.select.Elements;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dg.social.crawler.HttpFormType.ACCESS_TOKEN_FORM;
-import static dg.social.crawler.HttpFormType.LOGIN_FORM;
-import static dg.social.crawler.HttpFormType.UNKNOWN_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType;
+import static dg.social.crawler.CommonDefaults.HttpFormType.ACCESS_TOKEN_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.LOGIN_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.UNKNOWN_FORM;
 
 /**
  * Recognizer for OK http forms.

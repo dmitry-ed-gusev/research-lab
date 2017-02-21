@@ -1,7 +1,6 @@
 package dg.social.crawler.vk;
 
 import dg.social.crawler.AbstractClient;
-import dg.social.crawler.HttpFormType;
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.utilities.CommonUtilities;
 import dg.social.crawler.utilities.HttpUtilities;
@@ -30,7 +29,11 @@ import java.util.List;
 import java.util.Map;
 
 import static dg.social.crawler.CommonDefaults.DEFAULT_ENCODING;
-import static dg.social.crawler.HttpFormType.*;
+import static dg.social.crawler.CommonDefaults.HttpFormType;
+import static dg.social.crawler.CommonDefaults.HttpFormType.ACCESS_TOKEN_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.ADD_MISSED_DIGITS_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
+import static dg.social.crawler.CommonDefaults.HttpFormType.LOGIN_FORM;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
 
 /**
