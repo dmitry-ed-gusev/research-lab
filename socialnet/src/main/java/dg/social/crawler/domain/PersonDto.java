@@ -3,9 +3,15 @@ package dg.social.crawler.domain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import java.util.Set;
 
 import static dg.social.crawler.CommonDefaults.SocialNetwork;
 
@@ -18,10 +24,19 @@ import static dg.social.crawler.CommonDefaults.SocialNetwork;
 @Table(name = "PEOPLE")
 public class PersonDto extends AbstractEntity {
 
-    @Transient
-    private String firstName; // user first name
-    @Transient
-    private String lastName;  // user last name
+    @Column(name = "FIRST_NAME")
+    private String firstName;   // user first name
+    @Column (name = "LAST_NAME")
+    private String lastName;    // user last name
+    @Column (name = "DISPLAY_NAME")
+    private String displayName; // display/main name
+    @Column (name = "NATIVE_NAME")
+    private String nativeName;  // native name
+    @ElementCollection
+    @CollectionTable(name="PEOPLE_NAMES", joinColumns=@JoinColumn(name="PERSON_ID"))
+    @Column(name="NAME")
+    private Set<String> namesList; // list of names
+
     @Transient
     private String maidenName;
     @Transient
@@ -75,6 +90,30 @@ public class PersonDto extends AbstractEntity {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getNativeName() {
+        return nativeName;
+    }
+
+    public void setNativeName(String nativeName) {
+        this.nativeName = nativeName;
+    }
+
+    public Set<String> getNamesList() {
+        return namesList;
+    }
+
+    public void setNamesList(Set<String> namesList) {
+        this.namesList = namesList;
     }
 
     public String getMaidenName() {
@@ -202,6 +241,9 @@ public class PersonDto extends AbstractEntity {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append("firstName", firstName)
                 .append("lastName", lastName)
+                .append("displayName", displayName)
+                .append("nativeName", nativeName)
+                .append("namesList", namesList)
                 .append("maidenName", maidenName)
                 .append("about", about)
                 .append("birthDay", birthDay)

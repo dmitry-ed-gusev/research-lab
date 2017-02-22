@@ -1,6 +1,6 @@
-package dg.social.crawler.vk;
+package dg.social.crawler.networks.vk;
 
-import dg.social.crawler.HtmlFormRecognizer;
+import dg.social.crawler.networks.HtmlFormRecognizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;

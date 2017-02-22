@@ -1,22 +1,18 @@
 package dg.social.crawler;
 
-import dg.social.crawler.components.VkComponent;
 import dg.social.crawler.utilities.CmdLine;
 import dg.social.crawler.utilities.CmdLineOption;
 import dg.social.crawler.utilities.CommonUtilities;
 import dg.social.crawler.utilities.CustomSpringProperty;
-import dg.social.crawler.utilities.TelescopeCSVParser;
+import dg.social.crawler.networks.telescope.TelescopeParser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.json.simple.parser.ParseException;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import static dg.social.crawler.utilities.CmdLineOption.*;
@@ -114,7 +110,7 @@ public class SocialCrawler {
 
         //
         CommonUtilities.unZipIt("people.zip", "");
-        TelescopeCSVParser.parseCSV();
+        TelescopeParser.parseCSV();
 
         // Config file option isn't empty - go ahead
         try //(FileReader fr = new FileReader(configFile);

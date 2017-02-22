@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 /**
  * One employee, info from Telescope system.
  * Created by gusevdm on 2/20/2017.
+ * @deprecated use {@link PersonDto} instead.
  */
 
 public class TelescopePersonDto {

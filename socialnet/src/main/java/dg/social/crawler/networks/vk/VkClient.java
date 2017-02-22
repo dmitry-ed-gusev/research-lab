@@ -1,6 +1,6 @@
-package dg.social.crawler.vk;
+package dg.social.crawler.networks.vk;
 
-import dg.social.crawler.AbstractClient;
+import dg.social.crawler.networks.AbstractClient;
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.utilities.CommonUtilities;
 import dg.social.crawler.utilities.HttpUtilities;

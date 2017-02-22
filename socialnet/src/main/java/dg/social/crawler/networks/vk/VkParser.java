@@ -1,4 +1,4 @@
-package dg.social.crawler.vk;
+package dg.social.crawler.networks.vk;
 
 import dg.social.crawler.domain.CountryDto;
 import dg.social.crawler.domain.PersonDto;

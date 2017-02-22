@@ -32,18 +32,19 @@ public class CountriesDao extends AbstractHibernateDao <CountryDto> {
         // try to find existing country
         Session    session = this.getSessionFactory().getCurrentSession();
         String     hql     = "from CountryDto as c where c.externalId = :externalId and " +
-                "c.countryName = :countryName and c.networkType = :networkType";
+                "c.countryName = :countryName and c.socialNetwork = :socialNetwork";
         CountryDto tmpCountry = (CountryDto) session.createQuery(hql)
-                .setString("externalId",  String.valueOf(country.getExternalId()))
-                .setString("countryName", country.getCountryName())
-                .setString("networkType", String.valueOf(country.getSocialNetwork()))
+                .setString("externalId",    String.valueOf(country.getExternalId()))
+                .setString("countryName",   country.getCountryName())
+                .setString("socialNetwork", String.valueOf(country.getSocialNetwork()))
                 .uniqueResult();
 
         if (tmpCountry == null) { // not found - saving
             LOG.debug(String.format("Country [%s] not found. Saving.", country));
             this.save(country);
-        } else {
+        } else { // found - already exists - updating
             LOG.debug(String.format("Country [%s] already exists.", country));
+            // todo: implement updating!
         }
 
     }

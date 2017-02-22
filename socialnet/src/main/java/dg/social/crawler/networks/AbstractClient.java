@@ -1,4 +1,4 @@
-package dg.social.crawler;
+package dg.social.crawler.networks;
 
 import dg.social.crawler.utilities.HttpUtilities;
 import org.apache.commons.logging.Log;

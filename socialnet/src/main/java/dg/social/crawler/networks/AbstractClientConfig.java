@@ -1,4 +1,4 @@
-package dg.social.crawler;
+package dg.social.crawler.networks;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;

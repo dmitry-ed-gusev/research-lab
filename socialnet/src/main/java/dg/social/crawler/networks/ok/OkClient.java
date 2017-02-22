@@ -1,6 +1,6 @@
-package dg.social.crawler.ok;
+package dg.social.crawler.networks.ok;
 
-import dg.social.crawler.AbstractClient;
+import dg.social.crawler.networks.AbstractClient;
 import dg.social.crawler.utilities.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;

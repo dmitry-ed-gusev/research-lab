@@ -1,6 +1,6 @@
-package dg.social.crawler.vk;
+package dg.social.crawler.networks.vk;
 
-import dg.social.crawler.AbstractClientConfig;
+import dg.social.crawler.networks.AbstractClientConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

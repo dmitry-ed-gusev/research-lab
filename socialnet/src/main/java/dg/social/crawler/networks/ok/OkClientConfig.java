@@ -1,6 +1,6 @@
-package dg.social.crawler.ok;
+package dg.social.crawler.networks.ok;
 
-import dg.social.crawler.AbstractClientConfig;
+import dg.social.crawler.networks.AbstractClientConfig;
 
 import java.util.Properties;
 
