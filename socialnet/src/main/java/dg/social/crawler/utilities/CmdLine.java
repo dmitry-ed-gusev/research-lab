@@ -15,33 +15,33 @@ import java.util.Arrays;
  * Created by gusevdm on 28/12/2016.
 */
 
-// todo: immutability (copy ArrayList on instance creation)
 public class CmdLine {
 
     private static final Log LOG = LogFactory.getLog(CmdLine.class); // module logger
 
-    private boolean           isLoggingEnabled = true;              // enable/disable class internal logging
     private ArrayList<String> cmdLine          = new ArrayList<>(); // cmd line internal storage
 
-    /** If args is null, constructor will throw IllegalArgumentException. */
-    public CmdLine(String[] args, boolean isLoggingEnabled) {
-
-        this.isLoggingEnabled = isLoggingEnabled;
-
-        if (isLoggingEnabled) {
-            LOG.debug(String.format("CmdLine constructor() working. Cmd line: %s.", (args != null ? Arrays.toString(args) : "null")));
-        }
+    /** If args are null, constructor will throw IllegalArgumentException. */
+    public CmdLine(String[] args) {
+        LOG.debug(String.format("CmdLine constructor() working. Cmd line: %s.",
+                (args != null ? Arrays.toString(args) : "null")));
 
         if (args == null) { // fail-fast
             throw new IllegalArgumentException("Empty command line string!");
         }
 
-        this.cmdLine.addAll(Arrays.asList(args));
+        // copy cmd line
+        String[] tmp = new String[args.length];
+        System.arraycopy(args, 0, tmp, 0, args.length);
+        this.cmdLine.addAll(Arrays.asList(tmp));
     }
 
     /** Check presence of option with "-" (minus) sign. */
     public boolean hasOption(String option) {
-        return !cmdLine.isEmpty() && !StringUtils.isBlank(option) && cmdLine.contains(option);
+        LOG.debug(String.format("CmdLine.hasOption() is working. Option to check: [%s].", option));
+        boolean result = !cmdLine.isEmpty() && !StringUtils.isBlank(option) && cmdLine.contains(option);
+        LOG.debug(String.format("Option [%s] check result [%s].", option, result));
+        return result;
     }
 
     /** Returns first found value for specified option. In option use "-" (minus) sign. */
