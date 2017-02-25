@@ -30,7 +30,7 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> {
         this.clazz = clazz;
     }
 
-    SessionFactory getSessionFactory() {
+    public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 

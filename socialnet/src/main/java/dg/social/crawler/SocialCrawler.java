@@ -1,5 +1,6 @@
 package dg.social.crawler;
 
+import dg.social.crawler.components.VkComponent;
 import dg.social.crawler.utilities.CmdLine;
 import dg.social.crawler.utilities.CmdLineOption;
 import dg.social.crawler.utilities.CommonUtilities;
@@ -10,9 +11,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.hibernate.SessionFactory;
+import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import static dg.social.crawler.utilities.CmdLineOption.*;
@@ -25,28 +34,47 @@ import static dg.social.crawler.utilities.CmdLineOption.*;
 
 // todo: extract parse cmd line utility method/class
 // todo: move functionality to SocialCrawler instance
+
+@Component
+@Transactional
 public class SocialCrawler {
 
-    private static final String LOGGER_ROOT            = "dg.social";
-    private static final Log    LOG                    = LogFactory.getLog(SocialCrawler.class);
-    private static final String SPRING_CONFIG          = "CrawlerSpringContext.xml";
+    private static final String LOGGER_ROOT = "dg.social";
+    private static final Log LOG = LogFactory.getLog(SocialCrawler.class);
+    private static final String SPRING_CONFIG = "CrawlerSpringContext.xml";
     private static final String CRAWLER_DEFAULT_CONFIG = "crawler.default.config";
 
     //private CmdLine cmdLine;
-    private String  configFile;
-    private String  searchString;
-    private String  outputFile;
-    private boolean forceOutput;
+    //private String configFile;
+    //private String searchString;
+    //private String outputFile;
+    //private boolean forceOutput;
+
+    @Autowired
+    @Qualifier(value = "crawlerHsqlSessionFactory")
+    private SessionFactory sessionFactory;
+    @Autowired
+    private VkComponent vkComponent;
 
 
     /***/
-    public SocialCrawler(CmdLine cmdLine) {
+    public SocialCrawler() {
 
-        if (cmdLine == null) {
-            throw new IllegalArgumentException("Can't work with empty cmd line!");
-        }
+        //if (cmdLine == null) {
+        //    throw new IllegalArgumentException("Can't work with empty cmd line!");
+       // }
 
         //this.cmdLine = cmdLine;
+    }
+
+    /***/
+    public void start() throws ParseException, IOException, URISyntaxException {
+        LOG.debug("SocialCrawler.start() is working.");
+        this.vkComponent.updateCountries();
+
+        //this.sessionFactory.close();
+        this.sessionFactory.getCurrentSession().createSQLQuery("CHECKPOINT").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("SHUTDOWN").executeUpdate();
     }
 
     /***/
@@ -88,7 +116,7 @@ public class SocialCrawler {
 
         // get output file value and force option
         boolean forceOutput = cmdLine.hasOption(OUTPUT_FORCE.getOptionName());
-        String  outputFile  = cmdLine.optionValue(OUTPUT_FILE.getOptionName());
+        String outputFile = cmdLine.optionValue(OUTPUT_FILE.getOptionName());
         if (StringUtils.isBlank(outputFile)) { // fail-fast -> can't work with empty output file
             LOG.error("Can't output to empty file!");
             System.out.println(CmdLineOption.getHelpText()); // show help/usage text
@@ -96,7 +124,7 @@ public class SocialCrawler {
         }
 
         // initialize Spring application context
-        AbstractApplicationContext crawlerContext = new ClassPathXmlApplicationContext(new String[] {SPRING_CONFIG}, false);
+        AbstractApplicationContext crawlerContext = new ClassPathXmlApplicationContext(new String[]{SPRING_CONFIG}, false);
 
         // change default config file for Crawler
         if (!StringUtils.isBlank(configFile)) { // add new value for custom property
@@ -108,24 +136,24 @@ public class SocialCrawler {
         // load Spring application context
         crawlerContext.refresh();
 
+
         //
-        CommonUtilities.unZipIt("people.zip", "");
-        TelescopeParser.parseCSV();
+        //CommonUtilities.unZipIt("people.zip", "");
+        //TelescopeParser.parseCSV();
 
         // Config file option isn't empty - go ahead
         try //(FileReader fr = new FileReader(configFile);
-            // BufferedReader br = new BufferedReader(fr))
-          {
+        // BufferedReader br = new BufferedReader(fr))
+        {
+
+            SocialCrawler crawler = (SocialCrawler) crawlerContext.getBean("socialCrawler");
+            crawler.start();
 
             // load properties from config file
             //Properties properties = new Properties();
             //properties.load(br);
             //LOG.debug(String.format("Properties from [%s] file: %s.", configFile, properties));
 
-
-
-            //VkComponent vkComponent = (VkComponent) crawlerContext.getBean("vkComponent");
-            //vkComponent.updateCountries();
 
             if (false) { // unzip data fil from Telescope system
 
@@ -176,8 +204,8 @@ public class SocialCrawler {
             }
 
         } catch (Throwable /*IOException | ParseException | URISyntaxException*/ e) {
-            LOG.error(e);
-            // e.printStackTrace(); // <- for deep debug
+            //LOG.error(e);
+            e.printStackTrace(); // <- for deep debug
         }
     }
 

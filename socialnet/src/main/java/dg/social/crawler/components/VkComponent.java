@@ -1,5 +1,6 @@
 package dg.social.crawler.components;
 
+import dg.social.crawler.CommonDefaults;
 import dg.social.crawler.domain.CountryDto;
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.persistence.CountriesDao;
@@ -8,6 +9,7 @@ import dg.social.crawler.networks.vk.VkParser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,15 +45,36 @@ public class VkComponent {
     public void updateCountries() throws IOException, URISyntaxException, ParseException {
         LOG.debug("VkComponent.updateCountries() is working.");
 
-        String jsonResult = this.vkClient.getCountries();
+        //String jsonResult = this.vkClient.getCountries();
         //System.out.println("-> " + jsonResult);
         // parse search results
-        List<CountryDto> countries = VkParser.parseCountries(jsonResult);
-        System.out.println("countries -> " + countries);
+        //List<CountryDto> countries = VkParser.parseCountries(jsonResult);
+        //System.out.println("countries -> " + countries);
 
-        for (CountryDto country : countries) { // update countries in internal storage
-            countriesDao.addCountry(country);
-        }
+        Session session = this.countriesDao.getSessionFactory().getCurrentSession();
+        //for (CountryDto country : countries) { // update countries in internal storage
+            //cou1ntriesDao.addCountry(country);
+
+            //System.out.println("\n1 --> " + country);
+            //System.out.println("*** " + session.merge(country));
+            //System.out.println("2 --> " + country + "\n");
+
+            //session.flush();
+            //session.clear();
+
+        //}
+
+        CountryDto ccc = new CountryDto(-8, 75, "ZtrgdfbdxZxZx", CommonDefaults.SocialNetwork.VK);
+        System.out.println("---> " + ccc);
+        System.out.println("ffff " + session.merge(ccc));
+        //session.save(ccc);
+        session.flush();
+        session.clear();
+
+        //session.createQuery("CHECKPOINT").executeUpdate();
+        //session.co createQuery("SHUTDOWN").executeUpdate();
+        //this.countriesDao.getSessionFactory().close();
+
     }
 
     /***/

@@ -3,17 +3,10 @@ package dg.social.crawler.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -34,11 +27,26 @@ public abstract class AbstractEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     static final String ID_GENERATOR_NAME     = "ID_GENERATOR";
-    static final String ID_GENERATOR_SEQUENCE = "ID_SEQUENCE";
+    static final String ID_GENERATOR_SEQUENCE = "MY_ID_SEQUENCE";
 
     // Entity unique persistent (DB) identifier. Used named generator (see package-info.java in current package).
     // Identifier will be generated BEFORE any insert operation to DB (that operation - real insert- may be deferred).
-    @Id @Column(name = "ID") @GeneratedValue(generator = ID_GENERATOR_NAME)
+    @Id @Column(name = "ID")
+    @GeneratedValue(generator = ID_GENERATOR_NAME)
+    /*
+    @GenericGenerator(
+            name = "sequence11",
+            strategy = "identity",//"sequence",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(
+                            name = "sequence",
+                            value = "sequence11"
+                    )
+            }
+    )
+    @GeneratedValue (generator = "sequence11")
+    */
+    //@GeneratedValue//(strategy = GenerationType.AUTO)
     private long   id;
 
     @NotNull @Column(name = "EXTERNAL_ID", nullable = false)
