@@ -39,26 +39,29 @@ public class CmdLine {
     /** Check presence of option with "-" (minus) sign. */
     public boolean hasOption(String option) {
         LOG.debug(String.format("CmdLine.hasOption() is working. Option to check: [%s].", option));
-        boolean result = !cmdLine.isEmpty() && !StringUtils.isBlank(option) && cmdLine.contains(option);
+        boolean result = !this.cmdLine.isEmpty() &&
+                !StringUtils.isBlank(option) && this.cmdLine.contains(option);
         LOG.debug(String.format("Option [%s] check result [%s].", option, result));
         return result;
     }
 
     /** Returns first found value for specified option. In option use "-" (minus) sign. */
     public String optionValue(String option) {
-
-        if (!StringUtils.isBlank(option)) {
-            int optionNameIndex = cmdLine.indexOf(option);
+        LOG.debug(String.format("CmdLine.optionValue() is working. Option to check value: [%s].", option));
+        String result = null;
+        if (!this.cmdLine.isEmpty() && !StringUtils.isBlank(option)) {
+            int optionNameIndex  = this.cmdLine.indexOf(option);
             int optionValueIndex = optionNameIndex + 1;
-            if ((optionNameIndex >= 0) && (optionValueIndex < cmdLine.size())) {
-                String optionValue = cmdLine.get(optionValueIndex);
+            if ((optionNameIndex >= 0) && (optionValueIndex < this.cmdLine.size())) {
+                String optionValue = this.cmdLine.get(optionValueIndex);
                 if (!StringUtils.isBlank(optionValue) && !optionValue.startsWith("-")) {
-                    return optionValue;
+                    result = optionValue;
                 }
             }
         }
 
-        return null;
+        LOG.debug(String.format("For option [%s] found value [%s].", option, result));
+        return result;
     }
 
 }

@@ -6,7 +6,4 @@
     <!-- loading config from file and return Properties object -->
     <util:properties id="vk.properties" location="file:${crawler.default.config}"/>
 
-    <!-- empty command line bean -->
-    <bean id="cmdLine" class="dg.social.crawler.utilities.CmdLine" />
-
 </beans>
