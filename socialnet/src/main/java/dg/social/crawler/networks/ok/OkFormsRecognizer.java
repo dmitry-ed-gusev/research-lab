@@ -10,10 +10,10 @@ import org.jsoup.select.Elements;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dg.social.crawler.CommonDefaults.HttpFormType;
-import static dg.social.crawler.CommonDefaults.HttpFormType.ACCESS_TOKEN_FORM;
-import static dg.social.crawler.CommonDefaults.HttpFormType.LOGIN_FORM;
-import static dg.social.crawler.CommonDefaults.HttpFormType.UNKNOWN_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ACCESS_TOKEN_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.LOGIN_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.UNKNOWN_FORM;
 
 /**
  * Recognizer for OK http forms.

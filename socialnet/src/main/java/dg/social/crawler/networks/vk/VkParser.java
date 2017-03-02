@@ -13,7 +13,7 @@ import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dg.social.crawler.CommonDefaults.SocialNetwork.VK;
+import static dg.social.crawler.SCrawlerDefaults.SocialNetwork.VK;
 
 /**
  * Parse results of executing VK HTTP methods.

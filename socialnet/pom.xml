@@ -15,7 +15,7 @@
 
     <properties>
         <jar.name>crawler-${env}-${project.version}</jar.name>
-        <main.class>dg.social.crawler.SocialCrawler</main.class>
+        <main.class>dg.social.crawler.SCrawler</main.class>
         <assembly.dir>${project.build.directory}/scrawler</assembly.dir>
         <libraries.prefix>lib</libraries.prefix>
 

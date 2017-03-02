@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static dg.social.crawler.CommonDefaults.DATE_TIME_FORMAT;
+import static dg.social.crawler.SCrawlerDefaults.DATE_TIME_FORMAT;
 
 /**
  * Some common utilities.

@@ -4,8 +4,7 @@ import dg.social.crawler.components.VkComponent;
 import dg.social.crawler.utilities.CmdLine;
 import dg.social.crawler.utilities.CmdLineOption;
 import dg.social.crawler.utilities.CommonUtilities;
-import dg.social.crawler.utilities.CustomSpringProperty;
-import dg.social.crawler.networks.telescope.TelescopeParser;
+import dg.social.crawler.utilities.CustomStringProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,54 +39,105 @@ import static dg.social.crawler.utilities.CmdLineOption.*;
 
 @Component
 @Transactional
-public class SocialCrawler {
+public class SCrawler {
 
-    private static final Log LOG = LogFactory.getLog(SocialCrawler.class);
+    private static final Log LOG = LogFactory.getLog(SCrawler.class);
 
-    private static final String LOGGER_ROOT = "dg.social";
-    private static final String SPRING_CONFIG = "CrawlerSpringContext.xml";
-    private static final String CRAWLER_DEFAULT_CONFIG = "crawler.default.config";
-    private static final String zzz = "";
+    private static final String LOGGER_ROOT            = "dg.social";
+    private static final String SPRING_CONFIG          = "CrawlerSpringContext.xml";
+    private static final String CUSTOM_PROPERTY_NAME   = "custom_%s";
 
-    //private CmdLine cmdLine;
-    //private String configFile;
-    //private String searchString;
-    //private String outputFile;
-    //private boolean forceOutput;
+    // Configuration properties. Should be the same in crawler config file and in Spring config.
+    // todo: move to CmdLineOptions enum
+    //private static final String CRAWLER_DEFAULT_DB_PATH       = "crawler.db.path";
+    //private static final String CRAWLER_DEFAULT_CONFIG        = "crawler.default.config";
+    //private static final String CRAWLER_DEFAULT_SEARCH_STRING = "crawler.default.search.string";
+    //private static final String CRAWLER_DEFAULT_OUTPUT_FILE   = "crawler.default.output.file";
+    //private static final String CRAWLER_DEFAULT_OUTPUT_FORCE  = "crawler.default.output.force";
 
+    @Autowired
+    private SCrawlerConfig crawlerСonfig;
     @Autowired @Qualifier(value = "crawlerHsqlSessionFactory")
     private SessionFactory sessionFactory;
     @Autowired
-    private VkComponent vkComponent;
+    private VkComponent    vkComponent;
 
     /***/
-    public SocialCrawler() {
-
-        //if (cmdLine == null) {
-        //    throw new IllegalArgumentException("Can't work with empty cmd line!");
-        // }
-
-        //this.cmdLine = cmdLine;
+    public SCrawler() {
     }
 
     /***/
-    private static List<CustomSpringProperty> getCustomProperties(CmdLine cmdLine) {
-        LOG.debug("SocialCrawler.getCustomProperties() is working.");
-        List<CustomSpringProperty> result = new ArrayList<>();
+    private static CustomStringProperty createCustomProperty(String name, String value) {
+        LOG.debug("SCrawler.createCustomProperty() is working [PRIVATE].");
+        CustomStringProperty property = null;
 
-        // get new config file value and create custom property
-        String configFile = cmdLine.optionValue(CONFIG_FILE.getOptionName());
-        if (!StringUtils.isBlank(configFile)) {
-            LOG.debug(""); // todo !!!
-            result.add(new CustomSpringProperty("custom_config",
-                    CRAWLER_DEFAULT_CONFIG, configFile));
+        if (!StringUtils.isBlank(name) && !StringUtils.isBlank(value)) {
+            String customPropertyName =
+
+            property = new CustomStringProperty(customPropertyName, name, value);
+        } else {
+            LOG.debug(String.format("Custom property name [%s] and/or value [%s] empty.", name, value));
         }
 
+        return property;
+    }
+
+    /***/
+    private static List<CustomStringProperty> getCustomProperties(CmdLine cmdLine) {
+        LOG.debug("SocialCrawler.getCustomProperties() is working [PRIVATE].");
+        List<CustomStringProperty> result = new ArrayList<>();
+
+        // iterate over options and create custom
+        for (CmdLineOption option : CmdLineOption.values()) {
+
+            if (!StringUtils.isBlank(option.getOptionKey())) { // process only config options
+                String optionValue = cmdLine.optionValue(option.getOptionName());
+
+                if (!StringUtils.isBlank(optionValue)) { // value isn't empty (present)
+                    String customPropertyName = String.format(CUSTOM_PROPERTY_NAME, option.getOptionKey());
+                    LOG.debug(String.format("Creating custom property [%s]: name [%s], value [%s].",
+                            customPropertyName, option.getOptionKey(), optionValue));
+                    result.add(new CustomStringProperty(customPropertyName, option.getOptionKey(), optionValue));
+                } else if (OUTPUT_FORCE.equals(option)) { // one option is a flag
+                    LOG.debug(String.format("Set value for flag [%s].", option));
+                    result.add(new CustomStringProperty(String.format(CUSTOM_PROPERTY_NAME, option.getOptionKey()), ))
+                } else { // no value and not a flag
+                    LOG.debug(String.format("No value for option [%s].", option));
+                }
+
+            }
+
+        } // end of FOR
+
+        // custom path to DB
+        CustomStringProperty property = SCrawler.createCustomProperty(
+                CRAWLER_DEFAULT_DB_PATH, cmdLine.optionValue(DB_PATH.getOptionName()));
+        if (property != null) {
+            result.add(property);
+        }
+
+        // custom crawler config
+        property = SCrawler.createCustomProperty(
+                CRAWLER_DEFAULT_CONFIG, cmdLine.optionValue(CONFIG_FILE.getOptionName()));
+        if (property != null) {
+            result.add(property);
+        }
+
+        // get search string for 'quick search' (applied option)
+        String searchString = cmdLine.optionValue(SEARCH_STRING.getOptionName());
+        if (true) {
+
+        }
+
+        // get search output file (applied option)
+        // get forcing output value (applied option)
 
         return result;
     }
 
-    /***/
+    /**
+     * Starts current Crawler instance, according to config.
+     */
     public void start() throws ParseException, IOException, URISyntaxException {
         LOG.debug("SocialCrawler.start() is working.");
         this.vkComponent.updateCountries();
@@ -115,11 +165,11 @@ public class SocialCrawler {
         String logLevel = cmdLine.optionValue(LOGGER_LEVEL.getOptionName());
         if (!StringUtils.isBlank(logLevel)) {
             LogManager.getLogger(LOGGER_ROOT).setLevel(Level.toLevel(logLevel.toUpperCase()));
-            LOG.info(String.format("Set logging level to [%s].", logLevel));
+            LOG.info(String.format("Set logging level to [%s] for loggers below [%s].", logLevel, LOGGER_ROOT));
         }
 
         // create list of custom properties for Spring container
-        List<CustomSpringProperty> customProperties = SocialCrawler.getCustomProperties(cmdLine);
+        List<CustomStringProperty> customProperties = SCrawler.getCustomProperties(cmdLine);
 
         // get search string value
         String searchString = cmdLine.optionValue(SEARCH_STRING.getOptionName());
@@ -147,7 +197,7 @@ public class SocialCrawler {
             if (!customProperties.isEmpty()) {
                 LOG.debug(""); // todo !!!
                 MutablePropertySources propertySources = crawlerContext.getEnvironment().getPropertySources();
-                for (CustomSpringProperty property : customProperties) {
+                for (CustomStringProperty property : customProperties) {
                     propertySources.addLast(property);
                 }
             }
@@ -156,7 +206,7 @@ public class SocialCrawler {
             crawlerContext.refresh();
 
             // get SocialCrawler instance for Spring context and start it
-            SocialCrawler crawler = (SocialCrawler) crawlerContext.getBean("socialCrawler");
+            SCrawler crawler = (SCrawler) crawlerContext.getBean("SCrawler");
             crawler.start();
 
             if (false) { // unzip data fil from Telescope system

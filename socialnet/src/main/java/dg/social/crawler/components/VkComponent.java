@@ -1,6 +1,6 @@
 package dg.social.crawler.components;
 
-import dg.social.crawler.CommonDefaults;
+import dg.social.crawler.SCrawlerDefaults;
 import dg.social.crawler.domain.CountryDto;
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.persistence.CountriesDao;
@@ -64,7 +64,7 @@ public class VkComponent {
 
         //}
 
-        CountryDto ccc = new CountryDto(-8, 75, "ZtrgdfbdxZxZx", CommonDefaults.SocialNetwork.VK);
+        CountryDto ccc = new CountryDto(-8, 75, "ZtrgdfbdxZxZx", SCrawlerDefaults.SocialNetwork.VK);
         System.out.println("---> " + ccc);
         System.out.println("ffff " + session.merge(ccc));
         //session.save(ccc);

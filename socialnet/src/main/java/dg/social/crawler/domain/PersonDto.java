@@ -13,7 +13,7 @@ import javax.persistence.Transient;
 
 import java.util.Set;
 
-import static dg.social.crawler.CommonDefaults.SocialNetwork;
+import static dg.social.crawler.SCrawlerDefaults.SocialNetwork;
 
 /**
  * Domain object - one person user (human).

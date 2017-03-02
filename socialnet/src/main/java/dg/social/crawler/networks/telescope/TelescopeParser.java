@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static dg.social.crawler.CommonDefaults.SocialNetwork.TELESCOPE;
+import static dg.social.crawler.SCrawlerDefaults.SocialNetwork.TELESCOPE;
 
 /**
  * Parses CSV files from Telescope (people info).

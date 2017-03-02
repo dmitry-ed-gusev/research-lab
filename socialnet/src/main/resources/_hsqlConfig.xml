@@ -6,7 +6,7 @@
     <!-- data source -->
     <bean id="crawlerHsqlDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${crawler.jdbc.driver}"/>
-        <property name="url"             value="${crawler.db.url}"/>
+        <property name="url"             value="${crawler.db.url}${crawler.db.path};${crawler.db.options}"/>
         <property name="username"        value="${crawler.db.user}"/>
         <property name="password"        value="${crawler.db.pass}"/>
         <property name="maxActive"       value="3"/>

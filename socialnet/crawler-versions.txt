@@ -6,17 +6,15 @@ XX.02.2017. Version X.X.X
 This version of crawler preserves all properties of previous version.
 
 Business (user) properties of current version:
-* preserved all properties from previous version
-* updates (by cmd line key) internal storage (DB) with extended info from VK:
-   - countries/cities
-   - universities/faculties
+* preserved most of properties from previous version (see changes below)
 
 Tech properties:
 * added ORM level (Hibernate)
 * added DI/IoC level (Spring)
-* added HSql DB support
+* added HSql DB support (internal storage)
 * cmd line option [-config <config file name>] is optional now,
   using default config, named [crawler.properties]
+* added cmd line option [-dbPath <path to db>] for setting path to internal DB
 
 =====================================================================================================
 19.01.2017. Version 0.1.0

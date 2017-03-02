@@ -1,6 +1,6 @@
 package dg.social.crawler.domain;
 
-import dg.social.crawler.CommonDefaults.SocialNetwork;
+import dg.social.crawler.SCrawlerDefaults.SocialNetwork;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
