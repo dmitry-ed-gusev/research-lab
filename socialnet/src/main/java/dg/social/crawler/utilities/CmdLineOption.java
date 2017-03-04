@@ -7,22 +7,36 @@ package dg.social.crawler.utilities;
 
 public enum CmdLineOption {
 
-    CONFIG_FILE  ("-config",      "-config <config file name>   Config file for SCrawler, file name is mandatory"),
-    LOGGER_LEVEL ("-logLevel",    "-logLevel <level>            Set internal logger level, values TRACE/DEBUG/INFO/ERROR/WARN/FATAL"),
-    SEARCH_STRING("-search",      "-search <search string>      Search string for simple search. If contains multiple words, use \" for value"),
-    OUTPUT_FILE  ("-output",      "-output <file name>          Specify output file name for search results"),
-    OUTPUT_FORCE ("-forceOutput", "-forceOutput                 Force overwrite output file, if it exists"),
-    HELP         ("-help",        "-help                        Show help and current usage info");
+    // internal Crawler options - Crawler system config
+    CONFIG_FILE  ("-config",      "-config <config file name>   Config file for SCrawler, file name is mandatory",
+            "crawler.default.config"),
+    DB_PATH      ("-dbPath",      "-dbPath <path to HSql db>    Path to internal Crawler storage (HSql db)",
+            "crawler.db.path"),
+
+    // current Crawler run options (quick search, output) - Crawler user config
+    SEARCH_STRING("-search",      "-search <search string>      Search string for simple search. If contains multiple words, use \" for value",
+            "crawler.default.search.string"),
+    OUTPUT_FILE  ("-output",      "-output <file name>          Specify output file name for search results",
+            "crawler.default.output.file"),
+    OUTPUT_FORCE ("-forceOutput", "-forceOutput                 Force overwrite output file, if it exists",
+            "crawler.default.output.force"),
+
+    // system options, should not affect Spring container
+    LOGGER_LEVEL ("-logLevel",    "-logLevel <level>            Set internal logger level, values TRACE/DEBUG/INFO/ERROR/WARN/FATAL", ""),
+    HELP         ("-help",        "-help                        Show help and current usage info", "");
 
     // application description
     private static final String APP_DESCRIPTION = "\nSocial networks crawler. Dmitrii Gusev, 2017.\n\nUsage/options:\n";
 
     private String optionName;
     private String optionDesc;
+    private String optionKey;
 
-    CmdLineOption(String optionName, String optionDesc) {
+    /***/
+    CmdLineOption(String optionName, String optionDesc, String optionKey) {
         this.optionName = optionName;
         this.optionDesc = optionDesc;
+        this.optionKey  = optionKey;
     }
 
     /** Return help text for option -help or for invalid usage. */
@@ -44,6 +58,10 @@ public enum CmdLineOption {
 
     public String getOptionDesc() {
         return optionDesc;
+    }
+
+    public String getOptionKey() {
+        return optionKey;
     }
 
 }

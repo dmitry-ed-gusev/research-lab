@@ -8,12 +8,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import static dg.social.crawler.CommonDefaults.HttpFormType;
-import static dg.social.crawler.CommonDefaults.HttpFormType.ACCESS_TOKEN_FORM;
-import static dg.social.crawler.CommonDefaults.HttpFormType.ADD_MISSED_DIGITS_FORM;
-import static dg.social.crawler.CommonDefaults.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
-import static dg.social.crawler.CommonDefaults.HttpFormType.LOGIN_FORM;
-import static dg.social.crawler.CommonDefaults.HttpFormType.UNKNOWN_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ACCESS_TOKEN_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ADD_MISSED_DIGITS_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.LOGIN_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.UNKNOWN_FORM;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_FORM_TAG;
 
 /**

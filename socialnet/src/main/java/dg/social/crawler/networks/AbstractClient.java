@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import static dg.social.crawler.CommonDefaults.HttpFormType;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType;
 
 /**
  * Base abstract class for social networks clients.

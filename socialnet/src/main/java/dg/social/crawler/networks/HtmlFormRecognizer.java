@@ -2,7 +2,7 @@ package dg.social.crawler.networks;
 
 import org.jsoup.nodes.Document;
 
-import static dg.social.crawler.CommonDefaults.HttpFormType;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType;
 
 /**
  * Common interface for http form recognizer.

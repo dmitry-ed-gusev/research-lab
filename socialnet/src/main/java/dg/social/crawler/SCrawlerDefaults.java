@@ -3,13 +3,13 @@ package dg.social.crawler;
 import java.text.SimpleDateFormat;
 
 /**
- * Some common defaults.
+ * Some common defaults for SCrawler.
  * Created by gusevdm on 12/12/2016.
  */
 
-public final class CommonDefaults {
+public final class SCrawlerDefaults {
 
-    private CommonDefaults() {} // mustn't instantiate utility class
+    private SCrawlerDefaults() {} // mustn't instantiate utility class!
 
     /** Default encoding for content. */
     public static final String           DEFAULT_ENCODING = "UTF-8";

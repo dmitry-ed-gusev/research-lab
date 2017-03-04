@@ -3,15 +3,13 @@ package dg.social.crawler.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
-import static dg.social.crawler.CommonDefaults.SocialNetwork;
+import static dg.social.crawler.SCrawlerDefaults.SocialNetwork;
 
 /**
  * Base abstract domain object with database identity. Incapsulates some common (for all domain objects)

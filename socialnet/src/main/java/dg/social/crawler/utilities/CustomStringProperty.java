@@ -1,5 +1,6 @@
 package dg.social.crawler.utilities;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.env.PropertySource;
@@ -12,19 +13,24 @@ import org.springframework.core.env.PropertySource;
  * Created by gusevdm on 19/02/2017.
 */
 
-public class CustomSpringProperty extends PropertySource<String> {
+public class CustomStringProperty extends PropertySource<String> {
 
-    private final Log LOG = LogFactory.getLog(CustomSpringProperty.class);
+    private final Log LOG = LogFactory.getLog(CustomStringProperty.class);
 
     private String propertyName;
     private String propertyValue;
 
     /***/
-    public CustomSpringProperty(String propertySourceName, String propertyName, String propertyValue) {
+    public CustomStringProperty(String propertySourceName, String propertyName, String propertyValue) {
         super(propertySourceName);
-        LOG.debug(
-                String.format("CustomSpringProperty constructor(): name [%s], property [%s], value [%s].",
-                        propertySourceName, propertyName, propertyValue));
+
+        LOG.debug(String.format("CustomStringProperty constructor(): name [%s], property [%s], value [%s].",
+                propertySourceName, propertyName, propertyValue));
+
+        if (StringUtils.isBlank(propertyName)) {
+            throw new IllegalArgumentException("Property name can't be empty/null!");
+        }
+
         this.propertyName  = propertyName;
         this.propertyValue = propertyValue;
     }

@@ -8,11 +8,14 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static dg.social.crawler.CommonDefaults.DATE_TIME_FORMAT;
+import static dg.social.crawler.SCrawlerDefaults.DATE_TIME_FORMAT;
+import static dg.social.crawler.utilities.CmdLineOption.OUTPUT_FORCE;
 
 /**
  * Some common utilities.
@@ -22,6 +25,8 @@ import static dg.social.crawler.CommonDefaults.DATE_TIME_FORMAT;
 public final class CommonUtilities {
 
     private static final Log LOG = LogFactory.getLog(CommonUtilities.class); // module logger
+
+    private static final String CUSTOM_PROPERTY_NAME   = "custom_%s";
 
     private CommonUtilities() {} // can't instantiate
 
@@ -182,6 +187,42 @@ public final class CommonUtilities {
             //ex.printStackTrace();
         }
 
+    }
+
+    /***/
+    public static List<CustomStringProperty> getCustomPropertiesList(CmdLine cmdLine) {
+        LOG.debug("SocialCrawler.getCustomProperties() is working [PRIVATE].");
+        List<CustomStringProperty> result = new ArrayList<>();
+
+        // iterate over options and create custom
+        for (CmdLineOption option : CmdLineOption.values()) {
+
+            if (!StringUtils.isBlank(option.getOptionKey())) { // process only config options
+
+                String optionValue        = cmdLine.optionValue(option.getOptionName());
+                String customPropertyName = String.format(CUSTOM_PROPERTY_NAME, option.getOptionKey());
+
+                if (!StringUtils.isBlank(optionValue)) { // value isn't empty (present)
+
+                    LOG.debug(String.format("Creating custom property [%s]: name [%s], value [%s].",
+                            customPropertyName, option.getOptionKey(), optionValue));
+                    result.add(new CustomStringProperty(customPropertyName, option.getOptionKey(), optionValue));
+
+                } else if (OUTPUT_FORCE.equals(option)) { // one option is a flag
+
+                    LOG.debug(String.format("Set value for flag [%s].", option));
+                    result.add(new CustomStringProperty(customPropertyName, option.getOptionKey(),
+                            String.valueOf(cmdLine.hasOption(option.getOptionName()))));
+
+                } else { // no value and not a flag
+                    LOG.debug(String.format("No value for option [%s].", option));
+                }
+
+            }
+
+        } // end of FOR
+
+        return result;
     }
 
 }

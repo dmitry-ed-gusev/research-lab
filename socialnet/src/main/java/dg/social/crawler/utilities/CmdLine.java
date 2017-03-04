@@ -15,6 +15,8 @@ import java.util.Arrays;
  * Created by gusevdm on 28/12/2016.
 */
 
+ // todo: use CmdLineOption enum?
+
 public class CmdLine {
 
     private static final Log LOG = LogFactory.getLog(CmdLine.class); // module logger

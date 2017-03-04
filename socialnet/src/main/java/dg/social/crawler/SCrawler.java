@@ -4,8 +4,7 @@ import dg.social.crawler.components.VkComponent;
 import dg.social.crawler.utilities.CmdLine;
 import dg.social.crawler.utilities.CmdLineOption;
 import dg.social.crawler.utilities.CommonUtilities;
-import dg.social.crawler.utilities.CustomSpringProperty;
-import dg.social.crawler.networks.telescope.TelescopeParser;
+import dg.social.crawler.utilities.CustomStringProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,54 +39,27 @@ import static dg.social.crawler.utilities.CmdLineOption.*;
 
 @Component
 @Transactional
-public class SocialCrawler {
+public class SCrawler {
 
-    private static final Log LOG = LogFactory.getLog(SocialCrawler.class);
+    private static final Log LOG = LogFactory.getLog(SCrawler.class);
 
-    private static final String LOGGER_ROOT = "dg.social";
-    private static final String SPRING_CONFIG = "CrawlerSpringContext.xml";
-    private static final String CRAWLER_DEFAULT_CONFIG = "crawler.default.config";
-    private static final String zzz = "";
+    private static final String LOGGER_ROOT            = "dg.social";
+    private static final String SPRING_CONFIG          = "CrawlerSpringContext.xml";
 
-    //private CmdLine cmdLine;
-    //private String configFile;
-    //private String searchString;
-    //private String outputFile;
-    //private boolean forceOutput;
-
+    @Autowired
+    private SCrawlerConfig crawlerСonfig;
     @Autowired @Qualifier(value = "crawlerHsqlSessionFactory")
     private SessionFactory sessionFactory;
     @Autowired
-    private VkComponent vkComponent;
+    private VkComponent    vkComponent;
 
     /***/
-    public SocialCrawler() {
-
-        //if (cmdLine == null) {
-        //    throw new IllegalArgumentException("Can't work with empty cmd line!");
-        // }
-
-        //this.cmdLine = cmdLine;
+    public SCrawler() {
     }
 
-    /***/
-    private static List<CustomSpringProperty> getCustomProperties(CmdLine cmdLine) {
-        LOG.debug("SocialCrawler.getCustomProperties() is working.");
-        List<CustomSpringProperty> result = new ArrayList<>();
-
-        // get new config file value and create custom property
-        String configFile = cmdLine.optionValue(CONFIG_FILE.getOptionName());
-        if (!StringUtils.isBlank(configFile)) {
-            LOG.debug(""); // todo !!!
-            result.add(new CustomSpringProperty("custom_config",
-                    CRAWLER_DEFAULT_CONFIG, configFile));
-        }
-
-
-        return result;
-    }
-
-    /***/
+    /**
+     * Starts current Crawler instance, according to config.
+     */
     public void start() throws ParseException, IOException, URISyntaxException {
         LOG.debug("SocialCrawler.start() is working.");
         this.vkComponent.updateCountries();
@@ -115,28 +87,28 @@ public class SocialCrawler {
         String logLevel = cmdLine.optionValue(LOGGER_LEVEL.getOptionName());
         if (!StringUtils.isBlank(logLevel)) {
             LogManager.getLogger(LOGGER_ROOT).setLevel(Level.toLevel(logLevel.toUpperCase()));
-            LOG.info(String.format("Set logging level to [%s].", logLevel));
+            LOG.info(String.format("Set logging level to [%s] for loggers below [%s].", logLevel, LOGGER_ROOT));
         }
 
         // create list of custom properties for Spring container
-        List<CustomSpringProperty> customProperties = SocialCrawler.getCustomProperties(cmdLine);
+        List<CustomStringProperty> customProperties = CommonUtilities.getCustomPropertiesList(cmdLine);
 
         // get search string value
-        String searchString = cmdLine.optionValue(SEARCH_STRING.getOptionName());
-        if (StringUtils.isBlank(searchString)) { // fail-fast -> can't work with empty search string
-            LOG.error("Can't search by empty search string!");
-            System.out.println(CmdLineOption.getHelpText()); // show help/usage text
-            System.exit(1);
-        }
+        //String searchString = cmdLine.optionValue(SEARCH_STRING.getOptionName());
+        //if (StringUtils.isBlank(searchString)) { // fail-fast -> can't work with empty search string
+        //    LOG.error("Can't search by empty search string!");
+        //    System.out.println(CmdLineOption.getHelpText()); // show help/usage text
+        //    System.exit(1);
+        //}
 
         // get output file value and force option
-        boolean forceOutput = cmdLine.hasOption(OUTPUT_FORCE.getOptionName());
-        String outputFile = cmdLine.optionValue(OUTPUT_FILE.getOptionName());
-        if (StringUtils.isBlank(outputFile)) { // fail-fast -> can't work with empty output file
-            LOG.error("Can't output to empty file!");
-            System.out.println(CmdLineOption.getHelpText()); // show help/usage text
-            System.exit(1);
-        }
+        //boolean forceOutput = cmdLine.hasOption(OUTPUT_FORCE.getOptionName());
+        //String outputFile = cmdLine.optionValue(OUTPUT_FILE.getOptionName());
+        //if (StringUtils.isBlank(outputFile)) { // fail-fast -> can't work with empty output file
+        //    LOG.error("Can't output to empty file!");
+        //    System.out.println(CmdLineOption.getHelpText()); // show help/usage text
+        //    System.exit(1);
+        //}
 
         try {
 
@@ -147,7 +119,7 @@ public class SocialCrawler {
             if (!customProperties.isEmpty()) {
                 LOG.debug(""); // todo !!!
                 MutablePropertySources propertySources = crawlerContext.getEnvironment().getPropertySources();
-                for (CustomSpringProperty property : customProperties) {
+                for (CustomStringProperty property : customProperties) {
                     propertySources.addLast(property);
                 }
             }
@@ -156,7 +128,7 @@ public class SocialCrawler {
             crawlerContext.refresh();
 
             // get SocialCrawler instance for Spring context and start it
-            SocialCrawler crawler = (SocialCrawler) crawlerContext.getBean("socialCrawler");
+            SCrawler crawler = (SCrawler) crawlerContext.getBean("SCrawler");
             crawler.start();
 
             if (false) { // unzip data fil from Telescope system
