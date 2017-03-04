@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public final class SCrawlerDefaults {
 
-    private SCrawlerDefaults() {} // mustn't instantiate utility class
+    private SCrawlerDefaults() {} // mustn't instantiate utility class!
 
     /** Default encoding for content. */
     public static final String           DEFAULT_ENCODING = "UTF-8";
