@@ -1,0 +1,43 @@
+===============================================
+          Training Structure
+===============================================
+* Hadoop, MapReduce, YARN
+* Hive on MapReduce/TEZ/Spark
+* Spark (+ Spark SQL, MLlib, DataFrames)
+* Tools: Ambari, Kafka, ZooKeeper, Oozie, Sqoop, Flume
+
+===============================================
+          Part 1. Hadoop.
+===============================================
+
+ Required skills
+-----------------------------------------------
+1. Advanced SQL
+2. Basic Linux
+3. Core Java & JVM
+4. Backend Development Experience
+5. Basic Computer Science Level
+
+ Resources
+-----------------------------------------------
+1. Hortonworks - Home
+   http://www.hortonworks.com
+   
+2. Hortonworks - Get Started
+   http://www.hortonworks.com/Get-Started
+   
+3. EPAM BigData Competency Center - Home
+   https://kb.epam.com/display/EPMCBDCC
+   
+4. EPAM BigData Competency Center - Library
+   https://kb.epam.com/display/EPMCBDCC/Library
+   
+5. Teams Ramp Up Hadoop Training - Home
+   https://kb.epam.com/display/EPMCBDCC/Teams+Ramp+Up+Hadoop+Training
+
+6. Teams Ramp Up Hadoop Training - Screening Check List
+   https://kb.epam.com/display/EPMCBDCC/Hadoop+Interview+Study+Guide
+
+ Some notes
+-----------------------------------------------
+1. 24.11.2016 Use image Hortonworks 2.4/2.5
