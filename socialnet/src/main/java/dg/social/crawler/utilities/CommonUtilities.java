@@ -192,9 +192,15 @@ public final class CommonUtilities {
     /***/
     public static List<CustomStringProperty> getCustomPropertiesList(CmdLine cmdLine) {
         LOG.debug("SocialCrawler.getCustomProperties() is working [PRIVATE].");
+
+        if (cmdLine == null) {
+            throw new IllegalArgumentException("Can't create custom properties from NULL cmd line!");
+        }
+
         List<CustomStringProperty> result = new ArrayList<>();
 
         // iterate over options and create custom
+        // todo: add cmd line option to log (like: new value for option ....)
         for (CmdLineOption option : CmdLineOption.values()) {
 
             if (!StringUtils.isBlank(option.getOptionKey())) { // process only config options
@@ -203,19 +209,22 @@ public final class CommonUtilities {
                 String customPropertyName = String.format(CUSTOM_PROPERTY_NAME, option.getOptionKey());
 
                 if (!StringUtils.isBlank(optionValue)) { // value isn't empty (present)
-
+                    //LOG.info(String.format(""));
                     LOG.debug(String.format("Creating custom property [%s]: name [%s], value [%s].",
                             customPropertyName, option.getOptionKey(), optionValue));
                     result.add(new CustomStringProperty(customPropertyName, option.getOptionKey(), optionValue));
 
                 } else if (OUTPUT_FORCE.equals(option)) { // one option is a flag
 
-                    LOG.debug(String.format("Set value for flag [%s].", option));
-                    result.add(new CustomStringProperty(customPropertyName, option.getOptionKey(),
-                            String.valueOf(cmdLine.hasOption(option.getOptionName()))));
+                    if (cmdLine.hasOption(option.getOptionName())) {
+                        LOG.debug(String.format("Set value [TRUE] for flag [%s].", option));
+                        result.add(new CustomStringProperty(customPropertyName, option.getOptionKey(), String.valueOf(true)));
+                    } else {
+                        LOG.debug(String.format("There is no new value for flag [%s].", option));
+                    }
 
                 } else { // no value and not a flag
-                    LOG.debug(String.format("No value for option [%s].", option));
+                    LOG.debug(String.format("There is no new value for option [%s].", option));
                 }
 
             }

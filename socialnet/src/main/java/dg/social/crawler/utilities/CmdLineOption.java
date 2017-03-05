@@ -9,7 +9,7 @@ public enum CmdLineOption {
 
     // internal Crawler options - Crawler system config
     CONFIG_FILE  ("-config",      "-config <config file name>   Config file for SCrawler, file name is mandatory",
-            "crawler.default.config"),
+            "crawler.config"),
     DB_PATH      ("-dbPath",      "-dbPath <path to HSql db>    Path to internal Crawler storage (HSql db)",
             "crawler.db.path"),
 

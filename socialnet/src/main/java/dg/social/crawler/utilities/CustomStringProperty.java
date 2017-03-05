@@ -1,6 +1,8 @@
 package dg.social.crawler.utilities;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.env.PropertySource;
@@ -35,6 +37,10 @@ public class CustomStringProperty extends PropertySource<String> {
         this.propertyValue = propertyValue;
     }
 
+    public String getPropertyName() {
+        return propertyName;
+    }
+
     @Override
     public String getProperty(String name) {
         String propValue;
@@ -45,6 +51,15 @@ public class CustomStringProperty extends PropertySource<String> {
             propValue = null;
         }
         return propValue;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .appendSuper(super.toString())
+                .append("propertyName55", propertyName)
+                .append("propertyValue55", propertyValue)
+                .toString();
     }
 
 }

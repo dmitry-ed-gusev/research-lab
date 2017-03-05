@@ -4,6 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -22,11 +26,35 @@ public class CommonUtilitiesTest {
         initMocks(this);
     }
 
-    @Test
-    public void test() {
-        when(this.cmdLine.hasOption("-help")).thenReturn(true);
+    @Test (expected = IllegalArgumentException.class)
+    public void testPropertiesListNullCmdLine() {
+        CommonUtilities.getCustomPropertiesList(null);
+    }
 
-        System.out.println(this.cmdLine.hasOption("-help"));
+    @Test
+    public void testPropertiesListSize() {
+        when(this.cmdLine.optionValue(anyString())).thenReturn("value");
+        List<CustomStringProperty> list = CommonUtilities.getCustomPropertiesList(this.cmdLine);
+        assertEquals("Invalid list size!", 5, list.size());
+    }
+
+    @Test
+    public void testPropertiesListOneOption() {
+        when(this.cmdLine.optionValue("-config")).thenReturn("config.cfg");
+
+        // #1 - check list size
+        List<CustomStringProperty> list = CommonUtilities.getCustomPropertiesList(this.cmdLine);
+        assertEquals("Invalid list size!", 1, list.size());
+
+        // #2 - check property
+        CustomStringProperty property = list.get(0);
+        assertEquals("Invalid property name!", "crawler.config", property.getPropertyName());
+        assertEquals("Invalid property value!", "config.cfg", property.getProperty("crawler.config"));
+    }
+
+    @Test
+    public void testPropertiesListOneFlag() {
+        // todo: implement like testPropertiesListOneOption() test!
     }
 
 }

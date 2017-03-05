@@ -6,6 +6,8 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Class represents command line. It supports options with/without values: <br>
@@ -21,7 +23,9 @@ public class CmdLine {
 
     private static final Log LOG = LogFactory.getLog(CmdLine.class); // module logger
 
-    private ArrayList<String> cmdLine          = new ArrayList<>(); // cmd line internal storage
+    private static final String CMD_LINE_OPTION_PREFIX = "-";
+
+    private List<String> cmdLine = new LinkedList<>(); // cmd line internal storage
 
     /** If args are null, constructor will throw IllegalArgumentException. */
     public CmdLine(String[] args) {
@@ -32,10 +36,14 @@ public class CmdLine {
             throw new IllegalArgumentException("Empty command line string!");
         }
 
-        // copy cmd line
-        String[] tmp = new String[args.length];
-        System.arraycopy(args, 0, tmp, 0, args.length);
-        this.cmdLine.addAll(Arrays.asList(tmp));
+        for (String arg : args) { // filter cmd line arguments
+            if (StringUtils.isBlank(arg) || StringUtils.isBlank(arg.replaceAll(CMD_LINE_OPTION_PREFIX, ""))) {
+                throw new IllegalArgumentException(String.format("Invalid cmd line argument: [%s]!", arg));
+            } else {
+                this.cmdLine.add(StringUtils.trimToEmpty(arg));
+            }
+        }
+
     }
 
     /** Check presence of option with "-" (minus) sign. */

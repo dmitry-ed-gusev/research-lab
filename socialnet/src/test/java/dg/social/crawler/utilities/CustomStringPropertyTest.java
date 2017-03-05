@@ -9,12 +9,17 @@ import org.junit.Test;
 public class CustomStringPropertyTest {
 
     @Test (expected = IllegalArgumentException.class)
-    public void testCreateNullPropertyName() {
+    public void testCreateNullPropertySourceName() {
         new CustomStringProperty(null, "name", "value");
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void testCreateNullName() {
+    public void testCreateNullPropertyName() {
+        new CustomStringProperty("property", null, "value");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testCreateEmptyPropertyName() {
         new CustomStringProperty("property", "", "value");
     }
 
