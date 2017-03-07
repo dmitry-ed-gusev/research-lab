@@ -1,7 +1,8 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
 
-import csv, sys
+import csv
+import sys
 
 counter = 0
 # open file, received as first cmd line argument, mode - read+Unicode
@@ -11,8 +12,8 @@ with open(sys.argv[1], mode='rU') as file:
     # counting rows in a cycle
     for row in reader:
         # just a debug output
-        #print row
-        counter = counter + 1
+        # print row
+        counter += 1
 
 # print count to console
-print counter
+print(counter)

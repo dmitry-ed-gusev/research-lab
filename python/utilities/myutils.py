@@ -12,18 +12,18 @@ def to_upper_case(path):
     :return: nothing
     """
 
-    print "to_upper_case() is working."
+    print("to_upper_case() is working.")
 
     # -- go trough path recursively and search all files
-    for (dirpath, dirnames, filenames) in walk(unicode(path)):
-
+    # for (dirpath, dirnames, filenames) in walk(unicode(path)): <- python 2
+    for (dirpath, dirnames, filenames) in walk(path):
         # -- iterate over found files in concrete directory and rename them (to upper case)
         prefix = dirpath + '\\'
         for filename in filenames:
             before = prefix + filename
-            after  = prefix + filename.upper()
+            after = prefix + filename.upper()
             rename(before, after)
-            print 'to upper case:', before, '->', after
+            print('to upper case:', before, '->', after)
 
 
 def to_title(path):
@@ -33,22 +33,24 @@ def to_title(path):
     :return: nothing
     """
 
-    print "to_title() is working."
+    print ("to_title() is working.")
 
     # -- go trough path recursively and search all files
-    for (dirpath, dirnames, filenames) in walk(unicode(path)):
-
+    # for (dirpath, dirnames, filenames) in walk(unicode(path)): <- python 2
+    for (dirpath, dirnames, filenames) in walk(path):
         # -- iterate over found files in concrete directory and rename them (to upper case)
         prefix = dirpath + '\\'
         for filename in filenames:
             before = prefix + filename
-            after  = prefix + filename.title()
+            after = prefix + filename.title()
             rename(before, after)
-            print 'to title case:', before, '->', after
+            print('to title case:' + before + ' -> ' + after)
 
 
 # -- execute, if runned sigle or imported by other module
 if __name__ == '__main__':
-    print '[myutils] main is working.'
+
+    print('[myutils] main is working.')
+
     # to_upper_case('c:\\temp')
     to_title("c:\\temp")

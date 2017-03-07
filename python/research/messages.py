@@ -8,6 +8,6 @@ print(msg.title())
 
 msg = "\nsecond\n\tone"
 print(msg)
-print (msg.title())
+print(msg.title())
 # print(msg.count(msg))
 
