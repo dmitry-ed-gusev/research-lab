@@ -7,7 +7,6 @@ import java.util.Arrays;
  * @version 1.0 (DATE: 03.11.2015)
  */
 
-@SuppressWarnings("MethodWithMultipleReturnPoints")
 public class Sort {
 
     /**

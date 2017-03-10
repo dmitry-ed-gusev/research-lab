@@ -9,24 +9,29 @@
     <name>Research :: Java/Python/Shell research/survey, self-education application.</name>
 
     <properties>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.sources.encoding>UTF-8</java.sources.encoding>
         <java.version>1.8</java.version>
         <maven.compiler.plugin>2.3.2</maven.compiler.plugin>
         <maven.jar.plugin>2.4</maven.jar.plugin>
         <maven.resources.plugin>2.5</maven.resources.plugin>
-		<!-- Apache Commons Lang3 version -->
+		<!-- Apache Commons libraries (Lang3/Logging/IO/Log4J) -->
         <commons.lang3.version>3.4</commons.lang3.version>
-		<!-- Apache commons logging version -->
         <commons.logging.version>1.1.3</commons.logging.version>
-		<!-- Apache Log4j logging version -->
+        <commons.io.version>2.5</commons.io.version>
         <log4j.version>1.2.16</log4j.version>
-		<!-- JUnit version -->
+		<!-- Test frameworks versions (JUnit/Mockito) -->
 		<junit.version>4.12</junit.version>
+        <mockito.version>1.10.19</mockito.version>
 		<!-- Javax Mail version -->
 		<java.mail.version>1.4.5</java.mail.version>
 		<!-- Spring framework [context] module version -->
 		<spring.context.version>4.3.3.RELEASE</spring.context.version>
         <apache.httpclient.version>4.5.2</apache.httpclient.version>
+
+        <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
+        <skipCoverageReport>false</skipCoverageReport>
+        <jacoco.plugin.version>0.7.7.201606060606</jacoco.plugin.version>
     </properties>
 
     <build>
@@ -49,10 +54,62 @@
                     <encoding>${java.sources.encoding}</encoding>
                 </configuration>
             </plugin>
+
+            <!-- JaCoCo report creation -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>report</goal>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipCoverageReport}</skip>
+                        </configuration>
+                    </execution>
+                </executions>
+                <version>${jacoco.plugin.version}</version>
+            </plugin>
+
         </plugins>
     </build>
 
+    <!-- jacoco reporting tool -->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <dependencies>
+
+        <!-- Common test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <profiles>
@@ -65,6 +122,7 @@
             </activation>
             <properties>
                 <env>dev</env>
+                <prod.build.phase>none</prod.build.phase>
             </properties>
             <!-- All modules to build -->
             <modules>
@@ -83,6 +141,7 @@
             <id>env-prod-all</id>
             <properties>
                 <env>prod</env>
+                <prod.build.phase>package</prod.build.phase>
             </properties>
             <!-- All modules to build -->
             <modules>
@@ -101,6 +160,7 @@
             <id>env-dev-simple</id>
             <properties>
                 <env>dev</env>
+                <prod.build.phase>none</prod.build.phase>
             </properties>
             <!-- Some of modules to build -->
             <modules>

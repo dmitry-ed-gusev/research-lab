@@ -3,7 +3,7 @@
 	
 	<parent>
         <groupId>dgusev</groupId>
-        <artifactId>research</artifactId>
+        <artifactId>tmpresearch</artifactId>
         <version>1.0</version>
     </parent>
 
@@ -14,13 +14,6 @@
     <name>Unsorted :: some unsorted research.</name>
 
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>

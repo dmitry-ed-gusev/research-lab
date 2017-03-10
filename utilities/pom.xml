@@ -14,12 +14,16 @@
     <name>Utilities :: java useful utilities library.</name>
 
     <properties>
-        <assemblyDirectory>jutils</assemblyDirectory>
+        <assemblyDirectory>dgutils</assemblyDirectory>
         <common.libraries.prefix>libs</common.libraries.prefix>
         <mainClass>gusev.dmitry.jtils.Main</mainClass>
+        <jar.name>${project.artifactId}-${env}</jar.name>
     </properties>
 
     <build>
+
+        <finalName>${jar.name}</finalName>
+
         <plugins>
 
             <!--
@@ -54,7 +58,7 @@
                 <executions>
                     <execution>
                         <id>dep-copy</id>
-                        <phase>package</phase>
+                        <phase>${prod.build.phase}</phase>
                         <goals><goal>copy-dependencies</goal></goals>
                     </execution>
                 </executions>
@@ -66,23 +70,18 @@
                 <executions>
                     <execution>
                         <id>copy-files</id>
-                        <phase>install</phase>
+                        <phase>${prod.build.phase}</phase>
                         <goals><goal>run</goal></goals>
                     </execution>
                 </executions>
                 <configuration>
                     <tasks>
-                        <!-- ant task: clean task -->
-                        <!--<delete includeemptydirs="true" failonerror="false">-->
-                            <!--<fileset dir="${remoteFolder}" includes="**/*"/>-->
-                        <!--</delete>-->
-                        <!-- ant task: copy libraries -->
-                        <!--<copy todir="${remoteFolder}/${common.libraries.prefix}" flatten="false" overwrite="true" verbose="true" failonerror="true">-->
-                            <!--<fileset dir="${project.build.directory}/${assemblyDirectory}/${common.libraries.prefix}" includes="*.*" />-->
-                        <!--</copy>-->
-                        <!-- ant task:  -->
+                        <!-- copy and filter batch files  -->
                         <copy todir="${project.build.directory}/${assemblyDirectory}" flatten="false" overwrite="true" verbose="true" failonerror="true">
-                            <fileset dir="${basedir}" includes="watch.bat"/>
+                            <fileset dir="${basedir}" includes="*.bat"/>
+                            <filterset>
+                                <filter token="JAR_NAME"  value="${jar.name}"/>
+                            </filterset>
                         </copy>
                     </tasks>
                 </configuration>
@@ -92,13 +91,6 @@
     </build>
 
     <dependencies>
-        <!-- For this module we use JUnit test framework. -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
         <!-- Apache libraries dependencies -->
         <dependency>
             <groupId>org.apache.commons</groupId>
