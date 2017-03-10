@@ -1,9 +1,8 @@
 package dg.social.fb;
 
-import dg.social.AbstractClient;
-import dg.social.domain.VkUser;
-import dg.social.utilities.CommonUtilities;
-import dg.social.utilities.HttpUtilities;
+import dg.social.crawler.AbstractClient;
+import dg.social.crawler.utilities.CommonUtilities;
+import dg.social.crawler.utilities.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -17,7 +16,6 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -38,9 +36,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static dg.social.CommonDefaults.DEFAULT_ENCODING;
-import static dg.social.utilities.HttpUtilities.*;
-import static dg.social.fb.FbFormType.*;
+import static dg.social.crawler.CommonDefaults.DEFAULT_ENCODING;
+import static dg.social.crawler.utilities.HttpUtilities.HTTP_DEFAULT_HEADERS;
+import static dg.social.crawler.utilities.HttpUtilities.HTTP_FORM_TAG;
+import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
+import static dg.social.fb.FbFormType.ACCESS_TOKEN_FORM;
+import static dg.social.fb.FbFormType.APPROVE_ACCESS_RIGHTS_FORM;
+import static dg.social.fb.FbFormType.FB_OP_INFO_CLASS_NAME;
+import static dg.social.fb.FbFormType.LOGIN_FORM;
 
 /**
  * FB social network client. Implemented: - receiving access token -
@@ -81,7 +84,7 @@ public class FbClient extends AbstractClient {
 
 	/** Create FbClient instance, working through proxy. */
 	public FbClient(FbClientConfig config) throws IOException {
-		super(config);
+		super(config, null);
 
 		LOG.debug("FBClient constructor() working.");
 
@@ -89,10 +92,10 @@ public class FbClient extends AbstractClient {
 		RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
 
 		// set proxy (if needed) for http request config
-		if (this.getConfig().getProxy() != null) { // add proxyHost to get http
+		//if (this.getConfig().getProxy() != null) { // add proxyHost to get http
 													// request
-			requestConfigBuilder.setProxy(this.getConfig().getProxy()).build();
-		}
+		//	requestConfigBuilder.setProxy(this.getConfig().getProxy()).build();
+		//}
 
 		// add cookies policy into http request config
 		this.HTTP_REQUEST_CONFIG = requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
@@ -124,7 +127,7 @@ public class FbClient extends AbstractClient {
 		// file)
 		if (this.accessToken == null) {
 			this.accessToken = this.getAccessToken();
-			CommonUtilities.saveAccessToken(this.accessToken, this.getConfig().getTokenFileName(), true);
+			//CommonUtilities.saveAccessToken(this.accessToken, this.getConfig().getTokenFileName(), true);
 		}
 
 	}
@@ -178,7 +181,8 @@ public class FbClient extends AbstractClient {
 		LOG.debug("FBClient.getAccessToken() working. [PRIVATE]");
 
 		// generate and execute ACCESS_TOKEN request
-		String FBTokenRequest = this.getConfig().getAccessTokenRequest();
+		//String FBTokenRequest = this.getConfig().getAccessTokenRequest();
+		String FBTokenRequest = null;
 		LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", FBTokenRequest));
 
 		// some tech variables
@@ -340,6 +344,7 @@ public class FbClient extends AbstractClient {
 		}
 
 		// generating query URI
+		/*
 		URI uri = new URI(new URIBuilder(String.format(this.getConfig().getBaseApiRequest(), "users.search"))
 				.addParameter("q", userString)
 				.addParameter("count", String.valueOf(count > 0 && count <= 1000 ? count : 1000))
@@ -347,9 +352,10 @@ public class FbClient extends AbstractClient {
 				.addParameter("access_token", this.accessToken.getRight())
 				.addParameter("v", this.getConfig().getApiVersion()).toString());
 		LOG.debug(String.format("Generated URI: [%s].", uri));
+*/
 
 		// execute http GET query
-		HttpGet httpGet = new HttpGet(uri);
+		HttpGet httpGet = new HttpGet(/*uri*/);
 		httpGet.setHeaders(HTTP_DEFAULT_HEADERS);
 		httpGet.setConfig(HTTP_REQUEST_CONFIG);
 		CloseableHttpResponse httpResponse = HTTP_CLIENT.execute(httpGet); // execute
@@ -373,9 +379,11 @@ public class FbClient extends AbstractClient {
 	}
 
 	/***/
+	/*
 	public List<VkUser> usersSearch(VkUser user) {
 		// todo: implement search using user template parameter
 		return null;
 	}
+	*/
 
 }
