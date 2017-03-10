@@ -1,6 +1,6 @@
 package dg.social.fb;
 
-import dg.social.crawler.AbstractClient;
+import dg.social.crawler.networks.AbstractClient;
 import dg.social.crawler.utilities.CommonUtilities;
 import dg.social.crawler.utilities.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static dg.social.crawler.CommonDefaults.DEFAULT_ENCODING;
+import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_DEFAULT_HEADERS;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_FORM_TAG;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;

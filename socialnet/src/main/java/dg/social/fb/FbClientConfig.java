@@ -1,6 +1,7 @@
 package dg.social.fb;
 
-import dg.social.crawler.AbstractClientConfig;
+
+import dg.social.crawler.networks.AbstractClientConfig;
 
 import java.util.Properties;
 
