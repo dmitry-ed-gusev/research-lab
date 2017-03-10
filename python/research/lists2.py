@@ -6,3 +6,6 @@
 
 # list of numbers from 0 to 9
 numbers = range(0, 10)
+print(numbers)
+numbers = list(numbers)
+print(numbers)
