@@ -71,14 +71,16 @@ print(newest_pets)
 # list of "powers of 2" generator
 squares = [number ** 2 for number in range(1, 101)]
 print(squares)
+
+# permanent list sorting
 squares.sort(reverse=True)
-print(squares)
-print()
+print(squares, "\n")
 
 # print squares line by line on screen
 counter = 1
 out = ""
 numbers_on_line = 20
+# iterating over temporary sorted list (using sorted())
 for number in sorted(squares):
     out += str(number)
 
