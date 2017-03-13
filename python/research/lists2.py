@@ -39,6 +39,29 @@ if car in cars:
 # restore cars list from copy
 cars = cars_copy[:]
 print("list restored from copy ->", cars)
+# iterate list in for cycle
+for car in cars:
+    print("current car:", car)
+
 cars.reverse()
 print("reversed list ->", cars)
 
+# work with numbers (range) list
+print("numbers ->", numbers)
+new_range = list(range(0, 100, 3))
+print("new numbers (step = 3) ->", new_range)
+
+# create and out cubes list
+cubes = []
+for number in numbers:
+    cubes.append(number ** 3)
+print("cubes list ->", cubes)
+
+# some statistics with numbers
+print("max of cubes ->", max(cubes), "| min of cubes ->", min(cubes), "| sum of cubes ->", sum(cubes))
+
+# list generator
+print(["this is -> " + str(x) for x in range(2, 5)])
+# generate list of squares
+squares = [x ** 2 for x in range(0, 100, 3)]
+print("squares list ->", squares)
