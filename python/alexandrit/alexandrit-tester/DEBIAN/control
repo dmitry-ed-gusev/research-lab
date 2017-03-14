@@ -1,7 +1,0 @@
-Package: alexandrit-tester
-Version: 1.0
-Section: misc
-Architecture: all
-Depends: bash, python, python-psycopg2
-Maintainer: Dolgopolov A.A.
-Description: Alexandrit tester
