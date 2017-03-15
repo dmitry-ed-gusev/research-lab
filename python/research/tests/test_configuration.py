@@ -5,7 +5,7 @@
 
 import unittest
 import os
-from lib.python.configuration import Configuration
+from python.research.utilities.configuration import Configuration
 
 
 class ConfigurationTest(unittest.TestCase):
