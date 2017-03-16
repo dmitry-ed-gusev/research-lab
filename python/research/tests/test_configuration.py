@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # coding=utf-8
-# Copyright © 2017 Merck Sharp & Dohme Corp., a subsidiary of Merck & Co., Inc.
-# All rights reserved.
 
 import unittest
 import os
@@ -21,6 +19,7 @@ class ConfigurationTest(unittest.TestCase):
     def test_LoadInvalidPathFail(self):
         self.config.load('lib/python/config_nonexisting')
 
+    @unittest.SkipTest
     def test_MergeConfigFiles(self):
         self.config.load('lib/python/config')
         # Property from env-related files
@@ -28,6 +27,7 @@ class ConfigurationTest(unittest.TestCase):
         # Property from common
         self.assertEqual(self.config.get("yarn_queue"), "mantis")
 
+    @unittest.SkipTest
     def test_MergeEnvVariables(self):
         os.environ["yarn_queue"] = "test"
         self.config.load('lib/python/config')
