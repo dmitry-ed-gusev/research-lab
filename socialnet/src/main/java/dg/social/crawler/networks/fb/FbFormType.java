@@ -1,4 +1,4 @@
-package dg.social.fb;
+package dg.social.crawler.networks.fb;
 
 /**
  * FB auth forms types with various parameters for recognizing.

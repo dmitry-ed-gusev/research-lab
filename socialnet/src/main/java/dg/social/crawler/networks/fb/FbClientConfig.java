@@ -1,4 +1,4 @@
-package dg.social.fb;
+package dg.social.crawler.networks.fb;
 
 
 import dg.social.crawler.networks.AbstractClientConfig;

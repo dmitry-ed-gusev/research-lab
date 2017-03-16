@@ -1,4 +1,4 @@
-package dg.social.fb;
+package dg.social.crawler.networks.fb;
 
 import dg.social.crawler.networks.AbstractClient;
 import dg.social.crawler.utilities.CommonUtilities;
@@ -40,10 +40,10 @@ import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_DEFAULT_HEADERS;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_FORM_TAG;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
-import static dg.social.fb.FbFormType.ACCESS_TOKEN_FORM;
-import static dg.social.fb.FbFormType.APPROVE_ACCESS_RIGHTS_FORM;
-import static dg.social.fb.FbFormType.FB_OP_INFO_CLASS_NAME;
-import static dg.social.fb.FbFormType.LOGIN_FORM;
+import static dg.social.crawler.networks.fb.FbFormType.ACCESS_TOKEN_FORM;
+import static dg.social.crawler.networks.fb.FbFormType.APPROVE_ACCESS_RIGHTS_FORM;
+import static dg.social.crawler.networks.fb.FbFormType.FB_OP_INFO_CLASS_NAME;
+import static dg.social.crawler.networks.fb.FbFormType.LOGIN_FORM;
 
 /**
  * FB social network client. Implemented: - receiving access token -

@@ -2,6 +2,7 @@ package dg.social.crawler.networks.vk;
 
 import dg.social.crawler.domain.CountryDto;
 import dg.social.crawler.domain.PersonDto;
+import dg.social.crawler.networks.ParserInterface;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,7 +21,7 @@ import static dg.social.crawler.SCrawlerDefaults.SocialNetwork.VK;
  * Created by vinnypuhh on 25.12.16.
  */
 
-public final class VkParser {
+public final class VkParser implements ParserInterface {
 
     private static final Log LOG = LogFactory.getLog(VkParser.class);
 
