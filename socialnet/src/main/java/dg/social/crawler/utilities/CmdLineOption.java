@@ -14,12 +14,14 @@ public enum CmdLineOption {
             "crawler.db.path"),
 
     // current Crawler run options (quick search, output) - Crawler user config
-    SEARCH_STRING("-search",      "-search <search string>      Search string for simple search. If contains multiple words, use \" for value",
+    SEARCH_STRING("-search",           "-search <search string>      Search string for simple search. If contains multiple words, use \" for value",
             "crawler.default.search.string"),
-    OUTPUT_FILE  ("-output",      "-output <file name>          Specify output file name for search results",
+    OUTPUT_FILE  ("-output",           "-output <file name>          Specify output file name for search results",
             "crawler.default.output.file"),
-    OUTPUT_FORCE ("-forceOutput", "-forceOutput                 Force overwrite output file, if it exists",
+    OUTPUT_FORCE ("-forceOutput",      "-forceOutput                 Force overwrite output file, if it exists",
             "crawler.default.output.force"),
+    TELESCOPE_CSV("-loadTelescopeCSV", "-loadTelescopeCSV <csv file> Import Telescope exported data, format csv/zip",
+            "crawler."),
 
     // system options, should not affect Spring container
     LOGGER_LEVEL ("-logLevel",    "-logLevel <level>            Set internal logger level, values TRACE/DEBUG/INFO/ERROR/WARN/FATAL", ""),

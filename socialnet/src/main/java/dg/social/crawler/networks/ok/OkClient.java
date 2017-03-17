@@ -104,6 +104,8 @@ public class OkClient extends AbstractClient {
                         LOG.debug(String.format("Processing [%s].", ACCESS_TOKEN_FORM));
                         // parse redirect and get access token from URL
                         RedirectLocations locations = this.getContextRedirectLocations();
+                        /*
+                        // todo: duplicate code in VkClient
                         if (locations != null) { // parse last redirect locations and get access token
                             // get the last redirect URI (params) - it's what we need
                             //String uriParams =
@@ -116,6 +118,7 @@ public class OkClient extends AbstractClient {
                         } else { //
                             LOG.error("Can't find last redirect locations (list is null)!");
                         }
+                        */
                         break;
 
                     default: // default case - unknown form

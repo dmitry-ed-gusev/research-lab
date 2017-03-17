@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Properties;
 
+import static dg.social.crawler.SCrawlerDefaults.CRAWLER_CONFIG_BEAN;
+
 /**
  * Config for VK (VKontakte) client.
  * Created by gusevdm on 12/12/2016.
@@ -32,14 +34,14 @@ public class VkClientConfig extends AbstractClientConfig {
     // VK API version
     private static final String VK_API_VERSION          = "5.60"; // last API version, 27.12.2016
 
-    /** Init instance with string values. */
-    public VkClientConfig(String username, String password, String appApiKey, String tokenFileName, String proxyHost, int proxyPort) {
-        super(username, password, appApiKey, tokenFileName, proxyHost, proxyPort);
-    }
+    //** Init instance with string values. */
+    //public VkClientConfig(String username, String password, String appApiKey, String tokenFileName, String proxyHost, int proxyPort) {
+    //    super(username, password, appApiKey, tokenFileName, proxyHost, proxyPort);
+    //}
 
     /** Init instance with values from properties object. */
     @Autowired
-    public VkClientConfig(@Qualifier ("vk.properties") Properties properties) {
+    public VkClientConfig(@Qualifier (CRAWLER_CONFIG_BEAN) Properties properties) {
         super(DEFAULT_CONFIG_PREFIX, properties);
     }
 

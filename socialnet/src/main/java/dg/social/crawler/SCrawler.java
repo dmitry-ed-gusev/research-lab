@@ -1,5 +1,6 @@
 package dg.social.crawler;
 
+import dg.social.crawler.components.TelescopeComponent;
 import dg.social.crawler.components.VkComponent;
 import dg.social.crawler.utilities.CmdLine;
 import dg.social.crawler.utilities.CmdLineOption;
@@ -49,9 +50,11 @@ public class SCrawler {
     @Autowired
     private SCrawlerConfig crawlerСonfig;
     @Autowired @Qualifier(value = "crawlerHsqlSessionFactory")
-    private SessionFactory sessionFactory;
+    private SessionFactory     sessionFactory;
     @Autowired
-    private VkComponent    vkComponent;
+    private VkComponent        vkComponent;
+    @Autowired
+    private TelescopeComponent tsComponent;
 
     /***/
     public SCrawler() {
@@ -77,7 +80,7 @@ public class SCrawler {
         // init CmdLine instance
         CmdLine cmdLine = new CmdLine(args); // parse cmd line and disable internal logging
 
-        // if here is -help option - show usage text and exit
+        // if there is -help option -> show usage text and exit
         if (cmdLine.hasOption(CmdLineOption.HELP.getOptionName())) {
             System.out.println(CmdLineOption.getHelpText()); // show help/usage text
             System.exit(0); // force exit with code 0 (all OK)

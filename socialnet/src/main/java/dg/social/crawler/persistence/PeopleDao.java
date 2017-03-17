@@ -23,15 +23,14 @@ public class PeopleDao extends AbstractHibernateDao<PersonDto> {
     }
 
     public void addOrUpdatePerson(PersonDto person) {
-        LOG.debug(String.format("PeopleDao.addOrUpdate() is working. PersonDto instance:%n%s", person));
+        LOG.debug(String.format("PeopleDao.addOrUpdatePerson() is working. PersonDto instance:%n%s", person));
 
         if (person == null) { // fail-fast
             throw new IllegalArgumentException("Can't add/update null Person!");
         }
 
         Session session = this.getSessionFactory().getCurrentSession();
-        String hql      = "from PersonDto as p where p.externalId = :externalId and " +
-                "p.socialNetwork = :socialNetwork";
+        String hql      = "from PersonDto as p where p.externalId = :externalId and p.socialNetwork = :socialNetwork";
         PersonDto foundPerson = (PersonDto) session.createQuery(hql)
                 .setString("externalId", String.valueOf(person.getExternalId()))
                 .setString("socialNetwork", person.getSocialNetwork().name())
@@ -46,4 +45,5 @@ public class PeopleDao extends AbstractHibernateDao<PersonDto> {
         }
 
     }
+
 }

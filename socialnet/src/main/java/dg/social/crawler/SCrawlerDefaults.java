@@ -12,9 +12,11 @@ public final class SCrawlerDefaults {
     private SCrawlerDefaults() {} // mustn't instantiate utility class!
 
     /** Default encoding for content. */
-    public static final String           DEFAULT_ENCODING = "UTF-8";
+    public static final String           DEFAULT_ENCODING    = "UTF-8";
     /** Default date/time format. */
-    public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+    public static final SimpleDateFormat DATE_TIME_FORMAT    = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+    /** Crawler config Spring bean ID */
+    public static final String           CRAWLER_CONFIG_BEAN = "crawler.config";
 
     /** Common HTML forms types (for social networks). */
     public enum HttpFormType {

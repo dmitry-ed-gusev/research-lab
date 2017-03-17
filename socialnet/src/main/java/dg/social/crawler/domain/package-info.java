@@ -8,7 +8,7 @@
                 ),
                 @org.hibernate.annotations.Parameter(
                         name = "initial_value",
-                        value = "13"
+                        value = "1"
                 )
         })
 

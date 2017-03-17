@@ -1,11 +1,9 @@
 package dg.social.crawler.components;
 
-import dg.social.crawler.SCrawlerDefaults;
-import dg.social.crawler.domain.CountryDto;
 import dg.social.crawler.domain.PersonDto;
-import dg.social.crawler.persistence.CountriesDao;
 import dg.social.crawler.networks.vk.VkClient;
 import dg.social.crawler.networks.vk.VkParser;
+import dg.social.crawler.persistence.CountriesDao;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,10 +34,8 @@ public class VkComponent {
             "relatives,relation,schools,sex,site,status,tv,universities";
     private static final int    SEARCH_RESULTS_COUNT = 1000;
 
-    @Autowired
-    private VkClient vkClient;
-    @Autowired
-    private CountriesDao countriesDao;
+    @Autowired private VkClient     vkClient;
+    @Autowired private CountriesDao countriesDao;
 
     /***/
     public void updateCountries() throws IOException, URISyntaxException, ParseException {
@@ -64,12 +60,12 @@ public class VkComponent {
 
         //}
 
-        CountryDto ccc = new CountryDto(-8, 75, "ZtrgdfbdxZxZx", SCrawlerDefaults.SocialNetwork.VK);
-        System.out.println("---> " + ccc);
-        System.out.println("ffff " + session.merge(ccc));
+        //CountryDto ccc = new CountryDto(-8, 75, "ZtrgdfbdxZxZx", SCrawlerDefaults.SocialNetwork.VK);
+        //System.out.println("---> " + ccc);
+        //System.out.println("ffff " + session.merge(ccc));
         //session.save(ccc);
-        session.flush();
-        session.clear();
+        //session.flush();
+        //session.clear();
 
         //session.createQuery("CHECKPOINT").executeUpdate();
         //session.co createQuery("SHUTDOWN").executeUpdate();

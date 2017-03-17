@@ -35,7 +35,7 @@ public class CommonUtilitiesTest {
     public void testPropertiesListSize() {
         when(this.cmdLine.optionValue(anyString())).thenReturn("value");
         List<CustomStringProperty> list = CommonUtilities.getCustomPropertiesList(this.cmdLine);
-        assertEquals("Invalid list size!", 5, list.size());
+        assertEquals("Invalid list size!", 6, list.size());
     }
 
     @Test

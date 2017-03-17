@@ -13,11 +13,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -38,7 +40,8 @@ public class TelescopeParser implements ParserInterface {
 
     private static Log LOG = LogFactory.getLog(TelescopeParser.class);
 
-    private static final JSONParser JSON_PARSER       = new JSONParser();
+    //private static final JSONParser JSON_PARSER       = new JSONParser();
+    private static final String TELESCOPE_CSV_ENCODING      = "Windows-1251";
 
     // header fields for Telescope output file
     private static final String TELESCOPE_ID                = "id";
@@ -86,7 +89,7 @@ public class TelescopeParser implements ParserInterface {
         List<PersonDto> telePeople = new ArrayList<>();
 
         Reader      fileReader = null;
-        CSVParser   csvParser  = null;
+        CSVParser   csvParser;
 
         // build CSV format
         CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER);
@@ -100,65 +103,40 @@ public class TelescopeParser implements ParserInterface {
 
             List<CSVRecord> csvRecords = csvParser.getRecords();
             PersonDto person;
-            //Set<String> names;
+            Set<String> names;
+
             for (int i = 1; i < csvRecords.size(); i++) {
-                CSVRecord record = csvRecords.get(i);
+                CSVRecord record = csvRecords.get(i); // get one record
 
-                String endDate = record.get(TELESCOPE_END_WORK_DATE);
+                if (StringUtils.isBlank(record.get(TELESCOPE_END_WORK_DATE))) { // process only current working employees
 
-                if (StringUtils.isBlank(endDate)) { // process only current working employees
-
-                    // create new person object (instance)
+                    // create new person object with Telescope ID and type
                     person = new PersonDto(0, Long.parseLong(record.get(TELESCOPE_ID)), TELESCOPE);
+                    // add properties to person object
                     person.setFirstName(record.get(TELESCOPE_FIRST_NAME));
                     person.setLastName(record.get(TELESCOPE_LAST_NAME));
                     person.setDisplayName(record.get(TELESCOPE_DISPLAY_NAME));
                     person.setNativeName(record.get(TELESCOPE_NATIVE_NAME));
 
-                    // todo: !!!
-                    final Set<String> names = new HashSet<>();
-                    // get <full name> value and remove [] symbols
+
+                    // process full name (list of possible names)
+                    names = new HashSet<>();
+                    // get <full name> value and remove [] symbols (at start and at the end)
                     String fullName = StringUtils.strip(record.get(TELESCOPE_FULL_NAME), "[]");
-
-                    // convert win-1251 -> utf-8
-                    //String utf8String= new String(fullName.getBytes("windows-1251"), "UTF-8");
-                    String utf8String= new String(fullName.getBytes("UTF-8"), "WIndows-1251");
-                    System.out.println("!!!!> " + utf8String);
-
-                    System.out.println("full name -> " + fullName);
-                    String[] aaa = StringUtils.split(fullName, ",");
-                    System.out.println("array -> " + Arrays.asList(aaa));
-
-                    for (String name : aaa) {
-                        String ccc = StringUtils.strip(StringUtils.trimToEmpty(name), "'");
-                        System.out.println("name -> " + ccc);
+                    LOG.debug(String.format("Raw full name [%s].", fullName));
+                    for (String name : StringUtils.split(fullName, ",")) { // add names to set
+                        names.add(StringUtils.strip(StringUtils.trimToEmpty(name), "'"));
                     }
-
-                    System.out.println("===========================================");
-
-                    //System.out.println("1 ==> " + record.get(TELESCOPE_FULL_NAME));
-                    //System.out.println("2 ==> " + record.get(TELESCOPE_FULL_NAME).replaceAll("'", "\\\""));
-                    //JSONArray namesArray = (JSONArray) JSON_PARSER.parse(fullName.replaceAll("'", "\\\""));
-                    //namesArray.forEach(name -> names.add(String.valueOf(name)));
-                    //person.setNamesList(names);
-
-                    //System.out.println("-> " + person);
-
-                    //TelescopePersonDto telePerson = new TelescopePersonDto();
-                    //telePerson.setId(Long.parseLong(record.get(TELESCOPE_ID)));
-                    //telePerson.setFullName(record.get(TELESCOPE_FULL_NAME));
-                    //telePerson.setEndWorkDate(endDate);
-                    //telePeople.add(telePerson);
-                    //System.out.println("-> " + telePerson);
+                    LOG.debug(String.format("Set of names: %s.\n", names));
+                    // add names set to person object
+                    person.setNamesList(names);
 
                 }
             } // end of FOR statement
 
-        } catch (Exception e) {
-            // todo: !!!
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOG.error(e);
         } finally {
-
             if (fileReader != null) {
                 try {
                     fileReader.close();
@@ -171,12 +149,17 @@ public class TelescopeParser implements ParserInterface {
         return telePeople;
     }
 
+    /***/
+    public static List<PersonDto> parseTelescopeCSV(String telescopeCsvFile) {
+        return TelescopeParser.parseTelescopeCSV(telescopeCsvFile, TELESCOPE_CSV_ENCODING);
+    }
+
     public static void main(String[] args) {
         LOG.info("Telescope parser is starting...");
 
         //CommonUtilities.unZipIt("people.zip", "");
 
-        List<PersonDto> perons = TelescopeParser.parseTelescopeCSV("people.csv", "Windows-1251");
+        List<PersonDto> perons = TelescopeParser.parseTelescopeCSV("people.csv");
     }
 
 }

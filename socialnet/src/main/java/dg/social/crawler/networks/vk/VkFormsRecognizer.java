@@ -17,7 +17,7 @@ import static dg.social.crawler.SCrawlerDefaults.HttpFormType.UNKNOWN_FORM;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_FORM_TAG;
 
 /**
- * Recognizer for VK http forms.
+ * Recognizer for VK html forms.
  * Created by gusevdm on 1/11/2017.
  */
 

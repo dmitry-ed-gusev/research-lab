@@ -57,7 +57,7 @@ public class VkClient extends AbstractClient {
     private static final String LOGIN_FORM_PASS_KEY         = "pass";    // VK login form pass element
 
     private final Map<String, String> VK_MISSED_DIGITS_FORM_CREDENTIALS; // Missed phone number digits
-    private static final String MISSED_DIGITS_FORM_CODE_KEY = "code";
+    private static final String       MISSED_DIGITS_FORM_CODE_KEY = "code";
 
     // attempts to get access token
     private static final int  VK_ACCESS_ATTEMPTS_COUNT = 4;
@@ -77,6 +77,7 @@ public class VkClient extends AbstractClient {
             put(LOGIN_FORM_EMAIL_KEY, VkClient.this.getUsername());
             put(LOGIN_FORM_PASS_KEY,  VkClient.this.getPassword());
         }};
+        LOG.debug("VK Login Form credentials have been initialized.");
 
         // init missed phone digits field
         String username = this.getUsername();
@@ -85,6 +86,7 @@ public class VkClient extends AbstractClient {
         }};
         LOG.debug(String.format("Calculated missed phone digits: [%s].", this.VK_MISSED_DIGITS_FORM_CREDENTIALS));
 
+        /*
         // try to read VK access token from file
         try {
             Pair<Date, String> token = CommonUtilities.readAccessToken(config.getTokenFileName());
@@ -103,7 +105,7 @@ public class VkClient extends AbstractClient {
         // if we haven't read token from file - get new token (and write it to file)
         if (this.accessToken == null) {
             LOG.debug("Trying to get new VK access token.");
-            this.accessToken = this.getAccessToken();
+            this.accessToken = this.requestAccessToken();
 
             if (this.accessToken == null) { // fail-fast -> check that we really got token
                 throw new IllegalStateException("Can't get VK access token!");
@@ -111,11 +113,12 @@ public class VkClient extends AbstractClient {
 
             CommonUtilities.saveAccessToken(this.accessToken, this.getTokenFileName(), true); // save received token
         }
+        */
 
     }
 
     /** Request and get VK access token (for using with API calls). With token method returns date/time, when token received. */
-    private Pair<Date, String> getAccessToken() throws IOException {
+    private Pair<Date, String> requestAccessToken() throws IOException {
         LOG.debug("VkClient.getAccessToken() working. [PRIVATE]");
 
         // generate and execute ACCESS_TOKEN request
@@ -197,6 +200,61 @@ public class VkClient extends AbstractClient {
         }
 
         return null; // can't get access token
+    }
+
+    /***/
+    public static boolean isVKAccessTokenValid(Pair<Date, String> accessToken) {
+        LOG.debug(String.format("VkClient.isVKAccessTokenValid() is working [PRIVATE]. Token to check [%s].", accessToken));
+        // check access token time validity period
+        return (accessToken != null) && ((System.currentTimeMillis() - accessToken.getLeft().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS);
+    }
+
+    /***/
+    // todo: finish implementation!!!!
+    public Pair<Date, String> getAccessToken() throws IOException, ParseException {
+        LOG.debug("VkClient.getAccessToken() is working.");
+
+        if (VkClient.isVKAccessTokenValid(this.accessToken)) { // fast check
+            return this.accessToken;
+        }
+
+        // existing token isn't valid, trying to load token from file
+        Pair<Date, String> token = CommonUtilities.readAccessToken(this.getTokenFileName());
+        if (VkClient.isVKAccessTokenValid(token)) {
+            this.accessToken = token;
+            return this.accessToken;
+        }
+
+        /*
+        // try to read VK access token from file
+        try {
+            Pair<Date, String> token = CommonUtilities.readAccessToken(config.getTokenFileName());
+            // check access token validity (by time)
+            if ((System.currentTimeMillis() - token.getLeft().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS) { // token is valid (by date/time)
+                this.accessToken = token;
+                LOG.debug(String.format("VK access token successfully read from file [%s].", this.getTokenFileName()));
+            } else {
+                LOG.warn(String.format("VK access token from file [%s] expired! Its date/time: [%s].", this.getTokenFileName(), token.getLeft()));
+            }
+        } catch (IOException | ParseException e) {
+            LOG.warn(String.format("Can't read access token from file: [%s]. Reason: [%s].",
+                    config.getTokenFileName(), e.getMessage()));
+        }
+
+        // if we haven't read token from file - get new token (and write it to file)
+        if (this.accessToken == null) {
+            LOG.debug("Trying to get new VK access token.");
+            this.accessToken = this.requestAccessToken();
+
+            if (this.accessToken == null) { // fail-fast -> check that we really got token
+                throw new IllegalStateException("Can't get VK access token!");
+            }
+
+            CommonUtilities.saveAccessToken(this.accessToken, this.getTokenFileName(), true); // save received token
+        }
+        */
+
+        return accessToken;
     }
 
     /**

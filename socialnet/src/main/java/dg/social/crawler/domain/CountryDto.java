@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
  * Country domain object.
  * Objects with different in any of fields, treated as different instances.
  * Created by gusevdm on 2/17/2017.
+ *
+ * @deprecated Don't use this class now (17.03.2017)
  */
 
 // todo: unit tests!!!

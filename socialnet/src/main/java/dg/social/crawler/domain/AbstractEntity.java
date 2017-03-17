@@ -28,24 +28,9 @@ public abstract class AbstractEntity implements Serializable {
     static final String ID_GENERATOR_SEQUENCE = "MY_ID_SEQUENCE";
 
     // Entity unique persistent (DB) identifier. Used named generator (see package-info.java in current package).
-    // Identifier will be generated BEFORE any insert operation to DB (that operation - real insert- may be deferred).
-    @Id @Column(name = "ID")
-    @GeneratedValue(generator = ID_GENERATOR_NAME)
-    /*
-    @GenericGenerator(
-            name = "sequence11",
-            strategy = "identity",//"sequence",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(
-                            name = "sequence",
-                            value = "sequence11"
-                    )
-            }
-    )
-    @GeneratedValue (generator = "sequence11")
-    */
-    //@GeneratedValue//(strategy = GenerationType.AUTO)
-    private long   id;
+    // Identifier will be generated BEFORE any insert operation to DB (that operation - real insert - may be deferred).
+    @Id @Column(name = "ID") @GeneratedValue(generator = ID_GENERATOR_NAME)
+    private long          id;
 
     @NotNull @Column(name = "EXTERNAL_ID", nullable = false)
     private long          externalId; // external id for different social networks

@@ -35,7 +35,7 @@ public class PersonDto extends AbstractEntity {
     @ElementCollection
     @CollectionTable(name="PEOPLE_NAMES", joinColumns=@JoinColumn(name="PERSON_ID"))
     @Column(name="NAME")
-    private Set<String> namesList; // list of names
+    private Set<String> namesList; // list of names (variations)
 
     @Transient
     private String maidenName;
