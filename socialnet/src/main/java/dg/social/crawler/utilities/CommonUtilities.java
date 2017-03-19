@@ -200,7 +200,7 @@ public final class CommonUtilities {
         List<CustomStringProperty> result = new ArrayList<>();
 
         // iterate over options and create custom
-        // todo: add cmd line option to log (like: new value for option ....)
+        // todo: add cmd line option to logger (like: new value for option ....)
         for (CmdLineOption option : CmdLineOption.values()) {
 
             if (!StringUtils.isBlank(option.getOptionKey())) { // process only config options

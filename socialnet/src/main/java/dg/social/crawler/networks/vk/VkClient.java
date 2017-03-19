@@ -1,7 +1,7 @@
 package dg.social.crawler.networks.vk;
 
-import dg.social.crawler.networks.AbstractClient;
 import dg.social.crawler.domain.PersonDto;
+import dg.social.crawler.networks.AbstractClient;
 import dg.social.crawler.utilities.CommonUtilities;
 import dg.social.crawler.utilities.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +19,7 @@ import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,22 +31,18 @@ import java.util.Map;
 
 import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType;
-import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ACCESS_TOKEN_FORM;
-import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ADD_MISSED_DIGITS_FORM;
-import static dg.social.crawler.SCrawlerDefaults.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
-import static dg.social.crawler.SCrawlerDefaults.HttpFormType.LOGIN_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.*;
 import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
 
 /**
  * VK (VKontakte) social network client.
  * Implemented:
  *  - receiving access token
+ *  - 'lazy' token request
+ *  - check token during every VK request
  *  - search for users by simple query string
  * Created by gusevdm on 12/6/2016.
  */
-
-// todo: implement periodically check of access token
-// todo: tries to get access token during creating an instance - change it (get token by external request)
 
 @Service
 public class VkClient extends AbstractClient {
@@ -85,36 +82,6 @@ public class VkClient extends AbstractClient {
             put(MISSED_DIGITS_FORM_CODE_KEY, username.substring(username.startsWith("+") ? 2 : 1, username.length() - 2));
         }};
         LOG.debug(String.format("Calculated missed phone digits: [%s].", this.VK_MISSED_DIGITS_FORM_CREDENTIALS));
-
-        /*
-        // try to read VK access token from file
-        try {
-            Pair<Date, String> token = CommonUtilities.readAccessToken(config.getTokenFileName());
-            // check access token validity (by time)
-            if ((System.currentTimeMillis() - token.getLeft().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS) { // token is valid (by date/time)
-                this.accessToken = token;
-                LOG.debug(String.format("VK access token successfully read from file [%s].", this.getTokenFileName()));
-            } else {
-                LOG.warn(String.format("VK access token from file [%s] expired! Its date/time: [%s].", this.getTokenFileName(), token.getLeft()));
-            }
-        } catch (IOException | ParseException e) {
-            LOG.warn(String.format("Can't read access token from file: [%s]. Reason: [%s].",
-                    config.getTokenFileName(), e.getMessage()));
-        }
-
-        // if we haven't read token from file - get new token (and write it to file)
-        if (this.accessToken == null) {
-            LOG.debug("Trying to get new VK access token.");
-            this.accessToken = this.requestAccessToken();
-
-            if (this.accessToken == null) { // fail-fast -> check that we really got token
-                throw new IllegalStateException("Can't get VK access token!");
-            }
-
-            CommonUtilities.saveAccessToken(this.accessToken, this.getTokenFileName(), true); // save received token
-        }
-        */
-
     }
 
     /** Request and get VK access token (for using with API calls). With token method returns date/time, when token received. */
@@ -203,58 +170,57 @@ public class VkClient extends AbstractClient {
     }
 
     /***/
-    public static boolean isVKAccessTokenValid(Pair<Date, String> accessToken) {
+    static boolean isVKAccessTokenValid(Pair<Date, String> accessToken) {
         LOG.debug(String.format("VkClient.isVKAccessTokenValid() is working [PRIVATE]. Token to check [%s].", accessToken));
         // check access token time validity period
-        return (accessToken != null) && ((System.currentTimeMillis() - accessToken.getLeft().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS);
+        return (accessToken != null) && (!StringUtils.isBlank(accessToken.getValue())) &&
+                ((System.currentTimeMillis() - accessToken.getKey().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS);
     }
 
     /***/
-    // todo: finish implementation!!!!
-    public Pair<Date, String> getAccessToken() throws IOException, ParseException {
+    private Pair<Date, String> getAccessToken() throws IOException {
         LOG.debug("VkClient.getAccessToken() is working.");
 
-        if (VkClient.isVKAccessTokenValid(this.accessToken)) { // fast check
+
+        // fast check for existing token
+        LOG.debug(String.format("Checking internal token [%s].", this.accessToken));
+        if (VkClient.isVKAccessTokenValid(this.accessToken)) {
             return this.accessToken;
         }
 
-        // existing token isn't valid, trying to load token from file
-        Pair<Date, String> token = CommonUtilities.readAccessToken(this.getTokenFileName());
-        if (VkClient.isVKAccessTokenValid(token)) {
-            this.accessToken = token;
-            return this.accessToken;
-        }
-
-        /*
-        // try to read VK access token from file
-        try {
-            Pair<Date, String> token = CommonUtilities.readAccessToken(config.getTokenFileName());
-            // check access token validity (by time)
-            if ((System.currentTimeMillis() - token.getLeft().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS) { // token is valid (by date/time)
-                this.accessToken = token;
-                LOG.debug(String.format("VK access token successfully read from file [%s].", this.getTokenFileName()));
+        // existing token isn't valid, trying to load token from file (if it exists)
+        LOG.debug(String.format("Checking token temporary file [%s].", this.getTokenFileName()));
+        if (!StringUtils.isBlank(this.getTokenFileName())) {
+            File tokenFile = new File(this.getTokenFileName());
+            if (tokenFile.exists() && tokenFile.isFile()) {
+                try {
+                    Pair<Date, String> token = CommonUtilities.readAccessToken(this.getTokenFileName());
+                    if (VkClient.isVKAccessTokenValid(token)) {
+                        this.accessToken = token;
+                        return this.accessToken;
+                    }
+                } catch (ParseException e) {
+                    LOG.error("Can't parse Date in token's temporary file!", e);
+                }
             } else {
-                LOG.warn(String.format("VK access token from file [%s] expired! Its date/time: [%s].", this.getTokenFileName(), token.getLeft()));
+                LOG.warn(String.format("Token's temporary file [%s] doesn't exists or not a file!",
+                        this.getTokenFileName()));
             }
-        } catch (IOException | ParseException e) {
-            LOG.warn(String.format("Can't read access token from file: [%s]. Reason: [%s].",
-                    config.getTokenFileName(), e.getMessage()));
+        } else {
+            LOG.warn("Token's temporary file name is empty!");
         }
 
-        // if we haven't read token from file - get new token (and write it to file)
+        // both existing token and token from file are not valid, requesting new
+        LOG.debug("Requesting new access token from VK.");
+        this.accessToken = this.requestAccessToken();
+        // fail-fast -> check that we've really got token
         if (this.accessToken == null) {
-            LOG.debug("Trying to get new VK access token.");
-            this.accessToken = this.requestAccessToken();
-
-            if (this.accessToken == null) { // fail-fast -> check that we really got token
-                throw new IllegalStateException("Can't get VK access token!");
-            }
-
-            CommonUtilities.saveAccessToken(this.accessToken, this.getTokenFileName(), true); // save received token
+            throw new IllegalStateException("Can't get VK access token!");
         }
-        */
-
-        return accessToken;
+        // save received token to file
+        CommonUtilities.saveAccessToken(this.accessToken, this.getTokenFileName(), true);
+        // return new received token
+        return this.accessToken;
     }
 
     /**
@@ -275,7 +241,7 @@ public class VkClient extends AbstractClient {
                 .addParameter("q", userString)
                 .addParameter("count", String.valueOf(count > 0 && count <= 1000 ? count : 1000))
                 .addParameter("fields", (StringUtils.isBlank(fieldsList) ? "" : fieldsList))
-                .addParameter("access_token", this.accessToken.getRight())
+                .addParameter("access_token", this.getAccessToken().getRight())
                 .addParameter("v", this.getApiVersion())
                 .toString());
         LOG.debug(String.format("Generated URI: [%s].", uri));
@@ -284,15 +250,16 @@ public class VkClient extends AbstractClient {
         CloseableHttpResponse httpResponse = this.sendHttpGet(uri);
         // get http entity
         HttpEntity httpEntity = httpResponse.getEntity();
-        // get page content for parsing
-        String httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
 
+        return HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
+
+        // get page content for parsing
+        //String httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
         //if (LOG.isDebugEnabled()) { // just debug output <- too much output
         //    LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
         //}
-
         // return received JSON
-        return httpPageContent;
+        //return httpPageContent;
     }
 
     /**
@@ -305,7 +272,7 @@ public class VkClient extends AbstractClient {
         URI uri = new URI(new URIBuilder(String.format(this.getBaseApiRequest(), "database.getCountries"))
                 .addParameter("need_all",     "1")
                 .addParameter("count",        "1000")
-                .addParameter("access_token", this.accessToken.getRight())
+                .addParameter("access_token", this.getAccessToken().getRight())
                 .addParameter("v",            this.getApiVersion())
                 .toString());
         LOG.debug(String.format("Generated URI: [%s].", uri));
@@ -314,10 +281,12 @@ public class VkClient extends AbstractClient {
         CloseableHttpResponse httpResponse = this.sendHttpGet(uri);
         // get http entity
         HttpEntity httpEntity = httpResponse.getEntity();
-        // get page content for parsing
-        String httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
 
-        return httpPageContent;
+        return HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
+
+        // get page content for parsing
+        //String httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
+        //return httpPageContent;
     }
 
     /***/

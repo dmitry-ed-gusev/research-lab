@@ -30,7 +30,7 @@ import java.util.List;
 import static dg.social.crawler.utilities.CmdLineOption.*;
 
 /**
- * Crawler for social networks. This class uses social networks clients for mining info
+ * Crawler for social dg.social.crawler.networks. This class uses social dg.social.crawler.networks clients for mining info
  * from various networks.
  * Created by gusevdm on 12/27/2016.
  */
@@ -47,27 +47,33 @@ public class SCrawler {
     private static final String LOGGER_ROOT            = "dg.social";
     private static final String SPRING_CONFIG          = "CrawlerSpringContext.xml";
 
-    @Autowired
-    private SCrawlerConfig crawlerСonfig;
+    // session factory for working with persistance layer
     @Autowired @Qualifier(value = "crawlerHsqlSessionFactory")
     private SessionFactory     sessionFactory;
-    @Autowired
-    private VkComponent        vkComponent;
-    @Autowired
-    private TelescopeComponent tsComponent;
+
+    // crawler configuration
+    @Autowired private SCrawlerConfig     crawlerСonfig;
+    // VK component
+    @Autowired private VkComponent        vkComponent;
+    // Telescope component
+    @Autowired private TelescopeComponent tsComponent;
 
     /***/
     public SCrawler() {
     }
 
     /**
-     * Starts current Crawler instance, according to config.
+     * Starts current Crawler instance, according to the given config.
      */
     public void start() throws ParseException, IOException, URISyntaxException {
         LOG.debug("SocialCrawler.start() is working.");
-        this.vkComponent.updateCountries();
 
-        //this.sessionFactory.close();
+        //this.vkComponent.updateCountries();
+
+        //
+        //if () {
+        //}
+
         LOG.info("Finishing SocialCrawler...");
         this.sessionFactory.getCurrentSession().createSQLQuery("CHECKPOINT").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("SHUTDOWN").executeUpdate();
@@ -96,38 +102,21 @@ public class SCrawler {
         // create list of custom properties for Spring container
         List<CustomStringProperty> customProperties = CommonUtilities.getCustomPropertiesList(cmdLine);
 
-        // get search string value
-        //String searchString = cmdLine.optionValue(SEARCH_STRING.getOptionName());
-        //if (StringUtils.isBlank(searchString)) { // fail-fast -> can't work with empty search string
-        //    LOG.error("Can't search by empty search string!");
-        //    System.out.println(CmdLineOption.getHelpText()); // show help/usage text
-        //    System.exit(1);
-        //}
-
-        // get output file value and force option
-        //boolean forceOutput = cmdLine.hasOption(OUTPUT_FORCE.getOptionName());
-        //String outputFile = cmdLine.optionValue(OUTPUT_FILE.getOptionName());
-        //if (StringUtils.isBlank(outputFile)) { // fail-fast -> can't work with empty output file
-        //    LOG.error("Can't output to empty file!");
-        //    System.out.println(CmdLineOption.getHelpText()); // show help/usage text
-        //    System.exit(1);
-        //}
-
         try {
 
             // initialize Spring application context
             AbstractApplicationContext crawlerContext = new ClassPathXmlApplicationContext(
-                    new String[]{SPRING_CONFIG}, false);
-
+                    new String[] {SPRING_CONFIG}, false);
+            // apply custom properties (put them into Spring context)
             if (!customProperties.isEmpty()) {
-                LOG.debug(""); // todo !!!
+                LOG.debug("There are custom properties! Putting them into Spring context.");
                 MutablePropertySources propertySources = crawlerContext.getEnvironment().getPropertySources();
                 for (CustomStringProperty property : customProperties) {
                     propertySources.addLast(property);
                 }
             }
 
-            // load Spring application context
+            // load Spring application context (after putting custom properties)
             crawlerContext.refresh();
 
             // get SocialCrawler instance for Spring context and start it

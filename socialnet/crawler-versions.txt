@@ -18,7 +18,7 @@ Tech properties:
 
 =====================================================================================================
 19.01.2017. Version 0.1.0
-First version of crawler. Crawler intended for "crawling" social networks and gather information about people.
+First version of crawler. Crawler intended for "crawling" social dg.social.crawler.networks and gather information about people.
 
 Business (user) properties of current version:
 * login into VKontakte social network (using existing VK profile)

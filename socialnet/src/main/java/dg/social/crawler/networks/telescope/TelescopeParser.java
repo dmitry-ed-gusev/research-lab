@@ -154,12 +154,4 @@ public class TelescopeParser implements ParserInterface {
         return TelescopeParser.parseTelescopeCSV(telescopeCsvFile, TELESCOPE_CSV_ENCODING);
     }
 
-    public static void main(String[] args) {
-        LOG.info("Telescope parser is starting...");
-
-        //CommonUtilities.unZipIt("people.zip", "");
-
-        List<PersonDto> perons = TelescopeParser.parseTelescopeCSV("people.csv");
-    }
-
 }

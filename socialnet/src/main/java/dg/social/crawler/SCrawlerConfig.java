@@ -13,6 +13,8 @@ public class SCrawlerConfig {
 
     @Value("${crawler.search.string}")
     private String  searchString;
+    @Value("${crawler.telescope.csv}")
+    private String  telescopeCsv;
     @Value("${crawler.output.file}")
     private String  outputFile;
     @Value("${crawler.output.force}")
@@ -31,6 +33,10 @@ public class SCrawlerConfig {
 
     public boolean isOutputForce() {
         return outputForce;
+    }
+
+    public String getTelescopeCsv() {
+        return telescopeCsv;
     }
 
 }
