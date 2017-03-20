@@ -2,6 +2,8 @@ package dg.social.crawler.components;
 
 import dg.social.crawler.networks.telescope.TelescopeClient;
 import dg.social.crawler.persistence.PeopleDao;
+import dg.social.crawler.utilities.CommonUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,14 @@ public class TelescopeComponent {
     @Autowired private PeopleDao       peopleDao;
 
     /***/
-    public void loadTelescopeData() {
-        LOG.debug("TelescopeComponent.loadTelescopeData() is working.");
+    public void loadTelescopeData(String telescopeCsv) {
+        LOG.debug(String.format("TelescopeComponent.loadTelescopeData() is working. File to load [%s].", telescopeCsv));
+
+        if (StringUtils.isBlank(telescopeCsv)) { // fail-fast
+            throw new IllegalArgumentException("Can't load data from empty file!");
+        }
+
+        //CommonUtilities.unZipIt("people.zip", "");
     }
 
 }

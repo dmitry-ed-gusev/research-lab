@@ -1,5 +1,7 @@
 package dg.social.crawler;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +39,16 @@ public class SCrawlerConfig {
 
     public String getTelescopeCsv() {
         return telescopeCsv;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("searchString", searchString)
+                .append("telescopeCsv", telescopeCsv)
+                .append("outputFile", outputFile)
+                .append("outputForce", outputForce)
+                .toString();
     }
 
 }

@@ -23,11 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static dg.social.crawler.utilities.CmdLineOption.*;
+import static dg.social.crawler.utilities.CmdLineOption.LOGGER_LEVEL;
 
 /**
  * Crawler for social dg.social.crawler.networks. This class uses social dg.social.crawler.networks clients for mining info
@@ -68,12 +67,24 @@ public class SCrawler {
     public void start() throws ParseException, IOException, URISyntaxException {
         LOG.debug("SocialCrawler.start() is working.");
 
+        LOG.debug(String.format("\n==========\nSocialCrawler config:\n%s\n==========", this.crawlerСonfig));
+
         //this.vkComponent.updateCountries();
 
-        //
-        //if () {
-        //}
+        // Telescope -> load data from file
+        if (!StringUtils.isBlank(this.crawlerСonfig.getTelescopeCsv())) {
+            LOG.debug(String.format("Loading data from Telescope export file [%s].", this.crawlerСonfig.getTelescopeCsv()));
+            this.tsComponent.loadTelescopeData(this.crawlerСonfig.getTelescopeCsv());
+        }
 
+        // VK -> perform quick search
+        if (!StringUtils.isBlank(this.crawlerСonfig.getSearchString())) {
+            LOG.debug(String.format("Performing quick search on VK network. Search string [%s].",
+                    this.crawlerСonfig.getSearchString()));
+            this.vkComponent.searchByString(this.crawlerСonfig.getSearchString());
+        }
+
+        // shutting Crawler down
         LOG.info("Finishing SocialCrawler...");
         this.sessionFactory.getCurrentSession().createSQLQuery("CHECKPOINT").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("SHUTDOWN").executeUpdate();
@@ -121,14 +132,7 @@ public class SCrawler {
 
             // get SocialCrawler instance for Spring context and start it
             SCrawler crawler = (SCrawler) crawlerContext.getBean("SCrawler");
-            crawler.start();
-
-            if (false) { // unzip data fil from Telescope system
-
-                CommonUtilities.unZipIt("people.zip", "");
-                System.exit(777);
-            }
-
+            crawler.start(); // start Crawler
 
             if (false) { // load VK client and search
                 // create vk client config
