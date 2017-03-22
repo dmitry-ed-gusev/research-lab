@@ -20,7 +20,7 @@ public enum CmdLineOption {
             "crawler.output.file"),
     OUTPUT_FORCE ("-forceOutput",      "-forceOutput                 Force overwrite output file, if it exists",
             "crawler.output.force"),
-    TELESCOPE_CSV("-loadTelescopeCSV", "-loadTelescopeCSV <csv file> Import Telescope exported data, format csv/zip",
+    TELESCOPE_CSV("-loadTelescopeCSV", "-loadTelescopeCSV <csv file> Import Telescope exported data, format csv/zip (+extension)",
             "crawler.telescope.csv"),
 
     // system options, should not affect Spring container

@@ -111,6 +111,7 @@ public class TelescopeParser implements ParserInterface {
                 if (StringUtils.isBlank(record.get(TELESCOPE_END_WORK_DATE))) { // process only current working employees
 
                     // create new person object with Telescope ID and type
+                    // todo: add try-catch for parsing
                     person = new PersonDto(0, Long.parseLong(record.get(TELESCOPE_ID)), TELESCOPE);
                     // add properties to person object
                     person.setFirstName(record.get(TELESCOPE_FIRST_NAME));
@@ -131,6 +132,8 @@ public class TelescopeParser implements ParserInterface {
                     // add names set to person object
                     person.setNamesList(names);
 
+                    // add resulting person to people list
+                    telePeople.add(person);
                 }
             } // end of FOR statement
 
