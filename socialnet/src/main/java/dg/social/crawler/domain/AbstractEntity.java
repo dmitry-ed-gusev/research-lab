@@ -62,6 +62,10 @@ public abstract class AbstractEntity implements Serializable {
        return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public long getExternalId() {
         return externalId;
     }

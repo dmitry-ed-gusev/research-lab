@@ -49,7 +49,7 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> {
 
     /** Save (persist) entity. */
     public void save(T entity) {
-        LOG.debug(String.format("Saving new object [%s].", this.clazz.getSimpleName()));
+        //LOG.debug(String.format("Saving new object [%s].", this.clazz.getSimpleName())); // <- too much output
         this.sessionFactory.getCurrentSession().save(entity);
     }
 
@@ -82,7 +82,7 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> {
 
     /***/
     public void merge (T entity) {
-        LOG.debug(String.format("Merging object [%s].", this.clazz.getSimpleName()));
+        // LOG.debug(String.format("Merging object [%s].", this.clazz.getSimpleName())); // <- too much output
         this.sessionFactory.getCurrentSession().merge(entity);
     }
 

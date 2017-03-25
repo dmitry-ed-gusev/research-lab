@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Dao component for working with PersonDto domain object.
  * Created by gusevdm on 2/21/2017.
@@ -22,8 +24,9 @@ public class PeopleDao extends AbstractHibernateDao<PersonDto> {
         super(PersonDto.class);
     }
 
+    /***/
     public void addOrUpdatePerson(PersonDto person) {
-        LOG.debug(String.format("PeopleDao.addOrUpdatePerson() is working. PersonDto instance:%n%s", person));
+        //LOG.debug(String.format("PeopleDao.addOrUpdatePerson() is working. PersonDto instance:%n%s", person)); // <- too much output
 
         if (person == null) { // fail-fast
             throw new IllegalArgumentException("Can't add/update null Person!");
@@ -37,13 +40,47 @@ public class PeopleDao extends AbstractHibernateDao<PersonDto> {
                 .uniqueResult();
 
         if (foundPerson == null) { // not fount - saving
-            LOG.debug(String.format("Person not found. Saving.%n%s", person));
+            //LOG.debug(String.format("Person not found. Saving.%n%s", person)); // <- too much output
             this.save(person);
         } else { // found - already exists - updating
-            LOG.debug(String.format("Person found. Updating.%n%s", person));
-            // todo: implement updating!
+            //LOG.debug(String.format("Person found. Updating.%n%s", person)); // <- too much output
+            person.setId(foundPerson.getId());
+            this.merge(person);
         }
 
+    }
+
+    /***/
+    public void loadPeople(List<PersonDto> people) {
+        LOG.debug(String.format("PeopleDao.loadPeople() is working. List size [%s].", people == null ? 0 : people.size()));
+
+        if (people == null) {
+            throw new IllegalArgumentException("Can't load data from null list!");
+        }
+
+        int flushCounter  = 50;
+        int reportCounter = people.size() / 10;
+        int counter       = 1;
+        Session session = this.getSessionFactory().getCurrentSession();
+        // iterate through list and
+        for (PersonDto person : people) {
+            this.addOrUpdatePerson(person);
+
+            if (counter % flushCounter == 0) { // flush and clear session
+                session.flush();
+                session.clear();
+            }
+
+            if (counter % reportCounter == 0) { // report (debug output)
+                LOG.debug(String.format("Processed records [%s/%s].", counter, people.size()));
+            }
+
+            counter++;
+        } // end of FOR
+
+        session.flush();
+        session.clear();
+        LOG.debug("Loading of people list is finished.");
     }
 
 }

@@ -63,11 +63,7 @@ public class TelescopeComponent {
         // load/update data in Crawler's DB (if there are data)
         if (!people.isEmpty()) {
             LOG.debug("Persisting people list from Telescope.");
-
-            for (PersonDto person : people) {
-                this.peopleDao.addOrUpdatePerson(person);
-            }
-
+            this.peopleDao.loadPeople(people);
         } else {
             LOG.warn("People list from Telescope is empty! Nothing to persist!");
         }

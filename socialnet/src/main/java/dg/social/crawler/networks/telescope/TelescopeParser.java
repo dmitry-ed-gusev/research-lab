@@ -41,7 +41,10 @@ public class TelescopeParser implements ParserInterface {
     private static Log LOG = LogFactory.getLog(TelescopeParser.class);
 
     //private static final JSONParser JSON_PARSER       = new JSONParser();
+
     private static final String TELESCOPE_CSV_ENCODING      = "Windows-1251";
+    // percents of data size for reporting (LOG to console)
+    private static final int    REPORT_STEP_PERCENT         = 10;
 
     // header fields for Telescope output file
     private static final String TELESCOPE_ID                = "id";
@@ -100,10 +103,15 @@ public class TelescopeParser implements ParserInterface {
                     (StringUtils.isBlank(fileEncoding) ? DEFAULT_ENCODING : fileEncoding));
             // CSV parser instance
             csvParser = new CSVParser(fileReader, csvFormat);
+            LOG.debug("CSV Parser created.");
 
             List<CSVRecord> csvRecords = csvParser.getRecords();
+            LOG.info(String.format("Get records from CSV file [%s]. Records count [%s].",
+                    telescopeCsvFile, csvRecords.size()));
+
             PersonDto person;
             Set<String> names;
+            final int reportCounter = csvRecords.size() / REPORT_STEP_PERCENT;
 
             for (int i = 1; i < csvRecords.size(); i++) {
                 CSVRecord record = csvRecords.get(i); // get one record
@@ -124,18 +132,25 @@ public class TelescopeParser implements ParserInterface {
                     names = new HashSet<>();
                     // get <full name> value and remove [] symbols (at start and at the end)
                     String fullName = StringUtils.strip(record.get(TELESCOPE_FULL_NAME), "[]");
-                    LOG.debug(String.format("Raw full name [%s].", fullName));
+                    //LOG.debug(String.format("Raw full name [%s].", fullName)); // <- too much output
                     for (String name : StringUtils.split(fullName, ",")) { // add names to set
                         names.add(StringUtils.strip(StringUtils.trimToEmpty(name), "'"));
                     }
-                    LOG.debug(String.format("Set of names: %s.\n", names));
+                    //LOG.debug(String.format("Set of names: %s.\n", names)); // <- too much output
                     // add names set to person object
                     person.setNamesList(names);
 
                     // add resulting person to people list
                     telePeople.add(person);
                 }
+
+                // reporting
+                if (i % reportCounter == 0) {
+                    LOG.info(String.format("Processed records [%s].", i));
+                }
+
             } // end of FOR statement
+            LOG.info(String.format("Processed records [%s].", csvRecords.size()));
 
         } catch (IOException e) {
             LOG.error(e);
