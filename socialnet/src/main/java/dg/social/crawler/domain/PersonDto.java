@@ -32,10 +32,25 @@ public class PersonDto extends AbstractEntity {
     private String displayName; // display/main name
     @Column (name = "NATIVE_NAME")
     private String nativeName;  // native name
+
     @ElementCollection
-    @CollectionTable(name="PEOPLE_NAMES", joinColumns=@JoinColumn(name="PERSON_ID"))
-    @Column(name="NAME")
+    @CollectionTable(name = "PEOPLE_NAMES", joinColumns = @JoinColumn(name = "PERSON_ID"))
+    @Column(name = "NAME")
     private Set<String> namesList; // list of names (variations)
+
+    @Column
+    private String      city;
+    @ElementCollection
+    @CollectionTable(name="PEOPLE_CITIES", joinColumns = @JoinColumn(name = "PERSON_ID"))
+    @Column(name = "CITY_NAME")
+    private Set<String> citiesList; // list of possible cities
+
+    @Column
+    private String      country;
+    @ElementCollection
+    @CollectionTable(name="PEOPLE_COUNTRIES", joinColumns = @JoinColumn(name = "PERSON_ID"))
+    @Column(name = "COUNTRY_NAME")
+    private Set<String> countriesList; // list of possible countries
 
     @Transient
     private String maidenName;
@@ -236,6 +251,38 @@ public class PersonDto extends AbstractEntity {
         this.homeTown = homeTown;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public Set<String> getCitiesList() {
+        return citiesList;
+    }
+
+    public void setCitiesList(Set<String> citiesList) {
+        this.citiesList = citiesList;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public Set<String> getCountriesList() {
+        return countriesList;
+    }
+
+    public void setCountriesList(Set<String> countriesList) {
+        this.countriesList = countriesList;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
@@ -244,6 +291,10 @@ public class PersonDto extends AbstractEntity {
                 .append("displayName", displayName)
                 .append("nativeName", nativeName)
                 .append("namesList", namesList)
+                .append("city", this.city)
+                .append("cities", this.citiesList)
+                .append("country", this.country)
+                .append("countries", this.countriesList)
                 .append("maidenName", maidenName)
                 .append("about", about)
                 .append("birthDay", birthDay)

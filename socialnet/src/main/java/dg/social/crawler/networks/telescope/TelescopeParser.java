@@ -129,16 +129,28 @@ public class TelescopeParser implements ParserInterface {
 
 
                     // process full name (list of possible names)
-                    names = new HashSet<>();
+                    //names = new HashSet<>();
                     // get <full name> value and remove [] symbols (at start and at the end)
-                    String fullName = StringUtils.strip(record.get(TELESCOPE_FULL_NAME), "[]");
+                    //String fullName = StringUtils.strip(record.get(TELESCOPE_FULL_NAME), "[]");
                     //LOG.debug(String.format("Raw full name [%s].", fullName)); // <- too much output
-                    for (String name : StringUtils.split(fullName, ",")) { // add names to set
-                        names.add(StringUtils.strip(StringUtils.trimToEmpty(name), "'"));
-                    }
+                    //for (String name : StringUtils.split(fullName, ",")) { // add names to set
+                    //    names.add(StringUtils.strip(StringUtils.trimToEmpty(name), "'"));
+                    //}
                     //LOG.debug(String.format("Set of names: %s.\n", names)); // <- too much output
+
                     // add names set to person object
-                    person.setNamesList(names);
+                    person.setNamesList(CommonUtilities.parseStringArray(record.get(TELESCOPE_FULL_NAME)));
+                    // todo: add other parameters from person
+
+                    String cities = record.get(TELESCOPE_CITY);
+                    System.out.println("-> " + cities);
+                    String city = record.get(TELESCOPE_CITY_SUM);
+                    System.out.println("=> " + city);
+                    String countries = record.get(TELESCOPE_COUNTRY_SUM);
+                    System.out.println("*> " + countries);
+                    String country = record.get(TELESCOPE_COUNTRY);
+                    System.out.println("+> " + country);
+
 
                     // add resulting person to people list
                     telePeople.add(person);
@@ -170,6 +182,10 @@ public class TelescopeParser implements ParserInterface {
     /***/
     public static List<PersonDto> parseTelescopeCSV(String telescopeCsvFile) {
         return TelescopeParser.parseTelescopeCSV(telescopeCsvFile, TELESCOPE_CSV_ENCODING);
+    }
+
+    public static void main(String[] args) {
+        TelescopeParser.parseTelescopeCSV("people.csv");
     }
 
 }

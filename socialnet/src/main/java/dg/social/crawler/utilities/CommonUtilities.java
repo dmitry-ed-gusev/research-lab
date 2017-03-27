@@ -10,7 +10,9 @@ import java.io.*;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -26,9 +28,10 @@ public final class CommonUtilities {
 
     private static final Log LOG = LogFactory.getLog(CommonUtilities.class); // module logger
 
-    private static final String CUSTOM_PROPERTY_NAME   = "custom_%s";
+    private static final String CUSTOM_PROPERTY_NAME = "custom_%s";
 
-    private CommonUtilities() {} // can't instantiate
+    private CommonUtilities() {
+    } // can't instantiate
 
     /**
      * Writes access token and its date from specified file.
@@ -79,8 +82,8 @@ public final class CommonUtilities {
         try (FileReader fr = new FileReader(accessTokenFile);
              BufferedReader br = new BufferedReader(fr)) {
 
-            Date   tokenDate = DATE_TIME_FORMAT.parse(br.readLine()); // first line of file
-            String token     = br.readLine();                         // second line of file
+            Date tokenDate = DATE_TIME_FORMAT.parse(br.readLine()); // first line of file
+            String token = br.readLine();                         // second line of file
 
             return new ImmutablePair<>(tokenDate, token);
         }
@@ -124,7 +127,8 @@ public final class CommonUtilities {
     /**
      * Unzip ZIP archive and output its content to outputFolder.
      * If there are files (in output folder) - they will be overwritten.
-     * @param zipFile input zip file
+     *
+     * @param zipFile      input zip file
      * @param outputFolder zip file output folder
      */
     public static void unZipIt(String zipFile, String outputFolder) {
@@ -150,8 +154,8 @@ public final class CommonUtilities {
             } // end of check/create output folder
 
             ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile)); //get the zip file content
-            ZipEntry       ze  = zis.getNextEntry();                               //get the zipped file list entry
-            while(ze != null) {
+            ZipEntry ze = zis.getNextEntry();                               //get the zipped file list entry
+            while (ze != null) {
                 String fileName = ze.getName();
                 File newFile = new File((StringUtils.isBlank(outputFolder) ? "" : (outputFolder + File.separator)) + fileName);
                 LOG.debug(String.format("Unzipping file: absolute path [%s] / short name [%s].",
@@ -174,7 +178,7 @@ public final class CommonUtilities {
             zis.close();
             LOG.info(String.format("Archive [%s] unzipped successfully.", zipFile));
 
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             LOG.error(ex);
         }
 
@@ -196,7 +200,7 @@ public final class CommonUtilities {
 
             if (!StringUtils.isBlank(option.getOptionKey())) { // process only config options
 
-                String optionValue        = cmdLine.optionValue(option.getOptionName());
+                String optionValue = cmdLine.optionValue(option.getOptionName());
                 String customPropertyName = String.format(CUSTOM_PROPERTY_NAME, option.getOptionKey());
 
                 if (!StringUtils.isBlank(optionValue)) { // value isn't empty (present)
@@ -221,6 +225,32 @@ public final class CommonUtilities {
             }
 
         } // end of FOR
+
+        return result;
+    }
+
+    /**
+     * Parses string arrays: ['value1', 'd"value2'] and returns set of strings.
+     * If input string is empty or null, will return empty set.
+     */
+    // todo: add parameter -> strip spaces and where?
+    public static Set<String> parseStringArray(String array) {
+
+        Set<String> result = new HashSet<>();
+
+        if (StringUtils.isBlank(array)) { // fast-check
+            return result;
+        }
+
+        // get value and remove [] symbols (at start and at the end)
+        String values = StringUtils.strip(StringUtils.trimToEmpty(array), "[]");
+        String tmpValue;
+        for (String value : StringUtils.split(values, ",")) { // add values to set
+            tmpValue = StringUtils.trimToEmpty(StringUtils.strip(StringUtils.trimToEmpty(value), "'"));
+            if (!StringUtils.isBlank(tmpValue)) {
+                result.add(tmpValue);
+            }
+        }
 
         return result;
     }
