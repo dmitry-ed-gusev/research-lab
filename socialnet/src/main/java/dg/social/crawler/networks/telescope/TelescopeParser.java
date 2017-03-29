@@ -132,6 +132,8 @@ public class TelescopeParser implements ParserInterface {
                             person.setPhonesList(tmpSet);
                         }
 
+                        System.out.println("-> " + record.get(TELESCOPE_EDUCATION));
+
                         // add resulting person to people list
                         telePeople.add(person);
                     } catch (NumberFormatException e) {
@@ -168,8 +170,8 @@ public class TelescopeParser implements ParserInterface {
         return TelescopeParser.parseTelescopeCSV(telescopeCsvFile, TELESCOPE_CSV_ENCODING);
     }
 
-    //public static void main(String[] args) {
-    //    TelescopeParser.parseTelescopeCSV("people.csv");
-    //}
+    public static void main(String[] args) {
+        TelescopeParser.parseTelescopeCSV("people.csv");
+    }
 
 }
