@@ -24,7 +24,7 @@ import static dg.social.crawler.SCrawlerDefaults.SocialNetwork;
 @Table(name = "PEOPLE")
 public class PersonDto extends AbstractEntity {
 
-    @Column(name = "FIRST_NAME")
+    @Column (name = "FIRST_NAME")
     private String firstName;   // user first name
     @Column (name = "LAST_NAME")
     private String lastName;    // user last name
@@ -32,25 +32,32 @@ public class PersonDto extends AbstractEntity {
     private String displayName; // display/main name
     @Column (name = "NATIVE_NAME")
     private String nativeName;  // native name
-
     @ElementCollection
     @CollectionTable(name = "PEOPLE_NAMES", joinColumns = @JoinColumn(name = "PERSON_ID"))
     @Column(name = "NAME")
     private Set<String> namesList; // list of names (variations)
-
-    @Column
+    @Column (name = "CITY")
     private String      city;
     @ElementCollection
     @CollectionTable(name="PEOPLE_CITIES", joinColumns = @JoinColumn(name = "PERSON_ID"))
     @Column(name = "CITY_NAME")
     private Set<String> citiesList; // list of possible cities
-
-    @Column
+    @Column (name = "COUNTRY")
     private String      country;
     @ElementCollection
     @CollectionTable(name="PEOPLE_COUNTRIES", joinColumns = @JoinColumn(name = "PERSON_ID"))
     @Column(name = "COUNTRY_NAME")
     private Set<String> countriesList; // list of possible countries
+    @ElementCollection
+    @CollectionTable(name="PEOPLE_EMAILS", joinColumns = @JoinColumn(name = "PERSON_ID"))
+    @Column(name = "EMAIL")
+    private Set<String> emailsList; // list of emails
+    @Column (name = "OFFICE_ADDRESS")
+    private String officeAddress;
+    @ElementCollection
+    @CollectionTable(name="PEOPLE_PHONES", joinColumns = @JoinColumn(name = "PERSON_ID"))
+    @Column(name = "PHONE")
+    private Set<String> phonesList; // list of emails
 
     @Transient
     private String maidenName;
@@ -283,6 +290,30 @@ public class PersonDto extends AbstractEntity {
         this.countriesList = countriesList;
     }
 
+    public Set<String> getEmailsList() {
+        return emailsList;
+    }
+
+    public void setEmailsList(Set<String> emailsList) {
+        this.emailsList = emailsList;
+    }
+
+    public String getOfficeAddress() {
+        return officeAddress;
+    }
+
+    public void setOfficeAddress(String officeAddress) {
+        this.officeAddress = officeAddress;
+    }
+
+    public Set<String> getPhonesList() {
+        return phonesList;
+    }
+
+    public void setPhonesList(Set<String> phonesList) {
+        this.phonesList = phonesList;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
@@ -295,6 +326,9 @@ public class PersonDto extends AbstractEntity {
                 .append("cities", this.citiesList)
                 .append("country", this.country)
                 .append("countries", this.countriesList)
+                .append("emails", this.emailsList)
+                .append("officeAddress", this.officeAddress)
+                .append("phonesList", this.phonesList)
                 .append("maidenName", maidenName)
                 .append("about", about)
                 .append("birthDay", birthDay)

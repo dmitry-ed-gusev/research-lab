@@ -20,6 +20,9 @@ public class PeopleDao extends AbstractHibernateDao<PersonDto> {
 
     private static final Log LOG = LogFactory.getLog(PeopleDao.class);
 
+    private static final int FLUSH_COUNTER = 30;
+    private static final int PERCENT_REPORT_COUNTER = 10;
+
     public PeopleDao() {
         super(PersonDto.class);
     }
@@ -58,15 +61,14 @@ public class PeopleDao extends AbstractHibernateDao<PersonDto> {
             throw new IllegalArgumentException("Can't load data from null list!");
         }
 
-        int flushCounter  = 50;
-        int reportCounter = people.size() / 10;
-        int counter       = 1;
+        final int reportCounter = people.size() / PERCENT_REPORT_COUNTER;
+        int counter = 1;
         Session session = this.getSessionFactory().getCurrentSession();
         // iterate through list and
         for (PersonDto person : people) {
             this.addOrUpdatePerson(person);
 
-            if (counter % flushCounter == 0) { // flush and clear session
+            if (counter % FLUSH_COUNTER == 0) { // flush and clear session
                 session.flush();
                 session.clear();
             }

@@ -9,22 +9,12 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,33 +30,31 @@ public class TelescopeParser implements ParserInterface {
 
     private static Log LOG = LogFactory.getLog(TelescopeParser.class);
 
-    //private static final JSONParser JSON_PARSER       = new JSONParser();
-
     private static final String TELESCOPE_CSV_ENCODING      = "Windows-1251";
     // percents of data size for reporting (LOG to console)
     private static final int    REPORT_STEP_PERCENT         = 10;
 
     // header fields for Telescope output file
-    private static final String TELESCOPE_ID                = "id";
-    private static final String TELESCOPE_ANNIVERSARY_DATE  = "anniversaryDate";
-    private static final String TELESCOPE_CITY              = "city";
-    private static final String TELESCOPE_CITY_SUM          = "citySum";
-    private static final String TELESCOPE_COUNTRY           = "country";
-    private static final String TELESCOPE_COUNTRY_SUM       = "countrySum";
-    private static final String TELESCOPE_DISPLAY_NAME      = "displayName";
+    private static final String TELESCOPE_ID                = "id";                // +
+    private static final String TELESCOPE_ANNIVERSARY_DATE  = "anniversaryDate";   // possibly don't need
+    private static final String TELESCOPE_CITY              = "city";              // +
+    private static final String TELESCOPE_CITY_SUM          = "citySum";           // +
+    private static final String TELESCOPE_COUNTRY           = "country";           // +
+    private static final String TELESCOPE_COUNTRY_SUM       = "countrySum";        // +
+    private static final String TELESCOPE_DISPLAY_NAME      = "displayName";       // +
     private static final String TELESCOPE_EDUCATION         = "education";
-    private static final String TELESCOPE_EMAIL             = "email";
-    private static final String TELESCOPE_EMPLOYMENT_STATUS = "employmentStatus";
-    private static final String TELESCOPE_END_WORK_DATE     = "endWorkDate";
-    private static final String TELESCOPE_FIRST_NAME        = "firstName";
-    private static final String TELESCOPE_FULL_NAME         = "fullName";
-    private static final String TELESCOPE_LAST_NAME         = "lastName";
-    private static final String TELESCOPE_LEVEL             = "level";
-    private static final String TELESCOPE_NATIVE_NAME       = "nativeName";
-    private static final String TELESCOPE_OFFICE            = "office";
-    private static final String TELESCOPE_PHONE             = "phone";
-    private static final String TELESCOPE_PHONES            = "phones";
-    private static final String TELESCOPE_SENIORITY         = "seniority";
+    private static final String TELESCOPE_EMAIL             = "email";             // +
+    private static final String TELESCOPE_EMPLOYMENT_STATUS = "employmentStatus";  // possibly don't need
+    private static final String TELESCOPE_END_WORK_DATE     = "endWorkDate";       // +
+    private static final String TELESCOPE_FIRST_NAME        = "firstName";         // +
+    private static final String TELESCOPE_FULL_NAME         = "fullName";          // +
+    private static final String TELESCOPE_LAST_NAME         = "lastName";          // +
+    private static final String TELESCOPE_LEVEL             = "level";             // possibly don't need
+    private static final String TELESCOPE_NATIVE_NAME       = "nativeName";        // +
+    private static final String TELESCOPE_OFFICE            = "office";            // +
+    private static final String TELESCOPE_PHONE             = "phone";             // +
+    private static final String TELESCOPE_PHONES            = "phones";            // +
+    private static final String TELESCOPE_SENIORITY         = "seniority";         // possibly don't need
 
     // constructing the header array for Telescope output file
     private static final String[] FILE_HEADER = {
@@ -110,7 +98,7 @@ public class TelescopeParser implements ParserInterface {
                     telescopeCsvFile, csvRecords.size()));
 
             PersonDto person;
-            Set<String> names;
+            Set<String> tmpSet;
             final int reportCounter = csvRecords.size() / REPORT_STEP_PERCENT;
 
             for (int i = 1; i < csvRecords.size(); i++) {
@@ -118,43 +106,38 @@ public class TelescopeParser implements ParserInterface {
 
                 if (StringUtils.isBlank(record.get(TELESCOPE_END_WORK_DATE))) { // process only current working employees
 
-                    // create new person object with Telescope ID and type
-                    // todo: add try-catch for parsing
-                    person = new PersonDto(0, Long.parseLong(record.get(TELESCOPE_ID)), TELESCOPE);
-                    // add properties to person object
-                    person.setFirstName(record.get(TELESCOPE_FIRST_NAME));
-                    person.setLastName(record.get(TELESCOPE_LAST_NAME));
-                    person.setDisplayName(record.get(TELESCOPE_DISPLAY_NAME));
-                    person.setNativeName(record.get(TELESCOPE_NATIVE_NAME));
+                    // parse one record create new person object with Telescope ID and type
+                    try {
+                        person = new PersonDto(0, Long.parseLong(record.get(TELESCOPE_ID)), TELESCOPE);
+                        // add properties to person object
+                        person.setFirstName(record.get(TELESCOPE_FIRST_NAME));
+                        person.setLastName(record.get(TELESCOPE_LAST_NAME));
+                        person.setDisplayName(record.get(TELESCOPE_DISPLAY_NAME));
+                        person.setNativeName(record.get(TELESCOPE_NATIVE_NAME));
 
+                        // add names/countries/cities sets to person object
+                        person.setNamesList(CommonUtilities.parseStringArray(record.get(TELESCOPE_FULL_NAME)));
+                        person.setCitiesList(CommonUtilities.parseStringArray(record.get(TELESCOPE_CITY)));
+                        person.setCity(record.get(TELESCOPE_CITY_SUM));
+                        person.setCountriesList(CommonUtilities.parseStringArray(record.get(TELESCOPE_COUNTRY)));
+                        person.setCountry(record.get(TELESCOPE_COUNTRY_SUM));
 
-                    // process full name (list of possible names)
-                    //names = new HashSet<>();
-                    // get <full name> value and remove [] symbols (at start and at the end)
-                    //String fullName = StringUtils.strip(record.get(TELESCOPE_FULL_NAME), "[]");
-                    //LOG.debug(String.format("Raw full name [%s].", fullName)); // <- too much output
-                    //for (String name : StringUtils.split(fullName, ",")) { // add names to set
-                    //    names.add(StringUtils.strip(StringUtils.trimToEmpty(name), "'"));
-                    //}
-                    //LOG.debug(String.format("Set of names: %s.\n", names)); // <- too much output
+                        person.setEmailsList(CommonUtilities.parseStringArray(record.get(TELESCOPE_EMAIL)));
+                        person.setOfficeAddress(record.get(TELESCOPE_OFFICE));
 
-                    // add names set to person object
-                    person.setNamesList(CommonUtilities.parseStringArray(record.get(TELESCOPE_FULL_NAME)));
-                    // todo: add other parameters from person
+                        // join two fields: phone and phones
+                        tmpSet = CommonUtilities.parseStringArray(record.get(TELESCOPE_PHONE));
+                        tmpSet.addAll(CommonUtilities.parseStringArray(record.get(TELESCOPE_PHONES)));
+                        if (tmpSet.size() > 0) {
+                            person.setPhonesList(tmpSet);
+                        }
 
-                    String cities = record.get(TELESCOPE_CITY);
-                    System.out.println("-> " + cities);
-                    String city = record.get(TELESCOPE_CITY_SUM);
-                    System.out.println("=> " + city);
-                    String countries = record.get(TELESCOPE_COUNTRY_SUM);
-                    System.out.println("*> " + countries);
-                    String country = record.get(TELESCOPE_COUNTRY);
-                    System.out.println("+> " + country);
-
-
-                    // add resulting person to people list
-                    telePeople.add(person);
-                }
+                        // add resulting person to people list
+                        telePeople.add(person);
+                    } catch (NumberFormatException e) {
+                        LOG.error(String.format("Can't parse Telescope ID [%s]!", record.get(TELESCOPE_ID)), e);
+                    }
+                } // end IF for actual employees
 
                 // reporting
                 if (i % reportCounter == 0) {
@@ -162,6 +145,7 @@ public class TelescopeParser implements ParserInterface {
                 }
 
             } // end of FOR statement
+
             LOG.info(String.format("Processed records [%s].", csvRecords.size()));
 
         } catch (IOException e) {
@@ -184,8 +168,8 @@ public class TelescopeParser implements ParserInterface {
         return TelescopeParser.parseTelescopeCSV(telescopeCsvFile, TELESCOPE_CSV_ENCODING);
     }
 
-    public static void main(String[] args) {
-        TelescopeParser.parseTelescopeCSV("people.csv");
-    }
+    //public static void main(String[] args) {
+    //    TelescopeParser.parseTelescopeCSV("people.csv");
+    //}
 
 }
