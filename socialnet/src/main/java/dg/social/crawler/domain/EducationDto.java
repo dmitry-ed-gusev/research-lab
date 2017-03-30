@@ -1,9 +1,9 @@
 package dg.social.crawler.domain;
 
-import dg.social.crawler.SCrawlerDefaults;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -18,12 +18,19 @@ import static dg.social.crawler.SCrawlerDefaults.SocialNetwork;
 @Table (name = "EDUCATION_PROFILES")
 public class EducationDto extends AbstractEntity {
 
+    @Column (name = "FACULTY")
     private String faculty;
+    @Column (name = "UNIVERSITY")
     private String university;
+    @Column (name = "START_YEAR")
     private String startYear;
+    @Column (name = "GRADUATION_YEAR")
     private String graduationYear;
+    @Column (name = "DEPARTMENT")
     private String department;
+    @Column (name = "DEGREE")
     private String degree;
+    @Column (name = "UNIVERSITY_URL")
     private String universityUrl;
 
     /***/
