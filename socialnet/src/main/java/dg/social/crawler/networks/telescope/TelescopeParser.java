@@ -1,6 +1,6 @@
 package dg.social.crawler.networks.telescope;
 
-import dg.social.crawler.domain.EducationDto;
+import dg.social.crawler.domain.EducationProfileValue;
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.networks.ParserInterface;
 import dg.social.crawler.utilities.CommonUtilities;
@@ -10,17 +10,12 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -139,7 +134,8 @@ public class TelescopeParser implements ParserInterface {
                             person.setPhonesList(tmpSet);
                         }
 
-                        Set<EducationDto> education = TelescopeParser.parseEducationString(record.get(TELESCOPE_EDUCATION));
+                        //Set<EducationProfileValue> education = TelescopeParser.parseEducationString(record.get(TELESCOPE_EDUCATION));
+                        System.out.println("-> " + record.get(TELESCOPE_EDUCATION));
 
                         // add resulting person to people list
                         telePeople.add(person);
@@ -178,55 +174,54 @@ public class TelescopeParser implements ParserInterface {
     }
 
     /***/
-    protected static Set<EducationDto> parseEducationString(String education) {
+    protected static Set<EducationProfileValue> parseEducationString(String education) {
 
         if (StringUtils.isBlank(education)) { // fast check
             return null;
         }
 
-        Set<EducationDto> educations = new HashSet<>();
+        Set<EducationProfileValue> educations = new HashSet<>();
 
         // prepare source string
         String[] educationArray = StringUtils.splitByWholeSeparator(StringUtils.strip(education, "[]"), "}, {");
         // iterate over and build objects
-        EducationDto educationDto;
+        EducationProfileValue educationProfileValue;
         for (String edu : educationArray) {
             String[] eduElements = StringUtils.split(StringUtils.strip(edu, "[{}]"), ",");
 
             // iterate over elements and init instance
-            educationDto = new EducationDto();
+            educationProfileValue = new EducationProfileValue();
             for (String eduElement : eduElements) {
-
                 String[] tmpStr = StringUtils.split(eduElement, ":");
                 if (tmpStr.length == 2) {
                     String name  = StringUtils.strip(tmpStr[0], "' ");
                     String value = StringUtils.strip(tmpStr[1], "' ");
                     switch (name) {
                         case "faculty":
-                            educationDto.setFaculty(value);
+                            educationProfileValue.setFaculty(value);
                             break;
                         case "institution":
-                            educationDto.setUniversity(value);
+                            educationProfileValue.setUniversity(value);
                             break;
                         case "graduationYear":
-                            educationDto.setGraduationYear(value);
+                            educationProfileValue.setGraduationYear(value);
                             break;
                         case "department":
-                            educationDto.setDepartment(value);
+                            educationProfileValue.setDepartment(value);
                             break;
                         case "degree":
-                            educationDto.setDegree(value);
+                            educationProfileValue.setDegree(value);
                             break;
                         case "startYear":
-                            educationDto.setStartYear(value);
+                            educationProfileValue.setStartYear(value);
                             break;
                         case "institutionUrl":
-                            educationDto.setUniversityUrl(value);
+                            educationProfileValue.setUniversityUrl(value);
                             break;
-                    }
-                    educations.add(educationDto);
+                    } // end of SWITCH
                 }
             } // end of FOR cycle
+            educations.add(educationProfileValue);
         } // end of MAIN FOR cycle
 
         return educations;

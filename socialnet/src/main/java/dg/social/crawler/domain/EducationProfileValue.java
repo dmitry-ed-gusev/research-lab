@@ -4,19 +4,16 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import static dg.social.crawler.SCrawlerDefaults.SocialNetwork;
+import javax.persistence.Embeddable;
 
 /**
- * Domain object - one education profile (faculty/university/etc.)
+ * Domain VALUE object - one education profile (faculty/university/etc.).
+ * Completely depends on (its lifecycle is managed by) PersonDto ENTITY object.
  * Created by gusevdm on 3/29/2017.
  */
 
-@Entity
-@Table (name = "EDUCATION_PROFILES")
-public class EducationDto extends AbstractEntity {
+@Embeddable
+public class EducationProfileValue {
 
     @Column (name = "FACULTY")
     private String faculty;
@@ -34,12 +31,7 @@ public class EducationDto extends AbstractEntity {
     private String universityUrl;
 
     /***/
-    public EducationDto() {
-    }
-
-    /***/
-    public EducationDto(long id, long externalId, SocialNetwork socialNetwork) {
-        super(id, externalId, socialNetwork);
+    public EducationProfileValue() {
     }
 
     public String getFaculty() {
@@ -96,6 +88,35 @@ public class EducationDto extends AbstractEntity {
 
     public void setUniversityUrl(String universityUrl) {
         this.universityUrl = universityUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EducationProfileValue that = (EducationProfileValue) o;
+
+        if (faculty != null ? !faculty.equals(that.faculty) : that.faculty != null) return false;
+        if (university != null ? !university.equals(that.university) : that.university != null) return false;
+        if (startYear != null ? !startYear.equals(that.startYear) : that.startYear != null) return false;
+        if (graduationYear != null ? !graduationYear.equals(that.graduationYear) : that.graduationYear != null)
+            return false;
+        if (department != null ? !department.equals(that.department) : that.department != null) return false;
+        if (degree != null ? !degree.equals(that.degree) : that.degree != null) return false;
+        return universityUrl != null ? universityUrl.equals(that.universityUrl) : that.universityUrl == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = faculty != null ? faculty.hashCode() : 0;
+        result = 31 * result + (university != null ? university.hashCode() : 0);
+        result = 31 * result + (startYear != null ? startYear.hashCode() : 0);
+        result = 31 * result + (graduationYear != null ? graduationYear.hashCode() : 0);
+        result = 31 * result + (department != null ? department.hashCode() : 0);
+        result = 31 * result + (degree != null ? degree.hashCode() : 0);
+        result = 31 * result + (universityUrl != null ? universityUrl.hashCode() : 0);
+        return result;
     }
 
     @Override

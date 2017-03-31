@@ -16,7 +16,7 @@ import java.util.Set;
 import static dg.social.crawler.SCrawlerDefaults.SocialNetwork;
 
 /**
- * Domain object - one person user (human).
+ * Domain ENTITY object - one person user (human).
  * Created by vinnypuhh on 24.12.16.
  */
 

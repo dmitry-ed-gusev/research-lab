@@ -12,7 +12,7 @@ import java.util.Date;
 import static dg.social.crawler.SCrawlerDefaults.SocialNetwork;
 
 /**
- * Base abstract domain object with database identity. Incapsulates some common (for all domain objects)
+ * Base abstract domain ENTITY object with database identity. It incapsulates some common (for all domain objects)
  * properties. Domain entity objects (not value objects!) should extend this object.
  * Used Hibernate mapping strategy "Table per concrete class with polymorphism".
  * Created by gusevdm on 2/17/2017.
