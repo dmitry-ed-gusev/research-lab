@@ -46,7 +46,7 @@ class Configuration(object):
 
     def merge_env(self):
         for item in os.environ:
-            self.config_dict[item.lower()]=os.environ[item]
+            self.config_dict[item.lower()] = os.environ[item]
 
     # Key should be in such format:
     #   key1 - for single key entry

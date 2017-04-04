@@ -1,9 +1,36 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
 
+"""
+ Common utilities in python. Can be useful in different cases.
+ Created: Gusev Dmitrii, 04.04.2017
+"""
+
+import csv
 from os import walk, rename
 
 __author__ = 'gusevd'
+
+
+def count_lines(filename):
+    """
+    COunt lines in given file.
+    :return: count of lines
+    """
+
+    counter = 0
+    # open file, received as first cmd line argument, mode - read+Unicode
+    with open(filename, mode='rU') as file:
+        # skip initial space - don't work without it
+        reader = csv.reader(file, delimiter=b',', skipinitialspace=True, quoting=csv.QUOTE_MINIMAL, quotechar=b'"', lineterminator="\n")
+        # counting rows in a cycle
+        for row in reader:
+            # just a debug output
+            # print row
+            counter += 1
+    # debug - print count to console
+    print "Lines count: {}".format(counter)
+    return counter
 
 
 def to_upper_case(path):
@@ -45,12 +72,3 @@ def to_title(path):
             after = prefix + filename.title()
             rename(before, after)
             print('to title case:' + before + ' -> ' + after)
-
-
-# -- execute, if runned sigle or imported by other module
-if __name__ == '__main__':
-
-    print('[myutils] main is working.')
-
-    # to_upper_case('c:\\temp')
-    to_title("c:\\temp")
