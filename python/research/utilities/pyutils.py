@@ -17,7 +17,6 @@ def count_lines(filename):
     COunt lines in given file.
     :return: count of lines
     """
-
     counter = 0
     # open file, received as first cmd line argument, mode - read+Unicode
     with open(filename, mode='rU') as file:
@@ -38,9 +37,7 @@ def to_upper_case(path):
     Rename all files in a given directory to upper case
     :return: nothing
     """
-
     print("to_upper_case() is working.")
-
     # -- go trough path recursively and search all files
     # for (dirpath, dirnames, filenames) in walk(unicode(path)): <- python 2
     for (dirpath, dirnames, filenames) in walk(path):
@@ -59,9 +56,7 @@ def to_title(path):
     words with uppercase first letter)
     :return: nothing
     """
-
     print ("to_title() is working.")
-
     # -- go trough path recursively and search all files
     # for (dirpath, dirnames, filenames) in walk(unicode(path)): <- python 2
     for (dirpath, dirnames, filenames) in walk(path):
