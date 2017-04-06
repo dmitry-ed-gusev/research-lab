@@ -74,7 +74,7 @@
                 <executions>
                     <execution>
                         <id>project-copy-batch-files</id>
-                        <phase>package</phase>
+                        <phase>${prod.build.phase}</phase>
                         <goals><goal>run</goal></goals>
                         <configuration>
                             <tasks>
@@ -124,14 +124,6 @@
             <artifactId>hadoop-client</artifactId>
             <version>${hadoop.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
