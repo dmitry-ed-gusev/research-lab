@@ -4,6 +4,7 @@ target/
 *.iml
 *.ipr
 *.iws
+.idea
 # -- ignore logs files
 *.log
 # -- ignore [storm] module output/input file(s)

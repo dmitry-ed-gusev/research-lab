@@ -1,0 +1,150 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev</groupId>
+        <artifactId>research</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>socialnet</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>Social Net :: integration/working with social networks.</name>
+
+    <properties>
+        <jar.name>${project.artifactId}-${env}</jar.name>
+        <main.class>dg.social.crawler.SocialCrawler</main.class>
+        <assembly.dir>${project.build.directory}/scrawler</assembly.dir>
+        <libraries.prefix>lib</libraries.prefix>
+    </properties>
+
+    <build>
+        <!-- resulting JAR name -->
+        <finalName>${jar.name}</finalName>
+
+        <!-- maven filters place -->
+        <filters>
+            <filter>filters/filter-${env}.properties</filter>
+        </filters>
+
+        <!-- turn on resources filtering -->
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <!-- maven jar plugin settings (put JAR into specified folder) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>${main.class}</mainClass>
+                            <classpathPrefix>${libraries.prefix}/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                    <outputDirectory>${assembly.dir}</outputDirectory>
+                </configuration>
+                <version>${maven.jar.plugin}</version>
+            </plugin>
+
+            <!-- copy dependencies (libraries) to specified path -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${assembly.dir}/${libraries.prefix}</outputDirectory>
+                    <artifactItems/>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>dep-copy</id>
+                        <phase>${prod.build.phase}</phase>
+                        <goals><goal>copy-dependencies</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- maven antrun plugin (copy properties file) -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>project-copy-config-files</id>
+                        <phase>${prod.build.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <!-- copy .properties file -->
+                                <copy todir="${assembly.dir}" failonerror="true">
+                                    <fileset dir="${basedir}"><include name="crawler.properties"/></fileset>
+                                </copy>
+                                <!-- copy+filter .bat file -->
+                                <copy todir="${assembly.dir}" failonerror="true">
+                                    <fileset dir="${basedir}"><include name="crawler.bat"/></fileset>
+                                    <filterset>
+                                        <filter token="JAR_NAME"  value="${jar.name}"/>
+                                    </filterset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons.logging.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <!-- Apache Http Components -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${apache.httpclient.version}</version>
+        </dependency>
+        <!-- jsoup HTML parser library @ http://jsoup.org/ -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.10.1</version>
+        </dependency>
+        <!-- json-simple google JSON parsing library -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -3,7 +3,7 @@
 
     <parent>
         <groupId>dgusev</groupId>
-        <artifactId>research</artifactId>
+        <artifactId>tmpresearch</artifactId>
         <version>1.0</version>
     </parent>
 
@@ -20,13 +20,6 @@
     
     <dependencies>
         
-		<dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-		
 		<!-- Apache libraries dependencies -->
         <dependency>
             <groupId>org.apache.commons</groupId>
