@@ -48,7 +48,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>${maven.jar.plugin}</version>
+                <version>${maven.plugin.jar}</version>
                 <configuration>
                     <archive>
                         <!-- configure manifest for jar -->
