@@ -16,7 +16,8 @@
     <properties>
         <hadoop.version>2.7.1</hadoop.version>
         <jar.name>${project.artifactId}-${env}</jar.name>
-        <main.class>bigdata.hw1.words.WordsLengthCounter</main.class>
+        <main.class.hw1.option1>bigdata.hw1.words.option1.LenCounterMainOption1</main.class.hw1.option1>
+        <main.class.hw1.option2>bigdata.hw1.words.option2.LenCounterMainOption2</main.class.hw1.option2>
         <assembly.dir>${project.build.directory}/bigdata</assembly.dir>
     </properties>
 
@@ -32,9 +33,41 @@
                 <configuration>
                     <outputDirectory>${assembly.dir}</outputDirectory>
                 </configuration>
-                <version>${maven.jar.plugin}</version>
+                <version>${maven.plugin.jar}</version>
             </plugin>
 
+            <!-- maven shade plugin - creating a "FAT" jar with dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven.plugin.shade}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>true</minimizeJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.apache.commons:commons-lang3</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>org.apache.commons:commons-lang3</artifact>
+                                    <includes>
+                                        <include>org/apache/commons/lang3/StringUtils.class</include>
+                                        <include>org/apache/commons/lang3/tuple/Pair.class</include>
+                                        <include>org/apache/commons/lang3/tuple/ImmutablePair.class</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- maven antrun plugin (copy and filter .sh scripts) -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -50,7 +83,8 @@
                                     <fileset dir="${basedir}"><include name="*.sh"/></fileset>
                                     <filterset>
                                         <filter token="JAR_NAME"  value="${jar.name}"/>
-                                        <filter token="MAIN_CLASS" value="${main.class}" />
+                                        <!--<filter token="MAIN_CLASS" value="${main.class.hw1.option1}" />-->
+                                        <filter token="MAIN_CLASS" value="${main.class.hw1.option2}" />
                                     </filterset>
                                 </copy>
                                 <!-- fix LF after copy -->

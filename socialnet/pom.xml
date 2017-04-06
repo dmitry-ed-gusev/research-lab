@@ -58,7 +58,7 @@
                     </archive>
                     <outputDirectory>${assembly.dir}</outputDirectory>
                 </configuration>
-                <version>${maven.jar.plugin}</version>
+                <version>${maven.plugin.jar}</version>
             </plugin>
 
             <!-- copy dependencies (libraries) to specified path -->

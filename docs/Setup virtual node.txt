@@ -1,0 +1,10 @@
+Using Virtual Box to setup virtual PC. If you setup virtual machine on PC with
+some restrictions/proxy server, you need setup 2 virtual network adapters for virtual PC:
+ 1. NAT, with ports forwarding (for interaction between host and virtual machine):
+    * SSH                          (TCP: 127.0.0.1:2022  -> virtual-ip:22)
+    * HDFS NameNode                (TCP: 127.0.0.1:50070 -> virtual-ip:50070)
+    * Hadoop History server        (TCP: 127.0.0.1:19888 -> virtual-ip:19888)
+    * Hadoop Logs server           (TCP: 127.0.0.1:8042  -> virtual-ip:8042)
+    * Hadoop YARN Resource Manager (TCP: 127.0.0.1:8088  -> virtual-ip:8088)
+ 2. Host-only Adapter (for Internet connection)
+

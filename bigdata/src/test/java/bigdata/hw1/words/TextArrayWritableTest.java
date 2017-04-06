@@ -1,5 +1,6 @@
 package bigdata.hw1.words;
 
+import bigdata.hw1.words.TextArrayWritable;
 import org.apache.hadoop.io.Text;
 import org.junit.Test;
 
@@ -60,7 +61,5 @@ public class TextArrayWritableTest {
         });
 
     }
-
-
 
 }
