@@ -10,11 +10,14 @@
 
     <properties>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- java-related settings/properties -->
         <java.sources.encoding>UTF-8</java.sources.encoding>
         <java.version>1.8</java.version>
-        <maven.compiler.plugin>2.3.2</maven.compiler.plugin>
-        <maven.jar.plugin>2.4</maven.jar.plugin>
-        <maven.resources.plugin>2.5</maven.resources.plugin>
+        <!-- maven plugins settings/versions -->
+        <maven.plugin.compiler>2.3.2</maven.plugin.compiler>
+        <maven.plugin.jar>2.4</maven.plugin.jar>
+        <maven.plugin.resources>2.5</maven.plugin.resources>
+        <maven.plugin.shade>2.4.3</maven.plugin.shade>
 		<!-- Apache Commons libraries (Lang3/Logging/IO/Log4J) -->
         <commons.lang3.version>3.4</commons.lang3.version>
         <commons.logging.version>1.1.3</commons.logging.version>
@@ -28,7 +31,6 @@
 		<!-- Spring framework [context] module version -->
 		<spring.context.version>4.3.3.RELEASE</spring.context.version>
         <apache.httpclient.version>4.5.2</apache.httpclient.version>
-
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
         <skipCoverageReport>false</skipCoverageReport>
         <jacoco.plugin.version>0.7.7.201606060606</jacoco.plugin.version>
@@ -39,7 +41,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin}</version>
+                <version>${maven.plugin.compiler}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -49,7 +51,7 @@
 
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven.resources.plugin}</version>
+                <version>${maven.plugin.resources}</version>
                 <configuration>
                     <encoding>${java.sources.encoding}</encoding>
                 </configuration>

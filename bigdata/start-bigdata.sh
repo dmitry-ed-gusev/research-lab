@@ -10,8 +10,11 @@
 # ========================================================
 
 # - output dir for map-reduce job
-OUTPUT="/user/$USER/output"
-REDUCER_OUTPUT="part-r-00000"
+USER_DIR="/user/${USER}"
+#INTERMEDIATE_OUTPUT="$USER_DIR/intermediate_output"
+FINAL_OUTPUT="$USER_DIR/output"
+
+#REDUCER_OUTPUT="part-r-00000"
 
 # // todo: add arguments check
 # - check cmd line arguments count
@@ -26,17 +29,22 @@ REDUCER_OUTPUT="part-r-00000"
 #fi
 
 # - if output dir exists - empty and delete it
-if hadoop fs -test -d $OUTPUT ; then
-    hadoop fs -rm -f "$OUTPUT/*"
-    hadoop fs -rmdir "$OUTPUT"
-fi
+#if hdfs dfs -test -d $OUTPUT ; then
+#    hdfs dfs -rm -f "$OUTPUT/*"
+#    hdfs dfs -rmdir "$OUTPUT"
+#fi
+
+# - clean up user dir
+# // todo: fix error msg, if already clean
+hdfs dfs -rm -r -f ${USER_DIR}/*
 
 # - copy (with overwriting) test file into HDFS (to user home dir)
-hadoop fs -copyFromLocal -f ${1} ${1}
+hdfs dfs -copyFromLocal -f ${1} ${1}
 
 # - start hadoop map-reduce job
 export HADOOP_CLASSPATH=@JAR_NAME@.jar
-hadoop @MAIN_CLASS@ ${1} $OUTPUT
+yarn @MAIN_CLASS@ ${1} ${FINAL_OUTPUT}
 
 # - if successful, show output
-hadoop fs -cat $OUTPUT/$REDUCER_OUTPUT
+#hdfs dfs -cat $OUTPUT/$REDUCER_OUTPUT
+hdfs dfs -ls ${FINAL_OUTPUT}

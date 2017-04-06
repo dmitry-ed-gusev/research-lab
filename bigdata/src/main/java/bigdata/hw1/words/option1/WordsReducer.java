@@ -1,5 +1,6 @@
-package bigdata.hw1.words;
+package bigdata.hw1.words.option1;
 
+import bigdata.hw1.words.TextArrayWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
@@ -25,7 +26,7 @@ public class WordsReducer extends Reducer<IntWritable, MapWritable, IntWritable,
         // iterate over input values and calculate
         Map.Entry<Writable, Writable> entry;
         IntWritable                   length;
-        TextArrayWritable             wordsArray = new TextArrayWritable();
+        TextArrayWritable wordsArray = new TextArrayWritable();
         for (MapWritable map : values) {
             entry = map.entrySet().iterator().next();
             length     = (IntWritable) entry.getKey();
@@ -33,7 +34,7 @@ public class WordsReducer extends Reducer<IntWritable, MapWritable, IntWritable,
             if (length.get() > maxValue) { // we've found new max value
                 maxValue = length.get();
                 wordsArray = (TextArrayWritable) entry.getValue();
-            } else if (length.get() == maxValue) { // we've the same value in defferent input - merge them
+            } else if (length.get() == maxValue) { // we've the same value in different input - merge them
                 wordsArray = wordsArray.join((TextArrayWritable) entry.getValue());
             }
 
