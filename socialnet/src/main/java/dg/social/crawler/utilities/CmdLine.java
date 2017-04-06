@@ -6,6 +6,8 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Class represents command line. It supports options with/without values: <br>
@@ -15,50 +17,61 @@ import java.util.Arrays;
  * Created by gusevdm on 28/12/2016.
 */
 
-// todo: immutability (copy ArrayList on instance creation)
+ // todo: use CmdLineOption enum?
+
 public class CmdLine {
 
     private static final Log LOG = LogFactory.getLog(CmdLine.class); // module logger
 
-    private boolean           isLoggingEnabled = true;              // enable/disable class internal logging
-    private ArrayList<String> cmdLine          = new ArrayList<>(); // cmd line internal storage
+    private static final String CMD_LINE_OPTION_PREFIX = "-";
 
-    /** If args is null, constructor will throw IllegalArgumentException. */
-    public CmdLine(String[] args, boolean isLoggingEnabled) {
+    private List<String> cmdLine = new LinkedList<>(); // cmd line internal storage
 
-        this.isLoggingEnabled = isLoggingEnabled;
-
-        if (isLoggingEnabled) {
-            LOG.debug(String.format("CmdLine constructor() working. Cmd line: %s.", (args != null ? Arrays.toString(args) : "null")));
-        }
+    /** If args are null, constructor will throw IllegalArgumentException. */
+    public CmdLine(String[] args) {
+        LOG.debug(String.format("CmdLine constructor() working. Cmd line: %s.",
+                (args != null ? Arrays.toString(args) : "null")));
 
         if (args == null) { // fail-fast
             throw new IllegalArgumentException("Empty command line string!");
         }
 
-        this.cmdLine.addAll(Arrays.asList(args));
+        for (String arg : args) { // filter cmd line arguments
+            if (StringUtils.isBlank(arg) || StringUtils.isBlank(arg.replaceAll(CMD_LINE_OPTION_PREFIX, ""))) {
+                throw new IllegalArgumentException(String.format("Invalid cmd line argument: [%s]!", arg));
+            } else {
+                this.cmdLine.add(StringUtils.trimToEmpty(arg));
+            }
+        }
+
     }
 
     /** Check presence of option with "-" (minus) sign. */
     public boolean hasOption(String option) {
-        return !cmdLine.isEmpty() && !StringUtils.isBlank(option) && cmdLine.contains(option);
+        LOG.debug(String.format("CmdLine.hasOption() is working. Option to check: [%s].", option));
+        boolean result = !this.cmdLine.isEmpty() &&
+                !StringUtils.isBlank(option) && this.cmdLine.contains(option);
+        LOG.debug(String.format("Option [%s] check result [%s].", option, result));
+        return result;
     }
 
     /** Returns first found value for specified option. In option use "-" (minus) sign. */
     public String optionValue(String option) {
-
-        if (!StringUtils.isBlank(option)) {
-            int optionNameIndex = cmdLine.indexOf(option);
+        LOG.debug(String.format("CmdLine.optionValue() is working. Option to check value: [%s].", option));
+        String result = null;
+        if (!this.cmdLine.isEmpty() && !StringUtils.isBlank(option)) {
+            int optionNameIndex  = this.cmdLine.indexOf(option);
             int optionValueIndex = optionNameIndex + 1;
-            if ((optionNameIndex >= 0) && (optionValueIndex < cmdLine.size())) {
-                String optionValue = cmdLine.get(optionValueIndex);
+            if ((optionNameIndex >= 0) && (optionValueIndex < this.cmdLine.size())) {
+                String optionValue = this.cmdLine.get(optionValueIndex);
                 if (!StringUtils.isBlank(optionValue) && !optionValue.startsWith("-")) {
-                    return optionValue;
+                    result = optionValue;
                 }
             }
         }
 
-        return null;
+        LOG.debug(String.format("For option [%s] found value [%s].", option, result));
+        return result;
     }
 
 }
