@@ -17,13 +17,13 @@
 
 # -- Installing Java
 # - add alternate repository for Oracle Java JDK and update data from it
-sudo add-apt-repository -y $JAVA_ALT_REPO
+sudo -E add-apt-repository -y $JAVA_ALT_REPO
 sudo apt-get -qy update
 
 # - auto accept Oracle JDK license
 sudo echo oracle-java$JAVA_VERSION-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
 # - install JDK
-sudo apt-get -qy install oracle-java$JAVA_VERSION-installer
+sudo apt-get -qy --allow-unauthenticated install oracle-java$JAVA_VERSION-installer
 
 # ***** DEBUG OUTPUT (wait for any key press) *****
 if [ "$DEBUG_MODE" == "true" ]; then

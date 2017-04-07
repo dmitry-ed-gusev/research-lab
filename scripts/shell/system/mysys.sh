@@ -8,18 +8,25 @@
 #   sudo ./<script_name>)! Script will ask for such priveleges, if necessary.
 #
 #   Created:  Gusev Dmitry, 26.11.2016
-#   Modified: Gusev Dmitry, 27.11.2016
+#   Modified: Gusev Dmitry, 07.04.2017
 # =============================================================================
 
 # -- Call other script for set environment for current process
 source _env.sh
+
+USAGE_FILE='usage.txt'
+# -- if no parameters specified - just show help
+if [[ $# -eq 0 ]] ; then
+    cat ${USAGE_FILE}
+    exit 0
+fi
 
 # -- Read cmd line arguments and set behaviour
 for arg in "$@"
 do
 	case "$arg" in
 	# - help/usage screen
-	-help) cat usage.txt
+	-help) cat ${USAGE_FILE}
 	          ;;
 	# - system update
 	-update)  UPDATE_SYSTEM=YES
