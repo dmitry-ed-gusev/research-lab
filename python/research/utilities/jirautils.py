@@ -70,7 +70,21 @@ class JIRAUtility(object):
         jql = JIRAUtility.JQL_ALL_SPRINT_ISSUES.format(self.config.get('jira_project'), sprint_name)
         print "Generated JQL [{}].".format(jql)
         # search for issues and return them
-        return self.jira.search_issues(jql, maxResults=False)
+        issues = []
+        batch_size = 50
+        total_processed = 0
+        while batch_size == 50:
+            # get issues part (in a size of batch, default = 50)
+            issues_batch = self.jira.search_issues(jql_str=jql, maxResults=False, startAt=total_processed)
+            # update current batch size
+            batch_size = len(issues_batch)
+            # update total processed count
+            total_processed += batch_size
+            # add all found issues to resulting list
+            for issue in issues_batch:
+                issues.append(issue)
+        # return result
+        return issues
 
     def add_label_to_sprint_issues(self, sprint_name):
         """
