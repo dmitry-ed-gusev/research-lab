@@ -12,8 +12,10 @@
 #   It is recommended to update whole system before running this script!
 #  
 #   Created:  Gusev Dmitry, 27.11.2016
-#   Modified: Gusev Dmitry, 27.11.2016
+#   Modified: Gusev Dmitry, 07.04.2017
 # =============================================================================
+
+# todo: check, if tools are already installed!
 
 # -- Installing Java
 # - add alternate repository for Oracle Java JDK and update data from it
@@ -22,7 +24,7 @@ sudo apt-get -qy update
 
 # - auto accept Oracle JDK license
 sudo echo oracle-java$JAVA_VERSION-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-# - install JDK
+# - install JDK (allow for unauthenticated)
 sudo apt-get -qy --allow-unauthenticated install oracle-java$JAVA_VERSION-installer
 
 # ***** DEBUG OUTPUT (wait for any key press) *****
@@ -72,7 +74,7 @@ if [ "$DEBUG_MODE" == "true" ]; then
 	read -rsp $'Press any key to continue...\n' -n1 key
 fi
 
-# -- Reboot system aftre updating
+# -- Reboot system after updating
 if [ "$REBOOT_AFTER_UPDATE" == "YES" ]; then
     sudo reboot now
 fi

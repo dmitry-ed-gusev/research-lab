@@ -12,12 +12,13 @@
 #   It is recommended to update whole system before running this script!
 #  
 #   Created:  Gusev Dmitry, 27.11.2016
-#   Modified:
+#   Modified: Gusev Dmitry, 10.04.2017
 # =============================================================================
 
 # -- Midnight Commander
 sudo apt-get -qy install mc
 
+# todo: move installation of this packages to Jenkins installation script
 # -- [graphviz] - library for graphics (Dependency Graph Viewer plugin in Jenkins),
 # -- [daemon]   - package for set up startup/manage script for Jenkins (/etc/init.d/jenkins)
 sudo apt-get -qy install graphviz daemon
@@ -28,10 +29,11 @@ sudo apt-get -qy install apache2
 # -- NFS support packages (server and client)
 sudo apt-get -qy install nfs-kernel-server nfs-common
 
+# todo: move installation of this packages to Sonar installation script
 # -- Some necessary packages (c/c++ compiler and check sources libraries)
 sudo apt-get -qy install make cmake vera vera++ cppcheck vagrant valgrind
 
-# -- VCS support: Subversion/Git/Mercurial (+libraries, +apache2 module, +startup)
+# -- Install GIT
 sudo apt-get -qy install git
 
 # ***** DEBUG OUTPUT (wait for any key press) *****
@@ -39,7 +41,7 @@ if [ "$DEBUG_MODE" == "true" ]; then
 	read -rsp $'Press any key to continue...\n' -n1 key
 fi
 
-# -- Reboot system aftre updating
+# -- Reboot system after updating
 if [ "$REBOOT_AFTER_UPDATE" == "YES" ]; then
     sudo reboot now
 fi

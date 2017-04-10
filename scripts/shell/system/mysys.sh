@@ -14,8 +14,7 @@
 # -- Call other script for set environment for current process
 source _env.sh
 
-USAGE_FILE='usage.txt'
-# -- if no parameters specified - just show help
+# -- if no parameters specified - just show help and exit
 if [[ $# -eq 0 ]] ; then
     cat ${USAGE_FILE}
     exit 0
@@ -57,6 +56,9 @@ do
 	          ;;
 	# - install Hive
 	-install-hive) INSTALL_HIVE=YES
+	          ;;
+	# - install MySql
+	-install-mysql) INSTALL_MYSQL=YES
 	          ;;
 	esac
 done
@@ -103,11 +105,20 @@ fi
 # -- install Hadoop
 if [ "$INSTALL_HADOOP" == "YES" ]; then
     echo "Installing Apache Hadoop."
+    source _install-hadoop.sh
     exit
 fi
 
 # -- install Hive
 if [ "$INSTALL_HIVE" == "YES" ]; then
-    echo "Installing Hive."
+    echo "Installing Apache Hive."
+    source _install-hive.sh
+    exit
+fi
+
+# -- install MySql
+if [ "$INSTALL_MYSQL" == "YES" ]; then
+    echo "Installing MySql DBMS."
+    source _install-mysql.sh
     exit
 fi
