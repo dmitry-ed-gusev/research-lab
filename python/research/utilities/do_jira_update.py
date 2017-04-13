@@ -7,6 +7,7 @@
 """
 
 from jirautils import JIRAUtility
+import fileinput
 
 print "Working with JIRA is starting..."
 

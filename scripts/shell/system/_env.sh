@@ -4,7 +4,7 @@
 #   Don't directly change other scripts parameters - put them here.
 #
 #   Created:  Gusev Dmitry, 26.11.2016
-#   Modified: Gusev Dmitry, 10.04.2017
+#   Modified: Gusev Dmitry, 12.04.2017
 # ===================================================================
 
 # ============================== COMMON SETTINGS ==============================
@@ -15,6 +15,7 @@ USAGE_FILE='usage.txt'
 # todo: move logic of set up system proxy to another place
 PROXY=http://webproxy.merck.com:8080
 # export proxy variables for current session
+# todo: switch setting up a proxy on/off by cmd line argument
 export {HTTP,HTTPS}_PROXY=${PROXY}
 export {http,https}_proxy=${PROXY}
 # - Set up system proxy for current user (put it in ~/.profile file)
@@ -50,7 +51,7 @@ SCRIPT_HOME=$(pwd)
 # - reboot after update, yes by default
 REBOOT_AFTER_UPDATE=YES
 
-# ============================== SETTINGS: JAVA/JENKINS/ANT/MAVEN/SONAR ==============================
+# ============================== SETTINGS: Java/Ant/Maven/Sonar/Jenkins ==============================
 # -- Oracle Java JDK settings
 JAVA_ALT_REPO=ppa:webupd8team/java
 JAVA_VERSION=8
@@ -79,6 +80,13 @@ SONAR_PORT=9000
 SONAR_CONTEXT=/sonar
 # -- platform for Sonar (see Sonar bin directory)
 SONAR_PLATFORM=linux-x86-64
+
+# ============================== Settings: Big Data tools ==============================
+# -- Apache Hadoop settings
+HADOOP_VERSION=2.7.3
+HADOOP_NAME="hadoop-$HADOOP_VERSION"
+HADOOP_ARCHIVE="$HADOOP_NAME.tar.gz"
+HADOOP_BINARY_URL="https://archive.apache.org/dist/hadoop/common/$HADOOP_NAME/$HADOOP_ARCHIVE"
 
 # ============================== SETTINGS: MYSQL ==============================
 MYSQL_ROOT_PASS="rootroot"

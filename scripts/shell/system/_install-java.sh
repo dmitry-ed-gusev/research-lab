@@ -12,7 +12,7 @@
 #   It is recommended to update whole system before running this script!
 #  
 #   Created:  Gusev Dmitry, 27.11.2016
-#   Modified: Gusev Dmitry, 07.04.2017
+#   Modified: Gusev Dmitry, 12.04.2017
 # =============================================================================
 
 # todo: check, if tools are already installed!
@@ -25,7 +25,7 @@ sudo apt-get -qy update
 # - auto accept Oracle JDK license
 sudo echo oracle-java$JAVA_VERSION-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
 # - install JDK (allow for unauthenticated)
-sudo apt-get -qy --allow-unauthenticated install oracle-java$JAVA_VERSION-installer
+sudo apt-get -qy --allow-unauthenticated install oracle-java$JAVA_VERSION-installer oracle-java$JAVA_VERSION-set-default
 
 # ***** DEBUG OUTPUT (wait for any key press) *****
 if [ "$DEBUG_MODE" == "true" ]; then
@@ -33,6 +33,10 @@ if [ "$DEBUG_MODE" == "true" ]; then
 fi
 
 # -- Installing Apache Ant
+# - delete target Ant TAR GZ file if it exists
+if [ -f $ANT_ARCHIVE ] ; then
+    rm $ANT_ARCHIVE
+fi
 # - download Ant from repository
 wget $ANT_BINARY_URL
 # - extract ANT from archive
@@ -54,6 +58,10 @@ if [ "$DEBUG_MODE" == "true" ]; then
 fi
 
 # -- Installing Apache Maven
+# - delete target Hadoop TAR GZ file if it exists
+if [ -f $MAVEN_ARCHIVE ] ; then
+    rm $MAVEN_ARCHIVE
+fi
 # - download Maven from repository
 wget $MAVEN_BINARY_URL
 # - extract MAVEN from archive

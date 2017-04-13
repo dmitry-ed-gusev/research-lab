@@ -11,6 +11,7 @@
 #   Modified: Gusev Dmitry, 07.04.2017
 # =============================================================================
 
+# todo BUG! if this script called some times from one script - it repeats steps :) UNSET CONTROL VARIABLES!
 # -- Call other script for set environment for current process
 source _env.sh
 
@@ -66,6 +67,7 @@ done
 # -- update system (call external script)
 if [ "$UPDATE_SYSTEM" == "YES" ]; then
 	echo "Updating the system..."
+	UPDATE_SYSTEM=NO
     # -- Execute the calling script in the current script's process, and pulls in variables and functions from the
     # -- current script so they are usable from the calling script. If you use 'exit' in calling script, it will
     # -- exit the current script as well.
@@ -75,36 +77,42 @@ fi
 # -- print statistics
 if [ "$SHOW_STAT" == "YES" ]; then
     echo "System statistics:"
+    SHOW_STAT=NO
     source _stat.sh
 fi
 
 # -- install base software packages
 if [ "$INSTALL_BASE" == "YES" ]; then
     echo "Installing base software packages..."
+    INSTALL_BASE=NO
     source _install-base.sh
 fi
 
 # -- install Oracle Java JDK
 if [ "$INSTALL_JAVA" == "YES" ]; then
     echo "Installing Oracle JDK, version $JAVA_VERSION."
+    INSTALL_JAVA=NO
     source _install-java.sh
 fi
 
 # -- install Jenkins
 if [ "$INSTALL_JENKINS" == "YES" ]; then
     echo "Installing Jenkins server."
+    INSTALL_JENKINS=NO
     exit
 fi
 
 # -- install Sonar
 if [ "$INSTALL_SONAR" == "YES" ]; then
     echo "Installing Sonar server."
+    INSTALL_SONAR=NO
     exit
 fi
 
 # -- install Hadoop
 if [ "$INSTALL_HADOOP" == "YES" ]; then
     echo "Installing Apache Hadoop."
+    INSTALL_HADOOP=NO
     source _install-hadoop.sh
     exit
 fi
@@ -112,6 +120,7 @@ fi
 # -- install Hive
 if [ "$INSTALL_HIVE" == "YES" ]; then
     echo "Installing Apache Hive."
+    INSTALL_HIVE=NO
     source _install-hive.sh
     exit
 fi
@@ -119,6 +128,7 @@ fi
 # -- install MySql
 if [ "$INSTALL_MYSQL" == "YES" ]; then
     echo "Installing MySql DBMS."
+    INSTALL_MYSQL=NO
     source _install-mysql.sh
     exit
 fi
