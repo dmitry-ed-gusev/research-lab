@@ -6,22 +6,15 @@
 #   is a part of scripts suite and shouldn't be called by itself. Use
 #   <./mysys.sh -update>
 #
+#   WARNING! If you use proxy server, you have to set up it for APT
+#   utility first! Use [./mysys.sh -proxy <proxy>] command.
+#
 #   WARNING! Script should not be started as user 'root' (with command like: 
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #  
 #   Created:  Gusev Dmitry, 26.11.2016
-#   Modified: Gusev Dmitrii, 10.04.2017
+#   Modified: Gusev Dmitrii, 16.04.2017
 # =============================================================================
-
-# -- Set proxy server(s) (http/https) for APT utility (if necessary)
-grep -Fq "Acquire::http::Proxy" /etc/apt/apt.conf
-if [ $? -ne 0 ]; then
-    echo "echo 'Acquire::http::Proxy \"${PROXY}\";' >> /etc/apt/apt.conf" | sudo sh
-fi
-grep -Fq "Acquire::https::Proxy" /etc/apt/apt.conf
-if [ $? -ne 0 ]; then
-    echo "echo 'Acquire::https::Proxy \"${PROXY}\";' >> /etc/apt/apt.conf" | sudo sh
-fi
 
 # -- Update system quietly. If you remove comments from /dev/null, you won't see any info.
 sudo /usr/bin/apt-get -qy update # > /dev/null

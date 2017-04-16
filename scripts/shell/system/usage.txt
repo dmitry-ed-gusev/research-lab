@@ -10,6 +10,8 @@ Utility usage:
 Utility options:
 -help            Show current help/usage message.
 -stat            Show system usage statistics.
+-proxy <proxy>   Setup system proxy (for current user and for APT utility. Proxy
+                 server value format is: <hostname[:port]>
 -update          Update system, using apt-get command and reboot.
 -install-base    Install base software packages.
 -install-java    Install Oracle JDK (version see _env.sh) and java-based build tools:

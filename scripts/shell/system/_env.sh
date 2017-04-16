@@ -4,42 +4,12 @@
 #   Don't directly change other scripts parameters - put them here.
 #
 #   Created:  Gusev Dmitry, 26.11.2016
-#   Modified: Gusev Dmitry, 12.04.2017
+#   Modified: Gusev Dmitry, 16.04.2017
 # ===================================================================
 
 # ============================== COMMON SETTINGS ==============================
 # - Usage file - utility description
 USAGE_FILE='usage.txt'
-# - Proxy server settings
-# todo: replace hardcoded settings with cmdline argument
-# todo: move logic of set up system proxy to another place
-PROXY=http://webproxy.merck.com:8080
-# export proxy variables for current session
-# todo: switch setting up a proxy on/off by cmd line argument
-export {HTTP,HTTPS}_PROXY=${PROXY}
-export {http,https}_proxy=${PROXY}
-# - Set up system proxy for current user (put it in ~/.profile file)
-grep -Fq "export HTTP_PROXY=" ~/.profile
-if [ $? -ne 0 ]; then
-    echo "echo '' >> ~/.profile" | sudo sh
-    echo "echo 'export HTTP_PROXY=\"${PROXY}\"' >> ~/.profile" | sudo sh
-fi
-grep -Fq "export HTTPS_PROXY=" ~/.profile
-if [ $? -ne 0 ]; then
-    echo "echo '' >> ~/.profile" | sudo sh
-    echo "echo 'export HTTPS_PROXY=\"${PROXY}\"' >> ~/.profile" | sudo sh
-fi
-grep -Fq "export http_proxy=" ~/.profile
-if [ $? -ne 0 ]; then
-    echo "echo '' >> ~/.profile" | sudo sh
-    echo "echo 'export http_proxy=\"${PROXY}\"' >> ~/.profile" | sudo sh
-fi
-grep -Fq "export https_proxy=" ~/.profile
-if [ $? -ne 0 ]; then
-    echo "echo '' >> ~/.profile" | sudo sh
-    echo "echo 'export https_proxy=\"${PROXY}\"' >> ~/.profile" | sudo sh
-fi
-
 # - Debug mode for script. If DEBUG_MODE=true script will wait for a key press after every logic part
 # - of installation. Set DEBUG value to any other, than "true" - script will slip any question.
 DEBUG_MODE=false
@@ -74,7 +44,8 @@ JENKINS_INTERNAL_PORT=8181
 JENKINS_NAME=jenkins
 JENKINS_HOME=/var/lib/${JENKINS_NAME}
 # -- Sonar server
-SONAR_NAME=sonarqube-4.5.6
+SONAR_VERSION="4.5.6"
+SONAR_NAME="sonarqube-${SONAR_VERSION}"
 SONAR_JDBC_URL="jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance"
 SONAR_PORT=9000
 SONAR_CONTEXT=/sonar

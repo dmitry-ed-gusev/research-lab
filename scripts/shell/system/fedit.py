@@ -3,9 +3,11 @@
 
 """
  Inplace file editing utility.
- Created: Gusev DMitrii, 13.04.2017
- Modified:
+ Created: Gusev Dmitrii, 13.04.2017
+ Modified: Gusev Dmitrii, 16.04.2017
 """
+
+# todo: implement: add line mode (if not found needed line)
 
 import sys
 import fileinput
@@ -14,7 +16,7 @@ import argparse
 
 def check_str(check_type, source_str, test_str):
     """
-    Check relation betwee string and test string, according to test type
+    Check relation between string and test string, according to test type
     :param check_type: type of matching
     :param source_str: string for test
     :param test_str: testing string
@@ -43,6 +45,7 @@ parser.add_argument('-t', '--type',      dest='edit_type', action='store',
 # parse cmd line parameters
 args = parser.parse_args()
 
+# inplace file processing
 for line in fileinput.input(files=[args.infile], inplace=True, backup='.original'):
     # if we found string - we will replace it
     if check_str(args.edit_type, line, args.sourceStr):

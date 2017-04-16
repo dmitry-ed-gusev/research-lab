@@ -12,7 +12,7 @@
 #   It is recommended to update whole system before running this script!
 #  
 #   Created:  Gusev Dmitry, 27.11.2016
-#   Modified: Gusev Dmitry, 10.04.2017
+#   Modified: Gusev Dmitry, 16.04.2017
 # =============================================================================
 
 # -- Midnight Commander
