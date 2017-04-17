@@ -6,9 +6,10 @@
  Created: Gusev Dmitrii, 04.04.2017
 """
 
-import configuration as conf
 import prettytable
 from jira import JIRA
+
+from python.utilities.lib import configuration as conf
 
 
 # noinspection PyCompatibility
@@ -108,16 +109,29 @@ class JIRAUtility(object):
                 print "-> updated {}".format(counter)
         print "Updated [{}] issue(s).".format(counter)
 
-    def get_issue(self):
+    def get_issue(self, issue_key):
         """
 
+        :param issue_key:
+        :return:
+        """
+        print "JIRAUtility.get_issue() is working."
+
+    def print_raw_issue(self, issue_key):
+        """
+        This method is intended mostly for debug purposes - print JIRA issue as a raw JSON
+        :param issue_number: number of issue in format <project key>-<issue number>
         :return:
         """
         print "JIRAUtility.get_issue() is working."
         #authenticated_jira = JIRA(options={'server': self.jira_server}, basic_auth=(self.jira_username, self.jira_password))
-        issue = self.jira.issue('ZEN-37')
+        issue = self.jira.issue(issue_number)
         #print issue.fields()
         print issue.raw
+        print '\n\n'
+        print issue.fields.components
+        for component in issue.fields.components:
+            print component.id, '->', component.name, '->', component.self
 
     @staticmethod
     def get_issues_report(issues):

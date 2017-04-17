@@ -6,8 +6,9 @@
  Created: Gusev Dmitrii, 03.04.2017
 """
 
-import configuration as conf
 import subprocess as sub
+
+from python.utilities.lib import configuration as conf
 
 # noinspection PyCompatibility
 print "GIT repositories processing is starting..."

@@ -6,8 +6,7 @@
  Created: Gusev Dmitrii, 04.04.2017
 """
 
-from jirautils import JIRAUtility
-import fileinput
+from python.utilities.lib.jiralib import JIRAUtility
 
 print "Working with JIRA is starting..."
 
@@ -27,5 +26,6 @@ jira.connect(username, password)
 # print JIRAUtility.get_issues_report(issues)
 
 # add team label to all current sprint issues and print report
-jira.add_label_to_sprint_issues(sprint_name)
-print JIRAUtility.get_issues_report(jira.get_all_sprint_issues(sprint_name))
+#jira.add_label_to_sprint_issues(sprint_name)
+#print JIRAUtility.get_issues_report(jira.get_all_sprint_issues(sprint_name))
+jira.print_raw_issue('BMA-1216')
