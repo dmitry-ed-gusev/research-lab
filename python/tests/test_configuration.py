@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import unittest
 import os
-from python.research.utilities.configuration import Configuration
+import unittest
+
+from python.utilities import Configuration
 
 
 class ConfigurationTest(unittest.TestCase):
