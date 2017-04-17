@@ -19,43 +19,37 @@
 # ===================================================================
 
 # -- Call other script for set environment for current process
-source set_env.sh
+# source set_env.sh
 
 # -- Check cmd line arguments and set FALSE flag for some installations
-for arg in "$@"
-do
-	case "$arg" in
-    -noruby)  INSTALL_RUBY=NO
-			  ;;
-    -nomysql) INSTALL_MYSQL=NO
-              ;;
-	-nojava)  INSTALL_JAVA=NO
-			  ;;
-	esac
-done
+#for arg in "$@"
+#do
+#	case "$arg" in
+#    -noruby)  INSTALL_RUBY=NO
+#			  ;;
+#    -nomysql) INSTALL_MYSQL=NO
+#              ;;
+#	-nojava)  INSTALL_JAVA=NO
+#			  ;;
+#	esac
+#done
 
 # -- Install NFS support packager (server and client)
-sudo apt-get -qy install nfs-kernel-server nfs-common
-echo "---> NFS support installed"
-
+#sudo apt-get -qy install nfs-kernel-server nfs-common
+#echo "---> NFS support installed"
 # -- Install Midnight Commander
-sudo apt-get -qy install mc
-echo "---> MC installed"
-
+#sudo apt-get -qy install mc
+#echo "---> MC installed"
 # -- Install Apache2 web server
-sudo apt-get -qy install apache2 
-echo "---> Apache2 installed"
+#sudo apt-get -qy install apache2
+#echo "---> Apache2 installed"
 
 # -- Check flag and install/don't install MySql DBMS
-if [ "$INSTALL_MYSQL" == "NO" ]; then
-	echo "!!! Mysql installation skipped !!!"
-else
-	# -- Install MySql (server+client) - last version. Before installing - set root password.
-	sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_PASS"
-	sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_PASS"
-	sudo apt-get -qy install mysql-server mysql-client
-	echo "---> MySql installed"
-fi
+#if [ "$INSTALL_MYSQL" == "NO" ]; then
+#	echo "!!! Mysql installation skipped !!!"
+#else
+#	echo "---> MySql installed"
+#fi
 
 # -- Check flag and install/don't install Ruby/Rails/RVM
 if [ "$INSTALL_RUBY" == "NO" ]; then
@@ -78,18 +72,18 @@ else
 fi
 
 # -- Check flag and install/don't install Java
-if [ "$INSTALL_JAVA" == "NO" ]; then
-	echo "!!! Java installation skipped !!!"
-else
-	# -- Install Java 
-	# - add alternate repository for Oracle Java
-	sudo add-apt-repository -y $JAVA_ALT_REPO
-	sudo apt-get -qy update
-	# - auto accept Oracle license
-	sudo echo oracle-java$JAVA_VERSION-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-	sudo apt-get -qy install oracle-java$JAVA_VERSION-installer
-	echo "---> Java $JAVA_VERSION installed"
-fi
+#if [ "$INSTALL_JAVA" == "NO" ]; then
+#	echo "!!! Java installation skipped !!!"
+#else
+#	# -- Install Java
+#	# - add alternate repository for Oracle Java
+#	sudo add-apt-repository -y $JAVA_ALT_REPO
+#	sudo apt-get -qy update
+#	# - auto accept Oracle license
+#	sudo echo oracle-java$JAVA_VERSION-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+#	sudo apt-get -qy install oracle-java$JAVA_VERSION-installer
+#	echo "---> Java $JAVA_VERSION installed"
+#fi
 
 # -- Reboot after installation
-sudo reboot now
+#sudo reboot now

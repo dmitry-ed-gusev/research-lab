@@ -1,12 +1,18 @@
 # -- ignore maven output directory
 target/
-# -- ignore IntelliJ IDEA project files
+# -- ignore IntelliJ IDEA files
 *.iml
 *.ipr
 *.iws
 .idea
+.ideaDataSources
+dataSources
 # -- ignore logs files
 *.log
 # -- ignore [storm] module output/input file(s)
 storm-app-output.txt
 dummy.txt
+# -- some unversioned files
+bigdata/dependency-reduced-pom.xml
+bigdata/gutenberg.txt
+socialnet/.crawlerdb/
