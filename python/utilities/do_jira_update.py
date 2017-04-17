@@ -14,7 +14,7 @@ print "Working with JIRA is starting..."
 # initial values
 username = 'gusevdm'
 password = 'Vinnypuhh14!'
-sprint_name = 'ADA Sprint 32'
+sprint_name = 'ADA Sprint 33'
 
 # connect to JIRA
 jira = JIRAUtility(config_path='configs')

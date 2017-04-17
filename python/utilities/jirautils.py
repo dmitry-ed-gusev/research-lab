@@ -70,7 +70,21 @@ class JIRAUtility(object):
         jql = JIRAUtility.JQL_ALL_SPRINT_ISSUES.format(self.config.get('jira_project'), sprint_name)
         print "Generated JQL [{}].".format(jql)
         # search for issues and return them
-        return self.jira.search_issues(jql, maxResults=False)
+        issues = []
+        batch_size = 50
+        total_processed = 0
+        while batch_size == 50:
+            # get issues part (in a size of batch, default = 50)
+            issues_batch = self.jira.search_issues(jql_str=jql, maxResults=False, startAt=total_processed)
+            # update current batch size
+            batch_size = len(issues_batch)
+            # update total processed count
+            total_processed += batch_size
+            # add all found issues to resulting list
+            for issue in issues_batch:
+                issues.append(issue)
+        # return result
+        return issues
 
     def add_label_to_sprint_issues(self, sprint_name):
         """
@@ -94,6 +108,17 @@ class JIRAUtility(object):
                 print "-> updated {}".format(counter)
         print "Updated [{}] issue(s).".format(counter)
 
+    def get_issue(self):
+        """
+
+        :return:
+        """
+        print "JIRAUtility.get_issue() is working."
+        #authenticated_jira = JIRA(options={'server': self.jira_server}, basic_auth=(self.jira_username, self.jira_password))
+        issue = self.jira.issue('ZEN-37')
+        #print issue.fields()
+        print issue.raw
+
     @staticmethod
     def get_issues_report(issues):
         """
@@ -103,7 +128,7 @@ class JIRAUtility(object):
         """
         print "JIRAUtility.get_issues_report() is working."
         # create report header
-        report = prettytable.PrettyTable(['#', 'Issue', 'Type', 'SP', 'Labels', 'Summary', 'Status', 'Assignee'])
+        report = prettytable.PrettyTable(['#', 'Issue', 'Type', 'SP', 'Labels', 'Components', 'Summary', 'Status', 'Assignee'])
         report.align['Summary'] = "l"
         # add rows to report
         counter = 1
@@ -112,9 +137,10 @@ class JIRAUtility(object):
             assignee = ('-' if not issue.fields.assignee else issue.fields.assignee)
             storypoints = (issue.fields.customfield_10008 if str(issue.fields.issuetype) != "Sub-task" else '-')
             labels = ', '.join(issue.fields.labels)
+            components = ', '.join(issue.fields.components)
             status = str(issue.fields.status)
             # add row to report
-            report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, labels, issue.fields.summary, status, assignee])
+            report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, labels, components, issue.fields.summary, status, assignee])
             counter += 1
 
         return report
