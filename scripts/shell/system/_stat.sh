@@ -10,7 +10,7 @@
 #   Use <./mysys.sh -update>
 #
 #   Created:  Gusev Dmitry, 27.11.2016
-#   Modified:
+#   Modified: Gusev Dmitry, 16.04.2017
 # =============================================================================
 
 free -m | awk 'NR==2{printf "Memory Usage: %s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 }'
