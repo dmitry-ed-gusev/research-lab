@@ -1,4 +1,5 @@
 jira_address: https://issues.merck.com
 jira_project: Mantis
 team_label: mantis-capability
+team_component: mantis-capability
 team: [kaplia, zhukv, andreevi, barzilov, kudriash, iushin, gusevdm, lipkovic, gogolev, hapii]

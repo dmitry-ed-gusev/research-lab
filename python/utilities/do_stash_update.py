@@ -8,7 +8,7 @@
 
 import subprocess as sub
 
-from python.utilities.lib import configuration as conf
+from lib import configuration as conf
 
 # noinspection PyCompatibility
 print "GIT repositories processing is starting..."

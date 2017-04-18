@@ -2,15 +2,16 @@
 # coding=utf-8
 
 """
- Some useful JIRA utilities/functions.
+ JIRA Utility object, that incapsulates some useful methods.
  Created: Gusev Dmitrii, 04.04.2017
 """
 
 import prettytable
 from jira import JIRA
 
-from python.utilities.lib import configuration as conf
 
+# todo: throw away logic, related to team (do it more general)
+# todo: unit tests for this class!!!
 
 # noinspection PyCompatibility
 class JIRAUtility(object):
@@ -20,45 +21,67 @@ class JIRAUtility(object):
     # all issues, that may be interested
     ISSUES_ALL_TYPES = 'Bug, Epic, Story, Task, Sub-task'
 
-    def __init__(self, config_path):
+    def __init__(self, jira_address, user, password):
         """
         Initializer for JIRAUtility class.
         :param config_path:
         """
-        print "JIRAUtility.__init__() is working."
-        # init and load internal config
-        self.config = conf.Configuration()
-        self.config.load(config_path)
-        # init some internal fields
-        # self.jira_project = self.config.get('jira_project')
-        self.team_members_string = ", ".join(self.config.get('team'))
+        print "JIRAUtility.__init__() is working. JIRA: [{}], user: [{}].".format(jira_address, user)
+        # fail-fast - check JIRA address and username
+        if not jira_address or not jira_address.strip():
+            raise JiraException('Empty JIRA address!')
+        if not user or not user.strip():
+            raise JiraException('Empty username!')
         # init internal JIRA instance
         self.jira = None
+        self.address = jira_address
+        self.user = user
+        self.password = password
 
-    def connect(self, user, password):
+    def connect(self):
         """
-        Connect to JIRA server.
-        :param user: JIRA user
-        :param password: JIRA password
+        Connect to JIRA server (with params specified in constructor).
         :return: None
         """
-        print "JIRAUtility.connect() is working."
-        jira_address = self.config.get('jira_address')
-        self.jira = JIRA(jira_address, basic_auth=(user, password))
-        print "JIRAUtility: connected to JIRA by address [{}] with username [{}].".format(jira_address, user)
+        print "JIRAUtility.connect() is working. Connecting to [{}] as user [{}].".format(self.address, self.user)
+        self.jira = JIRA(self.address, basic_auth=(self.user, self.password))
+        print "JIRAUtility: connected to [{}] as user [{}].".format(self.address, self.user)
 
-    # def get_project_key(self, project_name):
-    #     """
-    #     Returns project key from JIRA by exact project name (first occurence).
-    #     :param project_name:
-    #     :return: project key
-    #     """
-    #     projects = self.jira.projects()
-    #     for project in projects:
-    #         if project.name == project_name:
-    #             return project.key
-    #
-    #     return None
+    def get_project_key(self, project_name):
+        """
+        Returns project key from JIRA by exact project name (first occurrence).
+        :param project_name: name of project for which we will get the key
+        :return: project key
+        """
+        print "JIRAUtility.get_project_key() is working. Search project key by name: [{}].".format(project_name)
+        # fail-fast check of parameters
+        # todo: !!!
+        for project in self.jira.projects():
+            if project.name == project_name:
+                print "Found key [{}] for project [{}].".format(project.key, project_name)
+                return project.key
+        # project/key not found
+        print "Key for project [{}] not found!".format(project_name)
+        return None
+
+    def get_component_by_name(self, project_name, component_name):
+        """
+        Returns component object by name for project with specified name. Component object contains fields: id, name, self
+        :param project_name: name of project for which we will search a component
+        :param component_name: name for component search
+        :return:
+        """
+        print "JIRAUtility.get_component() is working. Search component: [{}] for project: [{}]."\
+            .format(component_name, project_name)
+        # fail-fast check of parameters
+        # todo: !!!
+        for component in self.jira.project_components(self.get_project_key(self.config.get('jira_project'))):
+            if component.name == component_name:
+                print "Found component [{}] by name [{}].".format()
+                return component
+            #print component.id, '->', component.name, '->', component.self
+        # component not found
+        return None
 
     def get_all_sprint_issues(self, sprint_name):
         """
@@ -66,7 +89,7 @@ class JIRAUtility(object):
         :param sprint_name:
         :return:
         """
-        print "JIRAUtility.get_all_sprint_issues() is working."
+        print "JIRAUtility.get_all_sprint_issues() is working. Search issues for sprint: [{}].".format(sprint_name)
         # generate jql
         jql = JIRAUtility.JQL_ALL_SPRINT_ISSUES.format(self.config.get('jira_project'), sprint_name)
         print "Generated JQL [{}].".format(jql)
@@ -106,32 +129,34 @@ class JIRAUtility(object):
                 issue.update(fields={"labels": issue.fields.labels})
             counter += 1
             if counter % 5 == 0:
-                print "-> updated {}".format(counter)
+                print "Processed -> {}/{}".format(counter, len(issues))
         print "Updated [{}] issue(s).".format(counter)
+
+    def add_component_to_issues_list(self, issues_list, component_name):
+        return None
 
     def get_issue(self, issue_key):
         """
-
-        :param issue_key:
+        Returns object JIRA issue by key,
+        :param issue_key: issue key for search (<project key>-<number>).
         :return:
         """
-        print "JIRAUtility.get_issue() is working."
+        print "JIRAUtility.get_issue() is working. Get issue by key: [{}].".format(issue_key)
+        return self.jira.issue(issue_key)
 
-    def print_raw_issue(self, issue_key):
+    @staticmethod
+    def print_raw_issue(issue):
         """
         This method is intended mostly for debug purposes - print JIRA issue as a raw JSON
-        :param issue_number: number of issue in format <project key>-<issue number>
+        :param issue: issue object for printing
         :return:
         """
-        print "JIRAUtility.get_issue() is working."
-        #authenticated_jira = JIRA(options={'server': self.jira_server}, basic_auth=(self.jira_username, self.jira_password))
-        issue = self.jira.issue(issue_number)
-        #print issue.fields()
+        print "JIRAUtility.print_raw_issue() is working."
         print issue.raw
-        print '\n\n'
-        print issue.fields.components
-        for component in issue.fields.components:
-            print component.id, '->', component.name, '->', component.self
+        #print '\n\n'
+        #print issue.fields.components
+        #for component in issue.fields.components:
+        #    print component.id, '->', component.name, '->', component.self
 
     @staticmethod
     def get_issues_report(issues):
@@ -151,10 +176,15 @@ class JIRAUtility(object):
             assignee = ('-' if not issue.fields.assignee else issue.fields.assignee)
             storypoints = (issue.fields.customfield_10008 if str(issue.fields.issuetype) != "Sub-task" else '-')
             labels = ', '.join(issue.fields.labels)
-            components = ', '.join(issue.fields.components)
+            components = ', '.join([component.name for component in issue.fields.components])
             status = str(issue.fields.status)
             # add row to report
             report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, labels, components, issue.fields.summary, status, assignee])
             counter += 1
 
         return report
+
+
+class JiraException(Exception):
+    """JIRA Exception, used if something is wrong with/in JIRA interaction."""
+    pass
