@@ -11,7 +11,7 @@
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #
 #   Created:  Gusev Dmitry, 12.04.2017
-#   Modified: Gusev DMitry, 13.04.2017
+#   Modified: Gusev Dmitry, 13.04.2017
 # =============================================================================
 
 # - update server
