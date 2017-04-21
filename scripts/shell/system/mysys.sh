@@ -11,7 +11,8 @@
 #   Modified: Gusev Dmitry, 16.04.2017
 # =============================================================================
 
-# todo Implement combining options/exit after each option.
+# todo: implement combining options/exit after each option
+# todo: move reboot to this script (from child scripts)
 
 # -- Call other script for set environment for current process
 source _env.sh
@@ -63,7 +64,7 @@ do
 	-install-mysql) INSTALL_MYSQL=YES
 	          ;;
 	# - set proxy server value
-	-proxy)
+	-set-proxy)
               shift
               if test $# -gt 0; then
                 PROXY=$1
@@ -76,15 +77,26 @@ do
               fi
               shift
               ;;
+    # - remove proxy (system and for APT)
+    -unset-proxy) UNSET_PROXY=YES
+              ;;
 	esac
 done
 
-# -- SIMPLE OPTION: setup system proxy server. This option isn't independent
+# -- SIMPLE OPTION: setup system/APT proxy server. This option is independent
 # -- and may be combined with other options, but should be processed before them.
 if [ "$SET_PROXY" == "YES" ]; then
-    echo "Setup system proxy server [${PROXY}]."
+    echo "Setup system/APT proxy server [${PROXY}]."
     SET_PROXY=NO
     source _setup-proxy.sh
+fi
+
+# -- SIMPLE OPTION: remove (unset) system and APT utility proxy. This option is independent
+# -- and may be combined with other options, but should be processed before them.
+if [ "$UNSET_PROXY" == YES ]; then
+    echo "Unset (remove) system/APT proxy server."
+    UNSET_PROXY=NO
+    source _unset-proxy.sh
 fi
 
 # -- SIMPLE OPTION: print statistics. This option is completely independent
@@ -153,7 +165,7 @@ fi
 if [ "$INSTALL_HIVE" == "YES" ]; then
     echo "Installing Apache Hive. Version: ${HIVE_VERSION}"
     INSTALL_HIVE=NO
-    source _install-hive.sh
+    #source _install-hive.sh
 fi
 
 # -- INSTALL/UPDATE OPTION: install MySql (client and server). This option is independent

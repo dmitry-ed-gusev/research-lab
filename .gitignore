@@ -16,5 +16,7 @@ dummy.txt
 bigdata/dependency-reduced-pom.xml
 bigdata/gutenberg.txt
 socialnet/.crawlerdb/
+socialnet/.db/
+vk_token*
 # -- ignore python compiled files
 *.pyc

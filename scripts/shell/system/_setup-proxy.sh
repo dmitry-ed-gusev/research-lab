@@ -4,7 +4,7 @@
 #   ~/.profile file and for APT utility (/etc/apt/apt.conf).
 #
 #   This script is a part of scripts suite and shouldn't be called
-#   by itself. Use ./mysys.sh -proxy <proxy-server-value>
+#   by itself. Use ./mysys.sh -set-proxy <proxy-server-value>
 #
 #   WARNING! Script should not be started as user 'root' (with command
 #   like: sudo ./<script_name>)! Script will ask for such privileges,
@@ -23,7 +23,7 @@ export {HTTP,HTTPS}_PROXY=${PROXY}
 export {http,https}_proxy=${PROXY}
 # - Set up system proxy for current user (put it in ~/.profile file)
 # todo: check if proxy is already set there - in this case override (use fedit.py)
-# todo: refactor put the proxy to ~/.profile - move it to some function
+# todo: refactor [put the proxy to ~/.profile] - move it to some function
 grep -Fq "export HTTP_PROXY=" ~/.profile
 if [ $? -ne 0 ]; then
     echo "echo '' >> ~/.profile" | sudo sh
