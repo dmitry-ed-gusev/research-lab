@@ -55,7 +55,9 @@ class JIRAUtility(object):
         """
         print "JIRAUtility.get_project_key() is working. Search project key by name: [{}].".format(project_name)
         # fail-fast check of parameters
-        # todo: !!!
+        if not project_name or not project_name.strip():
+            raise JiraException('Empty project name for project key search!')
+        # search project key
         for project in self.jira.projects():
             if project.name == project_name:
                 print "Found key [{}] for project [{}].".format(project.key, project_name)
