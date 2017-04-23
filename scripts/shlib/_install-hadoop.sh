@@ -41,7 +41,7 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 # - copy pre-set config files to Hadoop
 cp hadoop-preset/* /opt/$HADOOP_NAME/etc/hadoop/
 # - set proper JAVA_HOME variable
-../fedit.py -f /opt/$HADOOP_NAME/etc/hadoop/hadoop-env.sh -t starts -s "export JAVA_HOME" -d "export JAVA_HOME=$JAVA_HOME"
+../pylib/fedit.py -f /opt/$HADOOP_NAME/etc/hadoop/hadoop-env.sh -t starts -s "export JAVA_HOME" -d "export JAVA_HOME=$JAVA_HOME"
 
 # ***** DEBUG OUTPUT (wait for any key press) *****
 if [ "$DEBUG_MODE" == "true" ]; then
