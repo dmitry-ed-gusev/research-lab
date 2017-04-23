@@ -6,7 +6,7 @@
  Created: Gusev Dmitrii, 04.04.2017
 """
 
-from lib.jiralib import JIRAUtility
+from scripts.pylib.jiralib import JIRAUtility
 
 print "Working with JIRA is starting..."
 

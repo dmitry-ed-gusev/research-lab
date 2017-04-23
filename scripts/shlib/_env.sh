@@ -9,7 +9,7 @@
 
 # ============================== COMMON SETTINGS ==============================
 # - Usage file - utility description
-USAGE_FILE='usage.txt'
+USAGE_FILE='mysys_usage.txt'
 # - Debug mode for script. If DEBUG_MODE=true script will wait for a key press after every logic part
 # - of installation. Set DEBUG value to any other, than "true" - script will slip any question.
 DEBUG_MODE=false

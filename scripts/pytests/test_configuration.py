@@ -3,7 +3,8 @@
 
 import os
 import unittest
-from python.utilities.lib.configuration import Configuration
+
+from scripts.pylib.configuration import Configuration
 
 
 class ConfigurationTest(unittest.TestCase):

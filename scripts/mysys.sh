@@ -15,7 +15,7 @@
 # todo: move reboot to this script (from child scripts)
 
 # -- Call other script for set environment for current process
-source _env.sh
+source shlib/_env.sh
 
 # -- if no parameters specified - just show help and exit
 if [[ $# -eq 0 ]] ; then
@@ -88,7 +88,7 @@ done
 if [ "$SET_PROXY" == "YES" ]; then
     echo "Setup system/APT proxy server [${PROXY}]."
     SET_PROXY=NO
-    source _setup-proxy.sh
+    source shlib/_setup-proxy.sh
 fi
 
 # -- SIMPLE OPTION: remove (unset) system and APT utility proxy. This option is independent
@@ -96,7 +96,7 @@ fi
 if [ "$UNSET_PROXY" == YES ]; then
     echo "Unset (remove) system/APT proxy server."
     UNSET_PROXY=NO
-    source _unset-proxy.sh
+    source shlib/_unset-proxy.sh
 fi
 
 # -- SIMPLE OPTION: print statistics. This option is completely independent
@@ -104,7 +104,7 @@ fi
 if [ "$SHOW_STAT" == "YES" ]; then
     echo "System statistics:"
     SHOW_STAT=NO
-    source _stat.sh
+    source shlib/_stat.sh
     exit 0
 fi
 
@@ -115,7 +115,7 @@ if [ "$UPDATE_SYSTEM" == "YES" ]; then
     # Execute the calling script in the current script's process, and pulls in variables
     # and functions from the current script so they are usable from the calling script.
     # If you use 'exit' in calling script, it will exit the current script as well.
-    source _system-update.sh
+    source shlib/_system-update.sh
 fi
 
 # -- INSTALL/UPDATE OPTION: install base software packages. This option can be combined
@@ -123,7 +123,7 @@ fi
 if [ "$INSTALL_BASE" == "YES" ]; then
     echo "Installing base software packages."
     INSTALL_BASE=NO
-    source _install-base.sh
+    source shlib/_install-base.sh
 fi
 
 # -- INSTALL/UPDATE OPTION: install Oracle Java JDK. This option can be combined with
@@ -133,7 +133,7 @@ if [ "$INSTALL_JAVA" == "YES" ]; then
     echo "Installing: Apache Ant tool. Version: ${ANT_VERSION}."
     echo "Installing: Apache Maven tool. Version: ${MAVEN_VERSION}."
     INSTALL_JAVA=NO
-    source _install-java.sh
+    source shlib/_install-java.sh
 fi
 
 # -- INSTALL/UPDATE OPTION: install Jenkins.
@@ -157,7 +157,7 @@ fi
 if [ "$INSTALL_HADOOP" == "YES" ]; then
     echo "Installing Apache Hadoop. Version: ${HADOOP_VERSION}"
     INSTALL_HADOOP=NO
-    source _install-hadoop.sh
+    source shlib/_install-hadoop.sh
 fi
 
 # -- INSTALL/UPDATE OPTION: install Apache Hive. This option can be combined with
@@ -173,5 +173,5 @@ fi
 if [ "$INSTALL_MYSQL" == "YES" ]; then
     echo "Installing MySql DBMS."
     INSTALL_MYSQL=NO
-    source _install-mysql.sh
+    source shlib/_install-mysql.sh
 fi

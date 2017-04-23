@@ -6,7 +6,8 @@
 # todo: add some positive scenarios unit tests
 
 import unittest
-from python.utilities.lib.jiralib import JIRAUtility
+
+from scripts.pylib.jiralib import JIRAUtility
 
 
 class JIRAUtilityTest(unittest.TestCase):
