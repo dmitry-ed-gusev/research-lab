@@ -7,8 +7,9 @@ target/
 .idea
 .ideaDataSources
 dataSources
-# -- ignore logs files
+# -- ignore logs/output files
 *.log
+*.out
 # -- ignore [storm] module output/input file(s)
 storm-app-output.txt
 dummy.txt
