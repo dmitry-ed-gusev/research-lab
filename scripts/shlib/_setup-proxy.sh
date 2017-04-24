@@ -24,6 +24,7 @@ export {http,https}_proxy=${PROXY}
 # - Set up system proxy for current user (put it in ~/.profile file)
 # todo: check if proxy is already set there - in this case override (use fedit.py)
 # todo: refactor [put the proxy to ~/.profile] - move it to some function
+# todo: move logic to python program (use fedit.py)
 grep -Fq "export HTTP_PROXY=" ~/.profile
 if [ $? -ne 0 ]; then
     echo "echo '' >> ~/.profile" | sudo sh

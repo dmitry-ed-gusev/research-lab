@@ -9,7 +9,7 @@
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #  
 #   Created:  Gusev Dmitry, 10.04.2017
-#   Modified: Gusev Dmitry, 13.04.2017
+#   Modified: Gusev Dmitry, 24.04.2017
 # =============================================================================
 
 # todo: check installation of Java before!

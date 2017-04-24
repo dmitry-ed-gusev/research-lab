@@ -12,8 +12,8 @@
 #   Modified:
 # =============================================================================
 
-# todo: check ability to connect to mysql outside of this PC - from network. Server
-# todo: should be configured to do so (see document :) ).
+# todo: check ability to connect to mysql outside of this PC - from network.
+# todo: mysql server should be configured to do so (see document :) ).
 
 # -- Install MySql (server+client) - last version. Before installing - set root password.
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASS"

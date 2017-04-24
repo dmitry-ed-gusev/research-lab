@@ -4,6 +4,7 @@
 """
  Go through list of repositories and 'git pull' + 'mvn clean install' on them.
  Created: Gusev Dmitrii, 03.04.2017
+ Modified: Gusev Dmitrii, 24.04.2017
 """
 
 import subprocess as sub

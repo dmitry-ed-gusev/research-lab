@@ -8,11 +8,12 @@
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #
 #   Created:  Gusev Dmitry, 26.11.2016
-#   Modified: Gusev Dmitry, 16.04.2017
+#   Modified: Gusev Dmitry, 24.04.2017
 # =============================================================================
 
 # todo: implement combining options/exit after each option
 # todo: move reboot to this script (from child scripts)
+# todo: add idempotency property to scripts (nothing happened if already installed)
 
 # -- Call other script for set environment for current process
 source shlib/_env.sh

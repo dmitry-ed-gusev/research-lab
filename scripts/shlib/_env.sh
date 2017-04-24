@@ -4,7 +4,7 @@
 #   Don't directly change other scripts parameters - put them here.
 #
 #   Created:  Gusev Dmitry, 26.11.2016
-#   Modified: Gusev Dmitry, 16.04.2017
+#   Modified: Gusev Dmitry, 24.04.2017
 # ===================================================================
 
 # ============================== COMMON SETTINGS ==============================
@@ -58,6 +58,8 @@ HADOOP_VERSION=2.7.3
 HADOOP_NAME="hadoop-$HADOOP_VERSION"
 HADOOP_ARCHIVE="$HADOOP_NAME.tar.gz"
 HADOOP_BINARY_URL="https://archive.apache.org/dist/hadoop/common/$HADOOP_NAME/$HADOOP_ARCHIVE"
+# -- Apache Hive settings
+# todo: add Hive settings
 
 # ============================== SETTINGS: MYSQL ==============================
 MYSQL_ROOT_PASS="rootroot"

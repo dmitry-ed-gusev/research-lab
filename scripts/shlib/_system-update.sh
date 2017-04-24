@@ -20,7 +20,6 @@
 sudo /usr/bin/apt-get -qy update # > /dev/null
 sudo /usr/bin/apt-get -qy upgrade # > /dev/null
 sudo /usr/bin/apt-get -qy dist-upgrade # > dev/null
-
 # -- Remove unnecessary packages (old kernel/headers for example, after updating)
 sudo /usr/bin/apt-get -qy autoremove
 

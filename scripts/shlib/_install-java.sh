@@ -12,10 +12,11 @@
 #   It is recommended to update whole system before running this script!
 #  
 #   Created:  Gusev Dmitry, 27.11.2016
-#   Modified: Gusev Dmitry, 12.04.2017
+#   Modified: Gusev Dmitry, 24.04.2017
 # =============================================================================
 
 # todo: check, if tools are already installed!
+# todo: setup local maven repository to /opt/.m2 directory (during maven installation)
 
 # -- Installing Java
 # - add alternate repository for Oracle Java JDK and update data from it
@@ -55,7 +56,7 @@ sudo chmod +x /etc/profile.d/ant.sh
 # ***** DEBUG OUTPUT (wait for any key press) *****
 if [ "$DEBUG_MODE" == "true" ]; then
 	read -rsp $'Press any key to continue...\n' -n1 key
-fi
+fi-E add-apt-repository
 
 # -- Installing Apache Maven
 # - delete target Hadoop TAR GZ file if it exists

@@ -11,14 +11,16 @@
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #
 #   Created:  Gusev Dmitry, 12.04.2017
-#   Modified: Gusev Dmitry, 13.04.2017
+#   Modified: Gusev Dmitry, 24.04.2017
 # =============================================================================
 
+# - first of all - setup proxy (system and for APT)
+./mysys.sh -set-proxy http://webproxy.merck.com:8080 -debug -no-reboot
 # - update server
-mysys.sh -update -debug -no-reboot
+./mysys.sh -update -debug -no-reboot
 # - install base packages
-mysys.sh -install-base -debug -no-reboot
+./mysys.sh -install-base -debug -no-reboot
 # - install JDK/Ant/Maven and reboot server
-mysys.sh -install-java -debug -no-reboot
+./mysys.sh -install-java -debug -no-reboot
 # - install Apache Hadoop
-mysys.sh -install-hadoop -debug
+./mysys.sh -install-hadoop -debug

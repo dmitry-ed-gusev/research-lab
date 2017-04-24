@@ -12,6 +12,8 @@
 #   Modified:
 # =============================================================================
 
+# todo: implement Apache Hive installation
+
 # ***** DEBUG OUTPUT (wait for any key press) *****
 if [ "$DEBUG_MODE" == "true" ]; then
 	read -rsp $'Press any key to continue...\n' -n1 key
