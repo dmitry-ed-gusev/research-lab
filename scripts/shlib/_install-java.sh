@@ -56,7 +56,7 @@ sudo chmod +x /etc/profile.d/ant.sh
 # ***** DEBUG OUTPUT (wait for any key press) *****
 if [ "$DEBUG_MODE" == "true" ]; then
 	read -rsp $'Press any key to continue...\n' -n1 key
-fi-E add-apt-repository
+fi
 
 # -- Installing Apache Maven
 # - delete target Hadoop TAR GZ file if it exists

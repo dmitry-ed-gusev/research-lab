@@ -5,6 +5,9 @@
 #   Script is a part of scripts suite and shouldn't be called by itself.
 #   Use <./mysys.sh -install-hadoop>
 #
+#   All paths in this script are (and should be) relative to base dir [scripts].
+#   where base script [mysys.sh] is located.
+#
 #   WARNING! Script should not be started as user 'root' (with command like: 
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #  
@@ -39,9 +42,9 @@ sudo chmod -R 777 /tmp-hadoop
 ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 # - copy pre-set config files to Hadoop
-cp hadoop-preset/* /opt/$HADOOP_NAME/etc/hadoop/
+cp shlib/hadoop-preset/* /opt/$HADOOP_NAME/etc/hadoop/
 # - set proper JAVA_HOME variable
-../pylib/fedit.py -f /opt/$HADOOP_NAME/etc/hadoop/hadoop-env.sh -t starts -s "export JAVA_HOME" -d "export JAVA_HOME=$JAVA_HOME"
+pylib/fedit.py -f /opt/$HADOOP_NAME/etc/hadoop/hadoop-env.sh -t starts -s "export JAVA_HOME" -d "export JAVA_HOME=$JAVA_HOME"
 
 # ***** DEBUG OUTPUT (wait for any key press) *****
 if [ "$DEBUG_MODE" == "true" ]; then
