@@ -8,6 +8,7 @@ repositories:
  - csv2abstract
  - csv2hive
  - ingest-script-generator
+ - bigdata-training
 build_repositories:
  - csv2abstract
  - csv2hive

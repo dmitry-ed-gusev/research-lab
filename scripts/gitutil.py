@@ -4,12 +4,15 @@
 """
  Go through list of repositories and 'git pull' + 'mvn clean install' on them.
  Created: Gusev Dmitrii, 03.04.2017
- Modified: Gusev Dmitrii, 24.04.2017
+ Modified: Gusev Dmitrii, 25.04.2017
 """
+
+# todo: move processing repo in a function
+# todo: move building repo in a function
 
 import subprocess as sub
 
-from scripts.pylib import configuration as conf
+from pylib import configuration as conf
 
 # noinspection PyCompatibility
 print "GIT repositories processing is starting..."
@@ -40,6 +43,9 @@ for repo in repos_list:
     p.wait()
     # update current repo
     p = sub.Popen(['git', 'pull'], cwd=work_dir)
+    p.wait()
+    # run gc() on current repository
+    p = sub.Popen(['git', 'gc'], cwd=work_dir)
     p.wait()
 
 # build all repos in build list
