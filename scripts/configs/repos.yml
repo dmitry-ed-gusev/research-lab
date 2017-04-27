@@ -4,6 +4,7 @@ repositories:
  - mantis11
  - mantis-bds
  - mantis-pdc
+ - mantis-ops
  - mantis-systems
  - csv2abstract
  - csv2hive
