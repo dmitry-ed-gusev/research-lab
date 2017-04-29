@@ -128,7 +128,6 @@
             </properties>
             <!-- All modules to build -->
             <modules>
-                <module>storm</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
                 <module>chat-app</module>
@@ -147,7 +146,6 @@
             </properties>
             <!-- All modules to build -->
             <modules>
-                <module>storm</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
                 <module>chat-app</module>

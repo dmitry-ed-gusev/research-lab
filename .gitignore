@@ -14,8 +14,8 @@ dataSources
 storm-app-output.txt
 dummy.txt
 # -- some unversioned files
-bigdata/dependency-reduced-pom.xml
-bigdata/gutenberg.txt
+dg.bigdata/dependency-reduced-pom.xml
+dg.bigdata/gutenberg.txt
 socialnet/.crawlerdb/
 socialnet/.db/
 vk_token*
