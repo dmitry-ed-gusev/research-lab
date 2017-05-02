@@ -15,7 +15,8 @@
 #   Modified: Gusev Dmitry, 24.04.2017
 # =============================================================================
 
-# todo: check installation of Java before!
+# todo: check installation of Java before
+# todo: check, if hadoop is already installed
 
 # -- Installing Apache Hadoop
 # - delete target Hadoop TAR GZ file if it exists
