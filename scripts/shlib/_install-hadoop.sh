@@ -17,6 +17,7 @@
 
 # todo: check installation of Java before
 # todo: check, if hadoop is already installed
+# todo: format namenode before usage ([hdfs namenode format] <- before start hdfs)
 
 # -- Installing Apache Hadoop
 # - delete target Hadoop TAR GZ file if it exists
