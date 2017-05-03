@@ -14,11 +14,10 @@
     <name>BigData course :: HomeWork #1. MapReduce.</name>
 
     <properties>
-        <hadoop.version>2.7.1</hadoop.version>
         <jar.name>${project.artifactId}-${env}</jar.name>
         <main.class.hw1.option1>dg.bigdata.hw1.words.option1.LenCounterMainOption1</main.class.hw1.option1>
         <main.class.hw1.option2>dg.bigdata.hw1.words.option2.LenCounterMainOption2</main.class.hw1.option2>
-        <assembly.dir>${project.build.directory}/dg.bigdata</assembly.dir>
+        <assembly.dir>${project.build.directory}/hw1</assembly.dir>
     </properties>
 
     <build>
@@ -87,11 +86,15 @@
                                         <filter token="MAIN_CLASS" value="${main.class.hw1.option2}" />
                                     </filterset>
                                 </copy>
-                                <!-- fix LF after copy -->
+                                <!-- fix LF in sh scripts after copy -->
                                 <fixcrlf srcdir="${assembly.dir}" includes="*.sh" eol="lf" eof="remove" />
-                                <!-- copy text samples (without filtering) -->
+                                <!-- copy text sample(s) (without filtering) -->
                                 <copy todir="${assembly.dir}" failonerror="false">
                                     <fileset dir="${basedir}">
+                                        <include name="*.txt"/>
+                                        <exclude name="Assignment.txt"/>
+                                    </fileset>
+                                    <fileset dir="${basedir}/../rawdata">
                                         <include name="*.txt"/>
                                     </fileset>
                                 </copy>
@@ -106,26 +109,6 @@
     </build>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons.lang3.version}</version>
-        </dependency>
-
-        <!-- Hadoop dependencies -->
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>${hadoop.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-client</artifactId>
-            <version>${hadoop.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
 
 </project>
