@@ -169,6 +169,19 @@
             </modules>
         </profile>
 
+        <!-- Simple production profile, inactive by default. -->
+        <profile>
+            <id>env-prod-simple</id>
+            <properties>
+                <env>prod</env>
+                <prod.build.phase>package</prod.build.phase>
+            </properties>
+            <!-- modules to build -->
+            <modules>
+                <module>bigdata</module>
+            </modules>
+        </profile>
+
     </profiles>
 
 </project>

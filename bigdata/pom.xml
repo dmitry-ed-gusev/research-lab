@@ -12,16 +12,34 @@
     <packaging>pom</packaging>
     <version>1.0</version>
     <name>BigData :: some research with Hadoop stack.</name>
-	
-	<modules>
-		<module>storm</module>
-		<module>hw1.mapreduce</module>
-		<module>hw2.hdfs</module>
-	</modules>
+
+    <modules>
+        <module>storm</module>
+        <module>hw1.mapreduce</module>
+        <module>hw2.hdfs</module>
+    </modules>
 
     <properties>
         <hadoop.version>2.7.1</hadoop.version>
+        <jar.name>${project.artifactId}-${env}</jar.name>
+        <assembly.dir>${project.build.directory}/${project.artifactId}</assembly.dir>
     </properties>
+
+    <build>
+        <finalName>${jar.name}</finalName>
+        <plugins>
+            <!-- maven jar plugin settings (put JAR into specified folder) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${assembly.dir}</outputDirectory>
+                </configuration>
+                <version>${maven.plugin.jar}</version>
+            </plugin>
+        </plugins>
+
+    </build>
 
     <dependencies>
         <dependency>

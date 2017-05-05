@@ -42,9 +42,10 @@
         </resources>
 
         <!-- resulting JAR name -->
-        <finalName>${project.artifactId}-app-${env}</finalName>
+        <!--<finalName>${project.artifactId}-app-${env}</finalName>-->
 
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
