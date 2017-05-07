@@ -60,6 +60,15 @@
             <version>${hadoop.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Hadoop test dependencies -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-minicluster</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

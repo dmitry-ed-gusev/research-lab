@@ -14,7 +14,7 @@
     <name>BigData course :: HomeWork #2. HDFS.</name>
 
     <properties>
-        <main.class>dg.bigdata.hw2.HdfsUtil</main.class>
+        <main.class>dg.bigdata.hw2.HdfsUtils</main.class>
     </properties>
 
     <build>
