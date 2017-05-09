@@ -1,10 +1,9 @@
 package dg.bigdata.hw2;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.util.Progressable;
 
@@ -13,14 +12,19 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- * HDFS utility.
+ * Some useful HDFS utilities.
  * Created by vinnypuhh on 30.04.17.
  */
 public class HdfsUtils {
 
+    private static final Log LOG = LogFactory.getLog(HdfsUtils.class);
+
+    private static final int BUFFER_SIZE = 4096;
+
     static {
         // set handler for hdfs:// protocol - it allows to
         // interact with HDFS via URL class
+        LOG.info("STATIC: set URL handler for HDFS protocol.");
         URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory());
     }
 
@@ -28,11 +32,12 @@ public class HdfsUtils {
      * The simplest method of interacting with HDFS via URL class.
      * Depends on URL handler - see static block.
      */
-    public static void SimpleHdfsCat(String filePath) throws IOException {
+    public static void simpleHdfsCat(String filePath) throws IOException {
+        LOG.debug("HdfsUtils.simpleHdfsCat() is working.");
         InputStream in = null;
         try {
             in = new URL(filePath).openStream();
-            IOUtils.copyBytes(in, System.out, 4096, false);
+            IOUtils.copyBytes(in, System.out, BUFFER_SIZE, false);
         } finally {
             IOUtils.closeStream(in);
         }
@@ -48,7 +53,7 @@ public class HdfsUtils {
         InputStream in = null;
         try {
             in = fs.open(new Path(filePath));
-            IOUtils.copyBytes(in, System.out, 4096, false);
+            IOUtils.copyBytes(in, System.out, BUFFER_SIZE, false);
         } finally {
             IOUtils.closeStream(in);
         }
@@ -65,9 +70,9 @@ public class HdfsUtils {
         FSDataInputStream in = null;
         try {
             in = fs.open(new Path(filePath));
-            IOUtils.copyBytes(in, System.out, 4096, false);
+            IOUtils.copyBytes(in, System.out, BUFFER_SIZE, false);
             in.seek(0); // go back to the start of the file
-            IOUtils.copyBytes(in, System.out, 4096, false);
+            IOUtils.copyBytes(in, System.out, BUFFER_SIZE, false);
         } finally {
             IOUtils.closeStream(in);
         }
@@ -83,7 +88,22 @@ public class HdfsUtils {
                 System.out.print(".");
             }
         });
-        IOUtils.copyBytes(in, out, 4096, true);
+        IOUtils.copyBytes(in, out, BUFFER_SIZE, true);
+    }
+
+    /***/
+    public static void listStatus(String... filePath) throws IOException {
+        Configuration conf = new Configuration();
+        FileSystem fs = FileSystem.get(URI.create(filePath[0]), conf);
+        Path[] paths = new Path[filePath.length];
+        for (int i = 0; i < paths.length; i++) {
+            paths[i] = new Path(filePath[i]);
+        }
+        FileStatus[] status = fs.listStatus(paths);
+        Path[] listedPaths = FileUtil.stat2Paths(status);
+        for (Path p : listedPaths) {
+            System.out.println(p);
+        }
     }
 
     /***/
