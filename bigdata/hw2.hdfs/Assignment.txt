@@ -1,7 +1,7 @@
 =========================================================
                   Assignment #2
 =========================================================
-Part 1.
+(+) Part 1.
 
 Play with HDFS service (reproduce and play with all the
 commands, features, modes of HDFS Service from presentation).
@@ -9,7 +9,7 @@ commands, features, modes of HDFS Service from presentation).
 Attach at least three screenshots #1 #2 #3 with different situations.
 
 Part 2.
-Download the data set form http://goo.gl/lwgoxw.
+Download the data set form http://goo.gl/lwgoxw
 Data set description see here: http://contest.ipinyou.com/data.shtml
 
 Unzip these files and put them in HDFS system:

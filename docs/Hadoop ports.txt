@@ -1,9 +1,0 @@
-50070 -> HDFS NameNode
-8088  -> YARN Resource Manager
-19888 -> History Server
-8042  -> Hadoop cluster node
-
-For virtual machine:
-1. Put to /etc/hosts line: <virtual host name> -> 127.0.0.1
-2. Oracle VM -> NAT -> Port forwarding -> forward all ports
-   mentioned above, as: localhost:<port> -> <virtual ip>:<port>
