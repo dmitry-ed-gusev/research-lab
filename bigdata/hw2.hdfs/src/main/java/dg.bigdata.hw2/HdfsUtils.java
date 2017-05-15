@@ -47,13 +47,15 @@ public class HdfsUtils {
      * Interaction with HDFS by using FileSystem directly.
      * Uses standard java.io.InputStream for reading data.
      */
-    public static void HdfsCat(String filePath) throws IOException {
-        Configuration conf = new Configuration();
-        FileSystem fs = FileSystem.get(URI.create(filePath), conf);
+    public static void hdfsCat(String filePath, Configuration conf) throws IOException {
+        //Configuration conf = new Configuration();
+        FileSystem fs = FileSystem.get(URI.create(filePath), conf == null ? new Configuration() : conf);
         InputStream in = null;
         try {
             in = fs.open(new Path(filePath));
+            System.out.println("========================================================");
             IOUtils.copyBytes(in, System.out, BUFFER_SIZE, false);
+            System.out.println("\n========================================================");
         } finally {
             IOUtils.closeStream(in);
         }
@@ -108,7 +110,8 @@ public class HdfsUtils {
 
     /***/
     public static void main(String[] args) throws Exception {
-
+        //new Configuration()
+        //HdfsUtils.hdfsCat(args[0]);
     }
 
 }

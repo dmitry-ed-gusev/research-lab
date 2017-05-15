@@ -4,6 +4,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.junit.After;
 import org.junit.Before;
@@ -25,31 +26,44 @@ import static org.hamcrest.Matchers.*;
 public class HdfsUtilsIT {
 
     private MiniDFSCluster cluster; // use an in-process HDFS cluster for testing
-    private FileSystem fs;
+    private Configuration  conf;
+    private FileSystem     fs;
 
     @Before
     public void setUp() throws IOException {
-        Configuration conf = new Configuration();
+
+        // create Hadoop configuration
+        this.conf = new HdfsConfiguration();
         if (System.getProperty("test.build.data") == null) {
             System.setProperty("test.build.data", "/tmp");
         }
-        cluster = new MiniDFSCluster.Builder(conf).build();
-        fs = cluster.getFileSystem();
-        OutputStream out = fs.create(new Path("/dir/file"));
+
+        // init internal mini-cluster
+        this.cluster = new MiniDFSCluster.Builder(conf).nameNodePort(8020).build();
+        // get file system from mini-cluster
+        this.fs = this.cluster.getFileSystem();
+        // create a file with content
+        OutputStream out = this.fs.create(new Path("/dir/file"));
         out.write("content".getBytes("UTF-8"));
         out.close();
     }
 
     @After
     public void tearDown() throws IOException {
-        if (fs != null) {
-            fs.close();
+        if (this.fs != null) {
+            this.fs.close();
         }
-        if (cluster != null) {
-            cluster.shutdown();
+        if (this.cluster != null) {
+            this.cluster.shutdown();
         }
     }
 
+    @Test
+    public void test() throws IOException {
+        HdfsUtils.hdfsCat("hdfs://localhost/dir/file", this.conf);
+    }
+
+    /*
     @Test(expected = FileNotFoundException.class)
     public void throwsFileNotFoundForNonExistentFile() throws IOException {
         fs.getFileStatus(new Path("no-such-file"));
@@ -84,5 +98,6 @@ public class HdfsUtilsIT {
         assertThat(stat.getGroup(), is("supergroup"));
         assertThat(stat.getPermission().toString(), is("rwxr-xr-x"));
     }
+*/
 
 }
