@@ -1,5 +1,6 @@
 package dg.bigdata.hw2;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -24,20 +25,36 @@ public class HdfsUtils {
     static {
         // set handler for hdfs:// protocol - it allows to
         // interact with HDFS via URL class
-        LOG.info("STATIC: set URL handler for HDFS protocol.");
-        URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory());
+        //LOG.info("STATIC: set URL handler for HDFS protocol.");
+        //URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory());
     }
+
+    private static boolean urlHandlerSet = false;
 
     /**
      * The simplest method of interacting with HDFS via URL class.
      * Depends on URL handler - see static block.
      */
-    public static void simpleHdfsCat(String filePath) throws IOException {
+    public static void readFromHdfs(Configuration conf, OutputStream out, String filePath) throws IOException {
         LOG.debug("HdfsUtils.simpleHdfsCat() is working.");
-        InputStream in = null;
+
+        // fast checks
+        if (out == null || StringUtils.isBlank(filePath)) {
+            throw new IllegalArgumentException(
+                    String.format("Output stream is null [%s] or file path is empty [%s]!",
+                            (out == null), filePath));
+        }
+
+        // check - if url handler not set - set it
+        if (!urlHandlerSet) {
+            URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory(conf == null ? new Configuration() : conf));
+            HdfsUtils.urlHandlerSet = true;
+        }
+
+        InputStream  in = null;
         try {
             in = new URL(filePath).openStream();
-            IOUtils.copyBytes(in, System.out, BUFFER_SIZE, false);
+            IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
         } finally {
             IOUtils.closeStream(in);
         }
