@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,11 +26,15 @@ import static org.hamcrest.Matchers.*;
 
 public class HdfsUtilsIT {
 
+    // some Hadoop mini-cluster defaults
+    private static final int CLUSTER_PORT = 8020;
+    //
     private MiniDFSCluster cluster; // use an in-process HDFS cluster for testing
-    private Configuration  conf;
-    private FileSystem     fs;
+    private Configuration  conf;    // Hadoop configuration
+    private FileSystem     fs;      // Hadoop file system object
 
     @Before
+    // todo: make it @BeforeClass? (before all tests)
     public void setUp() throws IOException {
 
         // create Hadoop configuration
@@ -39,9 +44,14 @@ public class HdfsUtilsIT {
         }
 
         // init internal mini-cluster
-        this.cluster = new MiniDFSCluster.Builder(conf).nameNodePort(8020).build();
+        this.cluster = new MiniDFSCluster.Builder(conf)
+                .nameNodePort(CLUSTER_PORT)
+                .build();
+
         // get file system from mini-cluster
         this.fs = this.cluster.getFileSystem();
+
+        // todo: add more fake files to file system for tests
         // create a file with content
         OutputStream out = this.fs.create(new Path("/dir/file"));
         out.write("content".getBytes("UTF-8"));
@@ -49,6 +59,7 @@ public class HdfsUtilsIT {
     }
 
     @After
+    // todo: make it @AfterClass? (after all tests)
     public void tearDown() throws IOException {
         if (this.fs != null) {
             this.fs.close();
@@ -60,7 +71,10 @@ public class HdfsUtilsIT {
 
     @Test
     public void test() throws IOException {
-        HdfsUtils.hdfsCat("hdfs://localhost/dir/file", this.conf);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        HdfsUtils.readFromHdfs(this.conf, out, "hdfs:///dir/file");
+
+        System.out.println("===> " + out.toString("UTF-8"));
     }
 
     /*

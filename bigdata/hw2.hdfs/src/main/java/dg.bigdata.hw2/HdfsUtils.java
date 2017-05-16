@@ -8,6 +8,8 @@ import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.util.Progressable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -47,17 +49,21 @@ public class HdfsUtils {
 
         // check - if url handler not set - set it
         if (!urlHandlerSet) {
+            LOG.info("URL handler isn't set. Setting...");
             URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory(conf == null ? new Configuration() : conf));
             HdfsUtils.urlHandlerSet = true;
         }
 
+        // read bytes from hdfs (input stream) and copy to provided out
         InputStream  in = null;
         try {
             in = new URL(filePath).openStream();
+            LOG.debug("Input stream opened. Starting bytes copying. Buffer: " + BUFFER_SIZE);
             IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
         } finally {
             IOUtils.closeStream(in);
         }
+
     }
 
     /**
