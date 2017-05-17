@@ -1,7 +1,6 @@
 package dg.bigdata.hw2;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
@@ -11,13 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 /**
  * Integration tests for HdfsUtils class.
@@ -39,6 +36,9 @@ public class HdfsUtilsIT {
 
         // create Hadoop configuration
         this.conf = new HdfsConfiguration();
+
+        // temporary dir for mini-cluster files on local PC
+        // todo: remove check, just mandatory set value
         if (System.getProperty("test.build.data") == null) {
             System.setProperty("test.build.data", "/tmp");
         }
@@ -72,7 +72,7 @@ public class HdfsUtilsIT {
     @Test
     public void test() throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        HdfsUtils.readFromHdfs(this.conf, out, "hdfs:///dir/file");
+        HdfsUtils.readFromHdfsByURL(this.conf, out, "hdfs:///dir/file");
 
         System.out.println("===> " + out.toString("UTF-8"));
     }

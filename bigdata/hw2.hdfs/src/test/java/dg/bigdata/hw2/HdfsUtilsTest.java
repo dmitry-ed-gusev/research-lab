@@ -13,18 +13,18 @@ import java.io.IOException;
 public class HdfsUtilsTest {
 
     @Test (expected = IllegalArgumentException.class)
-    public void testReadFromHdfsEmptyOut() throws IOException {
-        HdfsUtils.readFromHdfs(new Configuration(), null, "path");
+    public void testReadFromHdfsByURLEmptyOut() throws IOException {
+        HdfsUtils.readFromHdfsByURL(new Configuration(), null, "path");
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void testReadFromHdfsNullPath() throws IOException {
-        HdfsUtils.readFromHdfs(new Configuration(), new ByteArrayOutputStream(), null);
+    public void testReadFromHdfsByURLNullPath() throws IOException {
+        HdfsUtils.readFromHdfsByURL(new Configuration(), new ByteArrayOutputStream(), null);
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void testReadFromHdfsEmptyPath() throws IOException {
-        HdfsUtils.readFromHdfs(new Configuration(), new ByteArrayOutputStream(), "   ");
+    public void testReadFromHdfsByURLEmptyPath() throws IOException {
+        HdfsUtils.readFromHdfsByURL(new Configuration(), new ByteArrayOutputStream(), "   ");
     }
 
 }

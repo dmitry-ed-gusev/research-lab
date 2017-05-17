@@ -33,11 +33,31 @@ public class HdfsUtils {
 
     private static boolean urlHandlerSet = false;
 
+
+    protected static boolean isUrlHandlerSet() {
+        return urlHandlerSet;
+    }
+
+    /***/
+    protected static void setUrlHandler(Configuration conf) {
+        LOG.debug("HdfsUtils.setUrlHandler() is working.");
+
+        // check - if url handler not set - set it
+        if (!urlHandlerSet) {
+            LOG.info("URL handler isn't set. Setting...");
+            URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory(conf == null ? new Configuration() : conf));
+            HdfsUtils.urlHandlerSet = true;
+        } else {
+            LOG.info("URL handler is already set.");
+        }
+
+    }
+
     /**
      * The simplest method of interacting with HDFS via URL class.
      * Depends on URL handler - see static block.
      */
-    public static void readFromHdfs(Configuration conf, OutputStream out, String filePath) throws IOException {
+    public static void readFromHdfsByURL(Configuration conf, OutputStream out, String filePath) throws IOException {
         LOG.debug("HdfsUtils.simpleHdfsCat() is working.");
 
         // fast checks
@@ -47,15 +67,10 @@ public class HdfsUtils {
                             (out == null), filePath));
         }
 
-        // check - if url handler not set - set it
-        if (!urlHandlerSet) {
-            LOG.info("URL handler isn't set. Setting...");
-            URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory(conf == null ? new Configuration() : conf));
-            HdfsUtils.urlHandlerSet = true;
-        }
+        HdfsUtils.setUrlHandler(conf); // check and set (if necessary) URL handler
 
         // read bytes from hdfs (input stream) and copy to provided out
-        InputStream  in = null;
+        InputStream in = null;
         try {
             in = new URL(filePath).openStream();
             LOG.debug("Input stream opened. Starting bytes copying. Buffer: " + BUFFER_SIZE);
@@ -70,7 +85,7 @@ public class HdfsUtils {
      * Interaction with HDFS by using FileSystem directly.
      * Uses standard java.io.InputStream for reading data.
      */
-    public static void hdfsCat(String filePath, Configuration conf) throws IOException {
+    public static void readFromHdfsByFS(String filePath, Configuration conf) throws IOException {
         //Configuration conf = new Configuration();
         FileSystem fs = FileSystem.get(URI.create(filePath), conf == null ? new Configuration() : conf);
         InputStream in = null;
