@@ -24,30 +24,34 @@ import static org.junit.Assert.assertThat;
 public class HdfsUtilsIT {
 
     // some Hadoop mini-cluster defaults
-    private static final int CLUSTER_PORT = 8020;
+    private static final String CLUSTER_DIR = "/tmp";
+    private static final int    CLUSTER_NAMENODE_PORT     = 8020;
+    private static final int    CLUSTER_NAMENODE_WEB_PORT = 8030;
     //
     private MiniDFSCluster cluster; // use an in-process HDFS cluster for testing
     private Configuration  conf;    // Hadoop configuration
     private FileSystem     fs;      // Hadoop file system object
+
 
     @Before
     // todo: make it @BeforeClass? (before all tests)
     public void setUp() throws IOException {
 
         // create Hadoop configuration
-        this.conf = new HdfsConfiguration();
+        this.conf = new Configuration();
 
         // temporary dir for mini-cluster files on local PC
         // todo: remove check, just mandatory set value
-        if (System.getProperty("test.build.data") == null) {
-            System.setProperty("test.build.data", "/tmp");
-        }
+        //if (System.getProperty("test.build.data") == null) {
+        //    System.setProperty("test.build.data", "/tmp");
+        //}
+        System.setProperty("test.build.data", CLUSTER_DIR);
 
         // init internal mini-cluster
         this.cluster = new MiniDFSCluster.Builder(conf)
-                .nameNodePort(CLUSTER_PORT)
+                .nameNodePort(CLUSTER_NAMENODE_PORT)
+                .nameNodeHttpPort(CLUSTER_NAMENODE_WEB_PORT)
                 .build();
-
         // get file system from mini-cluster
         this.fs = this.cluster.getFileSystem();
 
