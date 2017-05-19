@@ -15,15 +15,16 @@ from jira import JIRA
 
 # noinspection PyCompatibility
 class JIRAUtility(object):
-
+    # default isuues batch size
+    ISSUES_BATCH_SIZE = 50
     # JQL_ALL_SPRINT_ISSUES = 'project = {} AND issuetype in ({}) AND Sprint = "{}" AND assignee in ({})'
     JQL_ALL_SPRINT_ISSUES = 'project = {} AND sprint = "{}"'
-    # all issues, that may be interested
+    # all interesting issues types
     ISSUES_ALL_TYPES = 'Bug, Epic, Story, Task, Sub-task'
 
     def __init__(self, jira_address, user, password):
         """
-        Initializer for JIRAUtility class.
+        System method: initializer for JIRAUtility class.
         :param config_path:
         """
         print "JIRAUtility.__init__() is working. JIRA: [{}], user: [{}].".format(jira_address, user)
@@ -40,12 +41,34 @@ class JIRAUtility(object):
 
     def connect(self):
         """
-        Connect to JIRA server (with params specified in constructor).
+        System method: connect to JIRA server (with params specified in constructor).
         :return: None
         """
         print "JIRAUtility.connect() is working. Connecting to [{}] as user [{}].".format(self.address, self.user)
         self.jira = JIRA(self.address, basic_auth=(self.user, self.password))
         print "JIRAUtility: connected to [{}] as user [{}].".format(self.address, self.user)
+
+    def get_issues_by_jql(self, jql):
+        # todo: add comments/pydocs
+        # fast check
+        if not jql or not jql.strip():
+            raise JiraException('Provided JQL is empty!')
+        # search for issues by provided jql and return them
+        issues = []
+        batch_size = JIRAUtility.ISSUES_BATCH_SIZE
+        total_processed = 0
+        while batch_size == JIRAUtility.ISSUES_BATCH_SIZE:
+            # get issues part (in a size of batch, default = 50 - see JIRAUtility.ISSUES_BATCH_SIZE)
+            issues_batch = self.jira.search_issues(jql_str=jql, maxResults=False, startAt=total_processed)
+            # update current batch size
+            batch_size = len(issues_batch)
+            # update total processed count
+            total_processed += batch_size
+            # add all found issues to resulting list
+            for issue in issues_batch:
+                issues.append(issue)
+        # return result
+        return issues
 
     def get_project_key(self, project_name):
         """
@@ -146,19 +169,31 @@ class JIRAUtility(object):
         print "JIRAUtility.get_issue() is working. Get issue by key: [{}].".format(issue_key)
         return self.jira.issue(issue_key)
 
+    def get_all_closed_issues_for_user(self, user, last_days_count=0):
+        # todo: add comments
+        # todo: add checks
+        print "JIRAUtility.get_all_issues_for_user() is working. Search issues for user: [{}].".format(user)
+        # fast checks
+        if not user or not user.strip:
+            raise JiraException('User name is empty!')
+        if last_days_count < 0:
+            raise JiraException('Invalid (negative) value for days back counter!')
+        # generate jql (depends on in params)
+        jql = 'assignee = {} AND status changed to (Closed, Done)'.format(user)
+        if last_days_count > 0:
+            jql += ' after -{}d'.format(last_days_count)
+        print "Generated JQL [{}].".format(jql)
+        # execute jql and return result
+        return self.get_issues_by_jql(jql)
+
     @staticmethod
     def print_raw_issue(issue):
         """
         This method is intended mostly for debug purposes - print JIRA issue as a raw JSON
         :param issue: issue object for printing
-        :return:
         """
         print "JIRAUtility.print_raw_issue() is working."
         print issue.raw
-        #print '\n\n'
-        #print issue.fields.components
-        #for component in issue.fields.components:
-        #    print component.id, '->', component.name, '->', component.self
 
     @staticmethod
     def get_issues_report(issues):
@@ -174,16 +209,16 @@ class JIRAUtility(object):
         # add rows to report
         counter = 1
         for issue in issues:
-            # fix some columns values
+            # transform columns values
             assignee = ('-' if not issue.fields.assignee else issue.fields.assignee)
             storypoints = (issue.fields.customfield_10008 if str(issue.fields.issuetype) != "Sub-task" else '-')
-            labels = ', '.join(issue.fields.labels)
-            components = ', '.join([component.name for component in issue.fields.components])
+            labels = ',\n '.join(issue.fields.labels)
+            components = ',\n '.join([component.name for component in issue.fields.components])
             status = str(issue.fields.status)
             # add row to report
             report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, labels, components, issue.fields.summary, status, assignee])
             counter += 1
-
+        # return generated report
         return report
 
 
