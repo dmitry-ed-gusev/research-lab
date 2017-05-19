@@ -17,6 +17,8 @@
 
 # todo: check, if tools are already installed!
 # todo: setup local maven repository to /opt/.m2 directory (during maven installation)
+# todo: remove downloaded archives (ant/mvn)
+# todo: aftre ant/mvn installation export current updated) PATH var
 
 # -- Installing Java
 # - add alternate repository for Oracle Java JDK and update data from it

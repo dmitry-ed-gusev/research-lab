@@ -1,0 +1,50 @@
+=========================================================
+                  Assignment #2
+=========================================================
+Part 1.
+
+Play with HDFS service (reproduce and play with all the
+commands, features, modes of HDFS Service from presentation).
+
+Attach at least three screenshots #1 #2 #3 with different situations.
+
+Part 2.
+Download the data set form http://goo.gl/lwgoxw.
+Data set description see here: http://contest.ipinyou.com/data.shtml
+
+Unzip these files and put them in HDFS system:
+ o bid.20130606.txt.bz2
+ o bid.20130607.txt.bz2
+ o bid.20130608.txt.bz2
+ o bid.20130609.txt.bz2
+ o bid.20130610.txt.bz2
+ o bid.20130611.txt.bz2
+ o bid.20130612.txt.bz2
+
+Make screenshot #4 with imported in HDFS files
+
+Count amount of records for each iPinyou ID from all these
+files, sort in a DESC order, write TOP-100 result into
+bid_result.txt file on HDFS system (use for this only HDFS API
+and plain java (scala), no MR paradigm, no Hive, no Spark.
+
+Measure the whole process time, memory consumptions, others
+resources utilization;
+
+Try to optimize JVM, GC parameters, like:
+--Xms8g --Xmx8g --Xmn2g  -XX:PermSize=64M -XX:MaxPermSize=256M
+-XX:-OmitStackTraceInFastThrow -XX:SurvivorRatio=2 -XX:+UseG1GC
+-XX:NewSize=4g -XX:MaxNewSize=5g -XX:ConcGCThreads -XX:+UseStringDeduplication
+or other for Java 8 (repeat previous measurements and provide your results
+with your keys).
+
+Prepare performance report in Excel for last two points and attach to
+homework results.
+
+In Hadoop HW 2 should be
+•	4 screenshots
+•	performance report (more than 10 experiments with different settings)
+•	bid_result.txt
+•	your code/shell command for counting task
+
+Passed: ???
