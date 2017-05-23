@@ -14,26 +14,13 @@
     <name>BigData course :: HomeWork #1. MapReduce.</name>
 
     <properties>
-        <jar.name>${project.artifactId}-${env}</jar.name>
         <main.class.hw1.option1>dg.bigdata.hw1.words.option1.LenCounterMainOption1</main.class.hw1.option1>
         <main.class.hw1.option2>dg.bigdata.hw1.words.option2.LenCounterMainOption2</main.class.hw1.option2>
-        <assembly.dir>${project.build.directory}/hw1</assembly.dir>
     </properties>
 
     <build>
-        <finalName>${jar.name}</finalName>
 
         <plugins>
-
-            <!-- maven jar plugin settings (put JAR into specified folder) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${assembly.dir}</outputDirectory>
-                </configuration>
-                <version>${maven.plugin.jar}</version>
-            </plugin>
 
             <!-- maven shade plugin - creating a "FAT" jar with dependencies -->
             <plugin>
@@ -67,6 +54,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <!-- maven antrun plugin (copy and filter .sh scripts) -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>

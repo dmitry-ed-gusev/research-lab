@@ -1,9 +1,30 @@
-===============================================================================
-        Hadoop 2.7.3 HDFS utility command line parameters
+http://stackoverflow.com/questions/4921843/managing-hdfs-in-psuedo-distributed-hadoop-mode
 
-        Created: Dmitrii Gusev, 21.11.2016
-===============================================================================
+============================================================================================
 
+Using Virtual Box to setup virtual PC. If you setup virtual machine on PC with
+some restrictions/proxy server, you need setup 2 virtual network adapters for virtual PC:
+ 1. NAT, with ports forwarding (for interaction between host and virtual machine):
+    * SSH                          (TCP: 127.0.0.1:2022  -> virtual-ip:22)
+    * HDFS NameNode                (TCP: 127.0.0.1:50070 -> virtual-ip:50070)
+    * Hadoop History server        (TCP: 127.0.0.1:19888 -> virtual-ip:19888)
+    * Hadoop Logs server           (TCP: 127.0.0.1:8042  -> virtual-ip:8042)
+    * Hadoop YARN Resource Manager (TCP: 127.0.0.1:8088  -> virtual-ip:8088)
+ 2. Host-only Adapter (for Internet connection)
+
+50070 -> HDFS NameNode
+8088  -> YARN Resource Manager
+19888 -> History Server
+8042  -> Hadoop cluster node
+
+For virtual machine:
+1. Put to /etc/hosts line: <virtual host name> -> 127.0.0.1
+2. Oracle VM -> NAT -> Port forwarding -> forward all ports
+   mentioned above, as: localhost:<port> -> <virtual ip>:<port>
+
+============================================================================================
+
+Hadoop 2.7.3 HDFS utility command line parameters
 Usage: hdfs [--config confdir] [--loglevel loglevel] COMMAND
        where COMMAND is one of:
   dfs                  run a filesystem command on the file systems supported in Hadoop.
@@ -39,3 +60,4 @@ Usage: hdfs [--config confdir] [--loglevel loglevel] COMMAND
   version              print the version
 
 Most commands print help when invoked w/o parameters.
+

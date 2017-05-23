@@ -12,18 +12,48 @@
     <packaging>pom</packaging>
     <version>1.0</version>
     <name>BigData :: some research with Hadoop stack.</name>
-	
-	<modules>
-		<module>storm</module>
-		<module>hw1.mapreduce</module>
-		<module>hw2.hdfs</module>
-	</modules>
+
+    <modules>
+        <module>storm</module>
+        <module>hw1.mapreduce</module>
+        <module>hw2.hdfs</module>
+    </modules>
 
     <properties>
         <hadoop.version>2.7.1</hadoop.version>
+        <jar.name>${project.artifactId}-${env}</jar.name>
+        <assembly.dir>${project.build.directory}/${project.artifactId}</assembly.dir>
     </properties>
 
+    <build>
+        <finalName>${jar.name}</finalName>
+        <plugins>
+            <!-- maven jar plugin settings (put JAR into specified folder) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${assembly.dir}</outputDirectory>
+                </configuration>
+                <version>${maven.plugin.jar}</version>
+            </plugin>
+        </plugins>
+
+    </build>
+
     <dependencies>
+        <!-- Apache libraries log4j/lang3/etc -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons.logging.version}</version>
+            <!--<scope>compile</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -42,6 +72,15 @@
             <version>${hadoop.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Hadoop test dependencies -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-minicluster</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

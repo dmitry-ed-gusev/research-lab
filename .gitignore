@@ -15,6 +15,7 @@ storm-app-output.txt
 dummy.txt
 # -- some unversioned files
 bigdata/dependency-reduced-pom.xml
+bigdata/hw1.mapreduce/dependency-reduced-pom.xml
 socialnet/.crawlerdb/
 socialnet/.db/
 vk_token*

@@ -1,7 +1,7 @@
 =========================================================
                   Assignment #2
 =========================================================
-Part 1.
+(+) Part 1.
 
 Play with HDFS service (reproduce and play with all the
 commands, features, modes of HDFS Service from presentation).
@@ -9,10 +9,11 @@ commands, features, modes of HDFS Service from presentation).
 Attach at least three screenshots #1 #2 #3 with different situations.
 
 Part 2.
-Download the data set form http://goo.gl/lwgoxw.
+
+(+) Download the data set form http://goo.gl/lwgoxw
 Data set description see here: http://contest.ipinyou.com/data.shtml
 
-Unzip these files and put them in HDFS system:
+(+) Unzip these files and put them in HDFS system:
  o bid.20130606.txt.bz2
  o bid.20130607.txt.bz2
  o bid.20130608.txt.bz2
@@ -20,7 +21,6 @@ Unzip these files and put them in HDFS system:
  o bid.20130610.txt.bz2
  o bid.20130611.txt.bz2
  o bid.20130612.txt.bz2
-
 Make screenshot #4 with imported in HDFS files
 
 Count amount of records for each iPinyou ID from all these

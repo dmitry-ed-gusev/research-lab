@@ -13,6 +13,43 @@
     <version>1.0</version>
     <name>BigData course :: HomeWork #2. HDFS.</name>
 
+    <properties>
+        <main.class>dg.bigdata.hw2.HdfsUtils</main.class>
+    </properties>
+
+    <build>
+        <plugins>
+
+            <!-- maven antrun plugin (copy and filter .sh scripts) -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>project-copy-batch-files</id>
+                        <phase>${prod.build.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <!-- copy+filter shell scripts -->
+                                <copy todir="${assembly.dir}" failonerror="true">
+                                    <fileset dir="${basedir}"><include name="*.sh"/></fileset>
+                                    <filterset>
+                                        <filter token="JAR_NAME" value="${jar.name}"/>
+                                        <filter token="MAIN_CLASS" value="${main.class}"/>
+                                    </filterset>
+                                </copy>
+                                <!-- fix LF in sh scripts after copy -->
+                                <fixcrlf srcdir="${assembly.dir}" includes="*.sh" eol="lf" eof="remove"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
     <dependencies>
     </dependencies>
 
