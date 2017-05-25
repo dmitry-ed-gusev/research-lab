@@ -14,6 +14,7 @@ import java.util.Arrays;
  * In methods parameters don't omit "-" (minus) option symbol.
  * @author Gusev Dmitry (gusevd)
  * @version 1.0 (DATE: 03.06.13)
+ * @deprecated use {@link CmdLine} instead!
 */
 
 public class CommandLine {
