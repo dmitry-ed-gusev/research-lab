@@ -11,7 +11,7 @@
     <artifactId>tmpresearch</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>TMP Research :: experimental modules (some researches).</name>
+    <name>TMP Research :: some experimental researches.</name>
 	
 	<modules>
 		<module>xml</module>
