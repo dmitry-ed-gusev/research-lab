@@ -50,7 +50,15 @@
 
         </plugins>
     </build>
+
     <dependencies>
+
+        <dependency>
+            <groupId>dgusev</groupId>
+            <artifactId>utilities</artifactId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>

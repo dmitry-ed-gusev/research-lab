@@ -146,10 +146,4 @@ public class HdfsUtils {
         }
     }
 
-    /***/
-    public static void main(String[] args) throws Exception {
-        //new Configuration()
-        //HdfsUtils.hdfsCat(args[0]);
-    }
-
 }

@@ -7,5 +7,11 @@ package dg.bigdata.hw2;
  */
 
 // todo: implement class
-public class HdfsMain {
+public final class HdfsMain {
+
+    /***/
+    public static void main(String[] args) {
+
+    }
+
 }
