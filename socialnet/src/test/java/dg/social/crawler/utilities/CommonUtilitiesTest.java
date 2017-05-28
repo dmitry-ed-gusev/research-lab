@@ -1,5 +1,6 @@
 package dg.social.crawler.utilities;
 
+import gusev.dmitry.jtils.utils.CmdLine;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

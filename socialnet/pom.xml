@@ -205,6 +205,13 @@
             <version>2.3.2</version>
         </dependency>
 
+        <!-- Dependency on internal utilities module -->
+        <dependency>
+            <groupId>dgusev</groupId>
+            <artifactId>utilities</artifactId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>
