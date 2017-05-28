@@ -2,10 +2,10 @@ package dg.social.crawler;
 
 import dg.social.crawler.components.TelescopeComponent;
 import dg.social.crawler.components.VkComponent;
-import dg.social.crawler.utilities.CmdLine;
 import dg.social.crawler.utilities.CmdLineOption;
 import dg.social.crawler.utilities.CommonUtilities;
-import dg.social.crawler.utilities.CustomStringProperty;
+import gusev.dmitry.jtils.spring.CustomStringProperty;
+import gusev.dmitry.jtils.utils.CmdLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
