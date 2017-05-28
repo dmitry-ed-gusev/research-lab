@@ -125,32 +125,14 @@ class JiraUtility(object):
         print "Generated JQL [{}].".format(jql)
         return self.get_issues_by_jql(jql)  # search for issues and return them
 
-    @staticmethod
-    def add_label_to_issues(issues, label_name):
-        """
-        Add specified label to specified issues list.
-        :param issues: issues for add label to
-        :param label_name: label to add to each issue
-        """
-        print "JIRAUtility.add_label_to_issues() is working. Adding label [{}].".format(label_name)
-
-        if not label_name or not label_name.strip():  # fail-fast
-            raise JiraException('Label is empty!')
-
-        # iterate over issues and add team label to each
-        counter = 0
-        for issue in issues:
-            if label_name not in issue.fields.labels:  # add label
-                issue.fields.labels.append(label_name)
-                issue.update(fields={"labels": issue.fields.labels})
-            counter += 1
-            if counter % JiraUtility.PROGRESS_STEP_COUNTER == 0:  # report progress
-                print "Processed -> {}/{}".format(counter, len(issues))
-        print "Summary: updated [{}] issue(s).".format(counter)
-
     def add_component_to_issues(self, issues, project_name, component_name):
-        # todo: pydoc!
-
+        """
+        Add specified component (from specified project) to issues list.
+        :param issues: list of issues for adding component
+        :param project_name: project for component
+        :param component_name: component name
+        :return:
+        """
         print "JiraUtility.add_component_to_issues() is working."
 
         if not project_name or not project_name.strip():  # fail-fast
@@ -187,14 +169,22 @@ class JiraUtility(object):
         return self.jira.issue(issue_key)
 
     def get_all_closed_issues_for_user(self, user, last_days_count=0):
-        # todo: add comments
-        # todo: add checks
+        """
+        Return all closed issues (in statuses 'Done' and 'Closed') for specified user for specified
+        days count back in time, starting from today.
+        :param user: user for issues search
+        :param last_days_count: count of days back in time for issues search, if = 0, will search
+        closed issues for all time, if < 0, raise exception
+        :return: found issues list
+        """
         print "JIRAUtility.get_all_issues_for_user() is working. Search issues for user: [{}].".format(user)
+
         # fast checks
         if not user or not user.strip:
             raise JiraException('User name is empty!')
         if last_days_count < 0:
             raise JiraException('Invalid (negative) value for days back counter!')
+
         # generate jql (depends on in params)
         jql = 'assignee = {} AND status changed to (Closed, Done)'.format(user)
         if last_days_count > 0:
@@ -202,6 +192,42 @@ class JiraUtility(object):
         print "Generated JQL [{}].".format(jql)
         # execute jql and return result
         return self.get_issues_by_jql(jql)
+
+    def get_current_status_for_user(self, user):
+        # todo: implementation/pydoc
+        print "JIRAUtility.get_current_status_for_user() is working. Search 'In Progress' issues for user: [{}]."\
+            .format(user)
+        # fast checks
+        if not user or not user.strip:
+            raise JiraException('User name is empty!')
+        # generate jql
+        jql = 'assignee = {} AND status = "In Progress"'.format(user)
+        print "Generated JQL [{}]".format(jql)
+        # execute jql and return result
+        return self.get_issues_by_jql(jql)
+
+    @staticmethod
+    def add_label_to_issues(issues, label_name):
+        """
+        Add specified label to specified issues list.
+        :param issues: issues for add label to
+        :param label_name: label to add to each issue
+        """
+        print "JIRAUtility.add_label_to_issues() is working. Adding label [{}].".format(label_name)
+
+        if not label_name or not label_name.strip():  # fail-fast
+            raise JiraException('Label is empty!')
+
+        # iterate over issues and add team label to each
+        counter = 0
+        for issue in issues:
+            if label_name not in issue.fields.labels:  # add label
+                issue.fields.labels.append(label_name)
+                issue.update(fields={"labels": issue.fields.labels})
+            counter += 1
+            if counter % JiraUtility.PROGRESS_STEP_COUNTER == 0:  # report progress
+                print "Processed -> {}/{}".format(counter, len(issues))
+        print "Summary: updated [{}] issue(s).".format(counter)
 
     @staticmethod
     def print_raw_issue(issue):
@@ -213,27 +239,40 @@ class JiraUtility(object):
         print issue.raw
 
     @staticmethod
-    def get_issues_report(issues):
+    def get_issues_report(issues, show_label=False):
         """
         Generate and return report for issues
         :param issues: list of issues
+        :param show_label: show "Labels" column in a report, True by default
         :return: generated report
         """
         print "JIRAUtility.get_issues_report() is working."
+
         # create report header
-        report = prettytable.PrettyTable(['#', 'Issue', 'Type', 'SP', 'Labels', 'Components', 'Summary', 'Status', 'Assignee'])
+        header_list = ['#', 'Issue', 'Type', 'SP']
+        if show_label:
+            header_list.append('Labels')
+        header_list.extend(['Components', 'Summary', 'Status', 'Assignee'])
+        # report = prettytable.PrettyTable(['#', 'Issue', 'Type', 'SP', 'Labels', 'Components', 'Summary', 'Status', 'Assignee'])
+        report = prettytable.PrettyTable(header_list)
+        # align columns (Summary = left)
         report.align['Summary'] = "l"
         # add rows to report
         counter = 1
         for issue in issues:
-            # transform columns values
+            # transform/process some columns values
             assignee = ('-' if not issue.fields.assignee else issue.fields.assignee)
             storypoints = (issue.fields.customfield_10008 if str(issue.fields.issuetype) != "Sub-task" else '-')
-            labels = ',\n '.join(issue.fields.labels)
             components = ',\n '.join([component.name for component in issue.fields.components])
             status = str(issue.fields.status)
-            # add row to report
-            report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, labels, components, issue.fields.summary, status, assignee])
+
+            # labels - is optional column
+            if show_label:
+                labels = ',\n '.join(issue.fields.labels)
+                report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, labels, components, issue.fields.summary, status, assignee])
+            else:
+                report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, components, issue.fields.summary, status, assignee])
+
             counter += 1
         # return generated report
         return report

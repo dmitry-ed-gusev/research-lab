@@ -1,4 +1,4 @@
-package dg.social.crawler.utilities;
+package gusev.dmitry.jtils.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
-
 /**
  * Some useful HTTP-related utilities.
  * Created by gusevdm on 12/9/2016.
@@ -36,6 +34,9 @@ import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
 public final class HttpUtilities {
 
     private static final Log LOG = LogFactory.getLog(HttpUtilities.class); // module logger
+
+    /** Default encoding for content. */
+    public static final String DEFAULT_ENCODING = "UTF-8";
 
     /** Default http headers for http client. */
     public static final Header[] HTTP_DEFAULT_HEADERS = {

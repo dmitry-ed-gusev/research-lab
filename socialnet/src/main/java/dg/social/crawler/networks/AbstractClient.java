@@ -1,6 +1,6 @@
 package dg.social.crawler.networks;
 
-import dg.social.crawler.utilities.HttpUtilities;
+import gusev.dmitry.jtils.utils.HttpUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;

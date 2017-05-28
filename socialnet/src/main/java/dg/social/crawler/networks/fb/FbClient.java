@@ -1,8 +1,8 @@
 package dg.social.crawler.networks.fb;
 
 import dg.social.crawler.networks.AbstractClient;
-import dg.social.crawler.utilities.CommonUtilities;
-import dg.social.crawler.utilities.HttpUtilities;
+import gusev.dmitry.jtils.utils.CommonUtils;
+import gusev.dmitry.jtils.utils.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -36,14 +36,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static dg.social.crawler.SCrawlerDefaults.DATE_TIME_FORMAT;
 import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
-import static dg.social.crawler.utilities.HttpUtilities.HTTP_DEFAULT_HEADERS;
-import static dg.social.crawler.utilities.HttpUtilities.HTTP_FORM_TAG;
-import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
-import static dg.social.crawler.networks.fb.FbFormType.ACCESS_TOKEN_FORM;
-import static dg.social.crawler.networks.fb.FbFormType.APPROVE_ACCESS_RIGHTS_FORM;
-import static dg.social.crawler.networks.fb.FbFormType.FB_OP_INFO_CLASS_NAME;
-import static dg.social.crawler.networks.fb.FbFormType.LOGIN_FORM;
+import static dg.social.crawler.networks.fb.FbFormType.*;
+import static gusev.dmitry.jtils.utils.HttpUtilities.*;
 
 /**
  * FB social network client. Implemented: - receiving access token -
@@ -109,7 +105,7 @@ public class FbClient extends AbstractClient {
 
 		// try to read FB access token from file
 		try {
-			Pair<Date, String> token = CommonUtilities.readAccessToken(config.getTokenFileName());
+			Pair<Date, String> token = CommonUtils.readDatePair(config.getTokenFileName(), DATE_TIME_FORMAT);
 			// check access token validity (by time)
 			if ((System.currentTimeMillis() - token.getLeft().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS) { // token
 																											// is

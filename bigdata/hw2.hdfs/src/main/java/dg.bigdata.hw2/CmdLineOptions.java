@@ -6,7 +6,7 @@ package dg.bigdata.hw2;
  */
 public enum CmdLineOptions {
 
-    CAT_FILE_BY_URL("-catUrlFile");
+    CAT_FILE_BY_URL("-catFileByUrl");
 
     private String optionName;
 
