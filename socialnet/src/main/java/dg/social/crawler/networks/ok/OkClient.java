@@ -1,9 +1,7 @@
 package dg.social.crawler.networks.ok;
 
 import dg.social.crawler.networks.AbstractClient;
-import dg.social.crawler.utilities.HttpUtilities;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import gusev.dmitry.jtils.utils.HttpUtilities;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,16 +13,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ACCESS_TOKEN_FORM;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.LOGIN_FORM;
-import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
-import static dg.social.crawler.SCrawlerDefaults.HttpFormType;
+import static gusev.dmitry.jtils.utils.HttpUtilities.HTTP_GET_COOKIES_HEADER;
 
 /**
  * OK (Odnoklassniki) social network client.

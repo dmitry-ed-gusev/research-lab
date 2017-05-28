@@ -2,8 +2,8 @@ package dg.social.crawler.networks.vk;
 
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.networks.AbstractClient;
-import dg.social.crawler.utilities.CommonUtilities;
-import dg.social.crawler.utilities.HttpUtilities;
+import gusev.dmitry.jtils.utils.CommonUtils;
+import gusev.dmitry.jtils.utils.HttpUtilities;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,10 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
-import static dg.social.crawler.SCrawlerDefaults.HttpFormType;
+import static dg.social.crawler.SCrawlerDefaults.*;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.*;
-import static dg.social.crawler.utilities.HttpUtilities.HTTP_GET_COOKIES_HEADER;
+import static gusev.dmitry.jtils.utils.HttpUtilities.HTTP_GET_COOKIES_HEADER;
 
 /**
  * VK (VKontakte) social network client.
@@ -154,7 +153,7 @@ public class VkClient extends AbstractClient {
                     default: // default case - unknown form
                         LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
                         String fileName = String.valueOf(System.currentTimeMillis()) + "_data_file.tmp";
-                        CommonUtilities.saveStringToFile(httpPageContent, fileName, false); // save unknown form to file (for analysis)
+                        CommonUtils.saveStringToFile(httpPageContent, fileName, false); // save unknown form to file (for analysis)
                         return null; // no access token!
                 }
 
@@ -194,7 +193,7 @@ public class VkClient extends AbstractClient {
             File tokenFile = new File(this.getTokenFileName());
             if (tokenFile.exists() && tokenFile.isFile()) {
                 try {
-                    Pair<Date, String> token = CommonUtilities.readAccessToken(this.getTokenFileName());
+                    Pair<Date, String> token = CommonUtils.readDatePair(this.getTokenFileName(), DATE_TIME_FORMAT);
                     if (VkClient.isVKAccessTokenValid(token)) {
                         this.accessToken = token;
                         return this.accessToken;
@@ -218,7 +217,7 @@ public class VkClient extends AbstractClient {
             throw new IllegalStateException("Can't get VK access token!");
         }
         // save received token to file
-        CommonUtilities.saveAccessToken(this.accessToken, this.getTokenFileName(), true);
+        CommonUtils.saveDatePair(this.accessToken, DATE_TIME_FORMAT, this.getTokenFileName(), true);
         // return new received token
         return this.accessToken;
     }

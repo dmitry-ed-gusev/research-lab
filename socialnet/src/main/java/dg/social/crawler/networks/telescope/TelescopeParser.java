@@ -3,7 +3,7 @@ package dg.social.crawler.networks.telescope;
 import dg.social.crawler.domain.EducationProfileValue;
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.networks.ParserInterface;
-import dg.social.crawler.utilities.CommonUtilities;
+import gusev.dmitry.jtils.utils.CommonUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -118,18 +118,18 @@ public class TelescopeParser implements ParserInterface {
                         person.setNativeName(record.get(TELESCOPE_NATIVE_NAME));
 
                         // add names/countries/cities sets to person object
-                        person.setNamesList(CommonUtilities.parseStringArray(record.get(TELESCOPE_FULL_NAME)));
-                        person.setCitiesList(CommonUtilities.parseStringArray(record.get(TELESCOPE_CITY)));
+                        person.setNamesList(CommonUtils.parseStringArray(record.get(TELESCOPE_FULL_NAME)));
+                        person.setCitiesList(CommonUtils.parseStringArray(record.get(TELESCOPE_CITY)));
                         person.setCity(record.get(TELESCOPE_CITY_SUM));
-                        person.setCountriesList(CommonUtilities.parseStringArray(record.get(TELESCOPE_COUNTRY)));
+                        person.setCountriesList(CommonUtils.parseStringArray(record.get(TELESCOPE_COUNTRY)));
                         person.setCountry(record.get(TELESCOPE_COUNTRY_SUM));
 
-                        person.setEmailsList(CommonUtilities.parseStringArray(record.get(TELESCOPE_EMAIL)));
+                        person.setEmailsList(CommonUtils.parseStringArray(record.get(TELESCOPE_EMAIL)));
                         person.setOfficeAddress(record.get(TELESCOPE_OFFICE));
 
                         // join two fields: phone and phones
-                        tmpSet = CommonUtilities.parseStringArray(record.get(TELESCOPE_PHONE));
-                        tmpSet.addAll(CommonUtilities.parseStringArray(record.get(TELESCOPE_PHONES)));
+                        tmpSet = CommonUtils.parseStringArray(record.get(TELESCOPE_PHONE));
+                        tmpSet.addAll(CommonUtils.parseStringArray(record.get(TELESCOPE_PHONES)));
                         if (tmpSet.size() > 0) {
                             person.setPhonesList(tmpSet);
                         }

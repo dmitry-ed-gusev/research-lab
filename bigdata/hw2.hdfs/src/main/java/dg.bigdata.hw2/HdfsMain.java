@@ -1,5 +1,8 @@
 package dg.bigdata.hw2;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Main class for HDFS utilities - processing cmd line args,
  * generating configs, invoke needed methods.
@@ -7,5 +10,19 @@ package dg.bigdata.hw2;
  */
 
 // todo: implement class
-public class HdfsMain {
+public final class HdfsMain {
+
+    private static final Log LOG = LogFactory.getLog(HdfsMain.class);
+
+    /***/
+    public static void main(String[] args) {
+        LOG.info("HdfsMain is starting...");
+
+        //CmdLine cmdLine = new CmdLine(args);
+
+        //if () {
+        //
+        //}
+    }
+
 }
