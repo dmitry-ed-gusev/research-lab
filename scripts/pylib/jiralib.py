@@ -253,16 +253,17 @@ class JiraUtility(object):
         if show_label:
             header_list.append('Labels')
         header_list.extend(['Components', 'Summary', 'Status', 'Assignee'])
-        # report = prettytable.PrettyTable(['#', 'Issue', 'Type', 'SP', 'Labels', 'Components', 'Summary', 'Status', 'Assignee'])
         report = prettytable.PrettyTable(header_list)
         # align columns (Summary = left)
         report.align['Summary'] = "l"
         # add rows to report
         counter = 1
+
         for issue in issues:
             # transform/process some columns values
             assignee = ('-' if not issue.fields.assignee else issue.fields.assignee)
-            storypoints = (issue.fields.customfield_10008 if str(issue.fields.issuetype) != "Sub-task" else '-')
+            # no story points for: "Sub-task", "Test Suite"
+            storypoints = (issue.fields.customfield_10008 if str(issue.fields.issuetype) not in ["Sub-task", "Test Suite"] else '-')
             components = ',\n '.join([component.name for component in issue.fields.components])
             status = str(issue.fields.status)
 
