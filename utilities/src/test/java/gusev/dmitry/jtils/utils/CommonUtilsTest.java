@@ -1,13 +1,15 @@
 package gusev.dmitry.jtils.utils;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * Unit tests (JUnit) for CommonUtils class methods.
@@ -16,6 +18,99 @@ import static org.junit.Assert.assertEquals;
 */
 
 public class CommonUtilsTest {
+
+    @Mock
+    CmdLine cmdLine;
+
+    @Before
+    public void beforeTest() {
+        initMocks(this);
+    }
+
+    @Test
+    public void testPropertiesListOneFlag() {
+        // todo: implement like testPropertiesListOneOption() test!
+    }
+
+    @Test
+    public void testParseStringArrayEmptyArray() {
+        Set<String> emptySet = new HashSet<>();
+
+        // sample data
+        List<String> samples = new ArrayList<String>() {{
+            add(null);
+            add("");
+            add("    ");
+        }};
+        // tests
+        samples.forEach(array -> {
+            Set<String> result = CommonUtils.parseStringArray(array);
+            assertNotNull("Shouldn't be NULL!", result);
+            assertEquals("Size should be 0!", 0, result.size());
+            assertEquals("Should be empty set!", emptySet, result);
+        });
+    }
+
+    @Test
+    public void testParseStringArrayValidValue() {
+        // sample source data
+        List<String> samples = new ArrayList<String>() {{
+            // spaces
+            add("['value']");
+            add("[    'value']");
+            add("['value'    ]");
+            add("[   'value'    ]");
+            add("   ['value']");
+            add("['value']   ");
+            add("   ['value']   ");
+            add("  ['   value']  ");
+            add("  ['value   ']  ");
+            add("  ['   value   ']  ");
+            add("  [    '   value   '    ]  ");
+            // duplicates
+            add("   [ '    value'    ,     'value    '  ] ");
+            add("['value','value']");
+            // empty values
+            add("['value', '']");
+            add("  [  '      ' ,   ' value   ', '', '  ']");
+        }};
+
+        // expected result
+        Set<String> expected = new HashSet<String>() {{
+            add("value");
+        }};
+
+        // tests
+        samples.forEach(array -> {
+            Set<String> actual = CommonUtils.parseStringArray(array);
+            assertEquals("Size should be 1!", 1, actual.size());
+            assertEquals("Should be equals!", expected, actual);
+        });
+    }
+
+    @Test
+    public void testParseStringArrayValidValues() {
+        // sample source data
+        List<String> samples = new ArrayList<String>() {{
+            add("['value1', 'value2', 'd\"value3']");
+            add("[ '   value1', 'value2   ', '  d\"value3', '  ']");
+            add("['', '   ', ' value1', 'value2', 'd\"value3', '   ']");
+        }};
+
+        // expected result
+        Set<String> expected = new HashSet<String>() {{
+            add("value1");
+            add("value2");
+            add("d\"value3");
+        }};
+
+        // tests
+        samples.forEach(array -> {
+            Set<String> actual = CommonUtils.parseStringArray(array);
+            assertEquals("Size should be 3!", 3, actual.size());
+            assertEquals("Should be equals!", expected, actual);
+        });
+    }
 
     /** Helper method for tests getMonthDateRange(). */
     private static void dateRangeHelper(int startDelta, int endDelta) {

@@ -1,4 +1,4 @@
-package dg.social.crawler.utilities;
+package gusev.dmitry.jtils.spring;
 
 import org.junit.Test;
 

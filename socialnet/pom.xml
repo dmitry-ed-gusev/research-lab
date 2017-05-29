@@ -120,11 +120,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons.lang3.version}</version>
         </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons.io.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>commons-io</groupId>-->
+            <!--<artifactId>commons-io</artifactId>-->
+            <!--<version>${commons.io.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -203,6 +203,13 @@
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.3.2</version>
+        </dependency>
+
+        <!-- Dependency on internal utilities module -->
+        <dependency>
+            <groupId>dgusev</groupId>
+            <artifactId>utilities</artifactId>
+            <version>1.0</version>
         </dependency>
 
     </dependencies>

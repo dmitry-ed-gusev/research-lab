@@ -5,6 +5,7 @@ import dg.social.crawler.networks.telescope.TelescopeClient;
 import dg.social.crawler.networks.telescope.TelescopeParser;
 import dg.social.crawler.persistence.PeopleDao;
 import dg.social.crawler.utilities.CommonUtilities;
+import gusev.dmitry.jtils.utils.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,7 +45,7 @@ public class TelescopeComponent {
         // unzip Telescope CSV, if necessary, and change file extension
         if (telescopeCsv.trim().toLowerCase().endsWith(ZIP_EXTENSION)) {
             LOG.debug(String.format("Unzipping file [%s] to current folder.", telescopeCsv));
-            CommonUtilities.unZipIt(telescopeCsv, ""); // output to current folder
+            CommonUtils.unZipIt(telescopeCsv, ""); // output to current folder
             // get filename from path and change extension zip -> csv
             csvFileName = Paths.get(telescopeCsv).getFileName().toString();
             csvFileName = csvFileName.substring(0, csvFileName.lastIndexOf('.')) + CSV_EXTENSION;

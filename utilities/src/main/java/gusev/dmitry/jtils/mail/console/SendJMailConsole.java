@@ -1,6 +1,6 @@
 package gusev.dmitry.jtils.mail.console;
 
-import gusev.dmitry.jtils.utils.CommandLine;
+import gusev.dmitry.jtils.utils.CmdLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +43,7 @@ public class SendJMailConsole {
         Log log = LogFactory.getLog(SendJMailConsole.class);
         log.debug("Starting email sending...");
         // parse command line (create object)
-        CommandLine cmdLine = new CommandLine(args);
+        CmdLine cmdLine = new CmdLine(args);
         // email message object
         EmailMessage message = new EmailMessage();
         message.setSubject(cmdLine.optionValue(MailCmdLineOptions.MAIL_SUBJECT.getOptionName()));
