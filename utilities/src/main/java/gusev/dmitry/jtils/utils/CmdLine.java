@@ -17,8 +17,6 @@ import java.util.List;
  * Created by gusevdm on 28/12/2016.
 */
 
- // todo: use CmdLineOption enum?
-
 public class CmdLine {
 
     private static final Log LOG = LogFactory.getLog(CmdLine.class); // module logger
@@ -48,16 +46,25 @@ public class CmdLine {
 
     /** Check presence of option with "-" (minus) sign. */
     public boolean hasOption(String option) {
-        LOG.debug(String.format("CmdLine.hasOption() is working. Option to check: [%s].", option));
+        LOG.debug(String.format("CmdLine.hasOption(string) is working. Option: [%s].", option));
         boolean result = !this.cmdLine.isEmpty() &&
                 !StringUtils.isBlank(option) && this.cmdLine.contains(option);
         LOG.debug(String.format("Option [%s] check result [%s].", option, result));
         return result;
     }
 
+    /** Check presence of cmd line option.  */
+    public boolean hasOption(CmdLineOption option) {
+        LOG.debug(String.format("CmdLine.hasOption(option) is working. Option: [%s].", option));
+        boolean result = !this.cmdLine.isEmpty() && (option != null) &&
+                this.hasOption(option.getName());
+        LOG.debug(String.format("Option [%s] check result [%s].", option, result));
+        return result;
+    }
+
     /** Returns first found value for specified option. In option use "-" (minus) sign. */
     public String optionValue(String option) {
-        LOG.debug(String.format("CmdLine.optionValue() is working. Option to check value: [%s].", option));
+        LOG.debug(String.format("CmdLine.optionValue() is working. Option: [%s].", option));
         String result = null;
         if (!this.cmdLine.isEmpty() && !StringUtils.isBlank(option)) {
             int optionNameIndex  = this.cmdLine.indexOf(option);
@@ -70,6 +77,17 @@ public class CmdLine {
             }
         }
 
+        LOG.debug(String.format("For option [%s] found value [%s].", option, result));
+        return result;
+    }
+
+    /** Returns first found value for specified option. */
+    public String optionValue(CmdLineOption option) {
+        LOG.debug(String.format("CmdLine.optionValue() is working. Option: [%s].", option));
+        String result = null;
+        if (!this.cmdLine.isEmpty() && option != null) {
+            result = this.optionValue(option.getName());
+        }
         LOG.debug(String.format("For option [%s] found value [%s].", option, result));
         return result;
     }
