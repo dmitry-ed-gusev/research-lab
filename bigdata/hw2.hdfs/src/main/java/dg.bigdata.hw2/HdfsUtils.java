@@ -15,7 +15,7 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- * Some useful HDFS utilities.
+ * Useful HDFS utilities/methods.
  * Created by vinnypuhh on 30.04.17.
  */
 public class HdfsUtils {
@@ -33,11 +33,6 @@ public class HdfsUtils {
 
     private static boolean urlHandlerSet = false;
 
-
-    protected static boolean isUrlHandlerSet() {
-        return urlHandlerSet;
-    }
-
     /***/
     protected static void setUrlHandler(Configuration conf) {
         LOG.debug("HdfsUtils.setUrlHandler() is working.");
@@ -45,7 +40,8 @@ public class HdfsUtils {
         // check - if url handler not set - set it
         if (!urlHandlerSet) {
             LOG.info("URL handler isn't set. Setting...");
-            URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory(conf == null ? new Configuration() : conf));
+            URL.setURLStreamHandlerFactory(
+                    new FsUrlStreamHandlerFactory(conf == null ? new Configuration() : conf));
             HdfsUtils.urlHandlerSet = true;
         } else {
             LOG.info("URL handler is already set.");
@@ -57,7 +53,9 @@ public class HdfsUtils {
      * The simplest method of interacting with HDFS via URL class.
      * Depends on URL handler - see static block.
      */
-    public static void readFromHdfsByURL(Configuration conf, OutputStream out, String filePath) throws IOException {
+    public static void readFromHdfsByURL(Configuration conf, OutputStream out, String filePath)
+            throws IOException {
+
         LOG.debug("HdfsUtils.simpleHdfsCat() is working.");
 
         // fast checks
@@ -86,6 +84,7 @@ public class HdfsUtils {
      * Uses standard java.io.InputStream for reading data.
      */
     public static void readFromHdfsByFS(String filePath, Configuration conf) throws IOException {
+        // todo: fix/implement
         //Configuration conf = new Configuration();
         FileSystem fs = FileSystem.get(URI.create(filePath), conf == null ? new Configuration() : conf);
         InputStream in = null;
@@ -105,6 +104,7 @@ public class HdfsUtils {
      * Uses HDFS specific FSDataInputStream for reading data.
      */
     public static void HdfsCatTwice(String filePath) throws IOException {
+        // todo: fix/implement
         Configuration conf = new Configuration();
         FileSystem fs = FileSystem.get(URI.create(filePath), conf);
         FSDataInputStream in = null;
@@ -120,6 +120,7 @@ public class HdfsUtils {
 
     /***/
     public static void fileCopyWithProgress(String source, String dest) throws IOException {
+        // todo: fix/implement
         InputStream in = new BufferedInputStream(new FileInputStream(source));
         Configuration conf = new Configuration();
         FileSystem fs = FileSystem.get(URI.create(dest), conf);
@@ -133,6 +134,7 @@ public class HdfsUtils {
 
     /***/
     public static void listStatus(String... filePath) throws IOException {
+        // todo: fix/implement
         Configuration conf = new Configuration();
         FileSystem fs = FileSystem.get(URI.create(filePath[0]), conf);
         Path[] paths = new Path[filePath.length];
