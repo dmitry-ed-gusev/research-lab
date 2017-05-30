@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integration tests for HdfsUtils class.
@@ -80,7 +81,7 @@ public class HdfsUtilsIT {
     }
 
     @Test
-    public void test() throws IOException {
+    public void testReadHDFSByURL() throws IOException {
 
         // output byte stream
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -89,11 +90,44 @@ public class HdfsUtilsIT {
 
         // tests
         HdfsUtils.readFromHdfsByURL(this.conf, out, path + FILE_1_PATH);
-        assertEquals("Should be equals (file1)!", FILE_1_CONTENT, out.toString(ENCODING));
+        assertEquals("Read by URL: should be equals (file1)!", FILE_1_CONTENT, out.toString(ENCODING));
 
         out.reset();
         HdfsUtils.readFromHdfsByURL(this.conf, out, path + FILE_2_PATH);
-        assertEquals("Should be equals (file2)!", FILE_2_CONTENT, out.toString(ENCODING));
+        assertEquals("Read by URL: should be equals (file2)!", FILE_2_CONTENT, out.toString(ENCODING));
+    }
+
+    @Test
+    public void testReadHDFSByFS() throws IOException {
+
+        // output byte stream
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        // build a path and read a file from HDFS
+        String path = "hdfs://" + CLUSTER_NAMENODE_HOST + ":" + CLUSTER_NAMENODE_PORT;
+
+        // tests
+        HdfsUtils.readFromHdfsByFS(this.conf, out, path + FILE_1_PATH);
+        assertEquals("Read by FS: should be equals (file1)!", FILE_1_CONTENT, out.toString(ENCODING));
+
+        out.reset();
+        HdfsUtils.readFromHdfsByFS(this.conf, out, path + FILE_2_PATH);
+        assertEquals("Read by FS: should be equals (file2)!", FILE_2_CONTENT, out.toString(ENCODING));
+    }
+
+    @Test
+    public void testCompareRead_URLvsFS() throws IOException {
+        // output byte stream
+        ByteArrayOutputStream outURL = new ByteArrayOutputStream();
+        ByteArrayOutputStream outFS = new ByteArrayOutputStream();
+
+        // build a path and read a file from HDFS
+        String path = "hdfs://" + CLUSTER_NAMENODE_HOST + ":" + CLUSTER_NAMENODE_PORT;
+
+        HdfsUtils.readFromHdfsByURL(this.conf, outURL, path + FILE_1_PATH);
+        HdfsUtils.readFromHdfsByFS(this.conf, outFS, path + FILE_1_PATH);
+
+        assertTrue("FS vs URL #1: should be equals!", outURL.toString(ENCODING).equals(outFS.toString(ENCODING)));
+        assertTrue("FS vs URL #2: should be equals!", outFS.toString(ENCODING).equals(outURL.toString(ENCODING)));
     }
 
     /*

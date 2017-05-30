@@ -5,11 +5,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.util.Progressable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -33,8 +32,8 @@ public class HdfsUtils {
 
     private static boolean urlHandlerSet = false;
 
-    /***/
-    protected static void setUrlHandler(Configuration conf) {
+    /** Lazy setter for URL handler - to handle hdfs:// protocol. */
+    private static void setUrlHandler(Configuration conf) {
         LOG.debug("HdfsUtils.setUrlHandler() is working.");
 
         // check - if url handler not set - set it
@@ -51,12 +50,12 @@ public class HdfsUtils {
 
     /**
      * The simplest method of interacting with HDFS via URL class.
-     * Depends on URL handler - see static block.
+     * Depends on URL handler - see static method setUrlHandler().
      */
     public static void readFromHdfsByURL(Configuration conf, OutputStream out, String filePath)
             throws IOException {
 
-        LOG.debug("HdfsUtils.simpleHdfsCat() is working.");
+        LOG.debug(String.format("HdfsUtils.readFromHdfsByURL() is working. File: [%s].", filePath));
 
         // fast checks
         if (out == null || StringUtils.isBlank(filePath)) {
@@ -75,26 +74,38 @@ public class HdfsUtils {
             IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
         } finally {
             IOUtils.closeStream(in);
+            LOG.debug("InputStream to HDFS closed.");
         }
 
     }
 
     /**
-     * Interaction with HDFS by using FileSystem directly.
+     * Interaction with HDFS by using FileSystem object directly. Here we
+     * don't need URL handler to process files on HDFS.
      * Uses standard java.io.InputStream for reading data.
      */
-    public static void readFromHdfsByFS(String filePath, Configuration conf) throws IOException {
-        // todo: fix/implement
-        //Configuration conf = new Configuration();
+    public static void readFromHdfsByFS(Configuration conf, OutputStream out, String filePath)
+            throws IOException {
+
+        LOG.debug(String.format("HdfsUtils.readFromHdfsByFS() is working. File: [%s].", filePath));
+
+        // fast checks
+        if (out == null || StringUtils.isBlank(filePath)) {
+            throw new IllegalArgumentException(
+                    String.format("Output stream is null [%s] or file path is empty [%s]!",
+                            (out == null), filePath));
+        }
+
+        // create FIleSystem object to read from HDFS
         FileSystem fs = FileSystem.get(URI.create(filePath), conf == null ? new Configuration() : conf);
         InputStream in = null;
         try {
             in = fs.open(new Path(filePath));
-            System.out.println("========================================================");
-            IOUtils.copyBytes(in, System.out, BUFFER_SIZE, false);
-            System.out.println("\n========================================================");
+            LOG.debug("Input stream opened. Starting bytes copying. Buffer: " + BUFFER_SIZE);
+            IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
         } finally {
             IOUtils.closeStream(in);
+            LOG.debug("InputStream to HDFS closed.");
         }
 
     }
