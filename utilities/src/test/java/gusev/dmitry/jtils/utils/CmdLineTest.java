@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
  * Created by gusevdm on 3/3/2017.
  */
 
-// todo: immutability test!
+// todo: add tests for help/description
 
 public class CmdLineTest {
 
@@ -30,20 +30,27 @@ public class CmdLineTest {
     };
     // cmd line options enum
     private enum Option implements CmdLineOption {
-        FLAG_OPTION     ("-flag"),
-        KEY_VALUE_OPTION("-name");
+        FLAG_OPTION     ("-flag", "flag description"),
+        KEY_VALUE_OPTION("-name", "name description");
 
         private String optionName;
+        private String optionDesc;
 
-        Option(String optionName) {
+        Option(String optionName, String optionDesc) {
             this.optionName = optionName;
+            this.optionDesc = optionDesc;
         }
-
 
         @Override
         public String getName() {
             return this.optionName;
         }
+
+        @Override
+        public String getDescription() {
+            return this.optionDesc;
+        }
+
     }
 
     @Test(expected = IllegalArgumentException.class)
