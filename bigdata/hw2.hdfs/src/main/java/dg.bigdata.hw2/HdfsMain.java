@@ -27,7 +27,7 @@ public final class HdfsMain {
 
         CmdLine cmdLine = new CmdLine(args);
 
-        String catFile = cmdLine.optionValue(CmdLineOptions.CAT_FILE_BY_URL);
+        String catFile = cmdLine.optionValue(Option.CAT_FILE_BY_URL);
         if (!StringUtils.isBlank(catFile)) {
             LOG.info(String.format("CAT file [%s] by URL.", catFile));
             try {
