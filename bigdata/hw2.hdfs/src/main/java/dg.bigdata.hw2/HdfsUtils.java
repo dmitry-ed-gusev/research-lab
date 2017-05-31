@@ -1,5 +1,6 @@
 package dg.bigdata.hw2;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -110,37 +111,39 @@ public class HdfsUtils {
 
     }
 
-    /**
-     * Interaction with HDFS by using FIleSystem directly.
-     * Uses HDFS specific FSDataInputStream for reading data.
-     */
-    public static void HdfsCatTwice(String filePath) throws IOException {
-        // todo: fix/implement
-        Configuration conf = new Configuration();
-        FileSystem fs = FileSystem.get(URI.create(filePath), conf);
-        FSDataInputStream in = null;
+    /***/
+    public static void copyFromLocal(Configuration conf, String sourceLocal, String destHdfs) throws IOException {
+        LOG.debug(String.format("HdfsUtils.copyFromLocal() is working. Local source [%s], HDFS dest [%s].",
+                sourceLocal, destHdfs));
+
+        // fail-fast checks
+        if (StringUtils.isBlank(sourceLocal) || StringUtils.isBlank(destHdfs)) {
+            throw new IllegalArgumentException(String.format("Empty source [%s] or dest [%s]!", sourceLocal, destHdfs));
+        }
+
+        // create FileSystem object, representing HDFS
+        FileSystem fs = FileSystem.get(URI.create(destHdfs), conf == null ? new Configuration() : conf);
+        InputStream  in  = null;
+        OutputStream out = null;
+
         try {
-            in = fs.open(new Path(filePath));
-            IOUtils.copyBytes(in, System.out, BUFFER_SIZE, false);
-            in.seek(0); // go back to the start of the file
-            IOUtils.copyBytes(in, System.out, BUFFER_SIZE, false);
+            // open local source file for reading
+            in = new BufferedInputStream(new FileInputStream(sourceLocal));
+            // open remote (HDFS) file for writing to (with progress show)
+            out = fs.create(new Path(destHdfs), () -> System.out.print("."));
+            // copy file from source to dest
+            IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
         } finally {
             IOUtils.closeStream(in);
+            IOUtils.closeStream(out);
         }
+
     }
 
     /***/
-    public static void fileCopyWithProgress(String source, String dest) throws IOException {
-        // todo: fix/implement
-        InputStream in = new BufferedInputStream(new FileInputStream(source));
-        Configuration conf = new Configuration();
-        FileSystem fs = FileSystem.get(URI.create(dest), conf);
-        OutputStream out = fs.create(new Path(dest), new Progressable() {
-            public void progress() {
-                System.out.print(".");
-            }
-        });
-        IOUtils.copyBytes(in, out, BUFFER_SIZE, true);
+    public static void copyToLocal(Configuration conf, String sourceHdfs, String destLocal) {
+        // todo: implement
+        throw new IllegalStateException("Not implemented yet!");
     }
 
     /***/

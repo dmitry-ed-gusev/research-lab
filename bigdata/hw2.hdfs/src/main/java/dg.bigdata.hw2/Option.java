@@ -8,8 +8,12 @@ import gusev.dmitry.jtils.utils.CmdLineOption;
  */
 public enum Option implements CmdLineOption {
 
-    CAT_FILE_BY_URL("-catFileByUrl", "-catFileByUrl <file url>   Cats specified file from HDFS. File URL is mandatory."),
-    CAT_FILE_BY_FS("-catFileByFS",   "-catFileByFS <file name>   Cats specified file from HDFS. FIle is mandatory.");
+    CAT_FILE_BY_URL ("-catFileByUrl",  "-catFileByUrl <file url>         Cats specified file from HDFS. File URL is mandatory."),
+    CAT_FILE_BY_FS  ("-catFileByFS",   "-catFileByFS <file name>         Cats specified file from HDFS. FIle is mandatory."),
+    COPY_FROM_LOCAL ("-copyFromLocal", "-copyFromLocal <local file>      Copy <local file> to HDFS (see option <-destination>)"),
+    COPY_TO_LOCAL   ("-copyToLocal",   "-copyToLocal <hdfs file>         Copy <hdfs file> to local disk (see option <-destination>)"),
+    COPY_DESTINATION("-destination",   "-destination <local/hdfs file>   Copy destination. Depends on copy direction - " +
+            "if copy is from local it's <hdfs file>, if copy is to local - it's <local file>.");
 
     private String optionName;
     private String optionDesc;
