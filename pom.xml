@@ -171,9 +171,10 @@
             </properties>
             <!-- Some of modules to build -->
             <modules>
+                <module>utilities</module>
                 <module>bigdata</module>
 				<!--<module>socialnet</module>-->
-				<module>j2ee</module>
+				<!--<module>j2ee</module>-->
             </modules>
         </profile>
 
@@ -186,8 +187,9 @@
             </properties>
             <!-- modules to build -->
             <modules>
+                <module>utilities</module>
                 <module>bigdata</module>
-				<module>j2ee</module>
+				<!--<module>j2ee</module>-->
             </modules>
         </profile>
 

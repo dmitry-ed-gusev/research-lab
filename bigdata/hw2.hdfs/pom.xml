@@ -20,6 +20,49 @@
     <build>
         <plugins>
 
+            <!-- maven shade plugin - creating a "FAT" jar with dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven.plugin.shade}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>true</minimizeJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>dgusev:utilities</include>
+                                    <!--<include>org.apache.commons:commons-lang3</include>-->
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <!--
+                                <filter>
+                                    <artifact>org.apache.commons:commons-lang3</artifact>
+                                    <includes>
+                                        <include>org/apache/commons/lang3/StringUtils.class</include>
+                                        <include>org/apache/commons/lang3/tuple/Pair.class</include>
+                                        <include>org/apache/commons/lang3/tuple/ImmutablePair.class</include>
+                                    </includes>
+                                </filter>
+                                -->
+                                <filter>
+                                    <artifact>dgusev:utilities</artifact>
+                                    <includes>
+                                        <include>gusev/dmitry/jtils/utils/CmdLine.class</include>
+                                        <include>gusev/dmitry/jtils/utils/CmdLineOption.class</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- maven antrun plugin (copy and filter .sh scripts) -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>

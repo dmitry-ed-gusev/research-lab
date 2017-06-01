@@ -11,7 +11,7 @@
 # ========================================================
 
 # - starting the whole script
-echo "Starting HDFS Util on a cluster..."
+echo "Starting HDFS Utility ..."
 # - check cmd line arguments count (exit if none)
 if [[ $# -eq 0 ]] ; then
     echo "CMD Line arguments error: use at least one file name/path!"
@@ -21,5 +21,4 @@ fi
 # - start concrete HDFSUtil java class on a Hadoop cluster
 echo "Starting HDFSUtil Java class."
 export HADOOP_CLASSPATH=@JAR_NAME@.jar
-#yarn @MAIN_CLASS@ ${1}
-hadoop @MAIN_CLASS@ ${1}
+yarn @MAIN_CLASS@ "$@"
