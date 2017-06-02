@@ -21,6 +21,7 @@ public class IPinYou {
 
     private static final Log LOG = LogFactory.getLog(IPinYou.class);
 
+    private static final String[] files = {"bid.20130606.txt"};
     /***/
     public static String getIPinYouId(String recordString) throws ParseException {
         //LOG.debug("IPinYou.getIPinYouId() is working."); // <- too much output

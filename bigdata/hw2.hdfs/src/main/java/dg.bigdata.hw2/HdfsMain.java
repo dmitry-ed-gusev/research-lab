@@ -59,7 +59,7 @@ public final class HdfsMain {
             if (!StringUtils.isBlank(sourceFile) && !StringUtils.isBlank(destFile)) {
                 LOG.info(String.format("Copy [%s] to [%s].", sourceFile, destFile));
                 try {
-                    HdfsUtils.copyFromLocal(new Configuration(), sourceFile, destFile);
+                    HdfsUtils.copyFromLocal(new Configuration(), System.out, sourceFile, destFile);
                 } catch (IOException e) {
                     LOG.error(e);
                 }
@@ -68,6 +68,18 @@ public final class HdfsMain {
             }
         } else if (cmdLine.hasOption(Option.COPY_TO_LOCAL)) { // copy from hdfs file to local
             LOG.debug("COPY file TO LOCAL. Processing.");
+            String sourceFile = cmdLine.optionValue(Option.COPY_TO_LOCAL);
+            String destFile   = cmdLine.optionValue(Option.COPY_DESTINATION);
+            if (!StringUtils.isBlank(sourceFile) && !StringUtils.isBlank(destFile)) {
+                LOG.info(String.format("Copy [%s] to [%s].", sourceFile, destFile));
+                try {
+                    HdfsUtils.copyToLocal(new Configuration(), sourceFile, destFile);
+                } catch (IOException e) {
+                    LOG.error(e);
+                }
+            } else {
+                LOG.error(String.format("Source [%s] or destination [%s] is empty!", sourceFile, destFile));
+            }
         } else { // invalid params (no known options present)
             LOG.error("Invalid command line!");
         }

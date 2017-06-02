@@ -1,16 +1,23 @@
 package dg.bigdata.hw2;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.*;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
-import org.apache.hadoop.util.Progressable;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 
@@ -22,7 +29,8 @@ public class HdfsUtils {
 
     private static final Log LOG = LogFactory.getLog(HdfsUtils.class);
 
-    private static final int BUFFER_SIZE = 4096;
+    private static final String ENCODING    = "UTF-8";
+    private static final int    BUFFER_SIZE = 4096;
 
     static {
         // set handler for hdfs:// protocol - it allows to
@@ -111,8 +119,16 @@ public class HdfsUtils {
 
     }
 
-    /***/
-    public static void copyFromLocal(Configuration conf, String sourceLocal, String destHdfs) throws IOException {
+    /**
+     *
+     * @param conf {@link Configuration} cluster configuration
+     * @param progressOut {@link OutputStream} stream to output progress of reading
+     * @param sourceLocal {@link String} local source file
+     * @param destHdfs {@link String} destination file on HDFS
+     */
+    // todo: check - sourcefile exists?
+    // todo: check - dest file exists?
+    public static void copyFromLocal(Configuration conf, OutputStream progressOut, String sourceLocal, String destHdfs) throws IOException {
         LOG.debug(String.format("HdfsUtils.copyFromLocal() is working. Local source [%s], HDFS dest [%s].",
                 sourceLocal, destHdfs));
 
@@ -130,7 +146,14 @@ public class HdfsUtils {
             // open local source file for reading
             in = new BufferedInputStream(new FileInputStream(sourceLocal));
             // open remote (HDFS) file for writing to (with progress show)
-            out = fs.create(new Path(destHdfs), () -> System.out.print("."));
+            progressOut.write("\nCopy started\n".getBytes(ENCODING));
+            out = fs.create(new Path(destHdfs), () -> {
+                try {
+                    progressOut.write(".".getBytes(ENCODING));
+                } catch (IOException e) {
+                    LOG.error(e);
+                }
+            });
             // copy file from source to dest
             IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
         } finally {
@@ -138,12 +161,34 @@ public class HdfsUtils {
             IOUtils.closeStream(out);
         }
 
+        progressOut.write("\nCopy finished.\n".getBytes(ENCODING));
     }
 
     /***/
-    public static void copyToLocal(Configuration conf, String sourceHdfs, String destLocal) {
-        // todo: implement
-        throw new IllegalStateException("Not implemented yet!");
+    // todo: check - source file exists,
+    public static void copyToLocal(Configuration conf, String sourceHdfs, String destLocal) throws IOException {
+        LOG.debug(String.format("HdfsUtils.copyToLocal() is working. HDFS source [%s], local dest [%s].",
+                sourceHdfs, destLocal));
+
+        // fail-fast checks
+        if (StringUtils.isBlank(sourceHdfs) || StringUtils.isBlank(destLocal)) {
+            throw new IllegalArgumentException(String.format("Empty source [%s] or dest [%s]!", sourceHdfs, destLocal));
+        }
+
+        // create FileSystem object, representing HDFS
+        FileSystem fs = FileSystem.get(URI.create(sourceHdfs), conf == null ? new Configuration() : conf);
+        InputStream  in  = null;
+        OutputStream out = null;
+        try {
+            // open
+            in = fs.open(new Path(sourceHdfs));
+            out = new BufferedOutputStream(new FileOutputStream(destLocal));
+            IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
+        } finally {
+            IOUtils.closeStream(in);
+            IOUtils.closeStream(out);
+        }
+
     }
 
     /***/

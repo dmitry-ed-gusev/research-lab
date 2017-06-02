@@ -21,4 +21,4 @@ fi
 # - start concrete HDFSUtil java class on a Hadoop cluster
 echo "Starting HDFSUtil Java class."
 export HADOOP_CLASSPATH=@JAR_NAME@.jar
-yarn @MAIN_CLASS@ "$@"
+yarn @MAIN_CLASS_HDFS@ "$@"

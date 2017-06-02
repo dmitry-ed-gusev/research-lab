@@ -14,7 +14,8 @@
     <name>BigData course :: HomeWork #2. HDFS.</name>
 
     <properties>
-        <main.class>dg.bigdata.hw2.HdfsMain</main.class>
+        <main.class.hdfs>dg.bigdata.hw2.HdfsMain</main.class.hdfs>
+        <main.class.ipinyou>dg.bigdata.hw2.IPinYou</main.class.ipinyou>
     </properties>
 
     <build>
@@ -80,7 +81,8 @@
                                     <fileset dir="${basedir}"><include name="*.sh"/></fileset>
                                     <filterset>
                                         <filter token="JAR_NAME" value="${jar.name}"/>
-                                        <filter token="MAIN_CLASS" value="${main.class}"/>
+                                        <filter token="MAIN_CLASS_HDFS" value="${main.class.hdfs}"/>
+                                        <filter token="MAIN_CLASS_IPINYOU" value="${main.class.ipinyou}"/>
                                     </filterset>
                                 </copy>
                                 <!-- fix LF in sh scripts after copy -->
