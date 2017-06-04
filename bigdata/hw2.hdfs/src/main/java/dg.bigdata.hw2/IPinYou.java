@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implementation of BigData course HW #2.
@@ -19,9 +21,10 @@ public class IPinYou {
 
     private static final Log LOG = LogFactory.getLog(IPinYou.class);
 
+    private static final String[] files = {"bid.20130606.txt"};
     /***/
     public static String getIPinYouId(String recordString) throws ParseException {
-        LOG.debug("IPinYou.getIPinYouId() is working.");
+        //LOG.debug("IPinYou.getIPinYouId() is working."); // <- too much output
 
         if (StringUtils.isBlank(recordString)) { // fast-fail
             throw new IllegalArgumentException("Record string is empty or null!");
@@ -38,12 +41,33 @@ public class IPinYou {
     /***/
     public static void main(String[] args) throws IOException {
 
+        Map<String, Integer> values = new HashMap<>();
+
         try (BufferedReader br = new BufferedReader(new FileReader("c:/temp/bid.20130606.txt"))) {
             String line;
+            String id;
+            long counter = 0;
             while ((line = br.readLine()) != null) {
-                // process the line.
-                System.out.println("===> " + line);
-            }
+                // process the line
+
+                try {
+                    id = IPinYou.getIPinYouId(line);
+                    int count = values.containsKey(id) ? values.get(id) : 0;
+                    values.put(id, count + 1);
+                    counter++;
+
+                    if (counter % 100000 == 0) {
+                        LOG.info(String.format("Processed: %s", counter));
+                    }
+                } catch (ParseException e) {
+                    LOG.warn("Skipped line, can't parse ID!");
+                }
+
+                //System.out.println("===> " + line);
+            } // end of while cycle
+
+            LOG.info(String.format("Total processed: %s", counter));
+
         }
 
     }

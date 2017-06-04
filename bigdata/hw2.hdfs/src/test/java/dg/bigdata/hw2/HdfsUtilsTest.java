@@ -27,4 +27,18 @@ public class HdfsUtilsTest {
         HdfsUtils.readFromHdfsByURL(new Configuration(), new ByteArrayOutputStream(), "   ");
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void testReadFromHdfsByFSEmptyOut() throws IOException {
+        HdfsUtils.readFromHdfsByFS(new Configuration(), null, "path");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testReadFromHdfsByFSNullPath() throws IOException {
+        HdfsUtils.readFromHdfsByFS(new Configuration(), new ByteArrayOutputStream(), null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testReadFromHdfsByFSEmptyPath() throws IOException {
+        HdfsUtils.readFromHdfsByFS(new Configuration(), new ByteArrayOutputStream(), "   ");
+    }
 }

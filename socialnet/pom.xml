@@ -11,7 +11,7 @@
     <artifactId>socialnet</artifactId>
     <packaging>jar</packaging>
     <version>0.1.0</version>
-    <name>Social Crawler :: integration/working with social dg.social.crawler.networks.</name>
+    <name>Social Crawler :: working with social nets.</name>
 
     <properties>
         <jar.name>crawler-${env}-${project.version}</jar.name>
