@@ -28,6 +28,8 @@ public enum CmdLineOption {
     HELP         ("-help",        "-help                        Show help and current usage info", "");
 
     // application description
+    // todo: move it to app constants
+    // todo: extend CmdLineOption from [utilities] module
     private static final String APP_DESCRIPTION = "\nSocial dg.social.crawler.networks crawler. Dmitrii Gusev, 2017.\n\nUsage/options:\n";
 
     private String optionName;

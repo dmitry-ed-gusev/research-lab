@@ -8,16 +8,15 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tmpresearch</artifactId>
+    <artifactId>j2ee</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>TMP Research :: some experimental researches.</name>
-	
-	<modules>
-		<module>xml</module>
-		<module>hibernate</module>
-		<module>jsf2-example</module>
-		<module>unsorted</module>
-	</modules>
-	
+    <name>J2EE :: some research with j2ee tech.</name>
+
+	<!--
+    <modules>
+        <module>cdi</module>
+    </modules>
+	-->
+    
 </project>
