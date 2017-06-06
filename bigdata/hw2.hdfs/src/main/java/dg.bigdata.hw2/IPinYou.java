@@ -1,12 +1,18 @@
 package dg.bigdata.hw2;
 
+import gusev.dmitry.jtils.utils.CmdLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +27,9 @@ public class IPinYou {
 
     private static final Log LOG = LogFactory.getLog(IPinYou.class);
 
-    private static final String[] files = {"bid.20130606.txt"};
+    private static final String OPTION_SOURCE   = "-source";
+    private static final String OPTION_OUT_FILE = "-outFile";
+
     /***/
     public static String getIPinYouId(String recordString) throws ParseException {
         //LOG.debug("IPinYou.getIPinYouId() is working."); // <- too much output
@@ -40,9 +48,38 @@ public class IPinYou {
 
     /***/
     public static void main(String[] args) throws IOException {
+        LOG.info("IPinYou application is starting...");
+
+        // fast-fail args count check
+        if (args.length != 4) { // -source/<value>/-out/<value>
+            throw new IllegalArgumentException("Should be 4 cmd line arguments!");
+        }
+
+        // get and parse cmd line
+        CmdLine cmdLine = new CmdLine(args);
+        String sourceHdfsDir = cmdLine.optionValue(OPTION_SOURCE);
+        String outputFile    = cmdLine.optionValue(OPTION_OUT_FILE);
+        // one more fail-fast consistency check
+        if (StringUtils.isBlank(sourceHdfsDir) || StringUtils.isBlank(outputFile)) {
+            throw new IllegalArgumentException(
+                    String.format("Source HDFS folder [%s] and/or output file [%s] is empty!", sourceHdfsDir, outputFile));
+        }
+        LOG.debug("Cmd line params are checked and are OK.");
+
+        // check is specified HDFS dir exists and is a dir
+        FileSystem fs = FileSystem.get(URI.create(sourceHdfsDir), new Configuration());
+        Path sourcePath = new Path(sourceHdfsDir);
+        FileStatus fstatus = fs.getFileStatus(sourcePath);
+        System.out.println("exists -> " + fs.exists(sourcePath));
+        System.out.println("is dir -> " + fstatus.isDirectory());
+
+        System.exit(444);
+
+        // list all files in a dir
+        // process files one by one and calculate
+        // write results to
 
         Map<String, Integer> values = new HashMap<>();
-
         try (BufferedReader br = new BufferedReader(new FileReader("c:/temp/bid.20130606.txt"))) {
             String line;
             String id;
