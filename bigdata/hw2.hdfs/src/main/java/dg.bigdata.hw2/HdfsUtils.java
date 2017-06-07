@@ -25,6 +25,9 @@ import java.net.URL;
  * Useful HDFS utilities/methods.
  * Created by vinnypuhh on 30.04.17.
  */
+
+// todo: implement copy multiple files (by dir/by mask/etc)
+
 public class HdfsUtils {
 
     private static final Log LOG = LogFactory.getLog(HdfsUtils.class);

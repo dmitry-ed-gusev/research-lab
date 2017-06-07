@@ -81,6 +81,7 @@ if [ "${SKIP_UNZIP}" == "NO" ]; then
 fi
 
 # - copy txt files to HDFS destination
+# todo: move this logic to hdfs utility
 if [ "${SKIP_COPY}" == "NO" ]; then
     echo "Start copy files to HDFS."
     for file in ${SOURCE_LOCAL}/*.txt

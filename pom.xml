@@ -130,6 +130,7 @@
             <properties>
                 <env>dev</env>
                 <prod.build.phase>none</prod.build.phase>
+                <prod.deploy.phase>none</prod.deploy.phase>
             </properties>
             <!-- All modules to build -->
             <modules>
@@ -149,6 +150,7 @@
             <properties>
                 <env>prod</env>
                 <prod.build.phase>package</prod.build.phase>
+                <prod.deploy.phase>none</prod.deploy.phase>
             </properties>
             <!-- All modules to build -->
             <modules>
@@ -168,6 +170,7 @@
             <properties>
                 <env>dev</env>
                 <prod.build.phase>none</prod.build.phase>
+                <prod.deploy.phase>none</prod.deploy.phase>
             </properties>
             <!-- Some of modules to build -->
             <modules>
@@ -184,6 +187,7 @@
             <properties>
                 <env>prod</env>
                 <prod.build.phase>package</prod.build.phase>
+                <prod.deploy.phase>install</prod.deploy.phase>
             </properties>
             <!-- modules to build -->
             <modules>

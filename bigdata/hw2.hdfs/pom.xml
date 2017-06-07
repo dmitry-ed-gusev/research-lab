@@ -68,6 +68,7 @@
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
+                    <!-- assembly app in target folder -->
                     <execution>
                         <id>project-copy-batch-files</id>
                         <phase>${prod.build.phase}</phase>
@@ -90,7 +91,38 @@
                             </tasks>
                         </configuration>
                     </execution>
+
+                    <!-- deploy app on target server (via ssh/scp) -->
+                    <execution>
+                        <id>project-deploy-app</id>
+                        <phase>${prod.deploy.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+
+                                <scp todir="gusevdm:Vinnypuhh14!@mantis-01.bdpdev.gin.merck.com:/home/gusevdm/${project.artifactId}" trust="yes">
+                                    <fileset dir="${assembly.dir}"/>
+                                </scp>
+
+                            </tasks>
+                        </configuration>
+                    </execution>
                 </executions>
+                <!-- libraries for ant scp impl, antrun doesn't use os's scp -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.53</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
         </plugins>

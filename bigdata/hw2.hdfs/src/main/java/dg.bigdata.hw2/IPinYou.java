@@ -66,18 +66,23 @@ public class IPinYou {
         }
         LOG.debug("Cmd line params are checked and are OK.");
 
-        // check is specified HDFS dir exists and is a dir
+        // fast-fail checks: is specified HDFS dir exists and is it a dir?
         FileSystem fs = FileSystem.get(URI.create(sourceHdfsDir), new Configuration());
         Path sourcePath = new Path(sourceHdfsDir);
         FileStatus fstatus = fs.getFileStatus(sourcePath);
-        System.out.println("exists -> " + fs.exists(sourcePath));
-        System.out.println("is dir -> " + fstatus.isDirectory());
-
-        System.exit(444);
+        if (!fs.exists(sourcePath)) {
+            throw new IllegalStateException(String.format("HDFS dir [%s] doesn't exist!", sourceHdfsDir));
+        } else if (!fstatus.isDirectory()) {
+            throw new IllegalStateException(String.format("HDFS path [%s] isn't a directory!", sourceHdfsDir));
+        }
+        LOG.debug(String.format("HDFS path [%s] exists and is a directory.", sourceHdfsDir));
 
         // list all files in a dir
+
         // process files one by one and calculate
         // write results to
+
+        System.exit(444);
 
         Map<String, Integer> values = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader("c:/temp/bid.20130606.txt"))) {

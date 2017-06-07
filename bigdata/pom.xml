@@ -20,9 +20,16 @@
     </modules>
 
     <properties>
+        <!-- versions -->
         <hadoop.version>2.7.1</hadoop.version>
+        <!-- paths -->
         <jar.name>${project.artifactId}-${env}</jar.name>
         <assembly.dir>${project.build.directory}/${project.artifactId}</assembly.dir>
+        <!-- cluster parameters/creds -->
+        <cluster.host></cluster.host>
+        <cluster.user></cluster.user>
+        <cluster.pass></cluster.pass>
+
     </properties>
 
     <build>
