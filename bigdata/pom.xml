@@ -25,11 +25,12 @@
         <!-- paths -->
         <jar.name>${project.artifactId}-${env}</jar.name>
         <assembly.dir>${project.build.directory}/${project.artifactId}</assembly.dir>
+
         <!-- cluster parameters/creds -->
         <cluster.host></cluster.host>
+        <cluster.port></cluster.port>
         <cluster.user></cluster.user>
         <cluster.pass></cluster.pass>
-
     </properties>
 
     <build>

@@ -13,12 +13,15 @@
         <!-- java-related settings/properties -->
         <java.sources.encoding>UTF-8</java.sources.encoding>
         <java.version>1.8</java.version>
+
         <!-- maven plugins settings/versions -->
         <maven.plugin.compiler>2.3.2</maven.plugin.compiler>
         <maven.plugin.jar>2.4</maven.plugin.jar>
         <maven.plugin.resources>2.5</maven.plugin.resources>
+        <maven.plugin.antrun>1.8</maven.plugin.antrun>
         <maven.plugin.shade>2.4.3</maven.plugin.shade>
-		<!-- Apache Commons libraries (Lang3/Logging/IO/Log4J) -->
+
+        <!-- Apache Commons libraries (Lang3/Logging/IO/Log4J) -->
         <commons.lang3.version>3.4</commons.lang3.version>
         <commons.logging.version>1.1.3</commons.logging.version>
         <commons.io.version>2.5</commons.io.version>

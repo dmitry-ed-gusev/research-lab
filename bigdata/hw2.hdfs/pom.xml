@@ -67,6 +67,7 @@
             <!-- maven antrun plugin (copy and filter .sh scripts) -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven.plugin.antrun}</version>
                 <executions>
                     <!-- assembly app in target folder -->
                     <execution>
@@ -100,8 +101,8 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
+                            <skip>true</skip>
                             <tasks>
-
                                 <scp todir="gusevdm:Vinnypuhh14!@mantis-01.bdpdev.gin.merck.com:/home/gusevdm/${project.artifactId}" trust="yes">
                                     <fileset dir="${assembly.dir}"/>
                                 </scp>
