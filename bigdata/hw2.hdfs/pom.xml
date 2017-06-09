@@ -37,20 +37,9 @@
                             <artifactSet>
                                 <includes>
                                     <include>dgusev:utilities</include>
-                                    <!--<include>org.apache.commons:commons-lang3</include>-->
                                 </includes>
                             </artifactSet>
                             <filters>
-                                <!--
-                                <filter>
-                                    <artifact>org.apache.commons:commons-lang3</artifact>
-                                    <includes>
-                                        <include>org/apache/commons/lang3/StringUtils.class</include>
-                                        <include>org/apache/commons/lang3/tuple/Pair.class</include>
-                                        <include>org/apache/commons/lang3/tuple/ImmutablePair.class</include>
-                                    </includes>
-                                </filter>
-                                -->
                                 <filter>
                                     <artifact>dgusev:utilities</artifact>
                                     <includes>
@@ -101,13 +90,17 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <skip>true</skip>
-                            <tasks>
-                                <scp todir="gusevdm:Vinnypuhh14!@mantis-01.bdpdev.gin.merck.com:/home/gusevdm/${project.artifactId}" trust="yes">
+                            <skip>${skipDeploy}</skip>
+                            <target>
+                                <!-- make remote dir (no fail if exists) -->
+                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                         command="mkdir -p ${path}/${project.artifactId}" trust="yes"/>
+                                <!-- copy file to cluster (deploy) -->
+                                <scp todir="${user}:${pass}@${host}:${path}/${project.artifactId}"
+                                     port="${port}" trust="yes">
                                     <fileset dir="${assembly.dir}"/>
                                 </scp>
-
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
@@ -116,12 +109,12 @@
                     <dependency>
                         <groupId>com.jcraft</groupId>
                         <artifactId>jsch</artifactId>
-                        <version>0.1.53</version>
+                        <version>${jsch.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>ant</groupId>
                         <artifactId>ant-jsch</artifactId>
-                        <version>1.6.5</version>
+                        <version>${ant.jsch.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
