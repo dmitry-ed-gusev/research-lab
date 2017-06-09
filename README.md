@@ -1,6 +1,40 @@
-# README #
+# Project RESEARCH #
+This project intended for any kind of research, experiments, etc.
 
-This README would normally document whatever steps are necessary to get your application up and running.
+## Repository contents ##
+Repository contains some modules:
+* [bigdata]
+    * [hw1.mapreduce]
+    * [hw2.hdfs]
+    * [storm]
+* [chat-app]
+    * [chat-client]
+    * [chat-server]
+* [docs]
+* [j2ee]
+* [marklogic]
+* [scripts]
+* [socialnet]
+* [tmpresearch]
+    * [hibernate]
+    * [jsf2-example]
+    * [unsorted]
+    * [xml]
+* [utilities]
+
+## Some technical details ##
+### Module [bigdata]. Deploy to cluster (by scp) ###
+For deploy to remote/local server (via ssh/scp) specify cmd line parameters for maven:
+* -DskipDeploy=false - deploy to remote host is off by default, turn it on
+* -Dhost=\<host value> - remote host
+* -Dport=\<port value> - remote port 
+* -Duser=\<user value> - user for remote host
+* -Dpass=\<pass value> - remote host user's password
+* -Dpath=\<path value> - path for deploy on remote host
+
+**Example:**
+
+mvn clean install -DskipDeploy=false -Duser=myuser -Dpass=mypass -Dhost=myhost -Dpath=/home/user
 
 ### What is this repository for? ###
 
