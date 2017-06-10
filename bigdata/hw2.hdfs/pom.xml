@@ -36,10 +36,19 @@
                             <minimizeJar>true</minimizeJar>
                             <artifactSet>
                                 <includes>
+                                    <include>org.apache.commons:commons-lang3</include>
                                     <include>dgusev:utilities</include>
                                 </includes>
                             </artifactSet>
                             <filters>
+                                <!-- apache commons -->
+                                <filter>
+                                    <artifact>org.apache.commons:commons-lang3</artifact>
+                                    <includes>
+                                        <include>org/apache/commons/lang3/StringUtils.class</include>
+                                    </includes>
+                                </filter>
+                                <!-- internal utility -->
                                 <filter>
                                     <artifact>dgusev:utilities</artifact>
                                     <includes>

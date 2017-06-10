@@ -7,12 +7,9 @@
 #   Usage: ipinyou.sh <local path to files>
 #
 #   Created:  Gusev Dmitrii, 02.06.2017
-#   Modified: Gusev Dmitrii, 06.06.2017
+#   Modified: Gusev Dmitrii, 10.06.2017
 #
 # ========================================================
-
-# todo: implement skip unzip file option
-# todo: implement skip copy to hdfs option
 
 # - some defaults
 RESULT_FILE_NAME="ipinyou_output.txt"
@@ -93,13 +90,15 @@ if [ "${SKIP_COPY}" == "NO" ]; then
 fi
 
 # - execute IPinYou application and calculate result
-echo "Start IPinYou calculation."
+echo "Starting IPinYou calculation."
+echo "Dest HDFS [${DEST_HDFS}]. Output file [${RESULT_FILE_NAME}]."
 export HADOOP_CLASSPATH=@JAR_NAME@.jar
 yarn @MAIN_CLASS_IPINYOU@ -source ${DEST_HDFS} -outFile ${RESULT_FILE_NAME}
+
 # todo: !!!
-exit 777
+#exit 777
 
 # - cat result of calculation (from HDFS)
-echo "CAT result file ${RESULT_FILE_NAME} from HDFS."
-export HADOOP_CLASSPATH=@JAR_NAME@.jar
-yarn @MAIN_CLASS_HDFS@ -catFileByFS ${RESULT_FILE_NAME}
+#echo "CAT result file ${RESULT_FILE_NAME} from HDFS."
+#export HADOOP_CLASSPATH=@JAR_NAME@.jar
+#yarn @MAIN_CLASS_HDFS@ -catFileByFS ${RESULT_FILE_NAME}

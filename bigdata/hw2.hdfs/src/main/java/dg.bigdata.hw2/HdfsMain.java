@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Main class for HDFS utilities - processing cmd line args,
@@ -22,9 +23,9 @@ public final class HdfsMain {
 
     /***/
     public static void main(String[] args) {
-        LOG.info("HdfsMain is starting...");
+        LOG.info(String.format("HdfsMain is starting. Cmd line [%s].", Arrays.toString(args)));
 
-        CmdLine cmdLine = new CmdLine(args);
+        CmdLine cmdLine = new CmdLine(args); // create cmd line object
 
         if (cmdLine.hasOption(HdfsOption.CAT_FILE_BY_URL)) { // cat by URL
             LOG.debug("CAT file by URL. Processing.");

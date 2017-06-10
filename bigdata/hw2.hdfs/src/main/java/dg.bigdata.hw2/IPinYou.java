@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,12 +49,15 @@ public class IPinYou {
 
     /***/
     public static void main(String[] args) throws IOException {
-        LOG.info("IPinYou application is starting...");
+        LOG.info(String.format("IPinYou is starting... Cmd line: %s.", Arrays.toString(args)));
 
         // fast-fail args count check
-        if (args.length != 4) { // -source/<value>/-out/<value>
-            throw new IllegalArgumentException("Should be 4 cmd line arguments!");
+        if (args.length < 4) { // -source/<value>/-out/<value> - mandatory
+            throw new IllegalArgumentException(
+                    String.format("Should be at least 4 cmd line arguments! Cmd line %s.",
+                            Arrays.toString(args)));
         }
+        LOG.info(String.format("Cmd line length [%s] is OK. Continue.", args.length));
 
         // get and parse cmd line
         CmdLine cmdLine = new CmdLine(args);
@@ -64,24 +68,23 @@ public class IPinYou {
             throw new IllegalArgumentException(
                     String.format("Source HDFS folder [%s] and/or output file [%s] is empty!", sourceHdfsDir, outputFile));
         }
-        LOG.debug("Cmd line params are checked and are OK.");
+        LOG.info("Cmd line params are checked and are OK.");
 
         // fast-fail checks: is specified HDFS dir exists and is it a dir?
         FileSystem fs = FileSystem.get(URI.create(sourceHdfsDir), new Configuration());
         Path sourcePath = new Path(sourceHdfsDir);
         FileStatus fstatus = fs.getFileStatus(sourcePath);
+        LOG.info("FileSystem/FileStatus objects created OK.");
         if (!fs.exists(sourcePath)) {
             throw new IllegalStateException(String.format("HDFS dir [%s] doesn't exist!", sourceHdfsDir));
         } else if (!fstatus.isDirectory()) {
             throw new IllegalStateException(String.format("HDFS path [%s] isn't a directory!", sourceHdfsDir));
         }
-        LOG.debug(String.format("HDFS path [%s] exists and is a directory.", sourceHdfsDir));
+        LOG.info(String.format("HDFS path [%s] exists and is a directory.", sourceHdfsDir));
 
         // list all files in a dir
-
         // process files one by one and calculate
         // write results to
-
         System.exit(444);
 
         Map<String, Integer> values = new HashMap<>();
