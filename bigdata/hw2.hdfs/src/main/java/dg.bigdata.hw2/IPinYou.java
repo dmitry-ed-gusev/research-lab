@@ -82,8 +82,23 @@ public class IPinYou {
         }
         LOG.info(String.format("HDFS path [%s] exists and is a directory.", sourceHdfsDir));
 
-        // list all files in a dir
+        // list all text files in a dir (using filter)
+        FileStatus[] statuses = fs.listStatus(sourcePath,
+                (path) -> {
+            boolean result = path != null && path.toString().toLowerCase().endsWith(".txt");
+            LOG.info(String.format("Path [%s] is accepted [%s].", path, result));
+            return result;
+        });
+
         // process files one by one and calculate
+        for (FileStatus status : statuses) {
+            LOG.info(String.format("Processing path [%s].", status.getPath()));
+            // process one of files and calculate
+
+
+        }
+
+
         // write results to
         System.exit(444);
 
