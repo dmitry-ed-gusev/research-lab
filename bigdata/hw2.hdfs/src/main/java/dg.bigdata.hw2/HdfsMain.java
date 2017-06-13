@@ -23,7 +23,7 @@ public final class HdfsMain {
 
     /***/
     public static void main(String[] args) {
-        LOG.info(String.format("HdfsMain is starting. Cmd line [%s].", Arrays.toString(args)));
+        LOG.info(String.format("HdfsMain is starting. Cmd line %s.", Arrays.toString(args)));
 
         CmdLine cmdLine = new CmdLine(args); // create cmd line object
 

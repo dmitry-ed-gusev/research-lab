@@ -10,8 +10,8 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -85,51 +85,46 @@ public class IPinYou {
         // list all text files in a dir (using filter)
         FileStatus[] statuses = fs.listStatus(sourcePath,
                 (path) -> {
-            boolean result = path != null && path.toString().toLowerCase().endsWith(".txt");
+            boolean result = path != null && path.getName().toLowerCase().startsWith("bid.") &&
+                    path.toString().toLowerCase().endsWith(".txt");
             LOG.info(String.format("Path [%s] is accepted [%s].", path, result));
             return result;
         });
 
+        // resulting map with calculation results
+        Map<String, Integer> values = new HashMap<>();
         // process files one by one and calculate
+        String line;
+        String id;
+        long   counter;
         for (FileStatus status : statuses) {
             LOG.info(String.format("Processing path [%s].", status.getPath()));
+
             // process one of files and calculate
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(status.getPath())))) {
+                counter = 0;
+                while((line = br.readLine()) != null) {
+                    try {
+                        //System.out.println("ID -> " + IPinYou.getIPinYouId(line));
+                        id = IPinYou.getIPinYouId(line);
+                            int count = values.containsKey(id) ? values.get(id) : 0;
+                            values.put(id, count + 1);
+                            counter++;
 
+                            if (counter % 100000 == 0) { // todo: move 'magic number' to constant
+                                LOG.info(String.format("Processed: %s", counter));
+                            }
 
-        }
-
-
-        // write results to
-        System.exit(444);
-
-        Map<String, Integer> values = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("c:/temp/bid.20130606.txt"))) {
-            String line;
-            String id;
-            long counter = 0;
-            while ((line = br.readLine()) != null) {
-                // process the line
-
-                try {
-                    id = IPinYou.getIPinYouId(line);
-                    int count = values.containsKey(id) ? values.get(id) : 0;
-                    values.put(id, count + 1);
-                    counter++;
-
-                    if (counter % 100000 == 0) {
-                        LOG.info(String.format("Processed: %s", counter));
+                    } catch (ParseException e) {
+                        LOG.error(String.format("Can't parse line [%s], skipped!", line), e);
                     }
-                } catch (ParseException e) {
-                    LOG.warn("Skipped line, can't parse ID!");
-                }
+                } // end of WHILE
+                LOG.info(String.format("Total processed for file [%s]: %s", status.getPath(), counter));
+            }
 
-                //System.out.println("===> " + line);
-            } // end of while cycle
+        } // end of FOR
 
-            LOG.info(String.format("Total processed: %s", counter));
-
-        }
-
+        // write results to file in hdfs
     }
 
 }
