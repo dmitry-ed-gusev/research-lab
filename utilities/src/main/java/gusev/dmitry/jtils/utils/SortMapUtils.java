@@ -2,9 +2,11 @@ package gusev.dmitry.jtils.utils;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -82,16 +84,28 @@ public final class SortMapUtils {
             }
         });
         */
+
         // version with lambda
         list.sort(Comparator.comparing(o -> (o.getValue())));
 
-
-        // loop the sorted list and put it into a new insertion ordered LinkedHashMap
+        // loop the sorted list and put it into a new insertion ordered LinkedHashMap.
+        // not effective if map is very big (fails with out of memory)
         //for (Map.Entry<K, V> entry : list) {
         //    result.put(entry.getKey(), entry.getValue());
         //}
-        // version with lambda
-        list.forEach(entry -> result.put(entry.getKey(), entry.getValue()));
+
+        // version with lambda. not effective if map is very big (fails with out of memory)
+        //list.forEach(entry -> result.put(entry.getKey(), entry.getValue()));
+
+        // iterate over list, put each map entry from list to resulting map and remove entry from list
+        // (we need it due to memory saving reasons)
+        Iterator<Map.Entry<K, V>> iterator = list.iterator();
+        Map.Entry<K, V> entry;
+        while (iterator.hasNext()) {
+            entry = iterator.next();
+            result.put(entry.getKey(), entry.getValue());
+            iterator.remove();
+        }
 
         return result;
     }
