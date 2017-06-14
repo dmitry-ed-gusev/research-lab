@@ -6,8 +6,8 @@
 #   BigData course, Homework #2.
 #   Usage: ipinyou.sh <local path to files>
 #
-#   Created:  Gusev Dmitrii, 02.06.2017
-#   Modified: Gusev Dmitrii, 10.06.2017
+#   Created:  Gusev Dmitrii, 01.06.2017
+#   Modified: Gusev Dmitrii, 14.06.2017
 #
 # ========================================================
 
@@ -93,12 +93,9 @@ fi
 echo "Starting IPinYou calculation."
 echo "Dest HDFS [${DEST_HDFS}]. Output file [${RESULT_FILE_NAME}]."
 export HADOOP_CLASSPATH=@JAR_NAME@.jar
-yarn @MAIN_CLASS_IPINYOU@ -source ${DEST_HDFS} -outFile ${RESULT_FILE_NAME}
-
-# todo: !!!
-#exit 777
+yarn @MAIN_CLASS_IPINYOU@ -source ${DEST_HDFS} -outFile ${DEST_HDFS}/${RESULT_FILE_NAME}
 
 # - cat result of calculation (from HDFS)
-#echo "CAT result file ${RESULT_FILE_NAME} from HDFS."
-#export HADOOP_CLASSPATH=@JAR_NAME@.jar
-#yarn @MAIN_CLASS_HDFS@ -catFileByFS ${RESULT_FILE_NAME}
+echo "CAT result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
+export HADOOP_CLASSPATH=@JAR_NAME@.jar
+yarn @MAIN_CLASS_HDFS@ -catFileByFS ${DEST_HDFS}/${RESULT_FILE_NAME}

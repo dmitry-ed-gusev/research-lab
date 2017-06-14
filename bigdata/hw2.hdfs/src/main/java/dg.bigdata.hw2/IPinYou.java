@@ -1,6 +1,7 @@
 package dg.bigdata.hw2;
 
 import gusev.dmitry.jtils.utils.CmdLine;
+import gusev.dmitry.jtils.utils.SortMapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,14 +9,20 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -23,13 +30,15 @@ import java.util.Map;
  * Created by gusevdm on 5/17/2017.
  */
 
-// todo: see here -> http://stackoverflow.com/questions/14573209/read-a-text-file-from-hdfs-line-by-line-in-mapper
 public class IPinYou {
 
     private static final Log LOG = LogFactory.getLog(IPinYou.class);
 
-    private static final String OPTION_SOURCE   = "-source";
-    private static final String OPTION_OUT_FILE = "-outFile";
+    private static final int    FILE_PROCESSING_REPORT_STEP = 1_000_000;
+    private static final String ENCODING                    = "UTF-8";
+    private static final int    BUFFER_SIZE                 = 4096;
+    private static final String OPTION_SOURCE               = "-source";
+    private static final String OPTION_OUT_FILE             = "-outFile";
 
     /***/
     public static String getIPinYouId(String recordString) throws ParseException {
@@ -45,6 +54,39 @@ public class IPinYou {
         }
 
         return "null".equals(recordParts[2]) ? null : recordParts[2];
+    }
+
+    /**
+     * Return top of map as a string. If map is null/empty - return null.
+     * If count <= 0 or >= input map size - return a whole map.
+     */
+    private static <K, V> String getTopFromMap(Map<K, V> map, int topCount) {
+        LOG.debug("IPinYou.getTopFromMap() is working.");
+
+        if (map == null || map.isEmpty()) { // fast checks for map (and return)
+            return null;
+        }
+
+        int upperBound;
+        if (topCount <= 0 || topCount >= map.size()) { // fast checks for count
+            upperBound = map.size();
+        } else {
+            upperBound = topCount;
+        }
+
+        int counter = 0;
+        StringBuilder builder = new StringBuilder();
+        Iterator<Map.Entry<K, V>> iterator = map.entrySet().iterator();
+        Map.Entry<K, V> entry;
+
+        // iterate over map and convert it to string
+        while (iterator.hasNext() && counter < upperBound) {
+            entry = iterator.next();
+            builder.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n");
+            counter++;
+        }
+
+        return builder.toString();
     }
 
     /***/
@@ -90,6 +132,7 @@ public class IPinYou {
             LOG.info(String.format("Path [%s] is accepted [%s].", path, result));
             return result;
         });
+        LOG.info(String.format("Total found [%s] file(s).", statuses.length));
 
         // resulting map with calculation results
         Map<String, Integer> values = new HashMap<>();
@@ -111,7 +154,7 @@ public class IPinYou {
                             values.put(id, count + 1);
                             counter++;
 
-                            if (counter % 100000 == 0) { // todo: move 'magic number' to constant
+                            if (counter % FILE_PROCESSING_REPORT_STEP == 0) {
                                 LOG.info(String.format("Processed: %s", counter));
                             }
 
@@ -123,8 +166,31 @@ public class IPinYou {
             }
 
         } // end of FOR
+        LOG.info(String.format("[%s] file(s) was/were processed.", statuses.length));
+        LOG.info(String.format("Result map contains [%s] element(s).", values.size()));
+
+        // sort resulting map
+        Map<String, Integer> sortedMap = SortMapUtils.sortMapByValue(values);
+        LOG.info("Result map has been sorted.");
+
+        // get big string from map (TOP 100)
+        String result = IPinYou.getTopFromMap(sortedMap, 100);
+        LOG.info("Got TOP100 from sorted map.");
 
         // write results to file in hdfs
+        InputStream  in  = null;
+        OutputStream out = null;
+        try {
+            in  = new BufferedInputStream(new ByteArrayInputStream(result.getBytes(ENCODING)));
+            out = fs.create(new Path(outputFile));
+            // copy file from source to dest
+            IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
+        } finally {
+            IOUtils.closeStream(in);
+            IOUtils.closeStream(out);
+        }
+
+        LOG.info(String.format("Data was written to output file [%s].", outputFile));
     }
 
 }
