@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static gusev.dmitry.jtils.utils.SortMapUtils.SortType.*;
+
 /**
  * Implementation of BigData course HW #2.
  * Created by gusevdm on 5/17/2017.
@@ -165,16 +167,22 @@ public class IPinYou {
                 LOG.info(String.format("Total processed for file [%s]: %s", status.getPath(), counter));
             }
 
+            // sort resulting map after current file
+            values = SortMapUtils.sortMapByValue(values, DESC);
+            LOG.info(String.format("Map sorted after processing [%s].", status.getPath()));
+            LOG.info(String.format("Map contains [%s] element(s).", values.size()));
         } // end of FOR
+
         LOG.info(String.format("[%s] file(s) was/were processed.", statuses.length));
         LOG.info(String.format("Result map contains [%s] element(s).", values.size()));
 
         // sort resulting map
-        Map<String, Integer> sortedMap = SortMapUtils.sortMapByValue(values);
-        LOG.info("Result map has been sorted.");
+        //Map<String, Integer> sortedMap = SortMapUtils.sortMapByValue(values, DESC);
+        //LOG.info("Result map has been sorted.");
 
         // get big string from map (TOP 100)
-        String result = IPinYou.getTopFromMap(sortedMap, 100);
+        //String result = IPinYou.getTopFromMap(sortedMap, 100);
+        String result = IPinYou.getTopFromMap(values, 100);
         LOG.info("Got TOP100 from sorted map.");
 
         // write results to file in hdfs

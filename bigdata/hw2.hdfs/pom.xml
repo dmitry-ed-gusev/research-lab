@@ -55,6 +55,7 @@
                                         <include>gusev/dmitry/jtils/utils/CmdLine.class</include>
                                         <include>gusev/dmitry/jtils/utils/CmdLineOption.class</include>
                                         <include>gusev/dmitry/jtils/utils/SortMapUtils.class</include>
+                                        <include>gusev/dmitry/jtils/utils/SortMapUtils$SortType.class</include>
                                     </includes>
                                 </filter>
                             </filters>

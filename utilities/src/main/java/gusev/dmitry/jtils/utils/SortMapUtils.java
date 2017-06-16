@@ -1,14 +1,13 @@
 package gusev.dmitry.jtils.utils;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static gusev.dmitry.jtils.utils.SortMapUtils.SortType.ASC;
 
 /**
  * Utilities for sorting maps.
@@ -19,6 +18,11 @@ import java.util.stream.Collectors;
 // https://stackoverflow.com/questions/109383/sort-a-mapkey-value-by-values-java
 
 public final class SortMapUtils {
+
+    /** Sort type ASC/DESC. */
+    public enum SortType {
+        ASC, DESC
+    }
 
     private SortMapUtils() { // non-instanceable
     }
@@ -60,33 +64,53 @@ public final class SortMapUtils {
      * Sort input Map by values. Map values should be comparable. Method uses generics.
      * Warning! Resulting type of map is LinkedHashMap (method may return different map type/implementation!)
      * todo: add a parameter for selecting order
+     * todo: method changes the source map!!! add a key - change or not source map?
      */
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue(Map<K, V> map) {
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue(Map<K, V> map, SortType type) {
 
-        if (map == null) { // fast check and return
+        if (map == null) { // fast check and return null
             return null;
         }
 
         Map<K, V> result = new LinkedHashMap<>();
-        if (map.isEmpty()) { // fast check and return
+        if (map.isEmpty()) { // if source empty - return empty result
+            return result;
+        }
+        if (map.size() == 1) { // if source size is 1 - don't sort
+            result.putAll(map);
             return result;
         }
 
+        if (type == null) { // fail-fast check
+            throw new IllegalArgumentException("Sort type mustn't be NULL!");
+        }
+
         // convert map to list of entries <Key, Value>
-        List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
+        //List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
+
+        // just move all map entries to list (modify source map, consume memory)
+        List<Map.Entry<K, V>> list = new LinkedList<>();
+        Iterator<Map.Entry<K, V>> sourceMapIterator = map.entrySet().iterator();
+        //Map.Entry<K, V> sourceMapEntry;
+        while (sourceMapIterator.hasNext()) {
+            list.add(sourceMapIterator.next());
+            //sourceMapEntry = sourceMapIterator.next();
+            //result.put(sourceMapEntry.getKey(), sourceMapEntry.getValue());
+            sourceMapIterator.remove();
+        }
 
         // sort list of entries by values with specified comparator
         // (switch the o1 o2 position for a different order)
-        /*
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-                return (o1.getValue()).compareTo(o2.getValue());
+        list.sort((o1, o2) -> {
+            if (ASC == type) {
+                return (o1.getValue()).compareTo(o2.getValue()); // <- ASC
+            } else {
+                return (o2.getValue()).compareTo(o1.getValue()); // <- DESC
             }
         });
-        */
 
         // version with lambda
-        list.sort(Comparator.comparing(o -> (o.getValue())));
+        //list.sort(Comparator.comparing(o -> (o.getValue())));
 
         // loop the sorted list and put it into a new insertion ordered LinkedHashMap.
         // not effective if map is very big (fails with out of memory)

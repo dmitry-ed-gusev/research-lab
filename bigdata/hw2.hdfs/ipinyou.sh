@@ -11,8 +11,10 @@
 #
 # ========================================================
 
+set -e
+
 # - some defaults
-RESULT_FILE_NAME="ipinyou_output.txt"
+RESULT_FILE_NAME="ipinyou_output.data"
 SKIP_UNZIP=NO
 SKIP_COPY=NO
 # - cmd line options
@@ -94,6 +96,11 @@ echo "Starting IPinYou calculation."
 echo "Dest HDFS [${DEST_HDFS}]. Output file [${RESULT_FILE_NAME}]."
 export HADOOP_CLASSPATH=@JAR_NAME@.jar
 yarn @MAIN_CLASS_IPINYOU@ -source ${DEST_HDFS} -outFile ${DEST_HDFS}/${RESULT_FILE_NAME}
+
+# - copy result file from HDFS (to local)
+echo "Copy result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
+export HADOOP_CLASSPATH=@JAR_NAME@.jar
+yarn @MAIN_CLASS_HDFS@ -copyToLocal ${DEST_HDFS}/${RESULT_FILE_NAME} -destination ${RESULT_FILE_NAME}
 
 # - cat result of calculation (from HDFS)
 echo "CAT result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
