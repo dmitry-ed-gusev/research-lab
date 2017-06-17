@@ -7,7 +7,7 @@
 #   Usage: ipinyou.sh <local path to files>
 #
 #   Created:  Gusev Dmitrii, 01.06.2017
-#   Modified: Gusev Dmitrii, 14.06.2017
+#   Modified: Gusev Dmitrii, 16.06.2017
 #
 # ========================================================
 
@@ -98,11 +98,11 @@ export HADOOP_CLASSPATH=@JAR_NAME@.jar
 yarn @MAIN_CLASS_IPINYOU@ -source ${DEST_HDFS} -outFile ${DEST_HDFS}/${RESULT_FILE_NAME}
 
 # - copy result file from HDFS (to local)
-echo "Copy result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
-export HADOOP_CLASSPATH=@JAR_NAME@.jar
-yarn @MAIN_CLASS_HDFS@ -copyToLocal ${DEST_HDFS}/${RESULT_FILE_NAME} -destination ${RESULT_FILE_NAME}
+#echo "Copy result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
+#export HADOOP_CLASSPATH=@JAR_NAME@.jar
+#yarn @MAIN_CLASS_HDFS@ -copyToLocal ${DEST_HDFS}/${RESULT_FILE_NAME} -destination ${RESULT_FILE_NAME}
 
 # - cat result of calculation (from HDFS)
-echo "CAT result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
-export HADOOP_CLASSPATH=@JAR_NAME@.jar
-yarn @MAIN_CLASS_HDFS@ -catFileByFS ${DEST_HDFS}/${RESULT_FILE_NAME}
+#echo "CAT result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
+#export HADOOP_CLASSPATH=@JAR_NAME@.jar
+#yarn @MAIN_CLASS_HDFS@ -catFileByFS ${DEST_HDFS}/${RESULT_FILE_NAME}

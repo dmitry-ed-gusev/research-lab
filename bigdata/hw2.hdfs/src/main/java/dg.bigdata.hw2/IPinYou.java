@@ -62,6 +62,7 @@ public class IPinYou {
      * Return top of map as a string. If map is null/empty - return null.
      * If count <= 0 or >= input map size - return a whole map.
      */
+    // todo: move to MapUtils class
     private static <K, V> String getTopFromMap(Map<K, V> map, int topCount) {
         LOG.debug("IPinYou.getTopFromMap() is working.");
 
@@ -137,7 +138,7 @@ public class IPinYou {
         LOG.info(String.format("Total found [%s] file(s).", statuses.length));
 
         // resulting map with calculation results
-        Map<String, Integer> values = new HashMap<>();
+        Map<String, Integer> values;
         // process files one by one and calculate
         String line;
         String id;
@@ -145,6 +146,7 @@ public class IPinYou {
         for (FileStatus status : statuses) {
             LOG.info(String.format("Processing path [%s].", status.getPath()));
 
+            values = new HashMap<>();
             // process one of files and calculate
             try (BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(status.getPath())))) {
                 counter = 0;
@@ -174,7 +176,7 @@ public class IPinYou {
         } // end of FOR
 
         LOG.info(String.format("[%s] file(s) was/were processed.", statuses.length));
-        LOG.info(String.format("Result map contains [%s] element(s).", values.size()));
+        //LOG.info(String.format("Result map contains [%s] element(s).", values.size()));
 
         // sort resulting map
         //Map<String, Integer> sortedMap = SortMapUtils.sortMapByValue(values, DESC);
@@ -182,10 +184,12 @@ public class IPinYou {
 
         // get big string from map (TOP 100)
         //String result = IPinYou.getTopFromMap(sortedMap, 100);
-        String result = IPinYou.getTopFromMap(values, 100);
-        LOG.info("Got TOP100 from sorted map.");
+
+        //String result = IPinYou.getTopFromMap(values, 100);
+        //LOG.info("Got TOP100 from sorted map.");
 
         // write results to file in hdfs
+        /*
         InputStream  in  = null;
         OutputStream out = null;
         try {
@@ -197,6 +201,7 @@ public class IPinYou {
             IOUtils.closeStream(in);
             IOUtils.closeStream(out);
         }
+        */
 
         LOG.info(String.format("Data was written to output file [%s].", outputFile));
     }
