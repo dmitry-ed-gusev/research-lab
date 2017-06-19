@@ -14,7 +14,7 @@
     <name>BigData course :: HomeWork #3. MapReduce.</name>
 
     <properties>
-        <main.class>[no main class now]</main.class>
+        <main.class>dg.bigdata.hw3.StatMain</main.class>
     </properties>
 
     <build>
