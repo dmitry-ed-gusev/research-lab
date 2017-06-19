@@ -17,6 +17,9 @@
         <module>storm</module>
         <module>hw1.mapreduce</module>
         <module>hw2.hdfs</module>
+		<module>hw3.mapreduce</module>
+		<module>hw4.mapreduce</module>
+		<module>hw5.yarn</module>
     </modules>
 
     <properties>
