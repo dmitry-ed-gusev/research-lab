@@ -6,15 +6,27 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
-import java.lang.Character;
-import java.lang.String;
-import java.lang.StringBuilder;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -197,29 +209,6 @@ public final class CommonUtils {
         return result;
     }
 
-    /***/
-    public static void saveStringToFile(String data, String fileName) {
-        LOG.debug("CommonUtils.saveStringToFile() working. ");
-
-        if (!StringUtils.isBlank(data) && !StringUtils.isBlank(fileName)) { // data and file name OK - write it!
-            if (!new File(fileName).isDirectory()) {
-
-                // try-with-resources - Java7 feature
-                try (Writer fwriter = new FileWriter(fileName, false);
-                     BufferedWriter bwriter = new BufferedWriter(fwriter)) {
-                    bwriter.write(data);
-                } catch (IOException e) {
-                    LOG.error(e);
-                }
-            } else { // input fileName points to a directory
-                LOG.error("Can't write data to [" + fileName + "] file! It's a directory!");
-            }
-        } else { // empty data or file name
-            LOG.error("Can't save data to file [" + fileName + "]! Wrong file or empty data!");
-        }
-
-    }
-
     /**
      * Format string to specified length - cut long string or fit short string with spaces (to the rigth) to fit
      * length. If string is empty/null or length <= 0, then method returns empty (not null!) string => "".
@@ -396,10 +385,10 @@ public final class CommonUtils {
      * Returns file name.
      * If received string is empty throws run-time exception.
      */
-    // todo: thread safety!
+    // todo: thread safety! this code isn't thread safe!
     // todo: add file name prefix - to determine source (social network client) for current file
     public static void saveStringToFile(String string, String fileName, boolean overwrite) throws IOException {
-        LOG.debug("CommonUtilities.saveStringToFile() working.");
+        LOG.debug("CommonUtilities.saveStringToFile() is working.");
 
         if (StringUtils.isBlank(string) || StringUtils.isBlank(fileName)) {
             throw new IllegalArgumentException(

@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Main class for HDFS utilities - processing cmd line args,
@@ -22,13 +23,13 @@ public final class HdfsMain {
 
     /***/
     public static void main(String[] args) {
-        LOG.info("HdfsMain is starting...");
+        LOG.info(String.format("HdfsMain is starting. Cmd line %s.", Arrays.toString(args)));
 
-        CmdLine cmdLine = new CmdLine(args);
+        CmdLine cmdLine = new CmdLine(args); // create cmd line object
 
-        if (cmdLine.hasOption(Option.CAT_FILE_BY_URL)) { // cat by URL
+        if (cmdLine.hasOption(HdfsOption.CAT_FILE_BY_URL)) { // cat by URL
             LOG.debug("CAT file by URL. Processing.");
-            String catFile = cmdLine.optionValue(Option.CAT_FILE_BY_URL);
+            String catFile = cmdLine.optionValue(HdfsOption.CAT_FILE_BY_URL);
             if (!StringUtils.isBlank(catFile)) {
                 LOG.info(String.format("CAT file [%s] by URL.", catFile));
                 try {
@@ -39,9 +40,9 @@ public final class HdfsMain {
             } else {
                 LOG.error("File for CAT is empty/null!");
             }
-        } else if (cmdLine.hasOption(Option.CAT_FILE_BY_FS)) { // cat by FS
+        } else if (cmdLine.hasOption(HdfsOption.CAT_FILE_BY_FS)) { // cat by FS
             LOG.debug("CAT file by FS. Processing.");
-            String catFile = cmdLine.optionValue(Option.CAT_FILE_BY_FS);
+            String catFile = cmdLine.optionValue(HdfsOption.CAT_FILE_BY_FS);
             if (!StringUtils.isBlank(catFile)) {
                 LOG.info(String.format("CAT file [%s] by FS.", catFile));
                 try {
@@ -52,10 +53,10 @@ public final class HdfsMain {
             } else {
                 LOG.error("File for CAT is empty/null!");
             }
-        } else if (cmdLine.hasOption(Option.COPY_FROM_LOCAL)) { // copy from local file to hdfs
+        } else if (cmdLine.hasOption(HdfsOption.COPY_FROM_LOCAL)) { // copy from local file to hdfs
             LOG.debug("COPY file FROM LOCAL. Processing.");
-            String sourceFile = cmdLine.optionValue(Option.COPY_FROM_LOCAL);
-            String destFile   = cmdLine.optionValue(Option.COPY_DESTINATION);
+            String sourceFile = cmdLine.optionValue(HdfsOption.COPY_FROM_LOCAL);
+            String destFile   = cmdLine.optionValue(HdfsOption.COPY_DESTINATION);
             if (!StringUtils.isBlank(sourceFile) && !StringUtils.isBlank(destFile)) {
                 LOG.info(String.format("Copy [%s] to [%s].", sourceFile, destFile));
                 try {
@@ -66,10 +67,10 @@ public final class HdfsMain {
             } else {
                 LOG.error(String.format("Source [%s] or destination [%s] is empty!", sourceFile, destFile));
             }
-        } else if (cmdLine.hasOption(Option.COPY_TO_LOCAL)) { // copy from hdfs file to local
+        } else if (cmdLine.hasOption(HdfsOption.COPY_TO_LOCAL)) { // copy from hdfs file to local
             LOG.debug("COPY file TO LOCAL. Processing.");
-            String sourceFile = cmdLine.optionValue(Option.COPY_TO_LOCAL);
-            String destFile   = cmdLine.optionValue(Option.COPY_DESTINATION);
+            String sourceFile = cmdLine.optionValue(HdfsOption.COPY_TO_LOCAL);
+            String destFile   = cmdLine.optionValue(HdfsOption.COPY_DESTINATION);
             if (!StringUtils.isBlank(sourceFile) && !StringUtils.isBlank(destFile)) {
                 LOG.info(String.format("Copy [%s] to [%s].", sourceFile, destFile));
                 try {

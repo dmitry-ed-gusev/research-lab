@@ -58,6 +58,7 @@
             <!-- maven antrun plugin (copy and filter .sh scripts) -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven.plugin.antrun}</version>
                 <executions>
                     <execution>
                         <id>project-copy-batch-files</id>

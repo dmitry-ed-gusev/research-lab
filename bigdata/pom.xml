@@ -17,12 +17,22 @@
         <module>storm</module>
         <module>hw1.mapreduce</module>
         <module>hw2.hdfs</module>
+		<module>hw3.mapreduce</module>
+		<module>hw4.mapreduce</module>
+		<module>hw5.yarn</module>
     </modules>
 
     <properties>
-        <hadoop.version>2.7.1</hadoop.version>
+        <!-- paths -->
         <jar.name>${project.artifactId}-${env}</jar.name>
         <assembly.dir>${project.build.directory}/${project.artifactId}</assembly.dir>
+        <!-- cluster parameters/creds -->
+        <skipDeploy>true</skipDeploy>
+        <host>[specify host with -Dhost=host]</host>
+        <port>22</port>
+        <user>[specify user with -Duser=user]</user>
+        <pass>[specify pass with -Dpass=pass]</pass>
+        <path>[specify path with -Dpath=path]</path>
     </properties>
 
     <build>

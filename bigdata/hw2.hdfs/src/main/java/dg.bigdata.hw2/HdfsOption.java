@@ -6,7 +6,7 @@ import gusev.dmitry.jtils.utils.CmdLineOption;
  * Cmd line options enumeration for HDFS utility
  * Created by gusevdm on 5/25/2017.
  */
-public enum Option implements CmdLineOption {
+public enum HdfsOption implements CmdLineOption {
 
     CAT_FILE_BY_URL ("-catFileByUrl",  "-catFileByUrl <file url>         Cats specified file from HDFS by URL. " +
             "URL is mandatory and should be: hdfs://[host[:port]]/pat_to_file. Protocol (hdfs://) and /path are mandatory."),
@@ -20,7 +20,7 @@ public enum Option implements CmdLineOption {
     private String optionName;
     private String optionDesc;
 
-    Option(String optionName, String optionDesc) {
+    HdfsOption(String optionName, String optionDesc) {
         this.optionName = optionName;
         this.optionDesc = optionDesc;
     }

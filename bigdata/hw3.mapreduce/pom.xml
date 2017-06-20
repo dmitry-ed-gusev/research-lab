@@ -8,14 +8,13 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>hw2.hdfs</artifactId>
+    <artifactId>hw3.mapreduce</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
-    <name>BigData course :: HomeWork #2. HDFS.</name>
+    <name>BigData course :: HomeWork #3. MapReduce.</name>
 
     <properties>
-        <main.class.hdfs>dg.bigdata.hw2.HdfsMain</main.class.hdfs>
-        <main.class.ipinyou>dg.bigdata.hw2.IPinYou</main.class.ipinyou>
+        <main.class>dg.bigdata.hw3.StatMain</main.class>
     </properties>
 
     <build>
@@ -54,8 +53,6 @@
                                     <includes>
                                         <include>gusev/dmitry/jtils/utils/CmdLine.class</include>
                                         <include>gusev/dmitry/jtils/utils/CmdLineOption.class</include>
-                                        <include>gusev/dmitry/jtils/utils/SortMapUtils.class</include>
-                                        <include>gusev/dmitry/jtils/utils/SortMapUtils$SortType.class</include>
                                     </includes>
                                 </filter>
                             </filters>
@@ -83,8 +80,7 @@
                                     <fileset dir="${basedir}"><include name="*.sh"/></fileset>
                                     <filterset>
                                         <filter token="JAR_NAME" value="${jar.name}"/>
-                                        <filter token="MAIN_CLASS_HDFS" value="${main.class.hdfs}"/>
-                                        <filter token="MAIN_CLASS_IPINYOU" value="${main.class.ipinyou}"/>
+                                        <filter token="MAIN_CLASS" value="${main.class}"/>
                                     </filterset>
                                 </copy>
                                 <!-- fix LF in sh scripts after copy -->
@@ -101,7 +97,8 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <skip>${skipDeploy}</skip>
+                            <!--<skip>${skipDeploy}</skip>-->
+                            <skip>true</skip>
                             <target>
                                 <!-- make remote dir (no fail if exists) -->
                                 <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
