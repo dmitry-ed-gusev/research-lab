@@ -3,7 +3,6 @@ package gusev.dmitry.jtils.utils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -14,24 +13,24 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Unit tests for {@link SortMapUtils} module.
+ * Unit tests for {@link MapUtils} module.
  * Created by gusevdm on 6/13/2017.
  */
-public class SortMapUtilsTest {
+public class MapUtilsTest {
 
     @Test
     public void testSortMapNullMap() {
-        assertNull(SortMapUtils.sortMapByValue(null, SortMapUtils.SortType.ASC));
+        assertNull(MapUtils.sortMapByValue(null, MapUtils.SortType.ASC));
     }
 
     @Test
     public void testSortMapNullMapAndSortType() {
-        assertNull(SortMapUtils.sortMapByValue(null, null));
+        assertNull(MapUtils.sortMapByValue(null, null));
     }
 
     @Test
     public void testSortMapEmptyMap() {
-        Map result = SortMapUtils.sortMapByValue(new HashMap<String, Integer>(), null);
+        Map result = MapUtils.sortMapByValue(new HashMap<String, Integer>(), null);
         assertNotNull(result);
         assertEquals(0, result.size());
         assertEquals(0, result.entrySet().size());
@@ -44,7 +43,7 @@ public class SortMapUtilsTest {
            put(key, 1);
         }};
         // sort
-        map = SortMapUtils.sortMapByValue(map, null);
+        map = MapUtils.sortMapByValue(map, null);
         // test/assert
         assertEquals(1, map.size());
         assertTrue(map.containsKey(key));
@@ -58,7 +57,7 @@ public class SortMapUtilsTest {
             put("string2", 2);
         }};
         // sort and get exception
-        SortMapUtils.sortMapByValue(map, null);
+        MapUtils.sortMapByValue(map, null);
     }
 
     @Test
@@ -74,7 +73,7 @@ public class SortMapUtilsTest {
         //System.out.println(testMap);
 
         // sort map and check (ASC)
-        testMap = SortMapUtils.sortMapByValue(testMap, SortMapUtils.SortType.ASC);
+        testMap = MapUtils.sortMapByValue(testMap, MapUtils.SortType.ASC);
         //System.out.println(testMap);
 
         // test size
@@ -90,7 +89,7 @@ public class SortMapUtilsTest {
         }
 
         // sort map and check (DESC)
-        testMap = SortMapUtils.sortMapByValue(testMap, SortMapUtils.SortType.DESC);
+        testMap = MapUtils.sortMapByValue(testMap, MapUtils.SortType.DESC);
         // test size
         Assert.assertEquals(size, testMap.size());
         // test contents

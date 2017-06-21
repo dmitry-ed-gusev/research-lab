@@ -1,7 +1,6 @@
 package dg.bigdata.hw2;
 
 import gusev.dmitry.jtils.utils.CmdLine;
-import gusev.dmitry.jtils.utils.SortMapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,23 +8,15 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IOUtils;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-
-import static gusev.dmitry.jtils.utils.SortMapUtils.SortType.*;
 
 /**
  * Implementation of BigData course HW #2.
@@ -58,39 +49,9 @@ public class IPinYou {
         return "null".equals(recordParts[2]) ? null : recordParts[2];
     }
 
-    /**
-     * Return top of map as a string. If map is null/empty - return null.
-     * If count <= 0 or >= input map size - return a whole map.
-     */
-    // todo: move to MapUtils class
-    private static <K, V> String getTopFromMap(Map<K, V> map, int topCount) {
-        LOG.debug("IPinYou.getTopFromMap() is working.");
-
-        if (map == null || map.isEmpty()) { // fast checks for map (and return)
-            return null;
-        }
-
-        int upperBound;
-        if (topCount <= 0 || topCount >= map.size()) { // fast checks for count
-            upperBound = map.size();
-        } else {
-            upperBound = topCount;
-        }
-
-        int counter = 0;
-        StringBuilder builder = new StringBuilder();
-        Iterator<Map.Entry<K, V>> iterator = map.entrySet().iterator();
-        Map.Entry<K, V> entry;
-
-        // iterate over map and convert it to string
-        while (iterator.hasNext() && counter < upperBound) {
-            entry = iterator.next();
-            builder.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n");
-            counter++;
-        }
-
-        return builder.toString();
-    }
+    /***/
+    // todo: implement method - processing cmd line params and return params map.
+    //private static Map<>
 
     /***/
     public static void main(String[] args) throws IOException {
@@ -142,6 +103,7 @@ public class IPinYou {
         // process files one by one and calculate
         String line;
         String id;
+        Integer count;
         long   counter;
         for (FileStatus status : statuses) {
             LOG.info(String.format("Processing path [%s].", status.getPath()));
@@ -154,8 +116,9 @@ public class IPinYou {
                     try {
                         //System.out.println("ID -> " + IPinYou.getIPinYouId(line));
                         id = IPinYou.getIPinYouId(line);
-                            int count = values.containsKey(id) ? values.get(id) : 0;
-                            values.put(id, count + 1);
+                            // reduce amount of map lookups
+                            count = values.get(id);
+                            values.put(id, count == null ? 1 : count + 1);
                             counter++;
 
                             if (counter % FILE_PROCESSING_REPORT_STEP == 0) {
@@ -170,8 +133,8 @@ public class IPinYou {
             }
 
             // sort resulting map after current file
-            values = SortMapUtils.sortMapByValue(values, DESC);
-            LOG.info(String.format("Map sorted after processing [%s].", status.getPath()));
+            //values = MapUtils.sortMapByValue(values, DESC);
+            //LOG.info(String.format("Map sorted after processing [%s].", status.getPath()));
             LOG.info(String.format("Map contains [%s] element(s).", values.size()));
         } // end of FOR
 
@@ -179,7 +142,7 @@ public class IPinYou {
         //LOG.info(String.format("Result map contains [%s] element(s).", values.size()));
 
         // sort resulting map
-        //Map<String, Integer> sortedMap = SortMapUtils.sortMapByValue(values, DESC);
+        //Map<String, Integer> sortedMap = MapUtils.sortMapByValue(values, DESC);
         //LOG.info("Result map has been sorted.");
 
         // get big string from map (TOP 100)

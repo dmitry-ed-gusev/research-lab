@@ -1,5 +1,8 @@
 package gusev.dmitry.jtils.utils;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -7,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static gusev.dmitry.jtils.utils.SortMapUtils.SortType.ASC;
+import static gusev.dmitry.jtils.utils.MapUtils.SortType.ASC;
 
 /**
  * Utilities for sorting maps.
@@ -17,14 +20,49 @@ import static gusev.dmitry.jtils.utils.SortMapUtils.SortType.ASC;
 // https://www.mkyong.com/java/how-to-sort-a-map-in-java/
 // https://stackoverflow.com/questions/109383/sort-a-mapkey-value-by-values-java
 
-public final class SortMapUtils {
+public final class MapUtils {
+
+    private static final Log LOG = LogFactory.getLog(MapUtils.class);
 
     /** Sort type ASC/DESC. */
     public enum SortType {
         ASC, DESC
     }
 
-    private SortMapUtils() { // non-instanceable
+    private MapUtils() { // non-instanceable
+    }
+
+    /**
+     * Return top of map as a string. If map is null/empty - return null.
+     * If count <= 0 or >= input map size - return a whole map.
+     */
+    public static <K, V> String getTopFromMap(Map<K, V> map, int topCount) {
+        LOG.debug("IPinYou.getTopFromMap() is working.");
+
+        if (map == null || map.isEmpty()) { // fast checks for map (and return)
+            return null;
+        }
+
+        int upperBound;
+        if (topCount <= 0 || topCount >= map.size()) { // fast checks for count
+            upperBound = map.size();
+        } else {
+            upperBound = topCount;
+        }
+
+        int counter = 0;
+        StringBuilder builder = new StringBuilder();
+        Iterator<Map.Entry<K, V>> iterator = map.entrySet().iterator();
+        Map.Entry<K, V> entry;
+
+        // iterate over map and convert it to string
+        while (iterator.hasNext() && counter < upperBound) {
+            entry = iterator.next();
+            builder.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n");
+            counter++;
+        }
+
+        return builder.toString();
     }
 
     /***/
