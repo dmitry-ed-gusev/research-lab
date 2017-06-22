@@ -99,7 +99,7 @@ public class IPinYou {
         LOG.info(String.format("Total found [%s] file(s).", statuses.length));
 
         // resulting map with calculation results
-        Map<String, Integer> values;
+        Map<String, Integer> values = new HashMap<>();
         // process files one by one and calculate
         String line;
         String id;
@@ -108,7 +108,7 @@ public class IPinYou {
         for (FileStatus status : statuses) {
             LOG.info(String.format("Processing path [%s].", status.getPath()));
 
-            values = new HashMap<>();
+            //values = new HashMap<>();
             // process one of files and calculate
             try (BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(status.getPath())))) {
                 counter = 0;

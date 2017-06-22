@@ -7,7 +7,7 @@
 #   Usage: ipinyou.sh <local path to files>
 #
 #   Created:  Gusev Dmitrii, 01.06.2017
-#   Modified: Gusev Dmitrii, 16.06.2017
+#   Modified: Gusev Dmitrii, 22.06.2017
 #
 # ========================================================
 
@@ -15,11 +15,18 @@ set -e
 
 # - some defaults
 RESULT_FILE_NAME="ipinyou_output.data"
+# Save node space. If YES will process one bz2 at a time: extract txt, copy to hdfs, delete.
+# If NO will extract all txt files from bz2, then copy them to hdfs (and don't delete source txt)
+SAVE_SPACE=NO
+# If SAVE_SPACE=NO, this option allow to skip unzip bz2 archives
 SKIP_UNZIP=NO
+# If SAVE_SPACE=NO, this option allow to skip copy txt files to hdfs
 SKIP_COPY=NO
+
 # - cmd line options
 OPTION_SOURCE_LOCAL="-sourceLocal"
 OPTION_DEST_HDFS="-destHdfs"
+OPTION_SAVE_SPACE="-saveSpace"
 OPTION_SKIP_UNZIP="-skipUnzip"
 OPTION_SKIP_COPY="-skipCopy"
 
@@ -65,30 +72,54 @@ do
 	# - skip copy txt files to HDFS
     ${OPTION_SKIP_COPY}) SKIP_COPY=YES
               ;;
+    # - save space option
+    ${OPTION_SAVE_SPACE}) SAVE_SPACE=YES
+              ;;
 	esac
 done
 echo "Cmd line parsed, got all parameters."
 
-# - extract txt files from bz2 archives
-if [ "${SKIP_UNZIP}" == "NO" ]; then
-    echo "Start unzipping files."
+if [ "${SAVE_SPACE}" == "YES" ]; then
+    echo "Using SAVE SPACE OPTION."
     for file in ${SOURCE_LOCAL}/*.bz2
     do
-        echo "Processing ${file} file."
+        echo "Unzip file ${file}"
         bunzip2 -k ${file}
-    done
-fi
-
-# - copy txt files to HDFS destination
-# todo: move this logic to hdfs utility
-if [ "${SKIP_COPY}" == "NO" ]; then
-    echo "Start copy files to HDFS."
-    for file in ${SOURCE_LOCAL}/*.txt
-    do
-        echo "Copy [${file}] to HDFS [${DEST_HDFS}/$(basename ${file})]."
+        # <${file%.*}> - get file name without extension
+        # <basename ${file%.*}> - get filename without extension from path
+        echo "Copy [${file%.*}] to HDFS [${DEST_HDFS}/$(basename ${file%.*})]."
         export HADOOP_CLASSPATH=@JAR_NAME@.jar
-        yarn @MAIN_CLASS_HDFS@ -copyFromLocal ${file} -destination ${DEST_HDFS}/$(basename ${file})
+        yarn @MAIN_CLASS_HDFS@ -copyFromLocal ${file%.*} -destination ${DEST_HDFS}/$(basename ${file%.*})
+        echo "Delete source TXT file ${file%.*}."
+        rm ${file%.*}
     done
+
+else
+
+    echo "Do not using SAVE SPACE OPTION."
+
+    # - extract txt files from bz2 archives
+    if [ "${SKIP_UNZIP}" == "NO" ]; then
+        echo "Start unzipping files."
+        for file in ${SOURCE_LOCAL}/*.bz2
+        do
+            echo "Processing ${file} file."
+            bunzip2 -k ${file}
+        done
+    fi
+
+    # - copy txt files to HDFS destination
+    # todo: move this logic to hdfs utility
+    if [ "${SKIP_COPY}" == "NO" ]; then
+        echo "Start copy files to HDFS."
+        for file in ${SOURCE_LOCAL}/*.txt
+        do
+            echo "Copy [${file}] to HDFS [${DEST_HDFS}/$(basename ${file})]."
+            export HADOOP_CLASSPATH=@JAR_NAME@.jar
+            yarn @MAIN_CLASS_HDFS@ -copyFromLocal ${file} -destination ${DEST_HDFS}/$(basename ${file})
+        done
+    fi
+
 fi
 
 # - execute IPinYou application and calculate result
