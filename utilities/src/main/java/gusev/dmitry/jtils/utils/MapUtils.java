@@ -190,4 +190,33 @@ public final class MapUtils {
                 ));
     }
 
+    /***/
+    public static <K, V> Map<K, V> removeFromMapByValue(Map<K, V> map, V value) {
+        LOG.debug("MapUtils.removeFromMapByValue() is working.");
+
+        if (map == null) { // fast check and return null
+            return null;
+        }
+
+        if (map.isEmpty()) { // fast check and return original
+            return map;
+        }
+
+        // iterate over map and remove unnecessary entries
+        Iterator<Map.Entry<K, V>> iterator = map.entrySet().iterator();
+        Map.Entry<K, V> entry;
+        V entryValue;
+        while (iterator.hasNext()) {
+            entry = iterator.next();
+            entryValue = entry.getValue();
+
+            // check condition and remove entry from map
+            if ((value == null && entryValue == null) ||
+                    (value != null && value.equals(entryValue))) {
+                iterator.remove();
+            }
+        } // end of WHILE
+
+        return map;
+    }
 }

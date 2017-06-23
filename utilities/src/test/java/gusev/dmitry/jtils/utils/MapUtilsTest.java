@@ -7,10 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link MapUtils} module.
@@ -104,4 +101,87 @@ public class MapUtilsTest {
 
     }
 
+    @Test
+    public void testRemoveFromMapNullMap() {
+        assertNull(MapUtils.removeFromMapByValue(null, null));
+    }
+
+    @Test
+    public void testRemoveFromMapEmptyMap() {
+        Map<String, Integer> emptyMap = new HashMap<>();
+        Map<String, Integer> resultMap = MapUtils.removeFromMapByValue(emptyMap, null);
+
+        assertTrue(resultMap.isEmpty());
+        assertTrue(emptyMap == resultMap);
+    }
+
+    @Test
+    public void testRemoveFromMapRemoveNull1() {
+        Map<String, Integer> sourceMap = new HashMap<String, Integer>() {{
+            put("1", null);
+            put("2", null);
+        }};
+        // do remove
+        Map<String, Integer> resultMap = MapUtils.removeFromMapByValue(sourceMap, null);
+
+        // check
+        assertTrue(resultMap.isEmpty());
+        assertTrue(resultMap.size() == 0);
+        assertTrue(sourceMap == resultMap);
+    }
+
+    @Test
+    public void testRemoveFromMapRemoveNull2() {
+        Map<String, Integer> sourceMap = new HashMap<String, Integer>() {{
+            put("1", 10);
+            put("2", 20);
+        }};
+        // do remove
+        Map<String, Integer> resultMap = MapUtils.removeFromMapByValue(sourceMap, null);
+
+        // check
+        assertTrue(!resultMap.isEmpty());
+        assertTrue(resultMap.size() == 2);
+        assertTrue(sourceMap == resultMap);
+    }
+
+    @Test
+    public void testRemoveFromMapValue1() {
+        Map<String, Integer> sourceMap = new HashMap<String, Integer>() {{
+            put("1", null);
+            put("2", null);
+            put("zzz", 1);
+            put("ddd", 2);
+            put("xxx", 3);
+        }};
+        int sourceMapSize = sourceMap.size();
+
+        // do remove
+        Map<String, Integer> resultMap = MapUtils.removeFromMapByValue(sourceMap, 3);
+
+        // checks
+        assertTrue(sourceMap == resultMap);
+        assertEquals(sourceMapSize - 1, resultMap.size());
+        assertFalse(resultMap.containsKey("xxx"));
+        assertFalse(resultMap.containsKey(3));
+    }
+
+    @Test
+    public void testRemoveFromMapValue2() {
+        Map<String, Integer> sourceMap = new HashMap<String, Integer>() {{
+            put("zzz", 1);
+            put("ddd", 2);
+            put("xxx", 3);
+        }};
+        int sourceMapSize = sourceMap.size();
+
+        // do remove
+        Map<String, Integer> resultMap = MapUtils.removeFromMapByValue(sourceMap, 2);
+
+        // checks
+        assertTrue(sourceMap == resultMap);
+        assertEquals(sourceMapSize - 1, resultMap.size());
+        assertFalse(resultMap.containsKey("ddd"));
+        assertFalse(resultMap.containsKey(2));
+    }
 }
