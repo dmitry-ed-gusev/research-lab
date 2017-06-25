@@ -80,7 +80,10 @@
                             <tasks>
                                 <!-- copy+filter shell scripts -->
                                 <copy todir="${assembly.dir}" failonerror="true">
-                                    <fileset dir="${basedir}"><include name="*.sh"/></fileset>
+                                    <fileset dir="${basedir}">
+                                        <include name="*.sh"/>
+                                        <include name="*.bat" />
+                                    </fileset>
                                     <filterset>
                                         <filter token="JAR_NAME" value="${jar.name}"/>
                                         <filter token="MAIN_CLASS_HDFS" value="${main.class.hdfs}"/>

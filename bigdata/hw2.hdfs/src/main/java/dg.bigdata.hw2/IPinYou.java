@@ -93,8 +93,8 @@ public class IPinYou {
 
         // Hadoop config
         Configuration hadoopConfig = new Configuration();
-        hadoopConfig.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-        hadoopConfig.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+        //hadoopConfig.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+        //hadoopConfig.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
 
         // fast-fail checks: is specified HDFS dir exists and is it a dir?
         FileSystem fs = FileSystem.get(URI.create(sourceHdfsDir), hadoopConfig);
