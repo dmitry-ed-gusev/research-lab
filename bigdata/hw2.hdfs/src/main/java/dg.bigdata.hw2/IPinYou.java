@@ -91,8 +91,13 @@ public class IPinYou {
         String sourceHdfsDir = config.get(OPTION_SOURCE);
         String outputFile    = config.get(OPTION_OUT_FILE);
 
+        // Hadoop config
+        Configuration hadoopConfig = new Configuration();
+        hadoopConfig.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+        hadoopConfig.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+
         // fast-fail checks: is specified HDFS dir exists and is it a dir?
-        FileSystem fs = FileSystem.get(URI.create(sourceHdfsDir), new Configuration());
+        FileSystem fs = FileSystem.get(URI.create(sourceHdfsDir), hadoopConfig);
         Path sourcePath = new Path(sourceHdfsDir);
         FileStatus fstatus = fs.getFileStatus(sourcePath);
         LOG.info("FileSystem/FileStatus objects created OK.");

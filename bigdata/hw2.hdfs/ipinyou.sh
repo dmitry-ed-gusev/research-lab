@@ -7,7 +7,7 @@
 #   Usage: ipinyou.sh <local path to files>
 #
 #   Created:  Gusev Dmitrii, 01.06.2017
-#   Modified: Gusev Dmitrii, 22.06.2017
+#   Modified: Gusev Dmitrii, 24.06.2017
 #
 # ========================================================
 
@@ -22,6 +22,8 @@ SAVE_SPACE=NO
 SKIP_UNZIP=NO
 # If SAVE_SPACE=NO, this option allow to skip copy txt files to hdfs
 SKIP_COPY=NO
+# If NO, do IPinYou calculation, if YES - skip calculation
+SKIP_IPINYOU=NO
 
 # - cmd line options
 OPTION_SOURCE_LOCAL="-sourceLocal"
@@ -29,6 +31,7 @@ OPTION_DEST_HDFS="-destHdfs"
 OPTION_SAVE_SPACE="-saveSpace"
 OPTION_SKIP_UNZIP="-skipUnzip"
 OPTION_SKIP_COPY="-skipCopy"
+OPTION_SKIP_IPINYOU="-skipIPin"
 
 # - starting the whole script
 echo "Starting IPinYou Utility ..."
@@ -74,6 +77,8 @@ do
               ;;
     # - save space option
     ${OPTION_SAVE_SPACE}) SAVE_SPACE=YES
+              ;;
+    ${OPTION_SKIP_IPINYOU}) SKIP_IPINYOU=YES
               ;;
 	esac
 done
@@ -122,18 +127,20 @@ else
 
 fi
 
-# - execute IPinYou application and calculate result
-echo "Starting IPinYou calculation."
-echo "Dest HDFS [${DEST_HDFS}]. Output file [${RESULT_FILE_NAME}]."
-export HADOOP_CLASSPATH=@JAR_NAME@.jar
-yarn @MAIN_CLASS_IPINYOU@ -source ${DEST_HDFS} -outFile ${DEST_HDFS}/${RESULT_FILE_NAME}
+if [ "${SKIP_IPINYOU}" == "NO" ]; then
+    # - execute IPinYou application and calculate result
+    echo "Starting IPinYou calculation."
+    echo "Dest HDFS [${DEST_HDFS}]. Output file [${RESULT_FILE_NAME}]."
+    export HADOOP_CLASSPATH=@JAR_NAME@.jar
+    yarn @MAIN_CLASS_IPINYOU@ -source ${DEST_HDFS} -outFile ${DEST_HDFS}/${RESULT_FILE_NAME}
 
-# - copy result file from HDFS (to local)
-#echo "Copy result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
-#export HADOOP_CLASSPATH=@JAR_NAME@.jar
-#yarn @MAIN_CLASS_HDFS@ -copyToLocal ${DEST_HDFS}/${RESULT_FILE_NAME} -destination ${RESULT_FILE_NAME}
+    # - copy result file from HDFS (to local)
+    #echo "Copy result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
+    #export HADOOP_CLASSPATH=@JAR_NAME@.jar
+    #yarn @MAIN_CLASS_HDFS@ -copyToLocal ${DEST_HDFS}/${RESULT_FILE_NAME} -destination ${RESULT_FILE_NAME}
 
-# - cat result of calculation (from HDFS)
-#echo "CAT result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
-#export HADOOP_CLASSPATH=@JAR_NAME@.jar
-#yarn @MAIN_CLASS_HDFS@ -catFileByFS ${DEST_HDFS}/${RESULT_FILE_NAME}
+    # - cat result of calculation (from HDFS)
+    #echo "CAT result file ${DEST_HDFS}/${RESULT_FILE_NAME} from HDFS."
+    #export HADOOP_CLASSPATH=@JAR_NAME@.jar
+    #yarn @MAIN_CLASS_HDFS@ -catFileByFS ${DEST_HDFS}/${RESULT_FILE_NAME}
+fi

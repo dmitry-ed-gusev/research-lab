@@ -1,15 +1,30 @@
 http://stackoverflow.com/questions/4921843/managing-hdfs-in-psuedo-distributed-hadoop-mode
 
 ============================================================================================
+https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-common/core-default.xml
+https://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-common/yarn-default.xml
+https://hadoop.apache.org/docs/r2.7.2/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml
 
 Using Virtual Box to setup virtual PC. If you setup virtual machine on PC with
 some restrictions/proxy server, you need setup 2 virtual network adapters for virtual PC:
  1. NAT, with ports forwarding (for interaction between host and virtual machine):
     * SSH                          (TCP: 127.0.0.1:2022  -> virtual-ip:22)
-    * HDFS NameNode                (TCP: 127.0.0.1:50070 -> virtual-ip:50070)
+        - default port 22 may be already bind
     * Hadoop History server        (TCP: 127.0.0.1:19888 -> virtual-ip:19888)
-    * Hadoop Logs server           (TCP: 127.0.0.1:8042  -> virtual-ip:8042)
+
+    * HDFS NameNode web UI         (TCP: 127.0.0.1:50070 -> virtual-ip:50070)
+    * HDFS DataNode HTTP server    (TCP: 127.0.0.1:50075 -> virtual-ip:50075)
+        - forwarding both ports 50070/50075 allow to connect to remote/virtual HDFS and list catalogs,
+          read data, etc (all operations). See also config here:
+          https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml
+
     * Hadoop YARN Resource Manager (TCP: 127.0.0.1:8088  -> virtual-ip:8088)
+    * Hadoop YARN Node Manager     (TCP: 127.0.0.1:8042  -> virtual-ip:8042)
+        - this is port for node manager/logs server for single node in a pseudo-distributed mode.
+          Node manager usually accessible by host name, in pseudo-distr mode they are located
+          on the same machine (both Resource/Node Managers). So on host PC (Win) it's usually
+          needed to add string [127.0.0.1 <virtual-host-name>] to <hosts> file.
+
  2. Host-only Adapter (for Internet connection)
 
 50070 -> HDFS NameNode
