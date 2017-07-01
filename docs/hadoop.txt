@@ -1,6 +1,31 @@
 http://stackoverflow.com/questions/4921843/managing-hdfs-in-psuedo-distributed-hadoop-mode
 
 ============================================================================================
+For usage of Hadoop on windows PC:
+1. for running hadoop examples you have to install hadoop - download it,
+extract zip into any folder, create env variable HADOOP_HOME pointing to that directory
+2. download winutils.exe (http://public-repo-1.hortonworks.com/hdp-win-alpha/winutils.exe) and put to
+$HADOOP_HOME\bin
+
+============================================================================================
+Using HDFS
+1. If security is off on HDFS (SIMPLE), all write (not read!) operations on remote FS
+   (webhdfs:) should be performed as allowed user. Here is an example:
+
+        UserGroupInformation ugi = UserGroupInformation.createRemoteUser("myuser");
+        ugi.doAs((PrivilegedExceptionAction<Void>) () -> {
+            // <any HDFS operations (possible write)>
+            return null;
+        });
+2. You may turn off hdfs permissions check for SIMPLE auth by putting to hdfs-site.xml:
+        <property>
+            <name>dfs.permissions.enabled</name>
+            <value>false</value>
+          </property>
+
+3. If security is ON, you have to use Jerberos/keytab
+
+============================================================================================
 https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-common/core-default.xml
 https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml
 https://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-common/yarn-default.xml

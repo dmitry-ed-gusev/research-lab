@@ -119,6 +119,7 @@ public class IPinYou {
         });
         LOG.info(String.format("Total found [%s] file(s).", statuses.length));
 
+        /*
         // resulting map with calculation results
         Map<String, Integer> values = new HashMap<>();
         // process files one by one and calculate count for each ID
@@ -168,17 +169,22 @@ public class IPinYou {
         // get big string from map (TOP 100)
         String result = MapUtils.getTopFromMap(sortedMap, 100);
         LOG.info("Got TOP100 from sorted map.");
+        */
 
         // write results to file in hdfs
         // todo: move to HdfsUtils (writeStringToHdfsFile())?
         InputStream  in  = null;
         OutputStream out = null;
         try {
-            in  = new BufferedInputStream(new ByteArrayInputStream(result.getBytes(ENCODING)));
-            out = fs.create(new Path(outputFile));
+            //in  = new BufferedInputStream(new ByteArrayInputStream(result.getBytes(ENCODING)));
+            in  = new BufferedInputStream(new ByteArrayInputStream("MY TEST WORDS!!!".getBytes(ENCODING)));
+            Path outputPath = new Path(outputFile);
+            System.out.println(outputPath.getParent());
+            out = fs.create(/*new Path(outputFile)*/outputPath);
             // copy file from source to dest
             IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
         } finally {
+            out.flush();
             IOUtils.closeStream(in);
             IOUtils.closeStream(out);
         }
