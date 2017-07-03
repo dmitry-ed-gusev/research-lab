@@ -12,13 +12,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.security.UserGroupInformation;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.security.PrivilegedExceptionAction;
@@ -34,8 +28,8 @@ public class HdfsUtils {
 
     private static final Log LOG = LogFactory.getLog(HdfsUtils.class);
 
-    private static final String ENCODING = "UTF-8";
-    private static final int BUFFER_SIZE = 4096;
+    private static final String ENCODING    = "UTF-8";
+    private static final int    BUFFER_SIZE = 4096;
 
     static {
         // set handler for hdfs:// protocol - it allows to
@@ -200,6 +194,49 @@ public class HdfsUtils {
         } else {
             LOG.debug("Username isn't specified. Perform usual action (without special permissions).");
             HdfsUtils.copyFromLocal(conf, progressOut, sourceLocal, destHdfs);
+        }
+    }
+
+    /***/
+    public static void writeStringToHdfsFile(Configuration conf, String strToWrite, String destHdfs) throws IOException {
+        LOG.debug(String.format("HdfsUtils.writeStringToHdfsFile() is working. HDFS dest [%s].", destHdfs));
+
+        // fail-fast checks
+        if (StringUtils.isBlank(strToWrite) || StringUtils.isBlank(destHdfs)) {
+            throw new IllegalArgumentException(String.format("Empty string to write [%s] or dest [%s]!",
+                    strToWrite.length() , destHdfs));
+        }
+
+        // create FileSystem object, representing HDFS
+        FileSystem fs = FileSystem.get(URI.create(destHdfs), conf == null ? new Configuration() : conf);
+        InputStream in = null;
+        OutputStream out = null;
+        LOG.debug("FileSystem object created. Processing next.");
+
+        try {
+            // open local source file for reading
+            new BufferedInputStream(new ByteArrayInputStream(strToWrite.getBytes(ENCODING)));
+
+            // open remote (HDFS) file for writing to (with progress show)
+            out = fs.create(new Path(destHdfs), () -> {
+                if (progressOut != null) {
+                    try {
+                        progressOut.write(".".getBytes(ENCODING));
+                    } catch (IOException e) {
+                        LOG.error(e);
+                    }
+                }
+            });
+
+            // copy file from source to dest
+            IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
+        } finally {
+            IOUtils.closeStream(in);
+            IOUtils.closeStream(out);
+        }
+
+        if (progressOut != null) {
+            progressOut.write("\nCopy finished.\n".getBytes(ENCODING));
         }
     }
 
