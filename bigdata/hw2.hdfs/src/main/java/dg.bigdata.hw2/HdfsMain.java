@@ -61,7 +61,7 @@ public final class HdfsMain {
                 LOG.info(String.format("Copy [%s] to [%s].", sourceFile, destFile));
                 try {
                     HdfsUtils.copyFromLocal(new Configuration(), System.out, sourceFile, destFile);
-                } catch (IOException e) {
+                } catch (InterruptedException | IOException e) {
                     LOG.error(e);
                 }
             } else {

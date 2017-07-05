@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import static gusev.dmitry.jtils.utils.MapUtils.SortType.DESC;
 
@@ -30,12 +31,14 @@ public class IPinYou {
     private static final Log LOG = LogFactory.getLog(IPinYou.class);
 
     private static final int    FILE_PROCESSING_REPORT_STEP = 1_000_000;
-    private static final String ENCODING                    = "UTF-8";
-    private static final int    BUFFER_SIZE                 = 4096;
+    private static final String OPTION_PAUSE_BEFORE         = "-pauseBefore";
+    private static final String OPTION_HDFS_USER            = "-hdfsUser";
     private static final String OPTION_SOURCE               = "-source";
     private static final String OPTION_OUT_FILE             = "-outFile";
 
-    /***/
+    /**
+     * Package-private access - for testing purposes.
+     */
     static String getIPinYouId(String recordString) throws ParseException {
         //LOG.debug("IPinYou.getIPinYouId() is working."); // <- too much output
 
@@ -67,6 +70,8 @@ public class IPinYou {
         CmdLine cmdLine = new CmdLine(args);
         String sourceHdfsDir = cmdLine.optionValue(OPTION_SOURCE);
         String outputFile    = cmdLine.optionValue(OPTION_OUT_FILE);
+        String hdfsUser      = cmdLine.optionValue(OPTION_HDFS_USER);
+        String pauseBefore   = String.valueOf(cmdLine.hasOption(OPTION_PAUSE_BEFORE));
 
         // one more fail-fast consistency check
         if (StringUtils.isBlank(sourceHdfsDir) || StringUtils.isBlank(outputFile)) {
@@ -77,25 +82,36 @@ public class IPinYou {
         LOG.info("Cmd line params are checked and are OK.");
 
         return new HashMap<String, String>() {{
-            put(OPTION_SOURCE, sourceHdfsDir);
-            put(OPTION_OUT_FILE, outputFile);
+            put(OPTION_PAUSE_BEFORE, pauseBefore);
+            put(OPTION_HDFS_USER,    hdfsUser);
+            put(OPTION_SOURCE,       sourceHdfsDir);
+            put(OPTION_OUT_FILE,     outputFile);
         }};
     }
 
     /***/
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        long firstTimePoint = System.currentTimeMillis(); // initial time measurement
+
         LOG.info("IPinYou is starting...");
 
         // init and get config
         Map<String, String> config = IPinYou.initConfig(args);
         String sourceHdfsDir = config.get(OPTION_SOURCE);
         String outputFile    = config.get(OPTION_OUT_FILE);
+        String hdfsUser      = config.get(OPTION_HDFS_USER);
+
+        long secondTimePoint = System.currentTimeMillis(); // time measurement before key press waiting
+
+        // if set (present) flag -pauseBefore - do a pause before execution (wait for <Enter>)
+        if (Boolean.valueOf(config.get(OPTION_PAUSE_BEFORE))) {
+            new Scanner(System.in).nextLine();
+        }
+
+        long thirdTimePoint = System.currentTimeMillis(); // time measurement after key press
 
         // Hadoop config
         Configuration hadoopConfig = new Configuration();
-        //hadoopConfig.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-        //hadoopConfig.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
-
         // fast-fail checks: is specified HDFS dir exists and is it a dir?
         FileSystem fs = FileSystem.get(URI.create(sourceHdfsDir), hadoopConfig);
         Path sourcePath = new Path(sourceHdfsDir);
@@ -119,7 +135,6 @@ public class IPinYou {
         });
         LOG.info(String.format("Total found [%s] file(s).", statuses.length));
 
-        /*
         // resulting map with calculation results
         Map<String, Integer> values = new HashMap<>();
         // process files one by one and calculate count for each ID
@@ -169,26 +184,14 @@ public class IPinYou {
         // get big string from map (TOP 100)
         String result = MapUtils.getTopFromMap(sortedMap, 100);
         LOG.info("Got TOP100 from sorted map.");
-        */
 
         // write results to file in hdfs
-        // todo: move to HdfsUtils (writeStringToHdfsFile())?
-        InputStream  in  = null;
-        OutputStream out = null;
-        try {
-            //in  = new BufferedInputStream(new ByteArrayInputStream(result.getBytes(ENCODING)));
-            in  = new BufferedInputStream(new ByteArrayInputStream("MY TEST WORDS!!!".getBytes(ENCODING)));
-            Path outputPath = new Path(outputFile);
-            System.out.println(outputPath.getParent());
-            out = fs.create(/*new Path(outputFile)*/outputPath);
-            // copy file from source to dest
-            IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
-        } finally {
-            out.flush();
-            IOUtils.closeStream(in);
-            IOUtils.closeStream(out);
-        }
+        HdfsUtils.writeStringToHdfs(hadoopConfig, StringUtils.isBlank(hdfsUser) ? null : hdfsUser, result, outputFile);
         LOG.info(String.format("Data was written to output file [%s].", outputFile));
+
+        long fourthTimeMeasurement = System.currentTimeMillis(); // last time measurement
+
+        // todo: !!! implement
 
     } // end of main()
 

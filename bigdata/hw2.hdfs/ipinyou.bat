@@ -1,14 +1,20 @@
 @echo off
-rem ========================================================
+rem =========================================================================================================
 rem
 rem    Starting batch (win) script for IPinYou application.
 rem    BigData course, Homework #2.
-rem    Usage: ipinyou.bat  <local path to files>
+rem    Usage: ipinyou.bat <hdfs user> <hdfs source folder> <hdfs output file>
+rem
+rem    Sample cmd line:
+rem     ipinyou.bat myuser webhdfs://localhost/user/myuser webhdfs://localhost/user/myuser/ipinyou_output.txt
 rem
 rem    Created:  Gusev Dmitrii, 25.06.2017
-rem    Modified:
+rem    Modified: Gusev Dmitrii, 05.07.2017
 rem
-rem ========================================================
+rem =========================================================================================================
 
 echo "Starting IPinYou application"
-java -cp @JAR_NAME@.jar @MAIN_CLASS_IPINYOU@ -source %1 -outFile %2
+java -cp @JAR_NAME@.jar;libs\* @MAIN_CLASS_IPINYOU@ -pauseBefore -hdfsUser %1 -source %2 -outFile %3
+
+rem echo "Reading result file from HDFS"
+rem todo: implement it :)
