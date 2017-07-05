@@ -44,7 +44,7 @@
                     <!-- put jar file into another directory -->
                     <outputDirectory>${project.build.directory}/${assemblyDirectory}</outputDirectory>
                 </configuration>
-                <version>2.4</version>
+                <version>${maven.plugin.jar}</version>
             </plugin>
 
             <!-- Dependency plugin - copy dependencies to folder lib/ in output dir during package phase. -->
