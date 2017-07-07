@@ -33,11 +33,20 @@
             <scope>compile</scope>
         </dependency>
 		
-		<dependency>
+	<!--
+	<dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.18-bin</version>
         </dependency>
+	-->
+	
+	<dependency>
+	  <groupId>mysql</groupId>
+	  <artifactId>mysql-connector-java</artifactId>
+	  <version>5.1.42</version>
+	</dependency>
+
 
         <!-- Hibernate and hibernate full-text search dependencies -->
         <dependency>

@@ -36,17 +36,25 @@
         <java.mail.version>1.4.5</java.mail.version>
 
         <!-- Test frameworks versions (JUnit/Hamcrest/Mockito) -->
-		<junit.version>4.12</junit.version>
+	<junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <hamcrest.version>1.3</hamcrest.version>
 
-		<!-- Spring framework [context] module version -->
-		<spring.context.version>4.3.3.RELEASE</spring.context.version>
+	<!-- Spring framework [context] module version -->
+	<spring.context.version>4.3.3.RELEASE</spring.context.version>
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
         <skipCoverageReport>false</skipCoverageReport>
         <jacoco.plugin.version>0.7.7.201606060606</jacoco.plugin.version>
     </properties>
 
+    <repositories>
+      <repository>
+	<id>alt-repo-1</id>
+	<name>Alternative repository #1</name>
+	<url>http://www.datanucleus.org/downloads/maven2/</url>
+      </repository>
+    </repositories>
+    
     <build>
 
         <plugins>
