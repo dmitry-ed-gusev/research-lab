@@ -20,3 +20,5 @@ socialnet/.db/
 vk_token*
 # -- ignore python compiled files
 *.pyc
+# -- ignore gzip archives
+*.gz

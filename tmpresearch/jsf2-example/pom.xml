@@ -15,25 +15,32 @@
 
     <dependencies>
 		
-		<dependency>
+	 <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>${commons.logging.version}</version>
             <scope>compile</scope>
         </dependency>
 		
-		 <dependency>
+	 <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons.lang3.version}</version>
         </dependency>   
-		
+	
+	<!--
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
             <version>3.0.S1</version>
-            <!--<version>3.1.1</version>-->
         </dependency>
+	-->
+	
+	<dependency>
+	  <groupId>org.primefaces</groupId>
+	  <artifactId>primefaces</artifactId>
+	  <version>3.0.1</version>
+	</dependency>
 
         <dependency>
             <groupId>org.primefaces.themes</groupId>
