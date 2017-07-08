@@ -33,6 +33,9 @@
         <user>[specify user with -Duser=user]</user>
         <pass>[specify pass with -Dpass=pass]</pass>
         <path>[specify path with -Dpath=path]</path>
+        <!-- params for copy project to local/remote (smb) folder -->
+        <skipCopy>true</skipCopy>
+        <copyTo>[specify destination directory]</copyTo>
     </properties>
 
     <build>

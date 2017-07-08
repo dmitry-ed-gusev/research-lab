@@ -117,6 +117,26 @@
                             </target>
                         </configuration>
                     </execution>
+
+                    <!-- copy assembled application to local/remote (smb) folder -->
+                    <execution>
+                        <id>project-local-copy</id>
+                        <phase>${prod.deploy.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipCopy}</skip>
+                            <tasks>
+                                <copy todir="${copyTo}/${project.artifactId}" failonerror="true">
+                                    <fileset dir="${assembly.dir}">
+                                        <include name="*/**"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+
                 </executions>
                 <!-- libraries for ant scp impl, antrun doesn't use os's scp -->
                 <dependencies>

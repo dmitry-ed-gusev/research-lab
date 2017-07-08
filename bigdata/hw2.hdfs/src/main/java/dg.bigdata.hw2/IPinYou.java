@@ -9,9 +9,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IOUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -31,10 +32,12 @@ public class IPinYou {
     private static final Log LOG = LogFactory.getLog(IPinYou.class);
 
     private static final int    FILE_PROCESSING_REPORT_STEP = 1_000_000;
+    private static final int    TOP_COUNT                   = 100;
     private static final String OPTION_PAUSE_BEFORE         = "-pauseBefore";
     private static final String OPTION_HDFS_USER            = "-hdfsUser";
     private static final String OPTION_SOURCE               = "-source";
     private static final String OPTION_OUT_FILE             = "-outFile";
+    private static final String OPTION_SKIP_NULLS           = "-skipNulls";
 
     /**
      * Package-private access - for testing purposes.
@@ -72,6 +75,7 @@ public class IPinYou {
         String outputFile    = cmdLine.optionValue(OPTION_OUT_FILE);
         String hdfsUser      = cmdLine.optionValue(OPTION_HDFS_USER);
         String pauseBefore   = String.valueOf(cmdLine.hasOption(OPTION_PAUSE_BEFORE));
+        String skipNulls     = String.valueOf(cmdLine.hasOption(OPTION_SKIP_NULLS));
 
         // one more fail-fast consistency check
         if (StringUtils.isBlank(sourceHdfsDir) || StringUtils.isBlank(outputFile)) {
@@ -86,6 +90,7 @@ public class IPinYou {
             put(OPTION_HDFS_USER,    hdfsUser);
             put(OPTION_SOURCE,       sourceHdfsDir);
             put(OPTION_OUT_FILE,     outputFile);
+            put(OPTION_SKIP_NULLS,   skipNulls);
         }};
     }
 
@@ -94,12 +99,12 @@ public class IPinYou {
         long firstTimePoint = System.currentTimeMillis(); // initial time measurement
 
         LOG.info("IPinYou is starting...");
-
         // init and get config
         Map<String, String> config = IPinYou.initConfig(args);
-        String sourceHdfsDir = config.get(OPTION_SOURCE);
-        String outputFile    = config.get(OPTION_OUT_FILE);
-        String hdfsUser      = config.get(OPTION_HDFS_USER);
+        String  sourceHdfsDir = config.get(OPTION_SOURCE);
+        String  outputFile    = config.get(OPTION_OUT_FILE);
+        String  hdfsUser      = config.get(OPTION_HDFS_USER);
+        boolean skipNulls     = Boolean.valueOf(config.get(OPTION_SKIP_NULLS));
 
         long secondTimePoint = System.currentTimeMillis(); // time measurement before key press waiting
 
@@ -148,17 +153,21 @@ public class IPinYou {
             // process one of files and calculate
             try (BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(status.getPath())))) {
                 counter = 0;
-                while((line = br.readLine()) != null) {
+                while ((line = br.readLine()) != null) {
                     try {
-                        id = IPinYou.getIPinYouId(line);
+                        id = IPinYou.getIPinYouId(line); // get id from line
+
+                        if ((id == null && !skipNulls) || (id != null)) { // process id
                             // reduce amount of map lookups
                             count = values.get(id);
                             values.put(id, count == null ? 1 : count + 1);
-                            counter++;
-                            // debug progress output
-                            if (counter % FILE_PROCESSING_REPORT_STEP == 0) {
-                                LOG.info(String.format("Processed: %s", counter));
-                            }
+                        }
+
+                        counter++;
+                        // debug progress output
+                        if (counter % FILE_PROCESSING_REPORT_STEP == 0) {
+                            LOG.info(String.format("Processed: %s", counter));
+                        }
 
                     } catch (ParseException e) {
                         LOG.error(String.format("Can't parse line [%s], skipped!", line), e);
@@ -170,28 +179,27 @@ public class IPinYou {
             LOG.info(String.format("Map contains [%s] element(s).", values.size()));
         } // end of FOR
 
-        LOG.info(String.format("[%s] file(s) was/were processed.", statuses.length));
-        LOG.info(String.format("Result map contains [%s] element(s).", values.size()));
+        LOG.info(String.format("[%s] file(s) was/were processed.\n" +
+                "Result map contains [%s] element(s).", statuses.length, values.size()));
 
         // reduce result map - remove all entries with value = 1
         values = MapUtils.removeFromMapByValue(values, 1);
-        LOG.info(String.format("Map reduced and now contains [%s] elements.", values.size()));
-
+        LOG.info(String.format("Map reduced (removed all with value 1) and now contains [%s] elements.",
+                values == null ? 0 : values.size()));
         // sort resulting map (after reducing)
         Map<String, Integer> sortedMap = MapUtils.sortMapByValue(values, DESC);
         LOG.info("Result map has been sorted.");
-
         // get big string from map (TOP 100)
-        String result = MapUtils.getTopFromMap(sortedMap, 100);
+        String result = MapUtils.getTopFromMap(sortedMap, TOP_COUNT);
         LOG.info("Got TOP100 from sorted map.");
-
         // write results to file in hdfs
         HdfsUtils.writeStringToHdfs(hadoopConfig, StringUtils.isBlank(hdfsUser) ? null : hdfsUser, result, outputFile);
         LOG.info(String.format("Data was written to output file [%s].", outputFile));
 
         long fourthTimeMeasurement = System.currentTimeMillis(); // last time measurement
 
-        // todo: !!! implement
+        long totalTime = (secondTimePoint - firstTimePoint) + (fourthTimeMeasurement - thirdTimePoint);
+        LOG.info(String.format("IPinYou calculation takes [%s] seconds.", totalTime / 1000));
 
     } // end of main()
 
