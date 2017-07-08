@@ -10,21 +10,21 @@ import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.util.Progressable;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URL;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * Useful HDFS utilities/methods.
  * Created by vinnypuhh on 30.04.17.
  */
+
+// todo: implement copy multiple files (by dir/by mask/etc)
+
 public class HdfsUtils {
 
     private static final Log LOG = LogFactory.getLog(HdfsUtils.class);
@@ -41,7 +41,9 @@ public class HdfsUtils {
 
     private static boolean urlHandlerSet = false;
 
-    /** Lazy setter for URL handler - to handle hdfs:// protocol. */
+    /**
+     * Lazy setter for URL handler - to handle hdfs:// protocol.
+     */
     private static void setUrlHandler(Configuration conf) {
         LOG.debug("HdfsUtils.setUrlHandler() is working.");
 
@@ -119,52 +121,166 @@ public class HdfsUtils {
 
     }
 
+    /** Part of implementation - long file copy progress tracker. */
+    private static class ProgressTracker implements Progressable {
+
+        private static final int CALLS_STEPS = 200;
+
+        private long               callsCounter = 0;
+        private final OutputStream progressOut;
+
+        /***/
+        public ProgressTracker(OutputStream progressOut) {
+            this.progressOut = progressOut;
+        }
+
+        public long getCallsCounter() {
+            return this.callsCounter;
+        }
+
+        @Override
+        public void progress() {
+
+            if (this.progressOut != null) { // if we have output stream to output progress
+                this.callsCounter++;
+
+                if (this.callsCounter % CALLS_STEPS == 0) { // step reached
+                    try {
+                        this.progressOut.write(String.format("progress() calls count: [%s]\n", this.callsCounter).getBytes(ENCODING));
+                    } catch (IOException e) {
+                        LOG.error(e);
+                    }
+                }
+            }
+        }
+    }
+
     /**
-     *
-     * @param conf {@link Configuration} cluster configuration
+     * Method is part of internal implementation and shouldn't be used outside. <- ???
+     * It has a package-private access for test purposes.
+     * Method has side effect - it closes passed InputStream.
+     */
+    static void writeToHdfs(Configuration conf, OutputStream progressOut, InputStream inputStream, String destHdfs) throws IOException {
+        LOG.debug(String.format("HdfsUtils.writeStringToHdfsFile() is working. HDFS dest [%s].", destHdfs));
+
+        // fail-fast check
+        if (inputStream == null || StringUtils.isBlank(destHdfs)) {
+            throw new IllegalArgumentException(String.format("Empty HDFS dest [%s] and/or input stream [%s]!", destHdfs, inputStream == null));
+        }
+
+        // create FileSystem object, representing HDFS
+        FileSystem fs = FileSystem.get(URI.create(destHdfs), conf == null ? new Configuration() : conf);
+
+        OutputStream out = null;
+        LOG.debug("FileSystem object created. Processing next.");
+
+        if (progressOut != null) {
+            progressOut.write("\nCopy started\n".getBytes(ENCODING));
+        }
+
+        ProgressTracker tracker = null;
+        try {
+            // open remote (HDFS) file for writing to (with progress show)
+            Path path = new Path(destHdfs);
+            if (progressOut != null) {
+                tracker = new ProgressTracker(progressOut);
+                out = fs.create(path, tracker);
+            } else {
+                out = fs.create(path);
+            }
+            // copy file from source to dest
+            IOUtils.copyBytes(inputStream, out, BUFFER_SIZE, false);
+        } finally {
+            IOUtils.closeStream(out);
+            IOUtils.closeStream(inputStream);
+        }
+
+        if (progressOut != null) {
+            progressOut.write(String.format("total progress() calls count: [%s]\n", tracker.getCallsCounter()).getBytes(ENCODING));
+            progressOut.write("\nCopy finished.\n".getBytes(ENCODING));
+        }
+
+    }
+
+    /**
+     * @param conf        {@link Configuration} cluster configuration
      * @param progressOut {@link OutputStream} stream to output progress of reading
      * @param sourceLocal {@link String} local source file
-     * @param destHdfs {@link String} destination file on HDFS
+     * @param destHdfs    {@link String} destination file on HDFS
      */
     // todo: check - sourcefile exists?
     // todo: check - dest file exists?
-    public static void copyFromLocal(Configuration conf, OutputStream progressOut, String sourceLocal, String destHdfs) throws IOException {
-        LOG.debug(String.format("HdfsUtils.copyFromLocal() is working. Local source [%s], HDFS dest [%s].",
-                sourceLocal, destHdfs));
+    public static void copyFromLocal(Configuration conf, OutputStream progressOut, String username,
+                                     String sourceLocal, String destHdfs) throws IOException, InterruptedException {
+
+        LOG.debug(String.format("HdfsUtils.copyFromLocal() is working. Local source [%s], HDFS dest [%s].%s",
+                sourceLocal, destHdfs, !StringUtils.isBlank(username) ? String.format(" Operates as user [%s].", username) : ""));
 
         // fail-fast checks
         if (StringUtils.isBlank(sourceLocal) || StringUtils.isBlank(destHdfs)) {
             throw new IllegalArgumentException(String.format("Empty source [%s] or dest [%s]!", sourceLocal, destHdfs));
         }
 
-        // create FileSystem object, representing HDFS
-        FileSystem fs = FileSystem.get(URI.create(destHdfs), conf == null ? new Configuration() : conf);
-        InputStream  in  = null;
-        OutputStream out = null;
-
-        try {
-            // open local source file for reading
-            in = new BufferedInputStream(new FileInputStream(sourceLocal));
-            // open remote (HDFS) file for writing to (with progress show)
-            progressOut.write("\nCopy started\n".getBytes(ENCODING));
-            out = fs.create(new Path(destHdfs), () -> {
-                try {
-                    progressOut.write(".".getBytes(ENCODING));
-                } catch (IOException e) {
-                    LOG.error(e);
-                }
+        // open local source file for reading
+        final InputStream inputStream = new BufferedInputStream(new FileInputStream(sourceLocal));
+        // write source input stream to HDFS
+        if (!StringUtils.isBlank(username)) { // operates as specified user
+            LOG.debug(String.format("Username isn't empty: [%s]. Perform privileged action.", username));
+            // create user group
+            UserGroupInformation ugi = UserGroupInformation.createRemoteUser(username);
+            // perform privileged action (in separate thread)
+            ugi.doAs((PrivilegedExceptionAction<Void>) () -> {
+                HdfsUtils.writeToHdfs(conf, progressOut, inputStream, destHdfs);
+                return null;
             });
-            // copy file from source to dest
-            IOUtils.copyBytes(in, out, BUFFER_SIZE, false);
-        } finally {
-            IOUtils.closeStream(in);
-            IOUtils.closeStream(out);
+        } else { // operates as caller user (JVM user)
+            HdfsUtils.writeToHdfs(conf, progressOut, inputStream, destHdfs);
         }
-
-        progressOut.write("\nCopy finished.\n".getBytes(ENCODING));
     }
 
     /***/
+    public static void copyFromLocal(Configuration conf, OutputStream progressOut, String sourceLocal, String destHdfs)
+            throws IOException, InterruptedException {
+        HdfsUtils.copyFromLocal(conf, progressOut, null, sourceLocal, destHdfs);
+    }
+
+    /***/
+    public static void writeStringToHdfs(Configuration conf, String username, String strToWrite, String destHdfs)
+            throws IOException, InterruptedException {
+
+        LOG.debug(String.format("HdfsUtils.writeStringToHdfs() is working. String length [%s], HDFS dest [%s].",
+                StringUtils.isBlank(strToWrite) ? -1 : strToWrite.length(), destHdfs));
+
+        // fail-fast checks
+        if (StringUtils.isBlank(strToWrite) || StringUtils.isBlank(destHdfs)) {
+            throw new IllegalArgumentException(String.format("Empty string to write [%s] or dest [%s]!",
+                    strToWrite.length(), destHdfs));
+        }
+
+        // open local source file for reading
+        final InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(strToWrite.getBytes(ENCODING)));
+        // write source input stream to HDFS
+        if (!StringUtils.isBlank(username)) { // operates as specified user
+            LOG.debug(String.format("Username isn't empty: [%s]. Perform privileged action.", username));
+            // create user group
+            UserGroupInformation ugi = UserGroupInformation.createRemoteUser(username);
+            // perform privileged action (in separate thread)
+            ugi.doAs((PrivilegedExceptionAction<Void>) () -> {
+                HdfsUtils.writeToHdfs(conf, null, inputStream, destHdfs);
+                return null;
+            });
+        } else { // operates as caller user (JVM user)
+            HdfsUtils.writeToHdfs(conf, null, inputStream, destHdfs);
+        }
+    }
+
+    /***/
+    public static void writeStringToHdfs(Configuration conf, String strToWrite, String destHdfs)
+            throws IOException, InterruptedException {
+        HdfsUtils.writeStringToHdfs(conf, null, strToWrite, destHdfs);
+    }
+
+    /** Read file from HDFS to local storage. */
     // todo: check - source file exists,
     public static void copyToLocal(Configuration conf, String sourceHdfs, String destLocal) throws IOException {
         LOG.debug(String.format("HdfsUtils.copyToLocal() is working. HDFS source [%s], local dest [%s].",
@@ -177,7 +293,7 @@ public class HdfsUtils {
 
         // create FileSystem object, representing HDFS
         FileSystem fs = FileSystem.get(URI.create(sourceHdfs), conf == null ? new Configuration() : conf);
-        InputStream  in  = null;
+        InputStream in = null;
         OutputStream out = null;
         try {
             // open

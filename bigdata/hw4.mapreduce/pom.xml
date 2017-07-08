@@ -8,14 +8,13 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>hw2.hdfs</artifactId>
+    <artifactId>hw4.mapreduce</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
-    <name>BigData course :: HomeWork #2. HDFS.</name>
+    <name>BigData course :: HomeWork #4. MapReduce.</name>
 
     <properties>
-        <main.class.hdfs>dg.bigdata.hw2.HdfsMain</main.class.hdfs>
-        <main.class.ipinyou>dg.bigdata.hw2.IPinYou</main.class.ipinyou>
+        <main.class>[no main class now]</main.class>
     </properties>
 
     <build>
@@ -54,8 +53,6 @@
                                     <includes>
                                         <include>gusev/dmitry/jtils/utils/CmdLine.class</include>
                                         <include>gusev/dmitry/jtils/utils/CmdLineOption.class</include>
-                                        <include>gusev/dmitry/jtils/utils/SortMapUtils.class</include>
-                                        <include>gusev/dmitry/jtils/utils/SortMapUtils$SortType.class</include>
                                     </includes>
                                 </filter>
                             </filters>
@@ -80,14 +77,10 @@
                             <tasks>
                                 <!-- copy+filter shell scripts -->
                                 <copy todir="${assembly.dir}" failonerror="true">
-                                    <fileset dir="${basedir}">
-                                        <include name="*.sh"/>
-                                        <include name="*.bat" />
-                                    </fileset>
+                                    <fileset dir="${basedir}"><include name="*.sh"/></fileset>
                                     <filterset>
                                         <filter token="JAR_NAME" value="${jar.name}"/>
-                                        <filter token="MAIN_CLASS_HDFS" value="${main.class.hdfs}"/>
-                                        <filter token="MAIN_CLASS_IPINYOU" value="${main.class.ipinyou}"/>
+                                        <filter token="MAIN_CLASS" value="${main.class}"/>
                                     </filterset>
                                 </copy>
                                 <!-- fix LF in sh scripts after copy -->
@@ -104,7 +97,8 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <skip>${skipDeploy}</skip>
+                            <!--<skip>${skipDeploy}</skip>-->
+                            <skip>true</skip>
                             <target>
                                 <!-- make remote dir (no fail if exists) -->
                                 <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
@@ -117,26 +111,6 @@
                             </target>
                         </configuration>
                     </execution>
-
-                    <!-- copy assembled application to local/remote (smb) folder -->
-                    <execution>
-                        <id>project-local-copy</id>
-                        <phase>${prod.deploy.phase}</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipCopy}</skip>
-                            <tasks>
-                                <copy todir="${copyTo}/${project.artifactId}" failonerror="true">
-                                    <fileset dir="${assembly.dir}">
-                                        <include name="*/**"/>
-                                    </fileset>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                    </execution>
-
                 </executions>
                 <!-- libraries for ant scp impl, antrun doesn't use os's scp -->
                 <dependencies>
@@ -151,28 +125,6 @@
                         <version>${ant.jsch.version}</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-
-            <!-- copy dependencies to output directory -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <!-- execution configuration for this plugin (when this module should be executed - phase, goal) -->
-                <executions>
-                    <execution>
-                        <phase>${prod.build.phase}</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <outputDirectory>${assembly.dir}/libs</outputDirectory>
-                    <!--<includeArtifactIds>hadoop-client</includeArtifactIds>-->
-                    <!--<includeArtifactIds>hadoop-common</includeArtifactIds>-->
-                    <excludeArtifactIds>junit</excludeArtifactIds>
-                </configuration>
-                <version>${maven.plugin.dependency}</version>
             </plugin>
 
         </plugins>

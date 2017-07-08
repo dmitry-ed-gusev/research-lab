@@ -17,7 +17,7 @@
     <build>
         <plugins>
 
-            <!-- jar/archiver plugin settings (main class in manifest) -->
+            <!-- jar/achiever plugin settings (main class in manifest) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -33,7 +33,7 @@
                         </manifest>
                     </archive>
                 </configuration>
-                <version>2.3.2</version>
+                <version>${maven.plugin.jar}</version>
             </plugin>
 
             <!-- This plugin setting will copy module dependencies to lib/ (in build directory) -->
@@ -53,8 +53,7 @@
                     <outputDirectory>${project.build.directory}/lib</outputDirectory>
                     <excludeArtifactIds>junit</excludeArtifactIds>
                 </configuration>
-
-                <version>2.1</version>
+                <version>${maven.plugin.dependency}</version>
             </plugin>
         </plugins>
 
