@@ -26,13 +26,16 @@
         <!-- paths -->
         <jar.name>${project.artifactId}-${env}</jar.name>
         <assembly.dir>${project.build.directory}/${project.artifactId}</assembly.dir>
-        <!-- cluster parameters/creds -->
+        <!-- cluster parameters/creds (should be specified via cmd line) -->
         <skipDeploy>true</skipDeploy>
         <host>[specify host with -Dhost=host]</host>
         <port>22</port>
         <user>[specify user with -Duser=user]</user>
         <pass>[specify pass with -Dpass=pass]</pass>
         <path>[specify path with -Dpath=path]</path>
+        <!-- params for copy project to local/remote (smb) folder -->
+        <skipCopy>true</skipCopy>
+        <copyTo>[specify destination directory]</copyTo>
     </properties>
 
     <build>

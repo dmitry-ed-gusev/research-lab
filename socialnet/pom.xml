@@ -18,11 +18,6 @@
         <main.class>dg.social.crawler.SCrawler</main.class>
         <assembly.dir>${project.build.directory}/scrawler</assembly.dir>
         <libraries.prefix>lib</libraries.prefix>
-
-        <spring.version>4.3.2.RELEASE</spring.version>
-        <org.hibernate.version>5.0.6.Final</org.hibernate.version>
-        <apache.dbcp.version>1.4</apache.dbcp.version>
-
     </properties>
 
     <build>
@@ -120,11 +115,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons.lang3.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>commons-io</groupId>-->
-            <!--<artifactId>commons-io</artifactId>-->
-            <!--<version>${commons.io.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
