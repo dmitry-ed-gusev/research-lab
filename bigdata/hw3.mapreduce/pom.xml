@@ -14,7 +14,7 @@
     <name>BigData course :: HomeWork #3. MapReduce.</name>
 
     <properties>
-        <main.class>dg.bigdata.hw3.StatMain</main.class>
+        <main.class>dg.bigdata.hw3.ProcessAccessLogsMain</main.class>
     </properties>
 
     <build>
@@ -131,6 +131,12 @@
     </build>
 
     <dependencies>
+
+        <dependency>
+            <groupId>eu.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>1.20</version>
+        </dependency>
 
         <dependency>
             <groupId>dgusev</groupId>

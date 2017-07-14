@@ -472,6 +472,11 @@ public final class CommonUtils {
             LOG.error(ex);
         }
 
+    } // end of unZipIt
+
+    /** Unzip to current folder. */
+    public static void unZipIt(String zipFile) {
+        CommonUtils.unZipIt(zipFile, "");
     }
 
     /**
