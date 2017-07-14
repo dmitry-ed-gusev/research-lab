@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<parent>
+        <groupId>dgusev</groupId>
+        <artifactId>cdi</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>cdi-app</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>J2EE. CDI Application :: CDI example application.</name>
+	
+	<dependencies>
+	<!--
+		<dependency>
+			<groupId>org.jboss.weld.se</groupId>
+			<artifactId>weld-se</artifactId>
+		</dependency>
+	-->
+	
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!--<mainClass>org.agoncal.book.javaee7.chapter02.Main</mainClass>-->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>

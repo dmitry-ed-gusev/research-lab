@@ -3,18 +3,19 @@
 
     <parent>
         <groupId>dgusev</groupId>
-        <artifactId>research</artifactId>
+        <artifactId>j2ee</artifactId>
         <version>1.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>j2ee</artifactId>
+    <artifactId>cdi</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>J2EE :: some research with j2ee tech.</name>
+    <name>J2EE. CDI :: Dependency injestion.</name>
 
-    <modules>
-        <module>cdi</module>
-    </modules>
-    
+	<modules>
+		<module>cdi-examples</module>
+		<module>cdi-app</module>
+	</modules>
+	
 </project>
