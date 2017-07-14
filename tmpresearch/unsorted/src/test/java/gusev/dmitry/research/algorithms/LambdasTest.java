@@ -47,11 +47,23 @@ public class LambdasTest {
 
     @Test
     public void getLongestStringTest() {
-        Optional<String> result = Lambdas.getLongestString(null);
-        assertFalse(result.isPresent());
-        assertEquals(Optional.empty(), result);
+        Optional empty = Optional.empty();
 
+        // boundary cases
+        Optional<String> result1 = Lambdas.getLongestLowerCaseString(null);
+        assertFalse(result1.isPresent());
+        assertEquals(empty, result1);
 
+        Optional<String> result2 = Lambdas.getLongestLowerCaseString(new ArrayList<String> ());
+        assertFalse(result1.isPresent());
+        assertEquals(empty, result1);
+
+        // usual cases
+        String str = "  zzz zzz zzz   ";
+        List<String> list = Arrays.asList(str, "Feel free", "dj    ");
+        Optional<String> result3 = Lambdas.getLongestLowerCaseString(list);
+        assertTrue("Value should present!", result3.isPresent());
+        assertEquals(str, result3.get());
     }
 
 }

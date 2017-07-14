@@ -2,11 +2,10 @@ package gusev.dmitry.research.algorithms;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Some research with lambdas.
@@ -37,8 +36,17 @@ public final class Lambdas {
     }
 
     /***/
-    static Optional<String> getLongestString(List<String> strings) {
-        return null;
+    static Optional<String> getLongestLowerCaseString(List<String> strings) {
+
+        if (strings == null || strings.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return strings.stream().max(Comparator.comparing(Lambdas::countLowerCase));
     }
+
+    /** Implementation of Stream.map() using reduce() and lambdas. */
+
+    /** Implementation of Stream.filter() using reduce() and lambdas. */
 
 }
