@@ -6,27 +6,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -429,9 +414,11 @@ public final class CommonUtils {
 
         byte[] buffer = new byte[1024]; // unzip process buffer
 
-        try {
+        // use try-with-resources for auto close input streams
+        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
+
             if (!StringUtils.isBlank(outputFolder)) {
-                //create output directory is not exists
+                //create output directory if not exists
                 File folder = new File(outputFolder);
                 if (!folder.exists()) {
                     LOG.info(String.format("Destination output path [%s] doesn't exists! Creating...", outputFolder));
@@ -443,16 +430,31 @@ public final class CommonUtils {
                 }
             } // end of check/create output folder
 
-            ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile)); //get the zip file content
-            ZipEntry ze = zis.getNextEntry();                               //get the zipped file list entry
+            ZipEntry ze = zis.getNextEntry(); // get first zip entry and start iteration
             while (ze != null) {
                 String fileName = ze.getName();
                 File newFile = new File((StringUtils.isBlank(outputFolder) ? "" : (outputFolder + File.separator)) + fileName);
-                LOG.debug(String.format("Unzipping file: absolute path [%s] / short name [%s].",
-                        newFile.getAbsoluteFile(), newFile.getName()));
 
-                // todo: create all non exists folders else we hit FileNotFoundException for compressed folder
-                // todo: new File(newFile.getParent()).mkdirs();
+                LOG.debug(String.format("Processing -> name: %s | size: %s | compressed size: %s \n\t" +
+                                "absolute name: %s",
+                        fileName, ze.getSize(), ze.getCompressedSize(), newFile.getAbsoluteFile()));
+
+                // if entry is a directory - create it and continue (skip the rest of cycle body)
+                if (fileName.endsWith("/") || fileName.endsWith("\\")) {
+                    if (newFile.mkdirs()) {
+                        LOG.debug(String.format("Created dir: [%s].", newFile.getAbsoluteFile()));
+                    } else {
+                        throw new IllegalStateException(String.format("Can't create dir [%s]!", newFile.getAbsoluteFile()));
+                    }
+                    ze = zis.getNextEntry();
+                    continue;
+                }
+
+                // todo: do we need this additional dirs creation?
+                //File parent = file.getParentFile();
+                //if (parent != null) {
+                //    parent.mkdirs();
+                //}
 
                 // write extracted file on disk
                 FileOutputStream fos = new FileOutputStream(newFile);
@@ -464,8 +466,8 @@ public final class CommonUtils {
                 ze = zis.getNextEntry();
             } // end of WHILE cycle
 
-            zis.closeEntry();
-            zis.close();
+            //zis.closeEntry();
+            //zis.close();
             LOG.info(String.format("Archive [%s] unzipped successfully.", zipFile));
 
         } catch (IOException ex) {

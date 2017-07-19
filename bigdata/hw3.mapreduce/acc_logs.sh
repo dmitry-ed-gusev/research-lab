@@ -7,11 +7,14 @@
 #   Usage: acc_logs.sh
 #
 #   Created:  Gusev Dmitrii, 14.07.2017
-#   Modified:
+#   Modified: Gusev Dmitrii, 18.07.2017
 #
 # ==============================================================
 
 set -e
+
+export HADOOP_CLASSPATH=@JAR_NAME@.jar
+yarn @MAIN_CLASS_HDFS@ -copyFromLocal ${file%.*} -destination ${DEST_HDFS}/$(basename ${file%.*})
 
 # - some defaults
 RESULT_FILE_NAME="ipinyou_output.data"

@@ -14,6 +14,7 @@
     <name>BigData course :: HomeWork #4. MapReduce.</name>
 
     <properties>
+        <skipAssembly>false</skipAssembly>
         <main.class>[no main class now]</main.class>
     </properties>
 
@@ -66,29 +67,6 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>${maven.plugin.antrun}</version>
                 <executions>
-                    <!-- assembly app in target folder -->
-                    <execution>
-                        <id>project-copy-batch-files</id>
-                        <phase>${prod.build.phase}</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <!-- copy+filter shell scripts -->
-                                <copy todir="${assembly.dir}" failonerror="true">
-                                    <fileset dir="${basedir}"><include name="*.sh"/></fileset>
-                                    <filterset>
-                                        <filter token="JAR_NAME" value="${jar.name}"/>
-                                        <filter token="MAIN_CLASS" value="${main.class}"/>
-                                    </filterset>
-                                </copy>
-                                <!-- fix LF in sh scripts after copy -->
-                                <fixcrlf srcdir="${assembly.dir}" includes="*.sh" eol="lf" eof="remove"/>
-                            </tasks>
-                        </configuration>
-                    </execution>
-
                     <!-- deploy app on target server (via ssh/scp) -->
                     <execution>
                         <id>project-deploy-app</id>
@@ -120,7 +98,7 @@
                         <version>${jsch.version}</version>
                     </dependency>
                     <dependency>
-                        <groupId>ant</groupId>
+                        <groupId>org.apache.ant</groupId>
                         <artifactId>ant-jsch</artifactId>
                         <version>${ant.jsch.version}</version>
                     </dependency>

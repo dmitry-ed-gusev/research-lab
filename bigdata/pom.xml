@@ -23,6 +23,10 @@
     </modules>
 
     <properties>
+        <skipAssembly>true</skipAssembly>
+        <!-- main class placeholder -->
+        <main.class>[specify main class property]</main.class>
+        <main.class.hdfs>[specify main class for HDFS utility]</main.class.hdfs>
         <!-- paths -->
         <jar.name>${project.artifactId}-${env}</jar.name>
         <assembly.dir>${project.build.directory}/${project.artifactId}</assembly.dir>
@@ -50,6 +54,51 @@
                 </configuration>
                 <version>${maven.plugin.jar}</version>
             </plugin>
+
+            <!-- assembly app in target catalog -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven.plugin.antrun}</version>
+                <executions>
+                    <execution>
+                        <id>project-copy-batch-files</id>
+                        <phase>${prod.build.phase}</phase>
+                        <goals><goal>run</goal></goals>
+                        <configuration>
+                            <skip>${skipAssembly}</skip>
+                            <target>
+                                <!-- copy+filter scripts (copy to assembly dir) -->
+                                <copy todir="${assembly.dir}" failonerror="true">
+                                    <fileset dir="${basedir}">
+                                        <include name="*.sh"/>
+                                        <include name="*.bat" />
+                                    </fileset>
+                                    <filterset>
+                                        <filter token="JAR_NAME"        value="${jar.name}"/>
+                                        <filter token="MAIN_CLASS"      value="${main.class}" />-->
+                                        <filter token="MAIN_CLASS_HDFS" value="${main.class.hdfs}" />-->
+                                    </filterset>
+                                </copy>
+                                <!-- fix LF in sh scripts (*.sh) after copy -->
+                                <fixcrlf srcdir="${assembly.dir}" includes="*.sh" eol="lf" eof="remove" />
+                                <!-- copy text sample(s) (without filtering) to assembly dir (raw data) -->
+                                <copy todir="${assembly.dir}/rawdata" failonerror="false">
+                                    <!--
+                                    <fileset dir="${basedir}">
+                                        <include name="*.txt"/>
+                                        <exclude name="Assignment.txt"/>
+                                    </fileset>
+                                    -->
+                                    <fileset dir="${basedir}/../rawdata">
+                                        <include name="*.txt"/>
+                                    </fileset>
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
 
     </build>
@@ -60,7 +109,6 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>${commons.logging.version}</version>
-            <!--<scope>compile</scope>-->
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -72,7 +120,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons.lang3.version}</version>
         </dependency>
-
         <!-- Hadoop dependencies -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -85,7 +132,6 @@
             <version>${hadoop.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <!-- Hadoop test dependencies -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -93,7 +139,6 @@
             <version>${hadoop.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 </project>
