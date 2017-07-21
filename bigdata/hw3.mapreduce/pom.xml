@@ -62,68 +62,20 @@
                 </executions>
             </plugin>
 
-            <!-- maven antrun plugin (copy and filter .sh scripts) -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>${maven.plugin.antrun}</version>
-                <executions>
-                    <!-- deploy app on target server (via ssh/scp) -->
-                    <execution>
-                        <id>project-deploy-app</id>
-                        <phase>${prod.deploy.phase}</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <!--<skip>${skipDeploy}</skip>-->
-                            <skip>true</skip>
-                            <target>
-                                <!-- make remote dir (no fail if exists) -->
-                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
-                                         command="mkdir -p ${path}/${project.artifactId}" trust="yes"/>
-                                <!-- copy file to cluster (deploy) -->
-                                <scp todir="${user}:${pass}@${host}:${path}/${project.artifactId}"
-                                     port="${port}" trust="yes">
-                                    <fileset dir="${assembly.dir}">
-                                        <exclude name="**/libs/**" />
-                                    </fileset>
-                                </scp>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-                <!-- libraries for ant scp impl, antrun doesn't use os's scp -->
-                <dependencies>
-                    <dependency>
-                        <groupId>com.jcraft</groupId>
-                        <artifactId>jsch</artifactId>
-                        <version>${jsch.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant-jsch</artifactId>
-                        <version>${ant.jsch.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
         </plugins>
     </build>
 
     <dependencies>
-
         <dependency>
             <groupId>eu.bitwalker</groupId>
             <artifactId>UserAgentUtils</artifactId>
             <version>1.20</version>
         </dependency>
-
         <dependency>
             <groupId>dgusev</groupId>
             <artifactId>utilities</artifactId>
-            <version>1.0</version>
+            <version>${dgusev.utilities.version}</version>
         </dependency>
-
     </dependencies>
 
 </project>

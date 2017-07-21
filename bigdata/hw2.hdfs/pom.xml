@@ -55,78 +55,14 @@
                                     <includes>
                                         <include>gusev/dmitry/jtils/utils/CmdLine.class</include>
                                         <include>gusev/dmitry/jtils/utils/CmdLineOption.class</include>
-                                        <include>gusev/dmitry/jtils/utils/SortMapUtils.class</include>
-                                        <include>gusev/dmitry/jtils/utils/SortMapUtils$SortType.class</include>
+                                        <include>gusev/dmitry/jtils/utils/MapUtils.class</include>
+                                        <include>gusev/dmitry/jtils/utils/MapUtils$SortType.class</include>
                                     </includes>
                                 </filter>
                             </filters>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!-- maven antrun plugin (copy and filter .sh scripts) -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>${maven.plugin.antrun}</version>
-                <executions>
-                    <!-- deploy app on target server (via ssh/scp) -->
-                    <execution>
-                        <id>project-deploy-app</id>
-                        <phase>${prod.deploy.phase}</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipDeploy}</skip>
-                            <target>
-                                <!-- make remote dir (no fail if exists) -->
-                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
-                                         command="mkdir -p ${path}/${project.artifactId}" trust="yes"/>
-                                <!-- copy file to cluster (deploy) -->
-                                <scp todir="${user}:${pass}@${host}:${path}/${project.artifactId}"
-                                     port="${port}" trust="yes">
-                                    <fileset dir="${assembly.dir}">
-                                        <exclude name="**/libs/**" />
-                                    </fileset>
-                                </scp>
-                            </target>
-                        </configuration>
-                    </execution>
-
-                    <!-- copy assembled application to local/remote (smb) folder -->
-                    <execution>
-                        <id>project-local-copy</id>
-                        <phase>${prod.deploy.phase}</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipCopy}</skip>
-                            <tasks>
-                                <copy todir="${copyTo}/${project.artifactId}" failonerror="true">
-                                    <fileset dir="${assembly.dir}">
-                                        <include name="*/**"/>
-                                    </fileset>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                    </execution>
-
-                </executions>
-                <!-- libraries for ant scp impl, antrun doesn't use os's scp -->
-                <dependencies>
-                    <dependency>
-                        <groupId>com.jcraft</groupId>
-                        <artifactId>jsch</artifactId>
-                        <version>${jsch.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant-jsch</artifactId>
-                        <version>${ant.jsch.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
 
             <!-- copy dependencies to output directory -->
@@ -144,8 +80,6 @@
                 </executions>
                 <configuration>
                     <outputDirectory>${assembly.dir}/${dependencies.output.dir}</outputDirectory>
-                    <!--<includeArtifactIds>hadoop-client</includeArtifactIds>-->
-                    <!--<includeArtifactIds>hadoop-common</includeArtifactIds>-->
                     <excludeArtifactIds>junit</excludeArtifactIds>
                 </configuration>
                 <version>${maven.plugin.dependency}</version>
@@ -155,13 +89,11 @@
     </build>
 
     <dependencies>
-
         <dependency>
             <groupId>dgusev</groupId>
             <artifactId>utilities</artifactId>
-            <version>1.0</version>
+            <version>${dgusev.utilities.version}</version>
         </dependency>
-
     </dependencies>
 
 </project>

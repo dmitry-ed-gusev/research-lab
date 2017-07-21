@@ -22,7 +22,6 @@
         <maven.plugin.dependency>2.1</maven.plugin.dependency>
         <maven.plugin.antrun>1.8</maven.plugin.antrun>
         <maven.plugin.shade>2.4.3</maven.plugin.shade>
-
         <!-- Apache libraries (Lang3/Logging/IO/Log4J) -->
         <commons.lang3.version>3.4</commons.lang3.version>
         <commons.logging.version>1.1.3</commons.logging.version>
@@ -30,37 +29,33 @@
         <log4j.version>1.2.17</log4j.version>
         <apache.httpclient.version>4.5.2</apache.httpclient.version>
         <apache.dbcp.version>1.4</apache.dbcp.version>
-
         <!-- BigData libraries versions -->
         <hadoop.version>2.7.1</hadoop.version>
-
         <!-- J2EE libraries versions -->
         <javaee.api.version>7.0</javaee.api.version>
         <java.mail.version>1.4.5</java.mail.version>
-
         <!-- 3rd party libraries versions -->
         <jsch.version>0.1.54</jsch.version>
         <ant.jsch.version>1.10.1</ant.jsch.version>
-
         <!-- Test frameworks versions (JUnit/Hamcrest/Mockito) -->
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <hamcrest.version>1.3</hamcrest.version>
         <jacoco.plugin.version>0.7.7.201606060606</jacoco.plugin.version>
-
         <!-- Spring/Hibernate frameworks (parts) versions -->
         <spring.version>4.3.2.RELEASE</spring.version>
         <spring.context.version>4.3.3.RELEASE</spring.context.version>
         <hibernate.version>5.0.6.Final</hibernate.version>
-
         <!-- DBMS drivers versions -->
         <dbms.derby.version>10.13.1.1</dbms.derby.version>
-
+        <!-- my own (local) utilities library useful version -->
+        <dgusev.utilities.version>1.0</dgusev.utilities.version>
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
         <skipCoverageReport>false</skipCoverageReport>
 
         <!-- some common (project) settings/defaults -->
         <dependencies.output.dir>libs</dependencies.output.dir>
+        <rawdata.dir>rawdata</rawdata.dir>
     </properties>
 
     <!-- Additional Maven repositories for artifacts -->

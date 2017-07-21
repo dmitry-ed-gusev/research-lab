@@ -50,7 +50,7 @@ public class ProcessAccessLogsMain extends Configured implements Tool {
 
         // input text file for job1- first cmd line parameter
         //TextInputFormat.addInputPath(job1, new Path(args[0]));
-        TextInputFormat.addInputPath(job1, new Path("/users/myuser/access_logs/input/"));
+        TextInputFormat.addInputPath(job1, new Path("/users/myuser/access_logs/input/00000"));
 
         // path (directory) for output (plain text)
         //TextOutputFormat.setOutputPath(job1, new Path(INTERMEDIATE_OUTPUT_PATH));
