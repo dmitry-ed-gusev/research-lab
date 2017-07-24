@@ -19,9 +19,6 @@ import org.apache.hadoop.util.ToolRunner;
  * Created by gusevdm on 6/19/2017.
  */
 
-// https://www.mkyong.com/java/how-to-read-and-parse-csv-file-in-java/
-// https://agiletribe.wordpress.com/2012/11/23/the-only-class-you-need-for-csv-files/
-
 public class ProcessAccessLogsMain extends Configured implements Tool {
 
     private static final Log LOG = LogFactory.getLog(ProcessAccessLogsMain.class);
