@@ -7,14 +7,31 @@
 #   Usage: acc_logs.sh
 #
 #   Created:  Gusev Dmitrii, 14.07.2017
-#   Modified: Gusev Dmitrii, 18.07.2017
+#   Modified: Gusev Dmitrii, 21.07.2017
 #
 # ==============================================================
 
 set -e
 
+# - directories for input/output of map-reduce job, other things
+HDFS_BASE_DIR="/user/${USER}"
+HDFS_OUTPUT_DIR="${HDFS_BASE_DIR}/output"
+RAWDATA_DIR=rawdata
+SOURCE_ARCHIVE_NAME=access_logs
+
+# - unzip source file
+unzip -o ${RAWDATA_DIR}/${SOURCE_ARCHIVE_NAME}.zip
+# - copy unzipped to HDFS
+hdfs dfs -copyFromLocal -f ${SOURCE_ARCHIVE_NAME} ${HDFS_BASE_DIR}
+# - remove extracted archive from local drive
+rm -r -f ${SOURCE_ARCHIVE_NAME}
+# - start MR job on a cluster
 export HADOOP_CLASSPATH=@JAR_NAME@.jar
-yarn @MAIN_CLASS_HDFS@ -copyFromLocal ${file%.*} -destination ${DEST_HDFS}/$(basename ${file%.*})
+yarn @MAIN_CLASS@ ${HDFS_BASE_DIR}/${SOURCE_ARCHIVE_NAME}/input/000000 ${HDFS_OUTPUT_DIR}
+
+exit 777
+
+
 
 # - some defaults
 RESULT_FILE_NAME="ipinyou_output.data"
