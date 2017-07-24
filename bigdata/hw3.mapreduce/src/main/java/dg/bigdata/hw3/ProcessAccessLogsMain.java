@@ -1,13 +1,11 @@
 package dg.bigdata.hw3;
 
 import eu.bitwalker.useragentutils.UserAgent;
-import gusev.dmitry.jtils.utils.CommonUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -20,6 +18,9 @@ import org.apache.hadoop.util.ToolRunner;
  * MapReduce application for processing web access logs.
  * Created by gusevdm on 6/19/2017.
  */
+
+// https://www.mkyong.com/java/how-to-read-and-parse-csv-file-in-java/
+// https://agiletribe.wordpress.com/2012/11/23/the-only-class-you-need-for-csv-files/
 
 public class ProcessAccessLogsMain extends Configured implements Tool {
 
@@ -49,11 +50,11 @@ public class ProcessAccessLogsMain extends Configured implements Tool {
         //job1.setJobName("The longest word: option2.JOB#1");
 
         // input text file for job1- first cmd line parameter
-        //TextInputFormat.addInputPath(job1, new Path(args[0]));
-        TextInputFormat.addInputPath(job1, new Path("/users/myuser/access_logs/input/00000"));
+        TextInputFormat.addInputPath(job1, new Path(args[0]));
 
         // path (directory) for output (plain text)
-        //TextOutputFormat.setOutputPath(job1, new Path(INTERMEDIATE_OUTPUT_PATH));
+        TextOutputFormat.setOutputPath(job1, new Path(args[1]));
+
         job1.setMapperClass(AccessLogsMapper.class); // job mapper class
         //job1.setReducerClass(EntryReducer.class); // reducer class
 
