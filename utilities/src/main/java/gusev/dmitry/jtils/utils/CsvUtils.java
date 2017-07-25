@@ -1,5 +1,7 @@
 package gusev.dmitry.jtils.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,20 +33,22 @@ public class CsvUtils {
 
     }
 
+    /***/
     public static List<String> parseLine(String cvsLine) {
         return parseLine(cvsLine, DEFAULT_SEPARATOR, DEFAULT_QUOTE);
     }
 
+    /***/
     public static List<String> parseLine(String cvsLine, char separators) {
         return parseLine(cvsLine, separators, DEFAULT_QUOTE);
     }
 
+    /***/
     public static List<String> parseLine(String cvsLine, char separators, char customQuote) {
 
         List<String> result = new ArrayList<>();
 
-        //if empty, return!
-        if (cvsLine == null && cvsLine.isEmpty()) {
+        if (StringUtils.isBlank(cvsLine)) { // <- fast-check (if input is empty, return!)
             return result;
         }
 
@@ -52,9 +56,9 @@ public class CsvUtils {
             customQuote = DEFAULT_QUOTE;
         }
 
-        if (separators == ' ') {
-            separators = DEFAULT_SEPARATOR;
-        }
+        //if (separators == ' ') {
+        //    separators = DEFAULT_SEPARATOR;
+        //}
 
         StringBuffer curVal = new StringBuffer();
         boolean inQuotes = false;
@@ -100,7 +104,10 @@ public class CsvUtils {
 
                 } else if (ch == separators) {
 
-                    result.add(curVal.toString());
+                    // filter out empty values
+                    if (!StringUtils.isBlank(curVal.toString())) {
+                        result.add(StringUtils.strip(curVal.toString(), String.valueOf(customQuote)));
+                    }
 
                     curVal = new StringBuffer();
                     startCollectChar = false;
@@ -118,7 +125,11 @@ public class CsvUtils {
 
         }
 
-        result.add(curVal.toString());
+        // filter out empty values
+        if (!StringUtils.isBlank(curVal.toString())) {
+            //result.add(curVal.toString());
+            result.add(StringUtils.strip(curVal.toString(), String.valueOf(customQuote)));
+        }
 
         return result;
     }
