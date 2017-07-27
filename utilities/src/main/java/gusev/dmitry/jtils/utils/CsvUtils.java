@@ -18,33 +18,23 @@ import java.util.Scanner;
 public class CsvUtils {
 
     private static final char DEFAULT_SEPARATOR = ',';
-    private static final char DEFAULT_QUOTE = '"';
+    private static final char DEFAULT_QUOTE     = '"';
 
-    public static void main(String[] args) throws Exception {
-
-        String csvFile = "/Users/mkyong/csv/country2.csv";
-
-        Scanner scanner = new Scanner(new File(csvFile));
-        while (scanner.hasNext()) {
-            List<String> line = parseLine(scanner.nextLine());
-            System.out.println("Country [id= " + line.get(0) + ", code= " + line.get(1) + " , name=" + line.get(2) + "]");
-        }
-        scanner.close();
-
-    }
-
-    /***/
+    /** Parse line with default separator (comma [,]) and default quote (double quote ["]). */
     public static List<String> parseLine(String cvsLine) {
         return parseLine(cvsLine, DEFAULT_SEPARATOR, DEFAULT_QUOTE);
     }
 
-    /***/
-    public static List<String> parseLine(String cvsLine, char separators) {
-        return parseLine(cvsLine, separators, DEFAULT_QUOTE);
+    /** Parse line with  custom separator and default quote (double quote ["]). */
+    public static List<String> parseLine(String cvsLine, char separator) {
+        return parseLine(cvsLine, separator, DEFAULT_QUOTE);
     }
 
-    /***/
-    public static List<String> parseLine(String cvsLine, char separators, char customQuote) {
+    /**
+     * Parse line with custom separator and quote symbols.
+     * If quote symbol is space (' ') it will be replaced by default quote symbol (double quote ["]).
+     */
+    public static List<String> parseLine(String cvsLine, char separator, char customQuote) {
 
         List<String> result = new ArrayList<>();
 
@@ -52,11 +42,11 @@ public class CsvUtils {
             return result;
         }
 
-        if (customQuote == ' ') {
+        if (customQuote == ' ') { // replace space as a quote to default quote
             customQuote = DEFAULT_QUOTE;
         }
 
-        //if (separators == ' ') {
+        //if (separators == ' ') { // <- we are allowed to use space as a separator char
         //    separators = DEFAULT_SEPARATOR;
         //}
 
@@ -102,7 +92,7 @@ public class CsvUtils {
                         curVal.append('"');
                     }
 
-                } else if (ch == separators) {
+                } else if (ch == separator) {
 
                     // filter out empty values
                     if (!StringUtils.isBlank(curVal.toString())) {
@@ -112,8 +102,8 @@ public class CsvUtils {
                     curVal = new StringBuffer();
                     startCollectChar = false;
 
-                } else if (ch == '\r') {
-                    //ignore LF characters
+                } else if (ch == '\r') { //ignore LF characters
+                    //noinspection UnnecessaryContinue
                     continue;
                 } else if (ch == '\n') {
                     //the end, break!
@@ -127,7 +117,6 @@ public class CsvUtils {
 
         // filter out empty values
         if (!StringUtils.isBlank(curVal.toString())) {
-            //result.add(curVal.toString());
             result.add(StringUtils.strip(curVal.toString(), String.valueOf(customQuote)));
         }
 
