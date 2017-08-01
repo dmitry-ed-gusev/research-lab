@@ -2,7 +2,7 @@ package dg.social.crawler.networks.fb;
 
 import dg.social.crawler.networks.AbstractClient;
 import gusev.dmitry.jtils.utils.CommonUtils;
-import gusev.dmitry.jtils.utils.HttpUtilities;
+import gusev.dmitry.jtils.utils.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,7 +39,7 @@ import java.util.Map;
 import static dg.social.crawler.SCrawlerDefaults.DATE_TIME_FORMAT;
 import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
 import static dg.social.crawler.networks.fb.FbFormType.*;
-import static gusev.dmitry.jtils.utils.HttpUtilities.*;
+import static gusev.dmitry.jtils.utils.HttpUtils.*;
 
 /**
  * FB social network client. Implemented: - receiving access token -
@@ -212,12 +212,12 @@ public class FbClient extends AbstractClient {
 																				// cookies
 
 				// get page content for parsing
-				httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
+				httpPageContent = HttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
 				// httpStringResponse =
-				// HttpUtilities.httpResponseToString(httpResponse,
+				// HttpUtils.httpResponseToString(httpResponse,
 				// httpPageContent);
 				if (LOG.isDebugEnabled()) { // just debug output
-					LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
+					LOG.debug(HttpUtils.httpResponseToString(httpResponse, httpPageContent));
 				}
 
 				Document doc = Jsoup.parse(httpPageContent); // parse returned
@@ -233,13 +233,13 @@ public class FbClient extends AbstractClient {
 				case LOGIN_FORM: // FB Login form
 					LOG.debug(String.format("Processing [%s].", LOGIN_FORM));
 
-					actionUrl = HttpUtilities.getFirstFormActionURL(doc); // gets
+					actionUrl = HttpUtils.getFirstFormActionURL(doc); // gets
 																			// form
 																			// action
 																			// URL
 					LOG.debug(String.format("Form action: [%s].", actionUrl));
 
-					formParamsList = HttpUtilities.getFirstFormParams(doc, FB_LOGIN_FORM_CREDENTIALS); // get
+					formParamsList = HttpUtils.getFirstFormParams(doc, FB_LOGIN_FORM_CREDENTIALS); // get
 																										// from
 																										// and
 																										// fill
@@ -253,7 +253,7 @@ public class FbClient extends AbstractClient {
 					}
 
 					// prepare and execute next http request (send form)
-					httpResponse = HttpUtilities.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl,
+					httpResponse = HttpUtils.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl,
 							formParamsList, httpCookies);
 					break;
 
@@ -261,13 +261,13 @@ public class FbClient extends AbstractClient {
 													// rights
 					LOG.debug(String.format("Processing [%s].", APPROVE_ACCESS_RIGHTS_FORM));
 
-					actionUrl = HttpUtilities.getFirstFormActionURL(doc); // get
+					actionUrl = HttpUtils.getFirstFormActionURL(doc); // get
 																			// form
 																			// action
 																			// URL
 					LOG.debug(String.format("Form action: [%s].", actionUrl));
 
-					formParamsList = HttpUtilities.getFirstFormParams(doc, null); // get
+					formParamsList = HttpUtils.getFirstFormParams(doc, null); // get
 																					// from
 																					// and
 																					// fill
@@ -281,7 +281,7 @@ public class FbClient extends AbstractClient {
 					}
 
 					// prepare and execute next http request (send form)
-					httpResponse = HttpUtilities.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl,
+					httpResponse = HttpUtils.sendHttpPost(HTTP_CLIENT, HTTP_CONTEXT, HTTP_REQUEST_CONFIG, actionUrl,
 							formParamsList, httpCookies);
 					break;
 
@@ -365,9 +365,9 @@ public class FbClient extends AbstractClient {
 		}
 
 		// get page content for parsing
-		String httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING);
+		String httpPageContent = HttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
 		if (LOG.isDebugEnabled()) { // just debug output
-			LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
+			LOG.debug(HttpUtils.httpResponseToString(httpResponse, httpPageContent));
 		}
 
 		// return received JSON

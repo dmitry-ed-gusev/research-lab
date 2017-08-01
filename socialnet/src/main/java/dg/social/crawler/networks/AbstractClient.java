@@ -1,6 +1,6 @@
 package dg.social.crawler.networks;
 
-import gusev.dmitry.jtils.utils.HttpUtilities;
+import gusev.dmitry.jtils.utils.HttpUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
@@ -102,25 +102,25 @@ public abstract class AbstractClient {
     /***/
     public CloseableHttpResponse sendHttpGet(String uri) throws IOException {
         LOG.debug("AbstractClient.sendHttpGet(String) working.");
-        return HttpUtilities.sendHttpGet(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri);
+        return HttpUtils.sendHttpGet(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri);
     }
 
     /***/
     public CloseableHttpResponse sendHttpGet(URI uri) throws IOException {
         LOG.debug("AbstractClient.sendHttpGet(URI) working.");
-        return HttpUtilities.sendHttpGet(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri);
+        return HttpUtils.sendHttpGet(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri);
     }
 
     /***/
     //public CloseableHttpResponse sendHttpPost(String uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
     //    LOG.debug("AbstractClient.sendHttpPost(String) working.");
-    //    return HttpUtilities.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri, postParams, cookies);
+    //    return HttpUtils.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri, postParams, cookies);
     //}
 
     /***/
     //public CloseableHttpResponse sendHttpPost(URI uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
     //    LOG.debug("AbstractClient.sendHttpPost(URI) working.");
-    //    return HttpUtilities.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri, postParams, cookies);
+    //    return HttpUtils.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri, postParams, cookies);
     //}
 
     /***/
@@ -138,11 +138,11 @@ public abstract class AbstractClient {
         }
 
         // prepare some parameters
-        String              actionUrl      = HttpUtilities.getFirstFormActionURL(document, actionPrefix);
-        List<NameValuePair> formParamsList = HttpUtilities.getFirstFormParams(document, additionalFormParams);
+        String              actionUrl      = HttpUtils.getFirstFormActionURL(document, actionPrefix);
+        List<NameValuePair> formParamsList = HttpUtils.getFirstFormParams(document, additionalFormParams);
         // submit form and return http response
         //return this.sendHttpPost(actionUrl, formParamsList, cookies);
-        return HttpUtilities.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, actionUrl, formParamsList, cookies);
+        return HttpUtils.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, actionUrl, formParamsList, cookies);
     }
 
     /***/

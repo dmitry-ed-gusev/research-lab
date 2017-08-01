@@ -31,9 +31,9 @@ import java.util.Map;
  * Created by gusevdm on 12/9/2016.
  */
 
-public final class HttpUtilities {
+public final class HttpUtils {
 
-    private static final Log LOG = LogFactory.getLog(HttpUtilities.class); // module logger
+    private static final Log LOG = LogFactory.getLog(HttpUtils.class); // module logger
 
     /** Default encoding for content. */
     public static final String DEFAULT_ENCODING = "UTF-8";
@@ -66,11 +66,11 @@ public final class HttpUtilities {
     /***/
     private static final String HTTP_FORM_INPUT_VALUE_ATTR = "value";
 
-    private HttpUtilities() {} // utility class, can't instantiate
+    private HttpUtils() {} // utility class, can't instantiate
 
     /** Return content of http response as string. */
     public static String getPageContent(HttpEntity httpEntity, String encoding) throws IOException {
-        LOG.debug("HttpUtilities.getPageContent() working.");
+        LOG.debug("HttpUtils.getPageContent() working.");
 
         if (httpEntity == null) { // return empty string for null entity
             return "";
@@ -86,7 +86,7 @@ public final class HttpUtilities {
      * Page content passed separately, because entity in http response could be consumed only once.
      */
     public static String httpResponseToString(HttpResponse response, String pageContent) throws IOException {
-        LOG.debug("HttpUtilities.httpResponseToString() working.");
+        LOG.debug("HttpUtils.httpResponseToString() working.");
 
         if (response == null) { // check - is it null?
             return "[http request is null!]";
@@ -126,7 +126,7 @@ public final class HttpUtilities {
      */
     public static CloseableHttpResponse sendHttpGet(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
                                                     URI uri) throws IOException {
-        LOG.debug("HttpUtilities.sendHttpGet");
+        LOG.debug("HttpUtils.sendHttpGet");
 
         if (httpClient == null || uri == null) { // fail-fast
             throw new IllegalArgumentException(
@@ -161,7 +161,7 @@ public final class HttpUtilities {
      */
     public static CloseableHttpResponse sendHttpGet(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
                                                     String uri) throws IOException {
-        return HttpUtilities.sendHttpGet(httpClient, httpContext, requestConfig, URI.create(uri));
+        return HttpUtils.sendHttpGet(httpClient, httpContext, requestConfig, URI.create(uri));
     }
 
     /**
@@ -170,7 +170,7 @@ public final class HttpUtilities {
      */
     public static CloseableHttpResponse sendHttpPost(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
                                                      URI uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
-        LOG.debug("HttpUtilities.sendHttpPost() working.");
+        LOG.debug("HttpUtils.sendHttpPost() working.");
 
         if (httpClient == null || uri == null) { // fail-fast
             throw new IllegalArgumentException(
@@ -215,7 +215,7 @@ public final class HttpUtilities {
      */
     public static CloseableHttpResponse sendHttpPost(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
                                                      String uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
-        return HttpUtilities.sendHttpPost(httpClient, httpContext, requestConfig, URI.create(uri), postParams, cookies);
+        return HttpUtils.sendHttpPost(httpClient, httpContext, requestConfig, URI.create(uri), postParams, cookies);
     }
 
     /**
@@ -223,7 +223,7 @@ public final class HttpUtilities {
      * If fixPrefix isn't null/empty and calculated URL starts with "/" - prefix will be added.
      */
     public static String getFirstFormActionURL(Document document, String fixPrefix) {
-        LOG.debug("HttpUtilities.getFirstFormActionURL() working.");
+        LOG.debug("HttpUtils.getFirstFormActionURL() working.");
 
         if (document == null) { // fail-fast
             throw new IllegalArgumentException("Can't extract action URL from null html document!");
@@ -244,12 +244,12 @@ public final class HttpUtilities {
 
     /** Returns action URL from first found html form in received Document. */
     public static String getFirstFormActionURL(Document document) {
-        return HttpUtilities.getFirstFormActionURL(document, null);
+        return HttpUtils.getFirstFormActionURL(document, null);
     }
 
     /** Return all parameters from VK login form (with email/pass added). */
     public static List<NameValuePair> getFirstFormParams(Document document, Map<String, String> formItems) {
-        LOG.debug("HttpUtilities.getFirstFormParams() working.");
+        LOG.debug("HttpUtils.getFirstFormParams() working.");
 
         if (document == null) { // fail-fast
             throw new IllegalArgumentException("Can't extract form parameters from null html document!");

@@ -17,15 +17,20 @@
         <module>storm</module>
         <module>hw1.mapreduce</module>
         <module>hw2.hdfs</module>
-		<module>hw3.mapreduce</module>
-		<module>hw4.mapreduce</module>
-		<module>hw5.yarn</module>
+        <module>hw3.mapreduce</module>
+        <module>hw4.mapreduce</module>
+        <module>hw5.yarn</module>
     </modules>
 
     <properties>
+        <!-- main class placeholder(s) -->
+        <main.class>[specify main class property]</main.class>
+        <main.class.hdfs>[specify main class for HDFS utility]</main.class.hdfs>
         <!-- paths -->
         <jar.name>${project.artifactId}-${env}</jar.name>
         <assembly.dir>${project.build.directory}/${project.artifactId}</assembly.dir>
+        <!-- do we have to assembly this app or not (true if not) -->
+        <skipAssembly>true</skipAssembly>
         <!-- cluster parameters/creds (should be specified via cmd line) -->
         <skipDeploy>true</skipDeploy>
         <host>[specify host with -Dhost=host]</host>
@@ -34,7 +39,7 @@
         <pass>[specify pass with -Dpass=pass]</pass>
         <path>[specify path with -Dpath=path]</path>
         <!-- params for copy project to local/remote (smb) folder -->
-        <skipCopy>true</skipCopy>
+        <skipLocalCopy>true</skipLocalCopy>
         <copyTo>[specify destination directory]</copyTo>
     </properties>
 
@@ -50,6 +55,107 @@
                 </configuration>
                 <version>${maven.plugin.jar}</version>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven.plugin.antrun}</version>
+                <executions>
+                    <!-- assembly app in target output catalog -->
+                    <execution>
+                        <id>project-copy-batch-files</id>
+                        <phase>${prod.build.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipAssembly}</skip>
+                            <target>
+                                <!-- copy+filter scripts (copy to assembly dir) -->
+                                <copy todir="${assembly.dir}" failonerror="true">
+                                    <fileset dir="${basedir}">
+                                        <include name="*.sh"/>
+                                        <include name="*.bat"/>
+                                    </fileset>
+                                    <filterset>
+                                        <filter token="JAR_NAME" value="${jar.name}"/>
+                                        <filter token="MAIN_CLASS" value="${main.class}"/>-->
+                                        <filter token="MAIN_CLASS_HDFS" value="${main.class.hdfs}"/>-->
+                                    </filterset>
+                                </copy>
+                                <!-- fix LF in sh scripts (*.sh) after copy -->
+                                <fixcrlf srcdir="${assembly.dir}" includes="*.sh" eol="lf" eof="remove"/>
+                            </target>
+                        </configuration>
+                    </execution>
+
+                    <!-- copy assembled application to local/remote (smb) folder -->
+                    <execution>
+                        <id>project-local-copy</id>
+                        <phase>${prod.deploy.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipLocalCopy}</skip>
+                            <tasks>
+                                <copy todir="${copyTo}/${project.artifactId}" failonerror="true">
+                                    <fileset dir="${assembly.dir}">
+                                        <include name="*/**"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+
+                    <!-- deploy app on target server (via ssh/scp) -->
+                    <execution>
+                        <id>project-deploy-app</id>
+                        <phase>${prod.deploy.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipDeploy}</skip>
+                            <target>
+                                <!-- make remote dir(s) (no fail if exists) -->
+                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                         command="mkdir -p ${path}/bigdata/${project.artifactId}" trust="yes"/>
+                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                         command="mkdir -p ${path}/bigdata/${project.artifactId}/${rawdata.dir}/" trust="yes"/>
+                                <!-- copy module files to cluster (deploy) -->
+                                <scp todir="${user}:${pass}@${host}:${path}/bigdata/${project.artifactId}"
+                                     port="${port}" trust="yes" failonerror="false">
+                                    <fileset dir="${assembly.dir}">
+                                        <exclude name="**/${dependencies.output.dir}/**"/>
+                                    </fileset>
+                                </scp>
+                                <!-- copy rawdata for task/module to cluster -->
+                                <scp todir="${user}:${pass}@${host}:${path}/bigdata/${project.artifactId}/${rawdata.dir}"
+                                     port="${port}" trust="yes" failonerror="false">
+                                    <fileset dir="${basedir}/${rawdata.dir}"/>
+                                </scp>
+                            </target>
+                        </configuration>
+                    </execution>
+
+                </executions>
+
+                <!-- dependencies for ant scp impl, antrun plugin doesn't use os's scp -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>${jsch.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>${ant.jsch.version}</version>
+                    </dependency>
+                </dependencies>
+
+            </plugin>
+
         </plugins>
 
     </build>
@@ -60,7 +166,6 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>${commons.logging.version}</version>
-            <!--<scope>compile</scope>-->
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -72,7 +177,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons.lang3.version}</version>
         </dependency>
-
         <!-- Hadoop dependencies -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -85,7 +189,6 @@
             <version>${hadoop.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <!-- Hadoop test dependencies -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -93,7 +196,6 @@
             <version>${hadoop.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 </project>
