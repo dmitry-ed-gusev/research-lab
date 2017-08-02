@@ -9,17 +9,34 @@
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #  
 #   Created:  Gusev Dmitry, 10.04.2017
-#   Modified:
+#   Modified: Gusev Dmitrii, 02.08.2017
 # =============================================================================
 
-# todo: implement Apache Hive installation
+# -- Installing Apache Hive
+# - delete target Hive TAR GZ file if it exists
+if [ -f ${HIVE_ARCHIVE} ] ; then
+    rm ${HIVE_ARCHIVE}
+fi
+# - download Apache Hive from repository
+wget ${HIVE_BINARY_URL}
+# - extract Hive from archive
+tar xvfz ${HIVE_ARCHIVE}
+# - move Hadoop to /opt directory
+sudo mv ${HIVE_FULL_NAME} /opt
+
+# - add path to Hive executable to PATH variable (system wide).
+# "" - in this quotes variables will be processed/evaluated (values used)
+# '' - in this quotes variables will be used 'as is' (no values)
+echo "export HIVE_HOME=/opt/$HIVE_FULL_NAME" | sudo tee /etc/profile.d/hive.sh
+echo 'export PATH="$HIVE_HOME/bin:$PATH"' | sudo tee -a /etc/profile.d/hive.sh
+sudo chmod +x /etc/profile.d/hive.sh
 
 # ***** DEBUG OUTPUT (wait for any key press) *****
-if [ "$DEBUG_MODE" == "true" ]; then
+if [ "${DEBUG_MODE}" == "true" ]; then
 	read -rsp $'Press any key to continue...\n' -n1 key
 fi
 
-# -- Reboot system after updating
-if [ "$REBOOT_AFTER_UPDATE" == "YES" ]; then
+# -- Reboot system after installing Hadoop
+if [ "${REBOOT_AFTER_UPDATE}" == "YES" ]; then
     sudo reboot now
 fi

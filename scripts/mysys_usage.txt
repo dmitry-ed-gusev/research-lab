@@ -22,9 +22,8 @@ Utility options:
                      It's recommended to install Java first.
 -install-sonar      !not implemented! Install Sonar server, java-based Code Quality and Analysis tool.
                      It's recommended to install Java first.
--install-hadoop     Install Hadoop, java-based BigData tool. It's recommended to install Java first.
--install-hive       !not implemented! Install Hive, java-based BigData tool.
-                     It's recommended to install Java first.
+-install-hadoop     Install Hadoop, java-based BigData tool. Install Java first!
+-install-hive       Install Hive, java-based BigData tool. Install Java and Hadoop first!
 
 Utility flags:
 -no-reboot    Don't reboot system after update or software installing.

@@ -55,11 +55,15 @@ SONAR_PLATFORM=linux-x86-64
 # ============================== Settings: Big Data tools ==============================
 # -- Apache Hadoop settings
 HADOOP_VERSION=2.7.3
-HADOOP_NAME="hadoop-$HADOOP_VERSION"
-HADOOP_ARCHIVE="$HADOOP_NAME.tar.gz"
-HADOOP_BINARY_URL="https://archive.apache.org/dist/hadoop/common/$HADOOP_NAME/$HADOOP_ARCHIVE"
+HADOOP_NAME="hadoop-${HADOOP_VERSION}"
+HADOOP_ARCHIVE="${HADOOP_NAME}.tar.gz"
+HADOOP_BINARY_URL="https://archive.apache.org/dist/hadoop/common/${HADOOP_NAME}/${HADOOP_ARCHIVE}"
 # -- Apache Hive settings
-# todo: add Hive settings
+HIVE_VERSION=1.2.2
+HIVE_SIMPLE_NAME="hive-${HIVE_VERSION}"
+HIVE_FULL_NAME="apache-${HIVE_SIMPLE_NAME}-bin"
+HIVE_ARCHIVE="${HIVE_FULL_NAME}.tar.gz"
+HIVE_BINARY_URL="https://archive.apache.org/dist/hive/${HIVE_SIMPLE_NAME}/${HIVE_ARCHIVE}"
 
 # ============================== SETTINGS: MYSQL ==============================
 MYSQL_ROOT_PASS="rootroot"

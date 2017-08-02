@@ -166,7 +166,7 @@ fi
 if [ "$INSTALL_HIVE" == "YES" ]; then
     echo "Installing Apache Hive. Version: ${HIVE_VERSION}"
     INSTALL_HIVE=NO
-    #source _install-hive.sh
+    source shlib/_install-hive.sh
 fi
 
 # -- INSTALL/UPDATE OPTION: install MySql (client and server). This option is independent

@@ -57,7 +57,7 @@ args = parser.parse_args()
 for line in fileinput.input(files=[args.infile], inplace=True, backup='.original'):
     # if we found string - we will replace it
     if check_str(args.edit_type, line, args.sourceStr):
-        sys.stderr.write("Found: {}".format(args.sourceStr))
+        sys.stderr.write("Found: {}\n".format(args.sourceStr))
         print args.destStr
     else:
         print line,

@@ -30,7 +30,7 @@ wget $HADOOP_BINARY_URL
 tar xvfz $HADOOP_ARCHIVE
 # - move Hadoop to /opt directory
 sudo mv $HADOOP_NAME /opt
-# - add path to ANT executable to PATH variable (system wide).
+# - add path to Hadoop executable to PATH variable (system wide).
 # "" - in this quotes variables will be processed/evaluated (values used)
 # '' - in this quotes variables will be used 'as is' (no values)
 echo "HADOOP_HOME=/opt/$HADOOP_NAME" | sudo tee /etc/profile.d/hadoop.sh
