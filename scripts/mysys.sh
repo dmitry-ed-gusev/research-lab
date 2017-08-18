@@ -141,8 +141,7 @@ fi
 if [ "$INSTALL_JENKINS" == "YES" ]; then
     echo "Installing Jenkins server."
     INSTALL_JENKINS=NO
-    # todo: implement this option
-    exit 0
+    source shlib/_install-jenkins.sh
 fi
 
 # -- INSTALL/UPDATE OPTION: install Sonar.
