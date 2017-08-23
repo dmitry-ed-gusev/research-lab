@@ -2,8 +2,8 @@
 This project intended for any kind of research, experiments, etc.
 
 ## Repository contents ##
-Repository contains some modules:
-* [bigdata]
+Repository contains some modules:  
+* **[bigdata]**
     * [hw1.mapreduce]
     * [hw2.hdfs]
     * [storm]
@@ -13,7 +13,14 @@ Repository contains some modules:
 * [docs]
 * [j2ee]
 * [marklogic]
-* [scripts]
+* **[scripts]** For Python scripts there are some dependencies (modules):
+    * **matplotlib** (https://pypi.python.org/pypi/matplotlib), installation cmd line:  
+      *python -m pip install --user matplotlib-2.0.2-cp27-cp27m-win_amd64.whl*          
+      whl file name may vary, depending on python version and matplotlib version    
+    * **jira** - library for interaction with JIRA by rest api.
+    * **prettytable** - library for generating pretty text ASCII tables.
+    * **pygal** -  
+    * **gviz_api** - library for google vizualization API (Google Chart). 
 * [socialnet]
 * [tmpresearch]
     * [hibernate]
