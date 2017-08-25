@@ -49,11 +49,20 @@ def main():
     json = data_table.ToJSon(columns_order=("name", "salary", "full_time"),
                              order_by="salary")
 
+    separator = "--------------- {} ---------------"
+
     # Put the JS code and JSON string into the template.
+    print separator.format("HTML code")
     print "Content-type: text/html"
     print
     print page_template % vars()
+    print
 
+    print separator.format("JSON response")
+    print "Content-type: text/plain"
+    print
+    print data_table.ToJSonResponse(columns_order=("name", "salary", "full_time"),
+                                order_by="salary")
 
 if __name__ == '__main__':
     main()
