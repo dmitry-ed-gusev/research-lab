@@ -3,13 +3,52 @@
 """
 
 from scrapelib import get_bs_object
+import datetime
+import random
 import re
 
+# init random generator with current time
+random.seed(datetime.datetime.now())
 
-# get all links from wiki page
-wiki_address = "http://en.wikipedia.org/wiki/Kevin_Bacon"
-bs = get_bs_object(wiki_address)
+# some useful constants
+PROXY_SERVER = "webproxy.merck.com:8080"
 
-for link in bs.find("div", {"id" : "bodyContent"}).findAll("a", href=re.compile("^(/wiki/)((?!:).)*$")):
-    if "href" in link.attrs:
-        print link.attrs["href"]
+
+def getLinks1(articleUrl, http_proxy="", https_proxy=""):
+    bs_obj = get_bs_object("http://en.wikipedia.org" + articleUrl, http_proxy, https_proxy)
+    return bs_obj.find("div", {"id": "bodyContent"}).findAll("a", href=re.compile("^(/wiki/)((?!:).)*$"))
+
+
+def getLinks2(pageUrl, http_proxy="", https_proxy=""):
+    global pages
+    bs_obj = get_bs_object("http://en.wikipedia.org" + pageUrl, http_proxy, https_proxy)
+    try:
+        print(bs_obj.h1.get_text())
+        print(bs_obj.find(id ="mw-content-text").findAll("p")[0])
+        print(bs_obj.find(id="ca-edit").find("span").find("a").attrs['href'])
+    except AttributeError:
+        print("This page is missing something! No worries though!")
+
+    for link in bs_obj.findAll("a", href=re.compile("^(/wiki/)")):
+        if 'href' in link.attrs:
+            if link.attrs['href'] not in pages:
+                # We have encountered a new page
+                newPage = link.attrs['href']
+                print("----------------\n"+newPage)
+                pages.add(newPage)
+                getLinks2(newPage)
+
+
+def scrap_1():
+    links = getLinks1("/wiki/Kevin_Bacon", PROXY_SERVER, PROXY_SERVER)
+    while len(links) > 0:
+        newArticle = links[random.randint(0, len(links)-1)].attrs["href"]
+        print(newArticle)
+        links = getLinks1(newArticle)
+
+def scrap_2():
+    pages = set()
+    getLinks2("", PROXY_SERVER, PROXY_SERVER)
+
+# ===========================================
+scrap_1()
