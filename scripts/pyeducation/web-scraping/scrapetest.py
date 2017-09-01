@@ -27,16 +27,15 @@ try:
     bs_obj = get_bs_object(page2)
     if bs_obj:
         # print all persons names
-        names_list = bs_obj.findAll("span", {"class" : "green"})
+        names_list = bs_obj.findAll("span", {"class": "green"})
         names_list = bs_obj.findAll(class_="green")
         for name in names_list:
             print name.get_text()
 
         # print siblings
-        for sibling in bs_obj.find("table", {"id" : "giftList"}).tr.next_siblings:
-            print sibling
-
-        print "===> {}".format(bs_obj.find("img", {"src": "../img/gifts/img1.jpg"}).parent.previous_sibling.get_text())
+        # for sibling in bs_obj.find("table", {"id": "giftList"}).tr.next_siblings:
+        #    print sibling
+        # print "===> {}".format(bs_obj.find("img", {"src": "../img/gifts/img1.jpg"}).parent.previous_sibling.get_text())
     else:
         print "Url [{}] returned empty content!".format(page2)
 
