@@ -46,9 +46,12 @@ def scrap_1():
         print(newArticle)
         links = getLinks1(newArticle)
 
+
 def scrap_2():
-    pages = set()
     getLinks2("", PROXY_SERVER, PROXY_SERVER)
 
 # ===========================================
-scrap_1()
+#scrap_1()
+
+pages = set()
+scrap_2()

@@ -7,15 +7,7 @@ import random
 pages = set()
 random.seed(datetime.datetime.now())
 
-#Retrieves a list of all Internal links found on a page
-def getInternalLinks(bsObj, includeUrl):
-    internalLinks = []
-    #Finds all links that begin with a "/"
-    for link in bsObj.findAll("a", href=re.compile("^(/|.*"+includeUrl+")")):
-        if link.attrs['href'] is not None:
-            if link.attrs['href'] not in internalLinks:
-                internalLinks.append(link.attrs['href'])
-    return internalLinks
+
             
 #Retrieves a list of all external links found on a page
 def getExternalLinks(bsObj, excludeUrl):

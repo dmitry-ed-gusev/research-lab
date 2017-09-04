@@ -12,6 +12,20 @@ from bs4 import BeautifulSoup
 # useful constants
 HTML_PARSER = "html.parser"
 
+is_http_proxy_set = False
+is_https_proxy_set = False
+
+
+def set_proxy_handler(protocol, proxy):
+    if not protocol or not protocol.strip():
+        raise
+    proxy = ProxyHandler({})
+
+
+# todo: implement set proxy only once
+def set_proxy(http_proxy="", https_proxy=""):
+    print "!!!"
+
 
 def get_bs_object(url, http_proxy="", https_proxy=""):
     """
@@ -41,3 +55,14 @@ def get_bs_object(url, http_proxy="", https_proxy=""):
     except HTTPError as e:
         print "HTTP Error: {}".format(e)
         return None
+
+
+#Retrieves a list of all Internal links found on a page
+def getInternalLinks(bsObj, includeUrl):
+    internalLinks = []
+    #Finds all links that begin with a "/"
+    for link in bsObj.findAll("a", href=re.compile("^(/|.*"+includeUrl+")")):
+        if link.attrs['href'] is not None:
+            if link.attrs['href'] not in internalLinks:
+                internalLinks.append(link.attrs['href'])
+    return internalLinks
