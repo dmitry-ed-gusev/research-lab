@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev</groupId>
+        <artifactId>research</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>scripts</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>Scripts :: some shell scripts.</name>
+
+    <properties>
+        <skipPythonTests>false</skipPythonTests>
+    </properties>
+
+    <build>
+        <plugins>
+            <!--  -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${maven.plugin.exec}</version>
+                <configuration>
+                    <workingDirectory>${project.basedir}/..</workingDirectory>
+                    <skip>${skipPythonTests}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>PyUnit-run</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>python</executable>
+                            <arguments>
+                                <argument>-m</argument>
+                                <argument>unittest</argument>
+                                <argument>discover</argument>
+                                <!--<argument>-s./scripts/pytests</argument>-->
+                                <argument>-v</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <!-- python path for dependencies. It's a root path for imports like 'scripts.pylib.jiralib' -->
+                                <!--<PYTHONPATH>${project.basedir}/target/dependency${path.separator}${project.basedir}/target/dependency/pymocks</PYTHONPATH>-->
+                                <!--<PYTHONPATH>${project.basedir}</PYTHONPATH>-->
+                            </environmentVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+    </dependencies>
+
+</project>

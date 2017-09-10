@@ -52,7 +52,7 @@
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
         <skipCoverageReport>false</skipCoverageReport>
         <!-- don't skip python unit tests (skip: -DskipPythonTests=true) -->
-        <skipPythonTests>false</skipPythonTests>
+        <!--<skipPythonTests>true</skipPythonTests>-->
         <!-- some common (project) settings/defaults -->
         <dependencies.output.dir>libs</dependencies.output.dir>
         <rawdata.dir>rawdata</rawdata.dir>
@@ -73,8 +73,8 @@
     </repositories>
 
     <build>
-
         <plugins>
+
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.plugin.compiler}</version>
@@ -109,40 +109,6 @@
                     </execution>
                 </executions>
                 <version>${jacoco.plugin.version}</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${maven.plugin.exec}</version>
-                <configuration>
-                    <workingDirectory>${project.basedir}</workingDirectory>
-                    <skip>${skipPythonTests}</skip>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>PyUnit-run</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>python</executable>
-                            <arguments>
-                                <argument>-m</argument>
-                                <argument>unittest</argument>
-                                <argument>discover</argument>
-                                <argument>-t ${project.basedir}</argument>
-                                <argument>-s scripts</argument>
-                                <argument>-v</argument>
-                            </arguments>
-                            <environmentVariables>
-                                <!-- python path for dependencies -->
-                                <!--<PYTHONPATH>${project.basedir}/target/dependency${path.separator}${project.basedir}/target/dependency/pymocks</PYTHONPATH>-->
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>
@@ -203,6 +169,7 @@
             </properties>
             <!-- All modules to build -->
             <modules>
+                <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
                 <module>chat-app</module>
@@ -223,6 +190,7 @@
             </properties>
             <!-- All modules to build -->
             <modules>
+                <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
                 <module>chat-app</module>
@@ -243,6 +211,7 @@
             </properties>
             <!-- Some of modules to build -->
             <modules>
+                <module>scripts</module>
                 <module>utilities</module>
                 <module>bigdata</module>
                 <!--<module>socialnet</module>-->
@@ -260,6 +229,7 @@
             </properties>
             <!-- modules to build -->
             <modules>
+                <module>scripts</module>
                 <module>utilities</module>
                 <module>bigdata</module>
                 <module>j2ee</module>
