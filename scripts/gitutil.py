@@ -9,15 +9,16 @@
 
 # todo: move processing repo in a function
 # todo: move building repo in a function
+# todo: add cmd line options
 
 import subprocess as sub
-
 from pylib import configuration as conf
 
 # noinspection PyCompatibility
-print "GIT repositories processing is starting..."
+print "\nGIT repositories processing is starting..."
 
-separator = '==============================================='
+# some useful constants
+SEPARATOR = '==============================================='
 
 # path to configs (directory)
 configs = 'configs'
@@ -37,23 +38,29 @@ build_list = config.get('build_repositories')
 # update all repos in list (git pull)
 for repo in repos_list:
     work_dir = base_dir + repo
-    print "\n{}\nProcessing repository [{}] in [{}].".format(separator, repo, work_dir)
-    # status of current repo
-    p = sub.Popen(['git', 'status'], cwd=work_dir)
-    p.wait()
-    # update current repo
-    p = sub.Popen(['git', 'pull'], cwd=work_dir)
-    p.wait()
-    # run gc() on current repository
-    p = sub.Popen(['git', 'gc'], cwd=work_dir)
-    p.wait()
+    print "\n{}\nProcessing repository [{}] in [{}].".format(SEPARATOR, repo, work_dir)
+    try:
+        # status of current repo
+        p = sub.Popen(['git', 'status'], cwd=work_dir)
+        p.wait()
+        # update current repo
+        p = sub.Popen(['git', 'pull'], cwd=work_dir)
+        p.wait()
+        # run gc() on current repository
+        p = sub.Popen(['git', 'gc'], cwd=work_dir)
+        p.wait()
+    except WindowsError as we:
+        print "ERROR: {}".format(we)
 
 # build all repos in build list
 for repo in build_list:
     work_dir = base_dir + repo
-    print "\nBuilding repository [{}] in [{}].".format(repo, work_dir)
-    # build current repo
-    p = sub.Popen(['mvn.cmd', 'clean', 'install'], cwd=work_dir)
-    p.wait()
+    print "\n{}\nBuilding repository [{}] in [{}].".format(SEPARATOR, repo, work_dir)
+    try:
+        # build current repo
+        p = sub.Popen(['mvn.cmd', 'clean', 'install'], cwd=work_dir)
+        p.wait()
+    except WindowsError as we:
+        print "ERROR: {}".format(we)
 
-print "GIT repositories processing has finished."
+print "\n{}\nGIT repositories processing has finished.".format(SEPARATOR)
