@@ -9,17 +9,18 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>scripts</artifactId>
-    <packaging>jar</packaging>
+    <!--<packaging>jar</packaging>-->
     <version>1.0</version>
     <name>Scripts :: some shell scripts.</name>
 
     <properties>
         <skipPythonTests>false</skipPythonTests>
+        <skipPythonCoverage>true</skipPythonCoverage>
     </properties>
 
     <build>
         <plugins>
-            <!--  -->
+            <!-- run python unit tests -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -30,7 +31,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>PyUnit-run</id>
+                        <id>PyUnit-Run</id>
                         <phase>test</phase>
                         <goals>
                             <goal>exec</goal>
@@ -53,6 +54,65 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- run python unit tests coverage -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${maven.plugin.exec}</version>
+                <configuration>
+                    <workingDirectory>${project.basedir}/..</workingDirectory>
+                    <skip>${skipPythonCoverage}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>PyUnit-Run-Coverage</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>python</executable>
+                            <arguments>
+                                <argument>-m</argument>
+                                <argument>unittest</argument>
+                                <argument>discover</argument>
+                                <!--<argument>-s./scripts/pytests</argument>-->
+                                <argument>-v</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <!-- python path for dependencies. It's a root path for imports like 'scripts.pylib.jiralib' -->
+                                <!--<PYTHONPATH>${project.basedir}/target/dependency${path.separator}${project.basedir}/target/dependency/pymocks</PYTHONPATH>-->
+                                <!--<PYTHONPATH>${project.basedir}</PYTHONPATH>-->
+                            </environmentVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <executions>
+                    <execution>
+                        <id>PyUnit-run</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>bash</executable>
+                            <arguments>
+                                <argument>-a</argument>
+                                <argument>run_test_coverage.sh</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
 
         </plugins>
     </build>
