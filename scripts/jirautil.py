@@ -21,14 +21,15 @@ OPTION_ADD_COMPONENT_TO_SPRINT_ISSUES = 'addComponent'
 OPTION_ADD_LABEL_TO_SPRINT_ISSUES = 'addLabel'
 OPTION_CURRENT_TEAM_STATUS = 'teamStatus'
 OPTION_DEBUG = 'debug'
+OPTION_CONFIG = ''
 # options list - all together
 OPTIONS = (OPTION_CLOSED, OPTION_SPRINT_ISSUES, OPTION_ADD_COMPONENT_TO_SPRINT_ISSUES,
            OPTION_ADD_LABEL_TO_SPRINT_ISSUES, OPTION_CURRENT_TEAM_STATUS, OPTION_DEBUG)
 # teams members (all members\current members)
-ADA_TEAM = ('kaplia', 'zhukv', 'andreevi', 'barzilov', 'kudriash', 'iushin', 'gorkoven', 'gusevdm')
-ADA_TEAM_ALL = ('gogolev', 'hapii', 'lipkovic', 'kaplia', 'zhukv', 'andreevi', 'barzilov', 'kudriash', 'iushin', 'gorkoven', 'gusevdm')
-NOVA_TEAM = ('kobiakov', 'listvin', 'sokolose', 'garadagl', 'kuchin')
-BMTEF_TEAM = ('iablokov', 'sitnikod', 'trukhano', 'gorodilo')
+#ADA_TEAM = ('kaplia', 'zhukv', 'andreevi', 'barzilov', 'kudriash', 'iushin', 'gorkoven', 'gusevdm')
+#ADA_TEAM_ALL = ('gogolev', 'hapii', 'lipkovic', 'kaplia', 'zhukv', 'andreevi', 'barzilov', 'kudriash', 'iushin', 'gorkoven', 'gusevdm')
+#NOVA_TEAM = ('kobiakov', 'listvin', 'sokolose', 'garadagl', 'kuchin')
+#BMTEF_TEAM = ('iablokov', 'sitnikod', 'trukhano', 'gorodilo')
 
 
 def prepare_arg_parser():
@@ -55,7 +56,8 @@ def prepare_arg_parser():
     parser.add_argument('--showLabel', dest='show_label', action='store_true', help='Show "Label" column in a report')
     # team: ada - current Mantis team, ada-all - all members of Ada team (with left people), bmtef - Lynx team
     # in BMTEF project, nova - Nova team, new team for Mantis project)
-    parser.add_argument('--team', dest='team', action='store', choices=('ada', 'ada-all', 'bmtef', 'nova'),
+    parser.add_argument('--team', dest='team', action='store',
+                        choices=('ada', 'ada_all', 'nova', 'nova_all', 'bmtef', 'bmtef_all'),
                         help='Team for report generating')
     # todo: add config dir/file parameter
     return parser

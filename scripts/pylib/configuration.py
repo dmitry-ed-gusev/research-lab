@@ -11,6 +11,7 @@ class Configuration(object):
         self.config_dict = {}
 
     def load(self, path):
+        print "Loading configs *.yml/*yaml from [{}].".format(path)
         for file in os.listdir(path):
             if file.endswith(".yml") or file.endswith(".yaml"):
                 if path.endswith("\\") or path.endswith("/"):
@@ -23,7 +24,7 @@ class Configuration(object):
                         self.merge_dict(yaml_file)
                     except yaml.YAMLError as err:
                         print (err)
-
+        # merge with dictionary
         self.merge_env()
 
     def merge_dict(self, new_dict):

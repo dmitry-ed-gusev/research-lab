@@ -1,5 +1,5 @@
-projects_dir: c:/projects
-repositories:
+repos_dir: c:/projects
+repos:
  - mantis
  - mantis11
  - mantis-bds
@@ -11,7 +11,7 @@ repositories:
  - csv2hive
  - ingest-script-generator
  - bigdata-training
-build_repositories:
+build_repos:
  - csv2abstract
  - csv2hive
  - mantis-bds
