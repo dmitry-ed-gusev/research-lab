@@ -27,9 +27,9 @@
                 <version>${maven.plugin.exec}</version>
                 <configuration>
                     <workingDirectory>${project.basedir}/..</workingDirectory>
-                    <skip>${skipPythonTests}</skip>
                 </configuration>
                 <executions>
+                    <!-- run python unit tests -->
                     <execution>
                         <id>PyUnit-Run</id>
                         <phase>test</phase>
@@ -37,6 +37,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <skip>${skipPythonTests}</skip>
                             <executable>python</executable>
                             <arguments>
                                 <argument>-m</argument>
@@ -46,25 +47,13 @@
                                 <argument>-v</argument>
                             </arguments>
                             <environmentVariables>
-                                <!-- python path for dependencies. It's a root path for imports like 'scripts.pylib.jiralib' -->
+                                <!-- python path for dependencies -->
                                 <!--<PYTHONPATH>${project.basedir}/target/dependency${path.separator}${project.basedir}/target/dependency/pymocks</PYTHONPATH>-->
-                                <!--<PYTHONPATH>${project.basedir}</PYTHONPATH>-->
                             </environmentVariables>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
 
-            <!-- run python unit tests coverage -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${maven.plugin.exec}</version>
-                <configuration>
-                    <workingDirectory>${project.basedir}/..</workingDirectory>
-                    <skip>${skipPythonCoverage}</skip>
-                </configuration>
-                <executions>
+                    <!-- run python unit tests and gather coverage report -->
                     <execution>
                         <id>PyUnit-Run-Coverage</id>
                         <phase>test</phase>
@@ -72,6 +61,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <skip>${skipPythonCoverage}</skip>
                             <executable>python</executable>
                             <arguments>
                                 <argument>-m</argument>
@@ -81,38 +71,13 @@
                                 <argument>-v</argument>
                             </arguments>
                             <environmentVariables>
-                                <!-- python path for dependencies. It's a root path for imports like 'scripts.pylib.jiralib' -->
+                                <!-- python path for dependencies -->
                                 <!--<PYTHONPATH>${project.basedir}/target/dependency${path.separator}${project.basedir}/target/dependency/pymocks</PYTHONPATH>-->
-                                <!--<PYTHONPATH>${project.basedir}</PYTHONPATH>-->
                             </environmentVariables>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-            <!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.5.0</version>
-                <executions>
-                    <execution>
-                        <id>PyUnit-run</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>bash</executable>
-                            <arguments>
-                                <argument>-a</argument>
-                                <argument>run_test_coverage.sh</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
 
         </plugins>
     </build>

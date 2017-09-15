@@ -213,9 +213,9 @@
             <modules>
                 <module>scripts</module>
                 <module>utilities</module>
-                <module>bigdata</module>
+                <!--<module>bigdata</module>-->
                 <!--<module>socialnet</module>-->
-                <module>j2ee</module>
+                <!--<module>j2ee</module>-->
             </modules>
         </profile>
 
