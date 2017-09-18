@@ -2,6 +2,7 @@
  web scraper tests/examples
 """
 
+from scrapelib import set_proxy
 from scrapelib import get_bs_object
 import re
 
@@ -14,9 +15,12 @@ page1 = "http://www.pythonscraping.com/pages/page1.html"
 page2 = "http://www.pythonscraping.com/pages/warandpeace.html"
 page3 = "http://www.pythonscraping.com/pages/page3.html"
 
+# setup proxy
+set_proxy(PROXY_SERVER, PROXY_SERVER)
+
 try:
     # ===== example #1 ======================
-    bs_obj = get_bs_object(page1)
+    bs_obj = get_bs_object(page1, PROXY_SERVER, PROXY_SERVER)
     if bs_obj:
         # print page title
         print "Page title -> {}". format(bs_obj.body.h1)

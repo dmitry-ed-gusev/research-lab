@@ -8,7 +8,7 @@
 # todo: add tests for get_issues_by_jql()
 import unittest
 
-from scripts.pylib.jiralib import JiraUtility
+from pylib.jiralib import JiraUtility
 
 
 class JIRAUtilityTest(unittest.TestCase):

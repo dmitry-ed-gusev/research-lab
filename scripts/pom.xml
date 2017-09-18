@@ -26,7 +26,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>${maven.plugin.exec}</version>
                 <configuration>
-                    <workingDirectory>${project.basedir}/..</workingDirectory>
+                    <workingDirectory>${project.basedir}</workingDirectory>
                 </configuration>
                 <executions>
                     <!-- run python unit tests -->

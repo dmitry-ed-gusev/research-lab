@@ -2,10 +2,19 @@
  Web scraper MVP project.
 """
 
+from scrapelib import set_proxy
 from scrapelib import get_bs_object
 import datetime
 import random
 import re
+
+from urllib2 import urlopen
+from urllib2 import build_opener
+from urllib2 import install_opener
+from urllib2 import HTTPError
+from urllib2 import ProxyHandler
+from urllib2 import getproxies
+
 
 # init random generator with current time
 random.seed(datetime.datetime.now())
@@ -55,3 +64,8 @@ def scrap_2():
 
 pages = set()
 scrap_2()
+
+
+#set_proxy(PROXY_SERVER, PROXY_SERVER)
+#set_proxy(PROXY_SERVER, PROXY_SERVER)
+#print "-> ", urlopen("http://ya.ru").read()

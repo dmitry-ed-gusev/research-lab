@@ -4,7 +4,7 @@
 import os
 import unittest
 
-from scripts.pylib.configuration import Configuration
+from pylib.configuration import Configuration
 
 
 class ConfigurationTest(unittest.TestCase):
