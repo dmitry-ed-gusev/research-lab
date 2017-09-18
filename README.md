@@ -13,15 +13,19 @@ Repository contains some modules:
 * [docs]
 * [j2ee]
 * [marklogic]
-* **[scripts]** For Python scripts there are some dependencies (modules):
-    * **matplotlib** (https://pypi.python.org/pypi/matplotlib), installation cmd line:  
-      *python -m pip install --user matplotlib-2.0.2-cp27-cp27m-win_amd64.whl*          
-      whl file name may vary, depending on python version and matplotlib version    
+* **[scripts]** This module contains scripts: bash, python. For Python scripts there are 
+    dependencies (modules). Most of them can by simply installed with pip as  
+    *pip install **module name***  
+    For Windows-based OS you may use cygwin package.
+    * **matplotlib** (https://pypi.python.org/pypi/matplotlib), installation cmd line for Windows:  
+      *python -m pip install --user matplotlib-2.0.2-cp27-cp27m-win_amd64.whl*  
+      whl file name may vary, depending on python version and matplotlib version, for *nix system simply use pip.    
     * **jira** - library for interaction with JIRA by rest api
     * **prettytable** - library for generating pretty text ASCII tables
     * **pygal** -  ???
     * **gviz_api** - library for google vizualization API (Google Chart) 
     * **beautifulsoup4** - library for parsing html
+    * **pygame** - library for 2D simple game applications
 * [socialnet]
 * [tmpresearch]
     * [hibernate]
