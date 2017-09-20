@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # coding=utf-8
-# Copyright © 2016 Merck Sharp & Dohme Corp., a subsidiary of Merck & Co., Inc.
-# All rights reserved.
 
 import os
 from string import Template

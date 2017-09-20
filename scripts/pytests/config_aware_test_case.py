@@ -1,21 +1,19 @@
 # coding=utf-8
-# Copyright © 2017 Merck Sharp & Dohme Corp., a subsidiary of Merck & Co., Inc.
-# All rights reserved.
 
 import os
 import unittest
 
-from lib.common.configuration import Configuration
+from pylib.configuration import Configuration
 
 
 class ConfigAwareTestCase(unittest.TestCase):
 
     longMessage = True
-    config_dir = os.path.abspath("tests_mantis_hadoop_clients/pyunit/config")
+    config_dir = os.path.abspath("pytests/config")
 
     def _loadConfig(self):
         conf = Configuration()
-        conf.load(self.config_dir)
+        #conf.load(self.config_dir)
         conf.set("config_location", self.config_dir)
         conf.set("source_system", "test_system")
         conf.set("source_system_env", "dev")

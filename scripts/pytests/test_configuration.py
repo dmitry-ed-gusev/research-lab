@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # coding=utf-8
-# Copyright © 2017 Merck Sharp & Dohme Corp., a subsidiary of Merck & Co., Inc.
-# All rights reserved.
 
 import os
 
-from lib.common.configuration import Configuration, ConfigError
-from tests_mantis_hadoop_clients.pyunit.config_aware_test_case import ConfigAwareTestCase
+from pylib.configuration import Configuration, ConfigError
+from config_aware_test_case import ConfigAwareTestCase
 
 
 class ConfigurationTest(ConfigAwareTestCase):

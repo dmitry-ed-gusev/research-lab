@@ -6,7 +6,7 @@ import logging
 import os
 import sys
 
-from lib.common.configuration import Configuration
+from configuration import Configuration
 
 
 class MantisLogger(object):
