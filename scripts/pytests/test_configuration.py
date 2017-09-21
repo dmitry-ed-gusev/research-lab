@@ -5,8 +5,8 @@
 
 import os
 
-from lib.common.configuration import Configuration, ConfigError
-from tests_mantis_hadoop_clients.pyunit.config_aware_test_case import ConfigAwareTestCase
+from pylib.configuration import Configuration, ConfigError
+from config_aware_test_case import ConfigAwareTestCase
 
 
 class ConfigurationTest(ConfigAwareTestCase):
@@ -15,6 +15,7 @@ class ConfigurationTest(ConfigAwareTestCase):
         self.config = Configuration()
 
     def test_LoadNoPathFail(self):
+        self.config.load("config/test.yml")
         with self.assertRaises(Exception):
             self.config.load()
 
