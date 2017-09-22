@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
-# Copyright © 2016 Merck Sharp & Dohme Corp., a subsidiary of Merck & Co., Inc.
-# All rights reserved.
 
 import os
 from string import Template
-import yaml
+from pylib import ConfigError
+from pylib import parse_yaml
+
+YAML_EXTENSION_1 = '.yml'
+YAML_EXTENSION_2 = '.yaml'
 
 
 class Configuration(object):
@@ -13,43 +15,56 @@ class Configuration(object):
         by using chained hierarchical key with dot-separated levels, e.g. "hdfs.namenode.address"
     """
 
-    def __init__(self):
+    def __init__(self, path=None, is_merge_env=True):
         self.config_dict = {}
 
-    @staticmethod
-    def parse_yaml(file_path):
-        """Parses single YAML file to create Configuration object
-            
-            :param file_path: path to YAML file to load settings from
-            :rtype: mantis.lib.configuration.Configuration
-        """
-        with open(file_path, 'r') as cfg_file:
-            try:
-                cfg_file_content = cfg_file.read()
-                if "\t" in cfg_file_content:
-                    raise ConfigError("Config file %s contains 'tab' character" % file_path)
-                config = yaml.load(cfg_file_content)
-            except yaml.YAMLError as err:
-                print "Failed to parse config file %s. Error: %s" % (file_path, err)
-                raise ConfigError("Failed to parse config file %s. Error: %s" % (file_path, err))
-            return config
+        if path and path.strip():
+            print "Provided path [%s] for instant loading. Proceeding." % path
+            self.load(path, is_merge_env)
 
-    def load(self, path):
+    def load(self, path, is_merge_env=True):
         """Parses all YAML files from the given directory to add them into this configuration instance
         
             :param path: directory to load files from
             :type path: str
         """
-        for file in os.listdir(path):
-            if file.endswith(".yml") or file.endswith(".yaml"):
-                file_path = os.path.join(path, file)
-                yaml_file = Configuration.parse_yaml(file_path)
-                try:
-                    self.merge_dict(yaml_file)
-                except ConfigError as ex:
-                    raise ConfigError('ERROR while merging file %s to configuration.\n%s' % (file_path, ex.message))
+        # fail-fast checks
+        if not path or not path.strip():
+            raise ConfigError('Provided empty path for config loading!')
+        if not os.path.exists(path):
+            raise ConfigError('Provided path [%s] doesn\'t exist!' % path)
 
-        self.merge_env()
+        # if provided path to single file - load it, otherwise - load from directory
+        if os.path.isfile(path) and (path.endswith(YAML_EXTENSION_1) or path.endswith(YAML_EXTENSION_2)):
+            print "Provided path [%s] is a YAML file. Loading." % path
+            try:
+                self.merge_dict(parse_yaml(path))
+            except ConfigError as ex:
+                raise ConfigError('ERROR while merging file %s to configuration.\n%s' % (path, ex.message))
+
+        # loading from directory (all YAML files)
+        elif os.path.isdir(path):
+            print "Provided path [%s] is a directory. Loading all YAML files." % path
+            for some_file in os.listdir(path):
+                print "Found [%s]." % some_file
+                file_path = os.path.join(path, some_file)
+                if os.path.isfile(file_path) and (some_file.endswith(YAML_EXTENSION_1) or some_file.endswith(YAML_EXTENSION_2)):
+                    print "Loading configuration from [%s]." % some_file
+                    try:
+                        self.merge_dict(parse_yaml(file_path))
+                    except ConfigError as ex:
+                        raise ConfigError('ERROR while merging file %s to configuration.\n%s' % (file_path, ex.message))
+                else:
+                    print "[%s] skipped. Not a file or wrong extension." % some_file
+
+        # unknown file/dir type
+        else:
+            raise ConfigError('Unknown thing [%s], not a file, not a dir!' % path)
+
+        # merge environment variables to internal dictionary
+        if is_merge_env:
+            print "Merging environment variables is switched ON."
+            self.merge_env()
 
     def merge_dict(self, new_dict):
         """Adds another dictionary (respecting nested subdictionaries) to config
@@ -152,25 +167,21 @@ class Configuration(object):
             return self.__get_value(keys[1], values[keys[0]])
 
 
-class ConfigError(Exception):
-    """Invalid configuration error"""
-
-
-def load_config():
-    """ Load configuration from env['CONFIG_LOCATION'] (if specified) or 'config'\n
-        Also initialize logger-required fields (mdc_pid = current pid, other fields = 'ERROR'
-    """
-    if 'CONFIG_LOCATION' in os.environ:
-        config_location = os.environ['CONFIG_LOCATION']
-    else:
-        config_location = os.path.dirname(__file__) + '/../../config'
-    config = Configuration()
-    config.set('step_name', 'ERROR')
-    config.set('source_system', 'ERROR')
-    config.set('source_system_location', 'ERROR')
-    config.set('source_system_env', 'ERROR')
-    config.set('source_table', 'ERROR')
-    config.set('mdc_pid', os.getpid())
-    config.load(config_location)
-    config.set('config_location', os.path.abspath(config_location))
-    return config
+# def load_config():
+#     """ Load configuration from env['CONFIG_LOCATION'] (if specified) or 'config'\n
+#         Also initialize logger-required fields (mdc_pid = current pid, other fields = 'ERROR'
+#     """
+#     if 'CONFIG_LOCATION' in os.environ:
+#         config_location = os.environ['CONFIG_LOCATION']
+#     else:
+#         config_location = os.path.dirname(__file__) + '/../../config'
+#     config = Configuration()
+#     config.set('step_name', 'ERROR')
+#     config.set('source_system', 'ERROR')
+#     config.set('source_system_location', 'ERROR')
+#     config.set('source_system_env', 'ERROR')
+#     config.set('source_table', 'ERROR')
+#     config.set('mdc_pid', os.getpid())
+#     config.load(config_location)
+#     config.set('config_location', os.path.abspath(config_location))
+#     return config

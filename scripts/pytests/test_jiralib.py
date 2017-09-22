@@ -4,8 +4,8 @@
 # todo: implement tests!
 # todo: check error messages for tests with expected failure
 # todo: add some positive scenarios unit tests
-
 # todo: add tests for get_issues_by_jql()
+
 import unittest
 
 from pylib.jiralib import JiraUtility
