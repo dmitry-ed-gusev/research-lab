@@ -1,3 +1,5 @@
+""""""
+
 import pygame
 from pygame.sprite import Sprite
 
@@ -7,6 +9,7 @@ class Alien(Sprite):
 
     def __init__(self, ai_settings, screen):
         """Initialize the alien, and set its starting position."""
+        # print "Alien -> __init___()" # <- too much output
         super(Alien, self).__init__()
         self.screen = screen
         self.ai_settings = ai_settings
@@ -24,6 +27,7 @@ class Alien(Sprite):
         
     def check_edges(self):
         """Return True if alien is at edge of screen."""
+        # print "Alien -> check_edges()"
         screen_rect = self.screen.get_rect()
         if self.rect.right >= screen_rect.right:
             return True
@@ -32,10 +36,11 @@ class Alien(Sprite):
         
     def update(self):
         """Move the alien right or left."""
-        self.x += (self.ai_settings.alien_speed_factor *
-                        self.ai_settings.fleet_direction)
+        # print "Alien -> update()"
+        self.x += (self.ai_settings.alien_speed_factor * self.ai_settings.fleet_direction)
         self.rect.x = self.x
 
     def blitme(self):
         """Draw the alien at its current location."""
+        print "Alien -> blitme()"
         self.screen.blit(self.image, self.rect)

@@ -29,6 +29,7 @@ class Settings(object):
 
     def initialize_dynamic_settings(self):
         """Initialize settings that change throughout the game."""
+        print "Settings -> initialize_dynamic_settings()"
         self.ship_speed_factor = 1.5
         self.bullet_speed_factor = 3
         self.alien_speed_factor = 1
@@ -41,6 +42,7 @@ class Settings(object):
         
     def increase_speed(self):
         """Increase speed settings and alien point values."""
+        print "Settings -> increase_speed()"
         self.ship_speed_factor *= self.speedup_scale
         self.bullet_speed_factor *= self.speedup_scale
         self.alien_speed_factor *= self.speedup_scale

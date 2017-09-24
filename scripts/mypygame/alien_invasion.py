@@ -37,6 +37,7 @@ def run_game():
     gf.create_fleet(ai_settings, screen, ship, aliens)
 
     # Start the main loop for the game.
+    print "alien_invasion -> starting infinite cycle for events checking."
     while True:
         gf.check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets)
         
