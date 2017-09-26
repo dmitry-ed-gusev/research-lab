@@ -8,13 +8,11 @@
  Modified: Gusev Dmitrii, 22.05.2017
 """
 
-import prettytable
 from jira import JIRA
+from pylib import JiraException
+import prettytable
 
-# todo: implement unit tests for this class!!!
 
-
-# noinspection PyCompatibility
 class JiraUtility(object):
     """ Class JIRAUtility. Intended for interaction with JIRA and performing some useful actions. """
 
@@ -277,8 +275,3 @@ class JiraUtility(object):
             counter += 1
         # return generated report
         return report
-
-
-class JiraException(Exception):
-    """JIRA Exception, used if something is wrong with/in JIRA interaction."""
-    pass

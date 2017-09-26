@@ -1,6 +1,4 @@
 # coding=utf-8
-# Copyright © 2017 Merck Sharp & Dohme Corp., a subsidiary of Merck & Co., Inc.
-# All rights reserved.
 
 import os
 import unittest
@@ -8,6 +6,7 @@ import unittest
 from pylib.configuration import Configuration
 
 
+# todo: do we really need this file?
 class ConfigAwareTestCase(unittest.TestCase):
 
     longMessage = True

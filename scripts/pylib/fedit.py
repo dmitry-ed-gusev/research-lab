@@ -35,6 +35,7 @@ def check_str(check_type, source_str, test_str):
     elif args.edit_type == CHECK_TYPE_CONTAINS:
         return test_str in source_str
 
+
 # create arguments parser
 parser = argparse.ArgumentParser(description='File editing tool: replace inline values.')
 # add arguments to parser (mandatory/optional)
