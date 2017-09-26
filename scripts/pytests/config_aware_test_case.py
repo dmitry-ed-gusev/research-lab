@@ -6,6 +6,7 @@ import unittest
 from pylib.configuration import Configuration
 
 
+# todo: do we really need this file?
 class ConfigAwareTestCase(unittest.TestCase):
 
     longMessage = True
