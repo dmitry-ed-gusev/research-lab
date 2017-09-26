@@ -4,7 +4,7 @@
 #   Don't directly change other scripts parameters - put them here.
 #
 #   Created:  Gusev Dmitry, 26.11.2016
-#   Modified: Gusev Dmitry, 18.08.2017
+#   Modified: Gusev Dmitrii, 26.09.2017
 # ===================================================================
 
 # ============================== Common settings ==============================
@@ -51,8 +51,10 @@ JENKINS_APACHE_PORT=5000
 #JENKINS_HOME=/var/lib/${JENKINS_NAME}
 
 # -- Sonar server
-SONAR_VERSION="4.5.6"
+SONAR_VERSION="5.6.7"
 SONAR_NAME="sonarqube-${SONAR_VERSION}"
+SONAR_ARCHIVE="${SONAR_NAME}".zip
+SONAR_BINARY_URL="https://sonarsource.bintray.com/Distribution/sonarqube/${SONAR_ARCHIVE}"
 SONAR_JDBC_URL="jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance"
 SONAR_PORT=9000
 SONAR_CONTEXT=/sonar
@@ -72,5 +74,5 @@ HIVE_FULL_NAME="apache-${HIVE_SIMPLE_NAME}-bin"
 HIVE_ARCHIVE="${HIVE_FULL_NAME}.tar.gz"
 HIVE_BINARY_URL="https://archive.apache.org/dist/hive/${HIVE_SIMPLE_NAME}/${HIVE_ARCHIVE}"
 
-# ============================== SETTINGS: MYSQL ==============================
+# ============================== Settings: MySql ==============================
 MYSQL_ROOT_PASS="rootroot"

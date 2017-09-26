@@ -144,12 +144,11 @@ if [ "$INSTALL_JENKINS" == "YES" ]; then
     source shlib/_install-jenkins.sh
 fi
 
-# -- INSTALL/UPDATE OPTION: install Sonar.
+# -- INSTALL/UPDATE OPTION: install Sonar Qube (code analyzer).
 if [ "$INSTALL_SONAR" == "YES" ]; then
     echo "Installing Sonar server."
     INSTALL_SONAR=NO
-    # todo: implement this option
-    exit 0
+    source shlib/_install-sonar.sh
 fi
 
 # -- INSTALL/UPDATE OPTION: install Apache Hadoop. This option can be combined with

@@ -15,17 +15,14 @@
 #   Modified: Gusev Dmitry, 24.04.2017
 # =============================================================================
 
+# todo: change apt-get -> apt
+
+# -- some useful common software packages
+sudo apt -qy zip unzip
 # -- Midnight Commander
 sudo apt-get -qy install mc
-
-# todo: move installation of this packages to Jenkins installation script
-# -- [graphviz] - library for graphics (Dependency Graph Viewer plugin in Jenkins),
-# -- [daemon]   - package for set up startup/manage script for Jenkins (/etc/init.d/jenkins)
-#sudo apt-get -qy install graphviz daemon
-
 # -- Apache2 web server
 sudo apt-get -qy install apache2 apache2-utils
-
 # -- NFS support packages (server and client)
 sudo apt-get -qy install nfs-kernel-server nfs-common
 

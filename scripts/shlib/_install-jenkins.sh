@@ -14,16 +14,16 @@
 #   It is recommended to update whole system before running this script!
 #
 #   Created:  Gusev Dmitry, 27.11.2016
-#   Modified: Gusev Dmitrii, 18.08.2017
+#   Modified: Gusev Dmitrii, 26.09.2017
 # =============================================================================
 
 # -- Install necessary Jenkins dependencies:
-# --   [graphviz] - library for graphics (Dependency Graph Viewer in Jenkins)
-# --   [daemon]   - package for set up startup/manage script for Jenkins (/etc/init.d/jenkins)
+#   * [graphviz] - library for graphics (Dependency Graph Viewer in Jenkins)
+#   * [daemon]   - package for set up startup/manage script for Jenkins (/etc/init.d/jenkins)
 sudo apt-get -qy install graphviz daemon
 
 # ============ Install Jenkins latest version from internet repository ============
-# Jenkins installed in such a manner will be updateable by apt-get command from Jenkins repository (it's not really good!)
+# Jenkins installed in such a manner will be updateable by apt-get command from Jenkins repo (it's not really good!)
 # -- Install key for Jenkins repository
 wget -q -O - ${JENKINS_KEY_SERVER} | sudo apt-key add -
 # -- Add Jenkins repository to sources list
