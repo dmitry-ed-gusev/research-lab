@@ -1,6 +1,7 @@
 from random import choice
 
-class RandomWalk():
+
+class RandomWalk(object):
     """A class to generate random walks."""
     
     def __init__(self, num_points=5000):
@@ -36,4 +37,3 @@ class RandomWalk():
             
             self.x_values.append(next_x)
             self.y_values.append(next_y)
-    

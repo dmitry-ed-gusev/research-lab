@@ -1,7 +1,8 @@
 import csv
 from datetime import datetime
 
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
+# from matplotlib import pyplot as plt
 
 # Get dates, high, and low temperatures from file.
 filename = 'death_valley_2014.csv'

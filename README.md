@@ -27,7 +27,8 @@ Repository contains some modules:
     * **gviz_api** - library for google vizualization API (Google Chart) 
     * **beautifulsoup4** - library for parsing html
     * **pygame** - library for 2D simple game applications
-    * **pygal** - 
+    * **pygal** - library for data visualization in python
+    * **pygal_maps_world** - set of maps for pygal module
 * [socialnet]
 * [tmpresearch]
     * [hibernate]
