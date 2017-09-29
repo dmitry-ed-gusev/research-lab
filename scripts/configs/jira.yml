@@ -1,15 +1,43 @@
-# common settings
-jira_address:   https://issues.merck.com
-jira_project:   Mantis
-team_label:     mantis-capability
-team_component: mantis-capability
-team: [kaplia, zhukv, andreevi, barzilov, kudriash, iushin, gusevdm, lipkovic, gogolev, hapii]
+# Common JIRA settings. You can't/mustn't put password here!
+jira:
+  address:   https://issues.merck.com
+  user:      gusevdm
 
 # teams lists (all and current)
 teams:
-  ada_all:   [gogolev, hapii, lipkovic, kaplia, zhukv, andreevi, barzilov, kudriash, iushin, gorkoven, gusevdm, sokolose, ermolaeo]
-  ada:       [kaplia, zhukv, andreevi, barzilov, kudriash, iushin, gorkoven, gusevdm]
-  nova_all:  [kobiakov, listvin, sokolose, garadagl, kuchin, lukin]
-  nova:      [kobiakov, listvin, garadagl, kuchin, lukin]
-  bmtef_all: [iablokov, sitnikod, trukhano, gorodilo, koberd]
-  bmtef:     [iablokov, sitnikod, trukhano, gorodilo, koberd]
+  ada_all:
+    members:      [gogolev, hapii, lipkovic, kaplia, zhukv, andreevi, barzilov, kudriash, iushin, gorkoven, gusevdm, sokolose, ermolaeo]
+    project:      Mantis
+    project_abbr: BMA
+    label:        mantis-capability
+    component:    mantis-capability
+  ada:
+    members:      [andreevi, barzilov, kudriash, iushin, gorkoven, ermolaeo, sokolose, gusevdm]
+    project:      Mantis
+    project_abbr: BMA
+    label:        mantis-capability
+    component:    mantis-capability
+  nova_all:
+    members:      [kobiakov, listvin, sokolose, garadagl, kuchin, lukin]
+    project:      Big Data Platform
+    project_abbr: BDPH
+    label:        mantis-capability-nova
+    component:    mantis-capability-nova
+  nova:
+    members:      [kobiakov, listvin, garadagl, kuchin, lukin]
+    project:      Big Data Platform
+    project_abbr: BDPH
+    label:        mantis-capability-nova
+    component:    mantis-capability-nova
+  bmtef_all:
+    members:      [iablokov, sitnikod, trukhano, gorodilo, koberd]
+    project:      Better Molecules Target Execution Faster - Solutions
+    project_abbr: BMTEF
+    label:        [none]
+    component:    [none]
+  bmtef:
+    members:      [iablokov, sitnikod, trukhano, gorodilo, koberd]
+    project:      Better Molecules Target Execution Faster - Solutions
+    project_abbr: BMTEF
+    label:        [none]
+    component:    [none]

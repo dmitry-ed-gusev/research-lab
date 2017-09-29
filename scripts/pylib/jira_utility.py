@@ -10,44 +10,64 @@
 
 from jira import JIRA
 from pylib import JiraException
+from configuration import Configuration
 import prettytable
+import jira_constants as jconst
 
 
 class JiraUtility(object):
     """ Class JIRAUtility. Intended for interaction with JIRA and performing some useful actions. """
 
-    # some defaults: batch size, reporting counter, etc
-    ISSUES_BATCH_SIZE = 50
-    PROGRESS_STEP_COUNTER = 5
-
-    def __init__(self, jira_address, user, password):
+    def __init__(self, config=None, *jira_params):
         """
         System method: initializer for JIRAUtility class.
         :param jira_address: address of JIRA instance
         :param user: user for JIRA
         :param password: pass for JIRA user
         """
-        print "JIRAUtility.__init__() is working. JIRA: [{}], user: [{}].".format(jira_address, user)
-        if not jira_address or not jira_address.strip():  # fail-fast - check JIRA address
-            raise JiraException('Empty JIRA address!')
-        if not user or not user.strip():  # fail-fast - check JIRA user
-            raise JiraException('Empty username!')
+        print "JIRAUtility.__init__() is working. Config [%s], jira params [%s]" % config, jira_params
+        # if specified config file/object - use it, ignore other params.
+        if config:
+            if isinstance(config, str):
+                print "Provided config is string path. Loading."
+                self.config = Configuration(config)
+            elif isinstance(config, Configuration):
+                print "Provided config is Configuration() object."
+                self.config = config
+            else:
+                raise JiraException("Unknown configuration object type! Not a path/object!")
+        # if not specified config - use *jira_params tuple
+        elif jira_params and len(jira_params) == 3:
+            print "Using list of jira parameters."
+            self.config = Configuration()
+            # set parameters
+            jira_address = jira_params[0]
+            if not jira_address or not jira_address.strip():  # check JIRA address
+                raise JiraException('Empty JIRA address!')
+            self.config.set(jconst.CONFIG_KEY_ADDRESS, jira_address)
+            jira_user = jira_params[1]
+            if not jira_user or not jira_user.strip():  # check JIRA user
+                raise JiraException('Empty username!')
+            self.config.set(jconst.CONFIG_KEY_USER, jira_user)
+            self.config.set(jconst.CONFIG_KEY_PASS, jira_params[2])
+        else:
+            raise JiraException("No configuration parameters provided!")
         # init internal JIRA instance state
         self.jira = None
-        self.address = jira_address
-        self.user = user
-        self.password = password
 
     def connect(self):
         """
         System method: connect to JIRA instance (with params specified in constructor).
         Init internal field [jira].
         """
-        print "JIRAUtility.connect() is working. Connecting to [{}] as user [{}].".format(self.address, self.user)
-        self.jira = JIRA(self.address, basic_auth=(self.user, self.password))
-        print "JIRAUtility: connected to [{}] as user [{}].".format(self.address, self.user)
+        address = self.config.get(jconst.CONFIG_KEY_ADDRESS)
+        user = self.config.get(jconst.CONFIG_KEY_USER)
+        password = self.config.get(jconst.CONFIG_KEY_PASS)
+        print "JIRAUtility.connect() is working. Connecting to [{}] as user [{}].".format(address, user)
+        self.jira = JIRA(address, basic_auth=(user, password))
+        print "JIRAUtility: connected to [{}] as user [{}].".format(address, user)
 
-    def get_issues_by_jql(self, jql):
+    def execute_jql(self, jql):
         """
         Utility method for executing JQL in JIRA and get result issues list.
         :param jql: JQL query to be executed in a JIRA
@@ -57,9 +77,9 @@ class JiraUtility(object):
             raise JiraException('Provided JQL is empty!')
         # search for issues by provided jql and return them
         issues = []
-        batch_size = JiraUtility.ISSUES_BATCH_SIZE
+        batch_size = jconst.JIRA_ISSUES_BATCH_SIZE
         total_processed = 0
-        while batch_size == JiraUtility.ISSUES_BATCH_SIZE:
+        while batch_size == jconst.JIRA_ISSUES_BATCH_SIZE:
             # get issues part (in a size of batch, default = 50 - see JIRAUtility.ISSUES_BATCH_SIZE)
             issues_batch = self.jira.search_issues(jql_str=jql, maxResults=False, startAt=total_processed)
             batch_size = len(issues_batch)  # update current batch size
@@ -121,7 +141,7 @@ class JiraUtility(object):
         # generate jql
         jql = 'sprint = "{}"'.format(sprint_name)
         print "Generated JQL [{}].".format(jql)
-        return self.get_issues_by_jql(jql)  # search for issues and return them
+        return self.execute_jql(jql)  # search for issues and return them
 
     def add_component_to_issues(self, issues, project_name, component_name):
         """
@@ -151,7 +171,7 @@ class JiraUtility(object):
                 issue.update(fields={"components": existing_components})
 
                 counter += 1
-                if counter % JiraUtility.PROGRESS_STEP_COUNTER == 0:  # report progress
+                if counter % jconst.PROGRESS_STEP_COUNTER == 0:  # report progress
                     print "Processed -> {}/{}".format(counter, len(issues))
             print "Summary: updated [{}] issue(s).".format(counter)
         else:
@@ -189,7 +209,7 @@ class JiraUtility(object):
             jql += ' after -{}d'.format(last_days_count)
         print "Generated JQL [{}].".format(jql)
         # execute jql and return result
-        return self.get_issues_by_jql(jql)
+        return self.execute_jql(jql)
 
     def get_current_status_for_user(self, user):
         # todo: implementation/pydoc
@@ -202,7 +222,7 @@ class JiraUtility(object):
         jql = 'assignee = {} AND status = "In Progress"'.format(user)
         print "Generated JQL [{}]".format(jql)
         # execute jql and return result
-        return self.get_issues_by_jql(jql)
+        return self.execute_jql(jql)
 
     @staticmethod
     def add_label_to_issues(issues, label_name):
@@ -223,7 +243,7 @@ class JiraUtility(object):
                 issue.fields.labels.append(label_name)
                 issue.update(fields={"labels": issue.fields.labels})
             counter += 1
-            if counter % JiraUtility.PROGRESS_STEP_COUNTER == 0:  # report progress
+            if counter % jconst.PROGRESS_STEP_COUNTER == 0:  # report progress
                 print "Processed -> {}/{}".format(counter, len(issues))
         print "Summary: updated [{}] issue(s).".format(counter)
 

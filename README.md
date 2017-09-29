@@ -18,6 +18,7 @@ Repository contains some modules:
     *pip install **module name***  
     For Windows-based OS you may use cygwin package.
     * **mock** - mocking library for python
+    * **virtualenv** - tool for creating virtual environments for python
     * **matplotlib** (https://pypi.python.org/pypi/matplotlib), installation cmd line for Windows:  
       *python -m pip install --user matplotlib-2.0.2-cp27-cp27m-win_amd64.whl*  
       whl file name may vary, depending on python version and matplotlib version, for *nix system simply use pip.    

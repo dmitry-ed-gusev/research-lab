@@ -7,60 +7,16 @@
  Created: Gusev Dmitrii, 04.04.2017
 """
 
+# todo: FIX BROKEN THINGS!!!
+
 # todo: move team members lists to config file
 # todo: implement current team status (in progress tasks)
 
-import argparse
+
 import codecs
-from pylib.jiralib import JiraUtility, JiraException
-
-# utility options (one-by-one)
-OPTION_CLOSED = 'printClosed'
-OPTION_SPRINT_ISSUES = 'sprintIssues'
-OPTION_ADD_COMPONENT_TO_SPRINT_ISSUES = 'addComponent'
-OPTION_ADD_LABEL_TO_SPRINT_ISSUES = 'addLabel'
-OPTION_CURRENT_TEAM_STATUS = 'teamStatus'
-OPTION_DEBUG = 'debug'
-OPTION_CONFIG = ''
-# options list - all together
-OPTIONS = (OPTION_CLOSED, OPTION_SPRINT_ISSUES, OPTION_ADD_COMPONENT_TO_SPRINT_ISSUES,
-           OPTION_ADD_LABEL_TO_SPRINT_ISSUES, OPTION_CURRENT_TEAM_STATUS, OPTION_DEBUG)
-# teams members (all members\current members)
-#ADA_TEAM = ('kaplia', 'zhukv', 'andreevi', 'barzilov', 'kudriash', 'iushin', 'gorkoven', 'gusevdm')
-#ADA_TEAM_ALL = ('gogolev', 'hapii', 'lipkovic', 'kaplia', 'zhukv', 'andreevi', 'barzilov', 'kudriash', 'iushin', 'gorkoven', 'gusevdm')
-#NOVA_TEAM = ('kobiakov', 'listvin', 'sokolose', 'garadagl', 'kuchin')
-#BMTEF_TEAM = ('iablokov', 'sitnikod', 'trukhano', 'gorodilo')
-
-
-def prepare_arg_parser():
-    """
-    Prepare and return cmd line parser.
-    :return: prepared cmd line parser
-    """
-    # create arguments parser
-    parser = argparse.ArgumentParser(description='JIRA Utility.')
-    # add arguments to parser (mandatory/optional)
-    parser.add_argument('-a', '--address', dest='jira_address', action='store', required=True, help='JIRA address')
-    parser.add_argument('-u', '--user', dest='user', action='store', required=True, help='JIRA user')
-    parser.add_argument('-p', '--pass', dest='password', action='store', required=True, help='JIRA password')
-    # options/actions (mandatory too)
-    parser.add_argument('-o', '--option', dest='option', action='store', required=True, choices=OPTIONS, help='Type of option/action')
-    # optional arguments
-    parser.add_argument('--project', dest='project', action='store', help='Project name')
-    parser.add_argument('--sprint', dest='sprint', action='store', help='Sprint name')
-    parser.add_argument('--component', dest='component', action='store', help='Jira component name')
-    parser.add_argument('--label', dest='label', action='store', help='Jira label name')
-    parser.add_argument('--file', dest='out_file', action='store', default=None, help='Output file name for report')
-    parser.add_argument('--daysBack', dest='days_back', action='store', default=0, help='Days back for closed issues report')
-    parser.add_argument('--simpleReport', dest='simple_report', action='store_true', help='Generate simple report (default - detailed)')
-    parser.add_argument('--showLabel', dest='show_label', action='store_true', help='Show "Label" column in a report')
-    # team: ada - current Mantis team, ada-all - all members of Ada team (with left people), bmtef - Lynx team
-    # in BMTEF project, nova - Nova team, new team for Mantis project)
-    parser.add_argument('--team', dest='team', action='store',
-                        choices=('ada', 'ada_all', 'nova', 'nova_all', 'bmtef', 'bmtef_all'),
-                        help='Team for report generating')
-    # todo: add config dir/file parameter
-    return parser
+from pylib.jira_utility import JiraUtility, JiraException
+from pylib.jira_utility_init import init_jira_utility_config
+import pylib.jira_constants as jconst
 
 
 def jira_connect():
@@ -198,8 +154,21 @@ def add_label_to_sprint_issues(sprint_name, label_name):
 print 'JIRA Utility starting...'
 
 # prepare and parse cmd line
-parser = prepare_arg_parser()
-args = parser.parse_args()
+# parser = prepare_arg_parser()
+# parser.print_help()
+# parser.print_usage()
+
+# init configuration - parse cmd line and load from file
+config = init_jira_utility_config()
+#print config.config_dict
+
+print 'user ->', config.get(jconst.CONFIG_KEY_USER)
+print 'pass ->', config.get(jconst.CONFIG_KEY_PASS)
+
+import sys
+sys.exit(777)
+
+#args = parser.parse_args()
 # define jira instance
 jira = None
 

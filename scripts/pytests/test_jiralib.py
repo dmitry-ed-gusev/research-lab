@@ -8,7 +8,7 @@
 
 import unittest
 
-from pylib.jiralib import JiraUtility
+from pylib.jira_utility import JiraUtility
 
 
 class JIRAUtilityTest(unittest.TestCase):
