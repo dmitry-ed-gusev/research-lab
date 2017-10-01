@@ -11,7 +11,7 @@
     <artifactId>scripts</artifactId>
     <!--<packaging>jar</packaging>-->
     <version>1.0</version>
-    <name>Scripts :: some shell scripts.</name>
+    <name>Scripts :: some shell/python scripts.</name>
 
     <properties>
         <skipPythonTests>false</skipPythonTests>

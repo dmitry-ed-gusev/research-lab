@@ -14,7 +14,7 @@
 
 
 import codecs
-from pylib.jira_utility import BaseJiraUtility, JiraException
+from pylib.jira_base_utility import BaseJiraUtility, JiraException
 from pylib.jira_utility_init import init_jira_utility_config
 import pylib.jira_constants as jconst
 

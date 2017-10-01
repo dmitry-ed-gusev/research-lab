@@ -19,7 +19,7 @@ import jira_constants as jconst
 class BaseJiraUtility(object):
     """ Class BaseJIRAUtility. Intended for interaction with JIRA and performing some useful actions. """
 
-    def __init__(self, config=None, *jira_params):
+    def __init__(self, config, *jira_params):
         """
         System method: initializer for BaseJIRAUtility class.
         :param jira_address: address of JIRA instance
@@ -36,7 +36,7 @@ class BaseJiraUtility(object):
                 print "Provided config is Configuration() object."
                 self.config = config
             else:
-                raise JiraException("Unknown configuration object type! Not a path/object!")
+                raise JiraException("Unknown configuration object type! Not a string path/object!")
         # if not specified config - use *jira_params tuple
         elif jira_params and len(jira_params) == 3:
             print "Using list of jira parameters."
