@@ -14,72 +14,52 @@
 
 
 import codecs
-from pylib.jira_utility import JiraUtility, JiraException
+from pylib.jira_utility import BaseJiraUtility, JiraException
 from pylib.jira_utility_init import init_jira_utility_config
 import pylib.jira_constants as jconst
 
 
-def jira_connect():
-    """ Utility method for "lazy" JIRA connecting (after checks in functions). """
-    global jira
-    if not jira:  # if not connected yet
-        # create JIRA object and connect to JIRA
-        jira = JiraUtility(args.jira_address, args.user, args.password)
-        jira.connect()
+class JiraUtility(BaseJiraUtility):
 
+    def print_closed_issues_report(days_back=0, out_file=None, simple_report=False, print_to_console=True):
+        """
+        Generate and print report "Closed issues by every team member."
+        :param days_back: period of time (back in time) for which we need this report (days)
+        :param out_file: file to print report to (if needed)
+        :param simple_report: if true, only issues counts will be printed (default false)
+        :param print_to_console: if true, print report to console (default true)
+        """
+        # preparing parameters
+        team = team_select()  # select team, fail if not specified
+        jira_connect()  # jira 'lazy' connect
 
-def team_select():
-    # todo: implement team selection/pydoc/tests
-    if args.team == 'ada':
-        return ADA_TEAM
-    elif args.team == 'ada-all':
-        return ADA_TEAM_ALL
-    elif args.team == 'bmtef':
-        return BMTEF_TEAM
-    elif args.team == 'nova':
-        return NOVA_TEAM
-    else:
-        raise JiraException('Team not specified! Use --team <team> parameter.')
+        # generate report header
+        report = '[] Team closed issues report'
+        if days_back > 0:
+            report += ' (for last {} day(s))'.format(days_back)
+        else:
+            report += ' (for the whole time)'
+        report += '\n\n'
 
+        #  generate report for each user of specified team
+        for user in team:
+            # search issues
+            issues = jira.get_all_closed_issues_for_user(user, days_back)
+            # add them to report
+            report += 'Issues report for user [{}]. Closed count [{}].\n'.format(user, len(issues))
+            if len(issues) > 0 and not simple_report:
+                report += jira.get_issues_report(issues).get_string()
+                report += '\n\n'
 
-def print_closed_issues_report(days_back=0, out_file=None, simple_report=False, print_to_console=True):
-    """
-    Generate and print report "Closed issues by every team member."
-    :param days_back: period of time (back in time) for which we need this report (days)
-    :param out_file: file to print report to (if needed)
-    :param simple_report: if true, only issues counts will be printed (default false)
-    :param print_to_console: if true, print report to console (default true)
-    """
-    # preparing parameters
-    team = team_select()  # select team, fail if not specified
-    jira_connect()  # jira 'lazy' connect
-    # generate report header
-    report = 'ADA Team closed issues report'
-    if days_back > 0:
-        report += ' (for last {} day(s))'.format(days_back)
-    else:
-        report += ' (for the whole time)'
-    report += '\n\n'
+        # print report to console
+        if print_to_console:
+            print '\n', report
 
-    #  generate report for each user of specified team
-    for user in team:
-        # search issues
-        issues = jira.get_all_closed_issues_for_user(user, days_back)
-        # add them to report
-        report += 'Issues report for user [{}]. Closed count [{}].\n'.format(user, len(issues))
-        if len(issues) > 0 and not simple_report:
-            report += jira.get_issues_report(issues).get_string()
-            report += '\n\n'
-
-    # print report to console
-    if print_to_console:
-        print '\n', report
-
-    # out report to file (with overwriting)
-    if out_file and out_file.strip():
-        # with open(out_file, 'w') as out:
-        with codecs.open(out_file, 'w', 'utf-8') as out:
-            out.write(report)
+        # out report to file (with overwriting)
+        if out_file and out_file.strip():
+            # with open(out_file, 'w') as out:
+            with codecs.open(out_file, 'w', 'utf-8') as out:
+                out.write(report)
 
 
 def print_current_status_report(out_file=None, print_to_console=True):
@@ -151,24 +131,18 @@ def add_label_to_sprint_issues(sprint_name, label_name):
 
 
 # ===========================================
-print 'JIRA Utility starting...'
-
-# prepare and parse cmd line
-# parser = prepare_arg_parser()
-# parser.print_help()
-# parser.print_usage()
-
-# init configuration - parse cmd line and load from file
+print 'JIRA Utility: starting...'
+# init configuration - parse cmd line and load from config file
 config = init_jira_utility_config()
-#print config.config_dict
-
-print 'user ->', config.get(jconst.CONFIG_KEY_USER)
-print 'pass ->', config.get(jconst.CONFIG_KEY_PASS)
+# init JIRA object
+jira = BaseJiraUtility(config)
+print "JIRA Utility: config and JIRA object are initialized."
 
 import sys
+
 sys.exit(777)
 
-#args = parser.parse_args()
+# args = parser.parse_args()
 # define jira instance
 jira = None
 

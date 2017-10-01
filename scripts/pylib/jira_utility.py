@@ -2,10 +2,11 @@
 # coding=utf-8
 
 """
- Utility module for interacting with JIRA. Contains JIRAUtility class, internal
- exception. Maybe some useful methods will be added.
- Created: Gusev Dmitrii, 04.04.2017
- Modified: Gusev Dmitrii, 22.05.2017
+    Basic utility module for interacting with JIRA. Contains BaseJIRAUtility class, internal
+    exception. Maybe some useful methods will be added.
+
+    Created: Gusev Dmitrii, 04.04.2017
+    Modified: Gusev Dmitrii, 01.10.2017
 """
 
 from jira import JIRA
@@ -15,17 +16,17 @@ import prettytable
 import jira_constants as jconst
 
 
-class JiraUtility(object):
-    """ Class JIRAUtility. Intended for interaction with JIRA and performing some useful actions. """
+class BaseJiraUtility(object):
+    """ Class BaseJIRAUtility. Intended for interaction with JIRA and performing some useful actions. """
 
     def __init__(self, config=None, *jira_params):
         """
-        System method: initializer for JIRAUtility class.
+        System method: initializer for BaseJIRAUtility class.
         :param jira_address: address of JIRA instance
         :param user: user for JIRA
         :param password: pass for JIRA user
         """
-        print "JIRAUtility.__init__() is working. Config [%s], jira params [%s]" % config, jira_params
+        print "BaseJIRAUtility.__init__() is working. Config [%s], jira params [%s]" % (config, jira_params)
         # if specified config file/object - use it, ignore other params.
         if config:
             if isinstance(config, str):
@@ -57,15 +58,19 @@ class JiraUtility(object):
 
     def connect(self):
         """
-        System method: connect to JIRA instance (with params specified in constructor).
+        Internal system method: connect to JIRA instance (with params specified in constructor).
         Init internal field [jira].
         """
         address = self.config.get(jconst.CONFIG_KEY_ADDRESS)
         user = self.config.get(jconst.CONFIG_KEY_USER)
-        password = self.config.get(jconst.CONFIG_KEY_PASS)
-        print "JIRAUtility.connect() is working. Connecting to [{}] as user [{}].".format(address, user)
-        self.jira = JIRA(address, basic_auth=(user, password))
-        print "JIRAUtility: connected to [{}] as user [{}].".format(address, user)
+        # check - if we aren't connected -> connect, otherwise - skip (just inform)
+        if not self.jira:
+            password = self.config.get(jconst.CONFIG_KEY_PASS)
+            print "BaseJIRAUtility.connect() is working. Connecting to [{}] as user [{}].".format(address, user)
+            self.jira = JIRA(address, basic_auth=(user, password))
+            print "BaseJIRAUtility: connected to [{}] as user [{}].".format(address, user)
+        else:
+            print "BaseJIRAUtility: already connected to [{}] as user [{}].".format(address, user)
 
     def execute_jql(self, jql):
         """
@@ -77,10 +82,10 @@ class JiraUtility(object):
             raise JiraException('Provided JQL is empty!')
         # search for issues by provided jql and return them
         issues = []
-        batch_size = jconst.JIRA_ISSUES_BATCH_SIZE
+        batch_size = jconst.CONST_JIRA_ISSUES_BATCH_SIZE
         total_processed = 0
-        while batch_size == jconst.JIRA_ISSUES_BATCH_SIZE:
-            # get issues part (in a size of batch, default = 50 - see JIRAUtility.ISSUES_BATCH_SIZE)
+        while batch_size == jconst.CONST_JIRA_ISSUES_BATCH_SIZE:
+            # get issues part (in a size of batch, default = 50 - see BaseJIRAUtility.ISSUES_BATCH_SIZE)
             issues_batch = self.jira.search_issues(jql_str=jql, maxResults=False, startAt=total_processed)
             batch_size = len(issues_batch)  # update current batch size
             total_processed += batch_size  # update total processed count
@@ -95,7 +100,7 @@ class JiraUtility(object):
         :param project_name: name of project for which we will get the key
         :return: project key or None
         """
-        print "JIRAUtility.get_project_key() is working. Search project key by name: [{}].".format(project_name)
+        print "BaseJIRAUtility.get_project_key() is working. Search project key by name: [{}].".format(project_name)
         if not project_name or not project_name.strip():  # fail-fast - provided project name
             raise JiraException('Empty project name for project key search!')
         # search project key
@@ -115,7 +120,7 @@ class JiraUtility(object):
         :param component_name: name for component search
         :return: found component or None
         """
-        print "JIRAUtility.get_component() is working. Search component: [{}] for project: [{}]."\
+        print "BaseJIRAUtility.get_component() is working. Search component: [{}] for project: [{}]."\
             .format(component_name, project_name)
         # fail-fast - check of parameters
         if not project_name or not project_name.strip() or not component_name or not component_name.strip():
@@ -135,7 +140,7 @@ class JiraUtility(object):
         :param sprint_name: name of sprint for issues search
         :return: list of sprint issues
         """
-        print "JIRAUtility.get_all_sprint_issues() is working. Search issues for sprint: [{}].".format(sprint_name)
+        print "BaseJIRAUtility.get_all_sprint_issues() is working. Search issues for sprint: [{}].".format(sprint_name)
         if not sprint_name or not sprint_name.strip():  # fail-fast
             raise JiraException("Empty sprint name!")
         # generate jql
@@ -151,7 +156,7 @@ class JiraUtility(object):
         :param component_name: component name
         :return:
         """
-        print "JiraUtility.add_component_to_issues() is working."
+        print "BaseJIRAUtility.add_component_to_issues() is working."
 
         if not project_name or not project_name.strip():  # fail-fast
             raise JiraException('Project name is empty!')
@@ -171,7 +176,7 @@ class JiraUtility(object):
                 issue.update(fields={"components": existing_components})
 
                 counter += 1
-                if counter % jconst.PROGRESS_STEP_COUNTER == 0:  # report progress
+                if counter % jconst.CONST_PROGRESS_STEP_COUNTER == 0:  # report progress
                     print "Processed -> {}/{}".format(counter, len(issues))
             print "Summary: updated [{}] issue(s).".format(counter)
         else:
@@ -183,7 +188,7 @@ class JiraUtility(object):
         :param issue_key: issue key for search (<project key>-<number>).
         :return:
         """
-        print "JIRAUtility.get_issue() is working. Get issue by key: [{}].".format(issue_key)
+        print "BaseJIRAUtility.get_issue() is working. Get issue by key: [{}].".format(issue_key)
         return self.jira.issue(issue_key)
 
     def get_all_closed_issues_for_user(self, user, last_days_count=0):
@@ -195,7 +200,7 @@ class JiraUtility(object):
         closed issues for all time, if < 0, raise exception
         :return: found issues list
         """
-        print "JIRAUtility.get_all_issues_for_user() is working. Search issues for user: [{}].".format(user)
+        print "BaseJIRAUtility.get_all_issues_for_user() is working. Search issues for user: [{}].".format(user)
 
         # fast checks
         if not user or not user.strip:
@@ -213,7 +218,7 @@ class JiraUtility(object):
 
     def get_current_status_for_user(self, user):
         # todo: implementation/pydoc
-        print "JIRAUtility.get_current_status_for_user() is working. Search 'In Progress' issues for user: [{}]."\
+        print "BaseJIRAUtility.get_current_status_for_user() is working. Search 'In Progress' issues for user: [{}]."\
             .format(user)
         # fast checks
         if not user or not user.strip:
@@ -231,7 +236,7 @@ class JiraUtility(object):
         :param issues: issues for add label to
         :param label_name: label to add to each issue
         """
-        print "JIRAUtility.add_label_to_issues() is working. Adding label [{}].".format(label_name)
+        print "BaseJIRAUtility.add_label_to_issues() is working. Adding label [{}].".format(label_name)
 
         if not label_name or not label_name.strip():  # fail-fast
             raise JiraException('Label is empty!')
@@ -243,7 +248,7 @@ class JiraUtility(object):
                 issue.fields.labels.append(label_name)
                 issue.update(fields={"labels": issue.fields.labels})
             counter += 1
-            if counter % jconst.PROGRESS_STEP_COUNTER == 0:  # report progress
+            if counter % jconst.CONST_PROGRESS_STEP_COUNTER == 0:  # report progress
                 print "Processed -> {}/{}".format(counter, len(issues))
         print "Summary: updated [{}] issue(s).".format(counter)
 
@@ -253,7 +258,7 @@ class JiraUtility(object):
         This method is intended mostly for debug purposes - print JIRA issue as a raw JSON
         :param issue: issue object for printing
         """
-        print "JIRAUtility.print_raw_issue() is working."
+        print "BaseJIRAUtility.print_raw_issue() is working."
         print issue.raw
 
     @staticmethod
@@ -264,7 +269,7 @@ class JiraUtility(object):
         :param show_label: show "Labels" column in a report, True by default
         :return: generated report
         """
-        print "JIRAUtility.get_issues_report() is working."
+        print "BaseJIRAUtility.get_issues_report() is working."
 
         # create report header
         header_list = ['#', 'Issue', 'Type', 'SP']

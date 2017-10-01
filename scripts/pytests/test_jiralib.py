@@ -8,38 +8,38 @@
 
 import unittest
 
-from pylib.jira_utility import JiraUtility
+from pylib.jira_utility import BaseJiraUtility
 
 
 class JIRAUtilityTest(unittest.TestCase):
 
     def setUp(self):
         print "JIRAUtilityTest tests: setUp()"
-        self.jira = JiraUtility('address', 'user', 'pass')
+        self.jira = BaseJiraUtility('address', 'user', 'pass')
 
     @unittest.expectedFailure
     def test_init_no_params(self):
-        JiraUtility()
+        BaseJiraUtility()
 
     @unittest.expectedFailure
     def test_init_not_all_params(self):
-        JiraUtility('', '')
+        BaseJiraUtility('', '')
 
     @unittest.expectedFailure
     def test_init_empty_address1(self):
-        JiraUtility('', 'user', 'pass')
+        BaseJiraUtility('', 'user', 'pass')
 
     @unittest.expectedFailure
     def test_init_empty_address2(self):
-        JiraUtility('      ', 'user', 'pass')
+        BaseJiraUtility('      ', 'user', 'pass')
 
     @unittest.expectedFailure
     def test_init_empty_user1(self):
-        JiraUtility('address', '', 'pass')
+        BaseJiraUtility('address', '', 'pass')
 
     @unittest.expectedFailure
     def test_init_empty_user2(self):
-        JiraUtility('address', '    ', 'pass')
+        BaseJiraUtility('address', '    ', 'pass')
 
     @unittest.expectedFailure
     def test_get_project_key_empty_key1(self):
