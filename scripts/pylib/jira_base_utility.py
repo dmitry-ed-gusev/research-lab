@@ -50,6 +50,7 @@ class BaseJiraUtility(object):
             if not jira_user or not jira_user.strip():  # check JIRA user
                 raise JiraException('Empty username!')
             self.config.set(jconst.CONFIG_KEY_USER, jira_user)
+            # password is allowed to be empty
             self.config.set(jconst.CONFIG_KEY_PASS, jira_params[2])
         else:
             raise JiraException("No configuration parameters provided!")

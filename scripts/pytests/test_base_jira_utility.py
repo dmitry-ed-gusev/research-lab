@@ -7,20 +7,17 @@
 # todo: add tests for get_issues_by_jql()
 
 import unittest
-
 from pylib.jira_base_utility import BaseJiraUtility, JiraException
 
-
-INVALID_JIRA_PARAMS = [['address'], ['address', 'user'], ['111', 'user', 'pass']]
-a1 = 'aaa'
-a2 = ['ss', 'dd', 'ddd']
+# empty values tuple
+EMPTY_VALUES = (None, '', '     ')
 
 
 class BaseJIRAUtilityTest(unittest.TestCase):
 
     def setUp(self):
         print "BaseJIRAUtilityTest tests: setUp()"
-        # self.jira = BaseJiraUtility(None, 'addrezz', 'uzzer')
+        self.jira = BaseJiraUtility(None, 'jira_address', 'jira_user', 'jira_password')
 
     def test_InitNoneConfigParam(self):
         with self.assertRaises(JiraException):
@@ -30,37 +27,35 @@ class BaseJIRAUtilityTest(unittest.TestCase):
         with self.assertRaises(JiraException):
             BaseJiraUtility(object)
 
-    # todo: write separate tests cases???
-    def test_InitInvalidJiraParams(self):
-        for jira_params in INVALID_JIRA_PARAMS:
-            # print "->", a, u, p
-            with self.assertRaises(JiraException):
-                BaseJiraUtility(None, 'ss', 'dd', 'ddd')
+    def test_InitInvalidJiraParams1(self):
+        with self.assertRaises(JiraException):
+            BaseJiraUtility(None, 'address')
 
-    # @unittest.expectedFailure
-    # def test_init_not_all_params(self):
-    #     BaseJiraUtility('', '')
-    #
-    # @unittest.expectedFailure
-    # def test_init_empty_address1(self):
-    #     BaseJiraUtility('', 'user', 'pass')
-    #
-    # @unittest.expectedFailure
-    # def test_init_empty_address2(self):
-    #     BaseJiraUtility('      ', 'user', 'pass')
-    #
-    # @unittest.expectedFailure
-    # def test_init_empty_user1(self):
-    #     BaseJiraUtility('address', '', 'pass')
-    #
-    # @unittest.expectedFailure
-    # def test_init_empty_user2(self):
-    #     BaseJiraUtility('address', '    ', 'pass')
-    #
-    # @unittest.expectedFailure
-    # def test_get_project_key_empty_key1(self):
-    #     self.jira.get_project_key('')
-    #
-    # @unittest.expectedFailure
-    # def test_get_project_key_empty_key2(self):
-    #     self.jira.get_project_key('    ')
+    def test_InitInvalidJiraParams2(self):
+        with self.assertRaises(JiraException):
+            BaseJiraUtility(None, 'address', 'user')
+
+    def test_InitInvalidJiraParams3(self):
+        for empty_value in EMPTY_VALUES:
+            with self.assertRaises(JiraException):
+                BaseJiraUtility(None, empty_value, 'user', 'password')
+
+    def test_InitInvalidJiraParams4(self):
+        for empty_value in EMPTY_VALUES:
+            with self.assertRaises(JiraException):
+                BaseJiraUtility(None, 'address', empty_value, 'password')
+
+
+    def test_InitWithStringPath(self):
+        print "implement it!"
+
+    def test_InitWithConfigurationObject(self):
+        print "implement it!"
+
+    def test_InitWithJiraParameters(self):
+        print "implement it!"
+
+    def test_GetEmptyProjectKey(self):
+        for empty_value in EMPTY_VALUES:
+            with self.assertRaises(JiraException):
+                self.jira.get_project_key(empty_value)
