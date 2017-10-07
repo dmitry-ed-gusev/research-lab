@@ -43,7 +43,7 @@ def prepare_arg_parser():
     # sprint name, optional
     parser.add_argument('--sprint', dest=jconst.CONFIG_KEY_SPRINT, action='store', help='JIRA Sprint name')
     # team name, optional
-    parser.add_argument('--team', dest=jconst.CONFIG_KEY_TEAM, action='store', choices=jconst.CONST_TEAMS_LIST,
+    parser.add_argument('--team', dest=jconst.CONFIG_KEY_TEAM_NAME, action='store', choices=jconst.CONST_TEAMS_LIST,
                         help='Team for report generating')
     # some optional settings for detailed configuration: report output file, days back for 'Closed issues' report,
     # create simple report (flag), show label column in a report (flag)
@@ -71,6 +71,7 @@ def init_jira_utility_config():
     args = prepare_arg_parser().parse_args(namespace=argparse_namespace)
     # load configuration from specified or default config, don't merge with environment
     config = Configuration(getattr(args, jconst.CONFIG_KEY_CFG_FILE), is_merge_env=False)
+
     # add cmd line arguments to config (overwrite existing, if set value)
     for key, value in vars(argparse_namespace).items():
         if value:

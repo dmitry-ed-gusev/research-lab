@@ -17,7 +17,12 @@ CONFIG_KEY_ADDRESS = "jira.address"
 CONFIG_KEY_USER = "jira.user"
 CONFIG_KEY_PASS = "jira.password"
 CONFIG_KEY_SPRINT = "sprint.name"
-CONFIG_KEY_TEAM = "team.name"
+
+# config file key
+CONFIG_KEY_TEAM_MEMBERS = "teams.%s.members"
+# cmd line parameter stored here
+CONFIG_KEY_TEAM_NAME = "team.name"
+
 CONFIG_KEY_OUTPUT_FILE = "output.file"
 CONFIG_KEY_DAYS_BACK = "days.back"
 CONFIG_KEY_USE_SIMPLE_REPORT = "use.simple.report"

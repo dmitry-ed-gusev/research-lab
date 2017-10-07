@@ -13,13 +13,14 @@
 # todo: implement current team status (in progress tasks)
 
 
-import codecs
-from pylib.jira_base_utility import BaseJiraUtility, JiraException
+
+from pylib.jira_utility_base import JiraUtilityBase, JiraException
+from pylib.jira_utility_extended import JiraUtilityExtended
 from pylib.jira_utility_init import init_jira_utility_config
 import pylib.jira_constants as jconst
 
 
-class JiraUtility(BaseJiraUtility):
+class JiraUtilityBaseZZZ(JiraUtilityBase):
 
     def print_closed_issues_report(days_back=0, out_file=None, simple_report=False, print_to_console=True):
         """
@@ -60,28 +61,6 @@ class JiraUtility(BaseJiraUtility):
             # with open(out_file, 'w') as out:
             with codecs.open(out_file, 'w', 'utf-8') as out:
                 out.write(report)
-
-
-def print_current_status_report(out_file=None, print_to_console=True):
-    # todo: pydoc
-    # preparing parameters
-    team = team_select()  # select team, fail if not specified
-    jira_connect()  # jira 'lazy' connect
-    # report header and body
-    report = 'Current "In Progress" status'
-    for user in team:
-        issues = jira.get_current_status_for_user(user)
-        report += 'Issues "In Progress" for user [{}], count [{}].\n'.format(user, len(issues))
-        if len(issues) > 0:
-            report += jira.get_issues_report(issues).get_string()
-            report += '\n\n'
-    # print report to console
-    if print_to_console:
-        print '\n', report
-    # out report to file
-    if out_file and out_file.strip():
-        with codecs.open(out_file, 'w', 'utf-8') as out:
-            out.write(report)
 
 
 def print_sprint_issues_report(sprint_name, out_file=None, print_to_console=True):
@@ -135,11 +114,11 @@ print 'JIRA Utility: starting...'
 # init configuration - parse cmd line and load from config file
 config = init_jira_utility_config()
 # init JIRA object
-jira = BaseJiraUtility(config)
+jira = JiraUtilityExtended(config)
 print "JIRA Utility: config and JIRA object are initialized."
+jira.print_current_status_report()
 
 import sys
-
 sys.exit(777)
 
 # args = parser.parse_args()
