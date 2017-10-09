@@ -2,166 +2,80 @@
 # coding=utf-8
 
 """
- Utility to work with JIRA - put labels, generate reports, etc.
- See list of options.
- Created: Gusev Dmitrii, 04.04.2017
+    Utility to work with JIRA - put labels, generate reports, etc.
+    Contains just a starter for utility.
+
+    Created: Gusev Dmitrii, 04.04.2017
+    Modified: Gusev Dmitrii, 09.10.2017
 """
 
-# todo: FIX BROKEN THINGS!!!
-
-# todo: move team members lists to config file
-# todo: implement current team status (in progress tasks)
-
-
-
-from pylib.jira_utility_base import JiraUtilityBase, JiraException
 from pylib.jira_utility_extended import JiraUtilityExtended
 from pylib.jira_utility_init import init_jira_utility_config
 import pylib.jira_constants as jconst
 
-
-class JiraUtilityBaseZZZ(JiraUtilityBase):
-
-    def print_closed_issues_report(days_back=0, out_file=None, simple_report=False, print_to_console=True):
-        """
-        Generate and print report "Closed issues by every team member."
-        :param days_back: period of time (back in time) for which we need this report (days)
-        :param out_file: file to print report to (if needed)
-        :param simple_report: if true, only issues counts will be printed (default false)
-        :param print_to_console: if true, print report to console (default true)
-        """
-        # preparing parameters
-        team = team_select()  # select team, fail if not specified
-        jira_connect()  # jira 'lazy' connect
-
-        # generate report header
-        report = '[] Team closed issues report'
-        if days_back > 0:
-            report += ' (for last {} day(s))'.format(days_back)
-        else:
-            report += ' (for the whole time)'
-        report += '\n\n'
-
-        #  generate report for each user of specified team
-        for user in team:
-            # search issues
-            issues = jira.get_all_closed_issues_for_user(user, days_back)
-            # add them to report
-            report += 'Issues report for user [{}]. Closed count [{}].\n'.format(user, len(issues))
-            if len(issues) > 0 and not simple_report:
-                report += jira.get_issues_report(issues).get_string()
-                report += '\n\n'
-
-        # print report to console
-        if print_to_console:
-            print '\n', report
-
-        # out report to file (with overwriting)
-        if out_file and out_file.strip():
-            # with open(out_file, 'w') as out:
-            with codecs.open(out_file, 'w', 'utf-8') as out:
-                out.write(report)
-
-
-def print_sprint_issues_report(sprint_name, out_file=None, print_to_console=True):
-    """
-    Generate and print report "All named sprint issues."
-    :param sprint_name: sprint for which we generate current report
-    :param out_file: file to print report to (if needed)
-    :param print_to_console: if true, print report to console (default true)
-    """
-
-    if not sprint_name or not sprint_name.strip():  # fast-fail
-        raise JiraException('Empty sprint name!')
-
-    jira_connect()  # jira 'lazy' connect
-
-    # generate report header
-    report = 'Issues report for {}.\n'.format(sprint_name)
-    report += jira.get_issues_report(jira.get_all_sprint_issues(sprint_name)).get_string()
-
-    # print report to console
-    if print_to_console:
-        print '\n', report
-
-    # out report to file (with overwriting)
-    if out_file and out_file.strip():
-        # with open(out_file, 'w') as out:
-        with codecs.open(out_file, 'w', 'utf-8') as out:
-            out.write(report)
-
-
-def add_component_to_sprint_issues(sprint_name, project_name, component_name):
-    # todo: checks/pydoc
-    jira_connect()  # jira 'lazy' connect
-    # get all issues for mentioned sprint
-    issues = jira.get_all_sprint_issues(sprint_name)
-    # add component to all found issues
-    jira.add_component_to_issues(issues, project_name, component_name)
-
-
-def add_label_to_sprint_issues(sprint_name, label_name):
-    # todo: checks/pydoc
-    jira_connect()  # jira 'lazy' connect
-    # get all issues for mentioned sprint
-    issues = jira.get_all_sprint_issues(sprint_name)
-    # add component to all found issues
-    jira.add_label_to_issues(issues, label_name)
-
-
-# ===========================================
 print 'JIRA Utility: starting...'
 # init configuration - parse cmd line and load from config file
 config = init_jira_utility_config()
-# init JIRA object
+# init JIRA object and execute specified option
 jira = JiraUtilityExtended(config)
 print "JIRA Utility: config and JIRA object are initialized."
-jira.print_current_status_report()
+# jira.execute_option(config.get(jconst.CONFIG_KEY_OPTION))
 
-import sys
-sys.exit(777)
+#
+jql = 'project = BMA and issuetype = task and ' \
+      'assignee in (andreevi, barzilov, kudriash, iushin, gorkoven, ermolaeo, sokolose, gusevdm) and ' \
+      '(labels not in ("unlinked") or labels is empty) order by key desc'
+#
+issues = jira.execute_jql(jql)
+#print JiraUtilityExtended.get_issues_report(issues)
 
-# args = parser.parse_args()
-# define jira instance
-jira = None
+#
+counter = 0
+found_issues = []
+# issue link type
+implements = "Implementation"
+# issue link outward direction type
+implements_type = "implements / must come before"
 
-# process selected option/action
-if args.option == OPTION_CLOSED:  # print closed issues report
-    print_closed_issues_report(args.days_back, args.out_file, args.simple_report)
+for issue in issues:
+    print "\n=====================================\nProcessing issue [%s]." % issue.key
+    #
+    if issue.fields.issuelinks:
+        is_link_found = False
+        for link in issue.fields.issuelinks:
+            # outward links
+            if hasattr(link, "outwardIssue"):
+                outwardIssue = link.outwardIssue
+                print("\tOutward: " + outwardIssue.key)
+                print "type ->", link.type
+                print "out direction type ->", link.type.outward
+                print "in direction type ->", link.type.inward
+                # type -> outward/inward
 
-elif args.option == OPTION_SPRINT_ISSUES:  # print all sprint issues report
-    print_sprint_issues_report(args.sprint, args.out_file)
+                # print "1 -> [%s|%s] -> %s" % (link.type, implements, str(link.type) == implements)
+                # print "2 -> [%s|%s] -> %s" % (link.type.outward, implements_type, str(link.type.outward) == implements_type)
 
-elif args.option == OPTION_ADD_COMPONENT_TO_SPRINT_ISSUES:  # add component to sprint issues
-    add_component_to_sprint_issues(args.sprint, args.project, args.component)
-    print_sprint_issues_report(args.sprint, args.out_file)
+                # check issue type
+                if str(link.type) == implements and str(link.type.outward) == implements_type:
+                    print "Found link! Link: %s" % link.outwardIssue
+                    is_link_found = True
+                    break
 
-elif args.option == OPTION_ADD_LABEL_TO_SPRINT_ISSUES:  # add label to sprint issues
-    add_label_to_sprint_issues(args.sprint, args.label)
-    print_sprint_issues_report(args.sprint, args.out_file)
+            # inward links
+            # if hasattr(link, "inwardIssue"):
+            #     inwardIssue = link.inwardIssue
+            #     print("\tInward: " + inwardIssue.key)
 
-elif args.option == OPTION_CURRENT_TEAM_STATUS:  # print all "In Progress" issues for specified team
-    print_current_status_report(args.out_file)
+        # if outward link "Implements" not found -> add issue to issues list
+        if not is_link_found:
+            found_issues.append(issue)
+    else:
+        print "Issue [%s] doesn't have links." % issue.key
+        # found_issues.append(issue)
 
-elif args.option == OPTION_DEBUG:  # debug option - for debug features, etc.
-    # print jira.get_project_key('Mantis')
-    print jira.get_component_by_name('Mantis', 'mantis-capability')
+    counter += 1
+    if counter % 50 == 0:
+        print "Processed [%s] issues." % counter
 
-# add team label to all current sprint issues and print report
-# jira.add_label_to_sprint_issues(sprint_name)
-# print JIRAUtility.get_issues_report(jira.get_all_sprint_issues(sprint_name))
-# issue = jira.get_issue('BMA-1216')
-# component = jira.get_component('mantis-capability')
-# print 'component ->', component
-# components = issue.fields.components
-# print 'components ->', components
-# if component in components:
-#     print 'ok'
-# else:
-#     print 'not present'
-# jira.print_raw_issue(issue)
-# component = jira.get_component('mantis-capability')
-# print 'Found: ', component
-# print issue.raw
-# for component in issue.fields.components:
-#    print component.id, '->', component.name, '->', component.self
+print "===>", found_issues
+print JiraUtilityExtended.get_issues_report(found_issues)

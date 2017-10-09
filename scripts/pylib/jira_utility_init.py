@@ -9,20 +9,9 @@
 """
 
 import argparse
-from configuration import Configuration, ConfigError
+from configuration import Configuration
+from jira_utility_extended import JiraUtilityExtended, JIRA_OPTIONS
 import jira_constants as jconst
-
-# options (one-by-one)
-OPTION_CLOSED = 'printClosed'
-OPTION_SPRINT_ISSUES = 'sprintIssues'
-OPTION_ADD_COMPONENT_TO_SPRINT_ISSUES = 'addComponent'
-OPTION_ADD_LABEL_TO_SPRINT_ISSUES = 'addLabel'
-OPTION_CURRENT_TEAM_STATUS = 'teamStatus'
-OPTION_DEBUG = 'debug'
-OPTION_CONFIG = ''
-# options list - all together
-OPTIONS = (OPTION_CLOSED, OPTION_SPRINT_ISSUES, OPTION_ADD_COMPONENT_TO_SPRINT_ISSUES,
-           OPTION_ADD_LABEL_TO_SPRINT_ISSUES, OPTION_CURRENT_TEAM_STATUS, OPTION_DEBUG)
 
 
 def prepare_arg_parser():
@@ -32,14 +21,18 @@ def prepare_arg_parser():
     """
     # create arguments parser
     parser = argparse.ArgumentParser(description='JIRA Utility.')
+
     # config file for loading, optional
     parser.add_argument('--config', dest=jconst.CONFIG_KEY_CFG_FILE, action='store',
                         default=jconst.CONST_CONFIG_FILE, help='YAML configuration file/path')
     # jira address and user, optional
     parser.add_argument('-a', '--address', dest=jconst.CONFIG_KEY_ADDRESS, action='store', help='JIRA address')
     parser.add_argument('-u', '--user', dest=jconst.CONFIG_KEY_USER, action='store', help='JIRA user')
-    # mandatory cmd line parameter(s): jira password, option???
+    # mandatory cmd line parameter(s): jira password, option to execute
     parser.add_argument('-p', '--pass', dest=jconst.CONFIG_KEY_PASS, action='store', required=True, help='JIRA password')
+    # possible options (actions) to be done by this script
+    parser.add_argument('--option', dest=jconst.CONFIG_KEY_OPTION, action='store', required=True,
+                        choices=JIRA_OPTIONS, help='Type of option/action')
     # sprint name, optional
     parser.add_argument('--sprint', dest=jconst.CONFIG_KEY_SPRINT, action='store', help='JIRA Sprint name')
     # team name, optional
@@ -55,9 +48,6 @@ def prepare_arg_parser():
                         help='Generate simple report (by default - detailed)')
     parser.add_argument('--showLabel', dest=jconst.CONFIG_KEY_SHOW_LABEL_COLUMN, action='store_true',
                         help='Show "Label" column in a report')
-    # possible options (actions) to be done by this script
-    # todo: option should be required. switched off for development/debug
-    parser.add_argument('-o', '--option', dest='option', action='store', required=False, choices=OPTIONS, help='Type of option/action')
 
     # return prepared parser
     return parser

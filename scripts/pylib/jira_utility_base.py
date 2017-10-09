@@ -9,15 +9,15 @@
     Modified: Gusev Dmitrii, 01.10.2017
 """
 
+import prettytable
+import codecs
+import jira_constants as jconst
 from jira import JIRA
 from pylib import JiraException
-from configuration import Configuration
-import prettytable
-import jira_constants as jconst
+from configuration import Configuration, ConfigError
 
 
 # todo: check jira address and username (should be not empty!)
-
 class JiraUtilityBase(object):
     """ Class JIRAUtilityBase. Intended for interaction with JIRA and performing some useful actions. """
 
@@ -55,8 +55,8 @@ class JiraUtilityBase(object):
 
     def connect(self):
         """
-        Internal system method: connect to JIRA instance (with params specified in constructor).
-        Init internal field [jira].
+        Internal system method: connect to JIRA instance (with params from config - initialized in constructor).
+        Also init internal field [jira].
         """
         print "JIRAUtilityBase.connect() is working."
         address = self.config.get(jconst.CONFIG_KEY_ADDRESS)
@@ -72,7 +72,7 @@ class JiraUtilityBase(object):
 
     def execute_jql(self, jql):
         """
-        Utility method for executing JQL in JIRA and get result issues list.
+        Utility method for executing JQL in JIRA and get resulting issues list.
         :param jql: JQL query to be executed in a JIRA
         :return: found issues list
         """
@@ -170,12 +170,19 @@ class JiraUtilityBase(object):
 
         if new_component:
             counter = 0
-            for issue in issues:
+
+            for issue in issues:  # iterate over issues and try to add component
                 existing_components = []
+                is_comp_found = False
                 for comp in issue.fields.components:
                     existing_components.append({"name": comp.name})
-                existing_components.append({"name": new_component.name})
-                issue.update(fields={"components": existing_components})
+                    if comp.name == component_name:  # component already exists
+                        is_comp_found = True
+                        break  # component found, don't need to iterate further
+
+                if not is_comp_found:  # if we haven't found component, add it and update issue
+                    existing_components.append({"name": new_component.name})
+                    issue.update(fields={"components": existing_components})  # <- very long operation!
 
                 counter += 1
                 if counter % jconst.CONST_PROGRESS_STEP_COUNTER == 0:  # report progress
@@ -219,7 +226,6 @@ class JiraUtilityBase(object):
         return self.execute_jql(jql)
 
     def get_current_status_for_user(self, user):
-        # todo: implementation/pydoc
         print "JIRAUtilityBase.get_current_status_for_user() is working. User: [%s]." % user
         # fast checks
         if not user or not user.strip:
@@ -229,6 +235,27 @@ class JiraUtilityBase(object):
         print "Generated JQL [{}]".format(jql)
         # execute jql and return result
         return self.execute_jql(jql)
+
+    def write_report_to_file(self, report, out_file=None):
+        """
+        Write report to specified file. If file isn't specified (by default), using internal config value.
+        If internal config doesn't exist too - do nothing.
+        :return:
+        """
+        # select report output file (if specified)
+        report_file = None
+        if out_file and out_file.strip():
+            report_file = out_file
+        else:
+            try:
+                report_file = self.config.get(jconst.CONFIG_KEY_OUTPUT_FILE)
+            except ConfigError:  # do nothing on error (key not exists)
+                pass
+        # out report to file
+        if report_file:
+            print "Output report to file [%s]." % report_file
+            with codecs.open(out_file, 'w', jconst.CONST_COMMON_ENCODING) as out:
+                out.write(report)
 
     @staticmethod
     def add_label_to_issues(issues, label_name):
@@ -294,9 +321,11 @@ class JiraUtilityBase(object):
             # labels - is optional column
             if show_label:
                 labels = ',\n '.join(issue.fields.labels)
-                report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, labels, components, issue.fields.summary, status, assignee])
+                report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, labels, components,
+                                issue.fields.summary, status, assignee])
             else:
-                report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, components, issue.fields.summary, status, assignee])
+                report.add_row([counter, issue.key, issue.fields.issuetype, storypoints, components,
+                                issue.fields.summary, status, assignee])
 
             counter += 1
         # return generated report
