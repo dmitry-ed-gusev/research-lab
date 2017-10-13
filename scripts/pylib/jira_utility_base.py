@@ -254,7 +254,7 @@ class JiraUtilityBase(object):
         # out report to file
         if report_file:
             print "Output report to file [%s]." % report_file
-            with codecs.open(out_file, 'w', jconst.CONST_COMMON_ENCODING) as out:
+            with codecs.open(report_file, 'w', jconst.CONST_COMMON_ENCODING) as out:
                 out.write(report)
 
     @staticmethod

@@ -11,6 +11,12 @@
 import jira_constants as jconst
 from jira_utility_base import JiraUtilityBase, JiraException
 
+# issue link type
+IMPLEMENTS = "Implementation"
+# issue link outward direction type
+IMPLEMENTS_TYPE = "implements / must come before"
+# named JQL queries
+
 
 class JiraUtilityExtended(JiraUtilityBase):
 
@@ -27,23 +33,24 @@ class JiraUtilityExtended(JiraUtilityBase):
         JIRA_OPTIONS[option](self)
 
     def print_current_status_report(self, out_file=None):
-            # preparing parameters
-            team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
-            print "Specified team name: [%s]." % team_name
-            team = self.config.get(jconst.CONFIG_KEY_TEAM_MEMBERS % team_name)
-            print "Members of team [%s]: %s" % (team_name, team)
-            # report header and body
-            report = 'Current "In Progress" status'
-            for user in team:
-                issues = self.get_current_status_for_user(user)
-                report += 'Issues "In Progress" for user [{}], count [{}].\n'.format(user, len(issues))
-                if len(issues) > 0:
-                    report += self.get_issues_report(issues).get_string()
-                    report += '\n\n'
-            # print report to console
-            print '\n', report
-            # write report to output file, if specified
-            self.write_report_to_file(report, out_file)
+        print "JIRAUtilityExtended.print_current_status_report() is working."
+        # preparing parameters
+        team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
+        print "Specified team name: [%s]." % team_name
+        team = self.config.get(jconst.CONFIG_KEY_TEAM_MEMBERS % team_name)
+        print "Members of team [%s]: %s" % (team_name, team)
+        # report header and body
+        report = 'Current "In Progress" status'
+        for user in team:
+            issues = self.get_current_status_for_user(user)
+            report += 'Issues "In Progress" for user [{}], count [{}].\n'.format(user, len(issues))
+            if len(issues) > 0:
+                report += self.get_issues_report(issues).get_string()
+                report += '\n\n'
+        # print report to console
+        print '\n', report
+        # write report to output file, if specified
+        self.write_report_to_file(report, out_file)
 
     def print_closed_issues_report(self, days_back=0, out_file=None, simple_report=False):
         """
@@ -52,6 +59,7 @@ class JiraUtilityExtended(JiraUtilityBase):
         :param out_file: file to print report to (if needed)
         :param simple_report: if true, only issues counts will be printed (default false)
         """
+        print "JIRAUtilityExtended.print_closed_issues_report() is working."
         # preparing parameters
         team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
         print "Specified team name: [%s]." % team_name
@@ -115,6 +123,51 @@ class JiraUtilityExtended(JiraUtilityBase):
         print "Sprint for adding label: [%s], team [%s], label [%s]." % (sprint, team_name, label)
         # add component to all found issues
         self.add_label_to_issues(self.get_all_sprint_issues(sprint), label)
+
+    @staticmethod
+    def get_not_implements_tasks(issues):
+        print "JIRAUtilityExtended.get_not_implements_tasks() is working. Issues count [{}].".format(len(issues))
+
+        if not issues or len(issues) == 0:
+            raise JiraException("Empty issues list!")
+
+        counter = 0
+        found_issues = []
+        for issue in issues:
+            print "\nProcessing issue [%s]." % issue.key
+            # if issue has links - check them for target
+            if issue.fields.issuelinks:
+                is_link_found = False
+                for link in issue.fields.issuelinks:
+                    # outward links
+                    if hasattr(link, "outwardIssue"):
+                        outward_issue = link.outwardIssue
+                        # debug output, switch it off in case of many output
+                        print "\tOutward [{}], link type [{}], out type [{}], in type [{}]."\
+                            .format(outward_issue.key, link.type, link.type.outward, link.type.inward)
+
+                        # check issue type
+                        if str(link.type) == IMPLEMENTS and str(link.type.outward) == IMPLEMENTS_TYPE:
+                            print "Found link! Link: %s" % link.outwardIssue
+                            is_link_found = True
+                            break  # we've found needed link, don't need to continue cycle
+
+                    # inward links
+                    # if hasattr(link, "inwardIssue"):
+                    #     inwardIssue = link.inwardIssue
+                    #     print("\tInward: " + inwardIssue.key)
+
+                # (AFTER INTERNAL FOR) if outward link "Implements" not found -> add issue to issues list
+                if not is_link_found:
+                    found_issues.append(issue)
+
+            else:  # issue doesn't have links, add to resulting list
+                print "Issue [%s] doesn't have links." % issue.key
+                found_issues.append(issue)
+
+            counter += 1
+            if counter % jconst.CONST_PROCESSING_STEP_COUNTER == 0:
+                print "Processed [%s] issues." % counter
 
 
 # options with corresponding method name

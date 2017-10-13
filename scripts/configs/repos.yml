@@ -10,7 +10,7 @@ repos:
  - csv2assembly
  - csv2hive
  - ingest-script-generator
- - bigdata-training
+# - bigdata-training
 build_repos:
  - csv2abstract
  - csv2hive

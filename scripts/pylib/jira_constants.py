@@ -11,6 +11,7 @@
 CONST_CONFIG_FILE = "configs/jira.yml"
 CONST_NO_VALUE = "[none]"
 CONST_PROGRESS_STEP_COUNTER = 5
+CONST_PROCESSING_STEP_COUNTER = 30
 CONST_COMMON_ENCODING = "utf-8"
 # teams list, should be correlated to teams list in config file
 CONST_TEAMS_LIST = ("ada", "ada_all", "nova", "nova_all", "bmtef", "bmtef_all")
@@ -35,6 +36,7 @@ CONFIG_KEY_TEAM_PROJECT = "teams.%s.project"
 CONFIG_KEY_TEAM_PROJECT_ABBR = "teams.%s.project_abbr"
 CONFIG_KEY_TEAM_LABEL = "teams.%s.label"
 CONFIG_KEY_TEAM_COMPONENT = "teams.%s.component"
+
 # team name - cmd line parameter stored here
 CONFIG_KEY_TEAM_NAME = "team.name"
 # config key -> option to execute

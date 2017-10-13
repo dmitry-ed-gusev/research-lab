@@ -3,6 +3,15 @@ jira:
   address:   https://issues.merck.com
   user:      gusevdm
 
+# Specific issue settings (relate jira usage model)
+issue:
+  # label for unlinked issue (exclude such issues from search)
+  unlinked:  unlinked
+
+# epics list
+epics:
+  mantis: []
+
 # teams lists (all and current)
 teams:
   ada_all:
