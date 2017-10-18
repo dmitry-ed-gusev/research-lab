@@ -13,6 +13,8 @@ import subprocess as sub
 import argparse
 from pylib import configuration as conf
 
+# todo: move common functions to library/utility module
+
 # some useful constants
 SEPARATOR = '==============================================='
 MVN_EXECUTABLE = 'mvn.cmd'
