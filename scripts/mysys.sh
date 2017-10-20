@@ -141,16 +141,14 @@ fi
 if [ "$INSTALL_JENKINS" == "YES" ]; then
     echo "Installing Jenkins server."
     INSTALL_JENKINS=NO
-    # todo: implement this option
-    exit 0
+    source shlib/_install-jenkins.sh
 fi
 
-# -- INSTALL/UPDATE OPTION: install Sonar.
+# -- INSTALL/UPDATE OPTION: install Sonar Qube (code analyzer).
 if [ "$INSTALL_SONAR" == "YES" ]; then
     echo "Installing Sonar server."
     INSTALL_SONAR=NO
-    # todo: implement this option
-    exit 0
+    source shlib/_install-sonar.sh
 fi
 
 # -- INSTALL/UPDATE OPTION: install Apache Hadoop. This option can be combined with
@@ -166,7 +164,7 @@ fi
 if [ "$INSTALL_HIVE" == "YES" ]; then
     echo "Installing Apache Hive. Version: ${HIVE_VERSION}"
     INSTALL_HIVE=NO
-    #source _install-hive.sh
+    source shlib/_install-hive.sh
 fi
 
 # -- INSTALL/UPDATE OPTION: install MySql (client and server). This option is independent

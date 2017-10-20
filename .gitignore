@@ -22,3 +22,6 @@ vk_token*
 *.pyc
 # -- ignore gzip archives
 *.gz
+# -- ignore temporary word files
+~$*.docx
+.DS_Store

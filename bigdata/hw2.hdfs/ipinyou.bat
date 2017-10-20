@@ -14,7 +14,7 @@ rem
 rem =========================================================================================================
 
 echo "Starting IPinYou application"
-java -cp @JAR_NAME@.jar;libs\* @MAIN_CLASS_IPINYOU@ -pauseBefore -skipNulls -hdfsUser %1 -source %2 -outFile webhdfs://localhost/user/myuser/bid_result.txt
+java -cp @JAR_NAME@.jar;libs\* @MAIN_CLASS@ -pauseBefore -skipNulls -hdfsUser %1 -source %2 -outFile webhdfs://localhost/user/myuser/bid_result.txt
 
 rem echo "Reading result file from HDFS"
 rem todo: implement it :)

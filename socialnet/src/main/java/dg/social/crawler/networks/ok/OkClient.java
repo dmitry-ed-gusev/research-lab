@@ -1,7 +1,7 @@
 package dg.social.crawler.networks.ok;
 
 import dg.social.crawler.networks.AbstractClient;
-import gusev.dmitry.jtils.utils.HttpUtilities;
+import gusev.dmitry.jtils.utils.HttpUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,7 +21,7 @@ import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ACCESS_TOKEN_FORM;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.LOGIN_FORM;
-import static gusev.dmitry.jtils.utils.HttpUtilities.HTTP_GET_COOKIES_HEADER;
+import static gusev.dmitry.jtils.utils.HttpUtils.HTTP_GET_COOKIES_HEADER;
 
 /**
  * OK (Odnoklassniki) social network client.
@@ -79,10 +79,10 @@ public class OkClient extends AbstractClient {
 
                 httpEntity = httpResponse.getEntity();                                        // get http entity
                 httpCookies = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER);               // save cookies
-                httpPageContent = HttpUtilities.getPageContent(httpEntity, DEFAULT_ENCODING); // get html page content
+                httpPageContent = HttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING); // get html page content
 
                 if (LOG.isDebugEnabled()) { // just debug output
-                    LOG.debug(HttpUtilities.httpResponseToString(httpResponse, httpPageContent));
+                    LOG.debug(HttpUtils.httpResponseToString(httpResponse, httpPageContent));
                 }
 
                 Document doc = Jsoup.parse(httpPageContent);  // parse returned page into Document object

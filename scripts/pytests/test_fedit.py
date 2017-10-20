@@ -1,4 +1,4 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# todo: implement tests!
+# todo: implement tests for fedit!
