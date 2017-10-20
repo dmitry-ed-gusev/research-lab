@@ -12,7 +12,7 @@
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #  
 #   Created:  Gusev Dmitry, 10.04.2017
-#   Modified: Gusev Dmitry, 24.04.2017
+#   Modified: Gusev Dmitry, 01.08.2017
 # =============================================================================
 
 # todo: check installation of Java before
@@ -30,7 +30,7 @@ wget $HADOOP_BINARY_URL
 tar xvfz $HADOOP_ARCHIVE
 # - move Hadoop to /opt directory
 sudo mv $HADOOP_NAME /opt
-# - add path to ANT executable to PATH variable (system wide).
+# - add path to Hadoop executable to PATH variable (system wide).
 # "" - in this quotes variables will be processed/evaluated (values used)
 # '' - in this quotes variables will be used 'as is' (no values)
 echo "HADOOP_HOME=/opt/$HADOOP_NAME" | sudo tee /etc/profile.d/hadoop.sh
@@ -47,6 +47,8 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 cp shlib/hadoop-preset/* /opt/$HADOOP_NAME/etc/hadoop/
 # - set proper JAVA_HOME variable
 pylib/fedit.py -f /opt/$HADOOP_NAME/etc/hadoop/hadoop-env.sh -t starts -s "export JAVA_HOME" -d "export JAVA_HOME=$JAVA_HOME"
+
+echo "Don't forget to execute command [hdfs namenode -format] before Hadoop usage!"
 
 # ***** DEBUG OUTPUT (wait for any key press) *****
 if [ "$DEBUG_MODE" == "true" ]; then

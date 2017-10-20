@@ -10,11 +10,9 @@
 
     <properties>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
         <!-- java-related settings/properties -->
         <java.sources.encoding>UTF-8</java.sources.encoding>
         <java.version>1.8</java.version>
-
         <!-- maven plugins settings/versions -->
         <maven.plugin.compiler>2.3.2</maven.plugin.compiler>
         <maven.plugin.jar>2.4</maven.plugin.jar>
@@ -22,6 +20,7 @@
         <maven.plugin.dependency>2.1</maven.plugin.dependency>
         <maven.plugin.antrun>1.8</maven.plugin.antrun>
         <maven.plugin.shade>2.4.3</maven.plugin.shade>
+        <maven.plugin.exec>1.6.0</maven.plugin.exec>
         <!-- Apache libraries (Lang3/Logging/IO/Log4J) -->
         <commons.lang3.version>3.4</commons.lang3.version>
         <commons.logging.version>1.1.3</commons.logging.version>
@@ -52,7 +51,8 @@
         <dgusev.utilities.version>1.0</dgusev.utilities.version>
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
         <skipCoverageReport>false</skipCoverageReport>
-
+        <!-- don't skip python unit tests (skip: -DskipPythonTests=true) -->
+        <!--<skipPythonTests>true</skipPythonTests>-->
         <!-- some common (project) settings/defaults -->
         <dependencies.output.dir>libs</dependencies.output.dir>
         <rawdata.dir>rawdata</rawdata.dir>
@@ -73,8 +73,8 @@
     </repositories>
 
     <build>
-
         <plugins>
+
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.plugin.compiler}</version>
@@ -169,6 +169,7 @@
             </properties>
             <!-- All modules to build -->
             <modules>
+                <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
                 <module>chat-app</module>
@@ -189,6 +190,7 @@
             </properties>
             <!-- All modules to build -->
             <modules>
+                <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
                 <module>chat-app</module>
@@ -209,10 +211,11 @@
             </properties>
             <!-- Some of modules to build -->
             <modules>
+                <module>scripts</module>
                 <module>utilities</module>
-                <module>bigdata</module>
+                <!--<module>bigdata</module>-->
                 <!--<module>socialnet</module>-->
-                <module>j2ee</module>
+                <!--<module>j2ee</module>-->
             </modules>
         </profile>
 
@@ -226,6 +229,7 @@
             </properties>
             <!-- modules to build -->
             <modules>
+                <module>scripts</module>
                 <module>utilities</module>
                 <module>bigdata</module>
                 <module>j2ee</module>
