@@ -10,7 +10,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-import static gusevdm.nlp.NLPUtils.*;
+import static gusevdm.nlp.NLPUtils.PUNCTUATION_REGEX;
+import static gusevdm.nlp.NLPUtils.NUMBER_ADDITION_REGEX;
+import static gusevdm.nlp.NLPUtils.GARBAGE;
+
 
 /***/
 
