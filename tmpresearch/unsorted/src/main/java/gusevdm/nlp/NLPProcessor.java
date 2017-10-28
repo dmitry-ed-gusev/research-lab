@@ -9,11 +9,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static gusevdm.nlp.NLPUtils.PUNCTUATION_REGEX;
-import static gusevdm.nlp.NLPUtils.NUMBER_ADDITION_REGEX;
-import static gusevdm.nlp.NLPUtils.GARBAGE;
-
+import static gusevdm.nlp.NLPUtils.GARBAGE_WORDS;
+import static gusevdm.nlp.NLPUtils.not;
 
 /***/
 
@@ -25,35 +25,32 @@ public class NLPProcessor {
     public static void main(String[] args) {
         LOG.info("NLPProcessor is starting...");
 
-        //System.out.println(StringUtils.removeAll("[3.33-5,,5\\5_5]", PUNCTUATION_REGEX));
-        //System.exit(777);
-
         // read input file line-by-line
-        String inputFile = "c:/temp/payments/nazn.txt";
+        String inputFile = "c:/temp/nazn.txt";
         String encoding = "windows-1251";
 
         // todo: !!!
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), encoding))) {
 
-            String line;
-            while ((line = reader.readLine()) != null) {
+            String rawLine;
+            while ((rawLine = reader.readLine()) != null) {
 
-                // 1. get input line and split it into array (by any space-like separator)
-                // 2. remove (filter) array elements "-"/"IN"/"OUT"
-                // 3. remove (filter) numbers/dates in most of variations
-                // 4. remove words with length = 1
-                // 5. remove words from GARBAGE list (prepositions, etc.)
-                String[] split = Arrays.stream(StringUtils.split(line))
-                        .filter(s -> !s.equalsIgnoreCase("-"))
-                        .filter(s -> !s.equalsIgnoreCase("in") && !s.equalsIgnoreCase("out"))
-                        .filter(s -> !s.contains("НДС"))
-                        .filter(s -> !StringUtils.isNumeric(StringUtils.removeAll(
-                                StringUtils.trimToEmpty(s), PUNCTUATION_REGEX + "|" + NUMBER_ADDITION_REGEX)))
-                        .filter(s -> s.length() > 1) // remove short words
-                        .filter(s -> !NLPUtils.in(s, GARBAGE))  // remove unnecessary words
-                        .toArray(String[]::new);
+                // 1. split input line into array (by any space-like separator) and create a stream
+                // 2. remove all special characters
+                // 3. filter out (remove) any empty and null strings
+                // 4. filter out (remove) any numbers/dates
+                // 5. filter out (remove) words with length = 1
+                // 6. filter out (remove) words from GARBAGE list, ignoring case
+                List<String> dataLine = Arrays.stream(StringUtils.split(rawLine))
+                        .map(NLPUtils::cleanSpecialChars)    // special chars from words
+                        .filter(not(StringUtils::isBlank))   // empty words
+                        .filter(not(StringUtils::isNumeric)) // numbers
+                        .filter(word -> word.length() > 1)   // short words
+                        .filter(word -> !NLPUtils.in(word, true, GARBAGE_WORDS))  // remove garbage
+                        .collect(Collectors.toList());       // resulting list
 
-                System.out.println("-> " + Arrays.toString(split));
+                // print resulting data line (cured)
+                System.out.println("-> " + dataLine);
             }
         } catch (IOException e) {
             LOG.error(e);

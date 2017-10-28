@@ -1,20 +1,22 @@
 package gusevdm.nlp;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 import java.util.function.Predicate;
 
 public final class NLPUtils {
 
-    // some not useful words
-    public static String[] GARBAGE = {
-            "по", "за", "За", "от", "на", "не", "т.ч.", "г.", "НДС", "Сумма",
-            "Без", "без", "облагается", "б/н", "года", "Оплата", "оплата", "сч."
+    // some not useful words (garbage)
+    public static final String[] GARBAGE_WORDS = {
+            "по", "за", "из", "от", "на", "не", "тч", "г", "ндс", "Сумма", "без", "облагается",
+            "бн", "года", "оплата", "сч", "out", "in", "руб", "счф", "дог",
+            "январь", "февраль", "март", "апрель", "май", "июнь",
+            "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"
     };
 
-    // punctuation symbols. for [] braces we have to add more groups to regex.
-    public static String PUNCTUATION_REGEX = "[!?\"'@#$%&^*+-.,\\\\/;:<=>{|}()_]|[\\[]|[\\]]";
-    //
-    public static String NUMBER_ADDITION_REGEX = "(г)|(руб)|(В)";
+    // special characters regex. for [] braces we have to add more groups to regex.
+    public static final String SPECIAL_CHARS_REGEX = "[!?\"'`~@#$%&^*+-.,\\\\/;:<=>{|}()_№]|[\\[]|[\\]]";
 
     private NLPUtils() {} // non-instanceability
 
@@ -23,8 +25,11 @@ public final class NLPUtils {
         return t -> !p.test(t);
     }
 
-    /***/
-    public static boolean in(String str, String[] list) {
+    /**
+     * Function-predicate IN - is given string in a list.
+     */
+    public static boolean in(String str, boolean ignoreCase, String[] list) {
+
         if (list == null || list.length <= 0) { // fast check
             return false;
         }
@@ -35,12 +40,32 @@ public final class NLPUtils {
                 if (str == null) {
                     return true;
                 }
-            } else if (s.equals(str)) {
+            } else if ((ignoreCase && s.equalsIgnoreCase(str)) || s.equals(str)) {
                 return true;
             }
         } // end of FOR
 
         return false; // not found, if come here
+    }
+
+    /**
+     * Remove special characters {@link #SPECIAL_CHARS_REGEX} and spaces/line endings from provided string.
+     * If provided string is only whitespaces, empty string or null - return null.
+     */
+    public static String cleanSpecialChars(String string) {
+
+        if(StringUtils.isBlank(string)) { // fast check
+            return null;
+        }
+        // remove special chars by regex
+        String result = StringUtils.removeAll(StringUtils.trimToEmpty(string), SPECIAL_CHARS_REGEX);
+
+        if (StringUtils.isBlank(result)) { // check string after cleaning
+            return null;
+        } else {
+            return result;
+        }
+
     }
 
     /***/
