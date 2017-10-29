@@ -2,6 +2,8 @@ package gusevdm.nlp;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -10,7 +12,7 @@ public final class NLPUtils {
     // some not useful words (garbage)
     public static final String[] GARBAGE_WORDS = {
             "по", "за", "из", "от", "на", "не", "тч", "г", "ндс", "Сумма", "без", "облагается",
-            "бн", "года", "оплата", "сч", "out", "in", "руб", "счф", "дог",
+            "бн", "года", "оплата", "сч", "out", "in", "руб", "счф", "дог", "сумма",
             "январь", "февраль", "март", "апрель", "май", "июнь",
             "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"
     };
@@ -21,8 +23,8 @@ public final class NLPUtils {
     private NLPUtils() {} // non-instanceability
 
     /** Define predicate negation. */
-    public static<T> Predicate<T> not(Predicate<T> p) {
-        return t -> !p.test(t);
+    public static<T> Predicate<T> not(Predicate<T> predicate) {
+        return t -> !predicate.test(t);
     }
 
     /**
@@ -68,9 +70,48 @@ public final class NLPUtils {
 
     }
 
-    /***/
-    public static List<String[]> ngrams() {
-        return null;
+    /**
+     * Remove decimal digits 0-9 from provided string.
+     * If provided string is only whitespaces, empty string or null - return null.
+     */
+    public static String cleanNumbers(String string) {
+
+        if (StringUtils.isBlank(string)) { // fast check
+            return null;
+        }
+
+        // remove digits
+        String result = StringUtils.removeAll(StringUtils.trimToEmpty(string), "[0-9]");
+
+        if (StringUtils.isBlank(result)) { // check string after cleaning
+            return null;
+        } else {
+            return result;
+        }
+
+    }
+
+    /**
+     * If input list is null or empty - return empty list.
+     * If n < 2 or n >= input list size - return the whole input list as ngram.
+     */
+    public static List<String[]> ngrams(List<String> sourceList, int n) {
+
+        if (sourceList == null || sourceList.isEmpty()) { // fast check #1
+            return Collections.emptyList();
+        }
+
+        if (n < 2 || n >= sourceList.size()) { // fast check #2
+            List<String[]> result = new ArrayList<>();
+            result.add(sourceList.toArray(new String[sourceList.size()]));
+            return result;
+        }
+
+        List<String[]> ngrams = new ArrayList<>(); // init resulting list
+        for (int i = 0; i < sourceList.size() - n + 1; i++) { // iterate through source list and create ngrams
+            ngrams.add(sourceList.subList(i, i + n).toArray(new String[n]));
+        }
+        return ngrams;
     }
 
 }

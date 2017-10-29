@@ -3,7 +3,9 @@ package gusevdm.nlp;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,7 +35,9 @@ public class NLPUtilsTest {
     @Test
     // todo: implement tests!
     public void testNGrams() {
+        List<String> sourceList = Arrays.asList("word1", "word2", "word3", "word4");
 
+        NLPUtils.ngrams(sourceList, 3).forEach(ngram -> System.out.println(Arrays.toString(ngram)));
     }
 
 }
