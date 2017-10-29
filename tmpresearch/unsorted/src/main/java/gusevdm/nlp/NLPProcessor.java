@@ -15,19 +15,15 @@ import static gusevdm.nlp.NLPUtils.not;
 
 public class NLPProcessor {
 
-    private static final Log LOG = LogFactory.getLog(NLPProcessor.class);
+    private static final Log    LOG              = LogFactory.getLog(NLPProcessor.class);
     private static final String DEFAULT_ENCODING = "windows-1251";
-    private static final int PROGRESS_COUNTER = 1_000_000;
+    private static final int    PROGRESS_COUNTER = 1_000_000;
 
     /***/
-    public static void main(String[] args) {
-        LOG.info("NLPProcessor is starting...");
+    public static void cleanInputData(String inputFile, String outputFile) {
+        LOG.debug("NLPProcessor.cleanInputData() is working.");
+        LOG.debug(String.format("Input file [%s], output file [%s].", inputFile, outputFile));
 
-        // read input file line-by-line
-        String inputFile  = "c:/temp/nazn.txt";
-        String outputFile = "c:/temp/output.txt";
-
-        // todo: !!!
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(
                         new FileInputStream(inputFile), DEFAULT_ENCODING));
@@ -36,7 +32,6 @@ public class NLPProcessor {
 
             String rawLine;
             String dataLine;
-            //List<String> allData = new ArrayList<>();
             int counter = 0;
             while ((rawLine = reader.readLine()) != null) {
                 // 1. split input line into array (by any space-like separator) and create a stream
@@ -56,11 +51,9 @@ public class NLPProcessor {
                 //System.out.println("-> " + dataLine);
                 // add data line to all data list
                 //allData.addAll(dataLine);
-
                 // write data line to output file
                 writer.write(dataLine);
                 writer.newLine();
-
                 counter++;
 
                 if (counter % PROGRESS_COUNTER == 0) {
@@ -74,6 +67,19 @@ public class NLPProcessor {
         } catch (IOException e) {
             LOG.error(e);
         }
+
+    }
+
+    /***/
+    public static void main(String[] args) {
+        LOG.info("NLPProcessor is starting...");
+
+        // input and output files
+        String inputFile  = "c:/temp/nazn.txt";
+        String outputFile = "c:/temp/output.txt";
+
+        // clean input data (rewrite them in output file)
+        NLPProcessor.cleanInputData(inputFile, outputFile);
 
     }
 
