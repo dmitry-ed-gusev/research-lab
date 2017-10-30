@@ -37,7 +37,7 @@ public class NLPUtilsTest {
     public void testNGrams() {
         List<String> sourceList = Arrays.asList("word1", "word2", "word3", "word4");
 
-        NLPUtils.ngrams(sourceList, 3).forEach(ngram -> System.out.println(Arrays.toString(ngram)));
+       NLPUtils.ngrams(sourceList, 3).forEach(ngram -> System.out.println(ngram));
     }
 
 }

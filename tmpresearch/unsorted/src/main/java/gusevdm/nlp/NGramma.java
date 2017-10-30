@@ -1,5 +1,10 @@
 package gusevdm.nlp;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Arrays;
+
 public class NGramma {
 
     private final String[] content;
@@ -11,9 +16,33 @@ public class NGramma {
             throw new IllegalStateException("Can't create empty NGramm!");
         }
 
-        this.content = new String[content.length];
-        System.arraycopy(content, 0, this.content, 0, content.length);
+        // init internal state by copying source array
+        this.content = Arrays.copyOf(content, content.length);
     }
 
+    /***/
+    public String[] getContent() {
+        return Arrays.copyOf(this.content, this.content.length);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NGramma nGramma = (NGramma) o;
+        return Arrays.equals(this.content, nGramma.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(this.content);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("content", content)
+                .toString();
+    }
 
 }

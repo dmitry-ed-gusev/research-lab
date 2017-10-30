@@ -12,7 +12,8 @@ public final class NLPUtils {
     // some not useful words (garbage)
     public static final String[] GARBAGE_WORDS = {
             "по", "за", "из", "от", "на", "не", "тч", "г", "ндс", "Сумма", "без", "облагается",
-            "бн", "года", "оплата", "сч", "out", "in", "руб", "счф", "дог", "сумма",
+            "бн", "года", "оплата", "сч", "out", "in", "руб", "счф", "дог", "сумма", "мо", "ед",
+            "тн", "вп",
             "январь", "февраль", "март", "апрель", "май", "июнь",
             "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"
     };
@@ -95,21 +96,21 @@ public final class NLPUtils {
      * If input list is null or empty - return empty list.
      * If n < 2 or n >= input list size - return the whole input list as ngram.
      */
-    public static List<String[]> ngrams(List<String> sourceList, int n) {
+    public static List<NGramma> ngrams(List<String> sourceList, int n) {
 
         if (sourceList == null || sourceList.isEmpty()) { // fast check #1
             return Collections.emptyList();
         }
 
         if (n < 2 || n >= sourceList.size()) { // fast check #2
-            List<String[]> result = new ArrayList<>();
-            result.add(sourceList.toArray(new String[sourceList.size()]));
+            List<NGramma> result = new ArrayList<>();
+            result.add(new NGramma(sourceList.toArray(new String[sourceList.size()])));
             return result;
         }
 
-        List<String[]> ngrams = new ArrayList<>(); // init resulting list
+        List<NGramma> ngrams = new ArrayList<>(); // init resulting list
         for (int i = 0; i < sourceList.size() - n + 1; i++) { // iterate through source list and create ngrams
-            ngrams.add(sourceList.subList(i, i + n).toArray(new String[n]));
+            ngrams.add(new NGramma(sourceList.subList(i, i + n).toArray(new String[n])));
         }
         return ngrams;
     }
