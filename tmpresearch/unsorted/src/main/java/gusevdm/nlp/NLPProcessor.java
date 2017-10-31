@@ -101,7 +101,7 @@ public class NLPProcessor {
     }
 
     /***/
-    public static void buildNgramsMap(String curedDataFile) {
+    public static void buildNgramsMap(String curedDataFile, String ngramsFile) {
         LOG.debug(String.format("NLPProcessor.buildNgramsMap() is working. Cured data file [%s].", curedDataFile));
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -138,15 +138,30 @@ public class NLPProcessor {
             // out result
             //System.out.println(ngramsMap.toString());
             int outCounter = 0;
-            int limit = 1000;
-            for (Map.Entry<NGramma, Integer> entry: ngramsMap.entrySet()) {
-                System.out.println(String.format("%s -> %s", entry.getKey(), entry.getValue()));
-                outCounter++;
+            int limit = 10000;
+            String outLine;
 
-                if (outCounter >= limit) {
-                    break;
-                }
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(ngramsFile), DEFAULT_ENCODING))) {
 
+                for (Map.Entry<NGramma, Integer> entry : ngramsMap.entrySet()) {
+                    // generate output string
+                    outLine = String.format("%s -> %s", Arrays.toString(entry.getKey().getContent()), entry.getValue());
+                    // out to console
+                    System.out.println(outLine);
+                    // out to file
+                    writer.write(outLine);
+                    writer.newLine();
+
+                    outCounter++;
+
+                    if (outCounter >= limit) {
+                        break;
+                    }
+
+                } // end of FOR
+            } catch (IOException e) {
+                LOG.error(e);
             }
 
         } catch (IOException e) {
@@ -160,20 +175,22 @@ public class NLPProcessor {
         LOG.info("NLPProcessor is starting...");
 
         // input and output files
-        String inputFile  = "c:/temp/nazn.txt";
-        String outputFile = "c:/temp/output.txt";
+        String inputFile     = "c:/temp/payments/nazn.txt";
+        String curedDataFile = "c:/temp/payments/curedData.txt";
+        String ngramsFile    = "c:/temp/payments/ngrams.txt";
 
         try {
             // delete output file if exists
-            NLPProcessor.deleteFileIfExist(outputFile);
-
+            NLPProcessor.deleteFileIfExist(curedDataFile);
             // clean input data (rewrite them in output file)
-            NLPProcessor.cleanInputData(inputFile, outputFile);
+            NLPProcessor.cleanInputData(inputFile, curedDataFile);
 
+            // delete ingrams file
+            NLPProcessor.deleteFileIfExist(ngramsFile);
             // build ngrams on cured data
-            NLPProcessor.buildNgramsMap(outputFile);
+            NLPProcessor.buildNgramsMap(curedDataFile, ngramsFile);
 
-        } catch (/*IOException*/Throwable e) {
+        } catch (IOException e) {
             LOG.error(e);
         }
 
