@@ -20,12 +20,14 @@ repos:
  - ingest-script-generator
  - dit-core
  - data_integrity
+ - jiragraphs
 # - bigdata-training
 build_repos:
  - csv2abstract
  - csv2hive
  - mantis-bds
  - research
+ - dit-core
 
 # - mantis11 # -> build takes too much time
 # - mantis-bds # -> build includes python scripts
