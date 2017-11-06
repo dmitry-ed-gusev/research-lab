@@ -18,12 +18,12 @@ Utility options:
                      Apache Ant and Apache Maven (versions see _env.sh)
 -install-mysql      Install MySql DBMS (server + client), the latest versions.
 -install-jenkins    Install Jenkins server, java-based CI tool. It's recommended to install Java first.
--install-sonar      !not implemented! Install Sonar server, java-based Code Quality and Analysis tool.
+-install-sonar      Install Sonar Qube server, java-based Code Quality and Analysis tool.
                      It's recommended to install Java first.
 -install-hadoop     Install Hadoop, java-based BigData tool. Install Java first!
 -install-hive       Install Hive, java-based BigData tool. Install Java and Hadoop first!
 
 Utility flags:
 -no-reboot    Don't reboot system after update or software installing.
--debug        Set on debug mode (useful, if debug needed). Script will do pauses during processing
-              (will wait for key press).
+-no-debug     Set debug mode off (if you don't need debug). Script wont do pauses during processing
+              (wont wait for any key press).

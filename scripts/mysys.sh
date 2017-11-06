@@ -8,12 +8,15 @@
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #
 #   Created:  Gusev Dmitry, 26.11.2016
-#   Modified: Gusev Dmitry, 24.04.2017
+#   Modified: Gusev Dmitry, 06.11.2017
 # =============================================================================
 
 # todo: implement combining options/exit after each option
 # todo: move reboot to this script (from child scripts)
 # todo: add idempotency property to scripts (nothing happened if already installed)
+#
+# todo: cmd for copy scripts catalog (recursively) to remote pc by scp:
+# todo: scp -P 2022 -r scripts myuser@localhost:/home/myuser/
 
 # -- Call other script for set environment for current process
 source shlib/_env.sh
@@ -38,7 +41,7 @@ do
 	-no-reboot) REBOOT_AFTER_UPDATE=NO
 	          ;;
 	# - set on debug mode
-	-debug) DEBUG_MODE=true
+	-no-debug) DEBUG_MODE=false
 	          ;;
 	# - print system statistics
 	-stat) SHOW_STAT=YES
@@ -173,4 +176,14 @@ if [ "$INSTALL_MYSQL" == "YES" ]; then
     echo "Installing MySql DBMS."
     INSTALL_MYSQL=NO
     source shlib/_install-mysql.sh
+fi
+
+# ***** DEBUG OUTPUT (wait for any key press) *****
+if [ "${DEBUG_MODE}" == "true" ]; then
+	read -rsp $'Press any key to continue...\n' -n1 key
+fi
+
+# -- Reboot system after updating
+if [ "${REBOOT_AFTER_UPDATE}" == "YES" ]; then
+    sudo reboot now
 fi
