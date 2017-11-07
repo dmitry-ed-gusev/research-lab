@@ -15,7 +15,6 @@
 
     <properties>
         <assemblyDirectory>dgutils</assemblyDirectory>
-        <common.libraries.prefix>libs</common.libraries.prefix>
         <mainClass>gusev.dmitry.jtils.Main</mainClass>
         <jar.name>${project.artifactId}-${env}</jar.name>
     </properties>

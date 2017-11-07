@@ -55,6 +55,7 @@
         <!--<skipPythonTests>true</skipPythonTests>-->
         <!-- some common (project) settings/defaults -->
         <dependencies.output.dir>libs</dependencies.output.dir>
+        <common.libraries.prefix>libs</common.libraries.prefix>
         <rawdata.dir>rawdata</rawdata.dir>
     </properties>
 
@@ -231,8 +232,9 @@
             <!-- modules to build -->
             <modules>
                 <module>scripts</module>
+                <module>tmpresearch</module>
                 <module>utilities</module>
-                <module>bigdata</module>
+                <!--<module>bigdata</module>-->
                 <module>j2ee</module>
             </modules>
         </profile>

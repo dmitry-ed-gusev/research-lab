@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 public final class NLPUtils {
 
     // some not useful words (garbage)
-    public static final String[] GARBAGE_WORDS = {
+    public static final String[] DEFAULT_GARBAGE_WORDS = {
             "по", "за", "из", "от", "на", "не", "тч", "г", "ндс", "Сумма", "без", "облагается",
             "бн", "года", "оплата", "сч", "out", "in", "руб", "счф", "дог", "сумма", "мо", "ед",
             "тн", "вп", "том", "числе", "счет", "счету", "для", "сф", "втч",

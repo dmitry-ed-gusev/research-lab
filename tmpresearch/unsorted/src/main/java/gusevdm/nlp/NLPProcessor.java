@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static gusev.dmitry.jtils.utils.MapUtils.SortType.DESC;
-import static gusevdm.nlp.NLPUtils.GARBAGE_WORDS;
+import static gusevdm.nlp.NLPUtils.DEFAULT_GARBAGE_WORDS;
 import static gusevdm.nlp.NLPUtils.not;
 
 // todo: 1. add cmd line options (on/off steps)
@@ -26,8 +26,6 @@ import static gusevdm.nlp.NLPUtils.not;
 public class NLPProcessor {
 
     private static final Log    LOG              = LogFactory.getLog(NLPProcessor.class);
-    private static final String DEFAULT_ENCODING = "windows-1251";
-    private static final int    PROGRESS_COUNTER = 1_000_000;
 
     /***/
     // todo: move it to common utilities
@@ -47,15 +45,15 @@ public class NLPProcessor {
     }
 
     /***/
-    public static void cleanInputData(String inputFile, String outputFile) {
+    public static void cleanInputData(String inputFile, String outputFile, String inputFileEncoding, int progressCounter) {
         LOG.debug("NLPProcessor.cleanInputData() is working.");
         LOG.debug(String.format("Input file [%s], output file [%s].", inputFile, outputFile));
 
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(inputFile), DEFAULT_ENCODING));
+                        new FileInputStream(inputFile), inputFileEncoding));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(outputFile), DEFAULT_ENCODING))) {
+                        new FileOutputStream(outputFile), inputFileEncoding))) {
 
             String rawLine;
             String dataLine;
@@ -74,7 +72,7 @@ public class NLPProcessor {
                         .filter(not(StringUtils::isBlank))   // empty words
                         .map(String::toLowerCase)            // all words to lower case
                         .filter(word -> word.length() > 1)   // short words
-                        .filter(word -> !NLPUtils.in(word, true, GARBAGE_WORDS))  // remove garbage
+                        .filter(word -> !NLPUtils.in(word, true, DEFAULT_GARBAGE_WORDS))  // remove garbage
                         .sorted()
                         .collect(Collectors.joining(" "));       // resulting string
                 // print resulting data line (cured)
@@ -86,7 +84,7 @@ public class NLPProcessor {
                 writer.newLine();
                 counter++;
 
-                if (counter % PROGRESS_COUNTER == 0) {
+                if (counter % progressCounter == 0) {
                     LOG.info(String.format("Processed records [%s].", counter));
                 }
 
@@ -101,11 +99,11 @@ public class NLPProcessor {
     }
 
     /***/
-    public static void buildNgramsMap(String curedDataFile, String ngramsFile) {
+    public static void buildNgramsMap(String curedDataFile, String ngramsFile, String encoding, int progressCounter) {
         LOG.debug(String.format("NLPProcessor.buildNgramsMap() is working. Cured data file [%s].", curedDataFile));
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(curedDataFile), DEFAULT_ENCODING))) {
+                new FileInputStream(curedDataFile), encoding))) {
 
             String rawLine;
             int counter = 0;
@@ -126,7 +124,7 @@ public class NLPProcessor {
                 }
 
                 counter++;
-                if (counter % (PROGRESS_COUNTER / 10) == 0) {
+                if (counter % (progressCounter / 10) == 0) {
                     LOG.info(String.format("Processed records [%s].", counter));
                 }
 
@@ -142,7 +140,7 @@ public class NLPProcessor {
             String outLine;
 
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(ngramsFile), DEFAULT_ENCODING))) {
+                    new FileOutputStream(ngramsFile), encoding))) {
 
                 for (Map.Entry<NGramma, Integer> entry : ngramsMap.entrySet()) {
                     // generate output string
@@ -180,15 +178,16 @@ public class NLPProcessor {
         String ngramsFile    = "c:/temp/payments/ngrams.txt";
 
         try {
+            // todo: add config loading and getting needed values
             // delete output file if exists
             NLPProcessor.deleteFileIfExist(curedDataFile);
             // clean input data (rewrite them in output file)
-            NLPProcessor.cleanInputData(inputFile, curedDataFile);
+            NLPProcessor.cleanInputData(inputFile, curedDataFile, "", 1);
 
             // delete ingrams file
             NLPProcessor.deleteFileIfExist(ngramsFile);
             // build ngrams on cured data
-            NLPProcessor.buildNgramsMap(curedDataFile, ngramsFile);
+            NLPProcessor.buildNgramsMap(curedDataFile, ngramsFile, "", 1);
 
         } catch (IOException e) {
             LOG.error(e);

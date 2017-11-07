@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
-	<parent>
+
+    <parent>
         <groupId>dgusev</groupId>
         <artifactId>tmpresearch</artifactId>
         <version>1.0</version>
@@ -21,19 +21,19 @@
         </dependency>
 
         <!-- dependency for Oracle DBMS JDBC driver -->
-	<!--
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <version>11.2.0.2.0</version>
-        </dependency>
-	-->
+        <!--
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>11.2.0.2.0</version>
+            </dependency>
+        -->
 
-    <dependency>
-      <groupId>oracle</groupId>
-      <artifactId>ojdbc6</artifactId>
-      <version>11.2.0.3</version>
-    </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0.3</version>
+        </dependency>
 
 
         <!-- dependency for hsql db driver -->
@@ -98,5 +98,70 @@
         </dependency>
 
     </dependencies>
+
+    <profiles>
+
+        <!-- temporary profile for building payments analyzer application -->
+        <profile>
+            <id>build-payments</id>
+            <build>
+                <finalName>panalyzer</finalName>
+                <plugins>
+                    <!-- creating JAR -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <addClasspath>true</addClasspath>
+                                    <mainClass>gusevdm.nlp.NLPProcessor</mainClass>
+                                    <classpathPrefix>${common.libraries.prefix}/</classpathPrefix>
+                                </manifest>
+                            </archive>
+                            <outputDirectory>${project.build.directory}/panalyzer</outputDirectory>
+                        </configuration>
+                        <version>${maven.plugin.jar}</version>
+                    </plugin>
+                    <!-- copying dependencies -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>panalyzer-dep-copy</id>
+                                <phase>package</phase>
+                                <goals><goal>copy-dependencies</goal></goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/panalyzer/${common.libraries.prefix}</outputDirectory>
+                            <artifactItems/>
+                        </configuration>
+                    </plugin>
+                    <!-- copying other files -->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-files</id>
+                                <phase>package</phase>
+                                <goals><goal>run</goal></goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <tasks>
+                                <copy todir="${project.build.directory}/panalyzer" flatten="false" overwrite="true" verbose="true" failonerror="true">
+                                    <fileset dir="${basedir}" includes="panalyzer.bat" />
+                                    <fileset dir="${basedir}" includes="panalyzer.properties" />
+                                    <fileset dir="${basedir}" includes="garbage.txt" />
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
