@@ -43,12 +43,12 @@ public class CustomerService23 {
   @AroundInvoke
   private Object logMethod(InvocationContext ic) throws Exception {
     logger.entering(ic.getTarget().toString(), ic.getMethod().getName());
-    logger.severe(">>>" + ic.getTarget().toString() + " - " + ic.getMethod().getName());
+    logger.severe(">>> " + ic.getTarget().toString() + " - " + ic.getMethod().getName());
     try {
       return ic.proceed();
     } finally {
       logger.exiting(ic.getTarget().toString(), ic.getMethod().getName());
-      logger.severe("<<<" + ic.getTarget().toString() + " - " + ic.getMethod().getName());
+      logger.severe("<<< " + ic.getTarget().toString() + " - " + ic.getMethod().getName());
     }
   }
 }

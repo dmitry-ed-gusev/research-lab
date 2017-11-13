@@ -8,40 +8,41 @@ import javax.transaction.Transactional;
 
 /**
  * @author Antonio Goncalves
- *         APress Book - Beginning Java EE 7 with Glassfish 4
- *         http://www.apress.com/
- *         http://www.antoniogoncalves.org
- *         --
+ * APress Book - Beginning Java EE 7 with Glassfish 4
+ * http://www.apress.com/
+ * http://www.antoniogoncalves.org
+ * --
  */
 @Transactional
 @Interceptors(ProfileInterceptor27.class)
 public class CustomerService27 {
 
-  // ======================================
-  // =             Attributes             =
-  // ======================================
+    // ======================================
+    // =             Attributes             =
+    // ======================================
 
-  @Inject
-  private EntityManager em;
+    @Inject
+    private EntityManager em;
 
-  // ======================================
-  // =          Lifecycle methods         =
-  // ======================================
+    // ======================================
+    // =          Lifecycle methods         =
+    // ======================================
 
-  @PostConstruct
-  public void init() {
-    // ...
-  }
+    @PostConstruct
+    public void init() {
+        // ...
+        System.out.println("CustomerService27 -> init()");
+    }
 
-  // ======================================
-  // =           Public Methods           =
-  // ======================================
+    // ======================================
+    // =           Public Methods           =
+    // ======================================
 
-  public void createCustomer(Customer27 customer) {
-    em.persist(customer);
-  }
+    public void createCustomer(Customer27 customer) {
+        em.persist(customer);
+    }
 
-  public Customer27 findCustomerById(Long id) {
-    return em.find(Customer27.class, id);
-  }
+    public Customer27 findCustomerById(Long id) {
+        return em.find(Customer27.class, id);
+    }
 }

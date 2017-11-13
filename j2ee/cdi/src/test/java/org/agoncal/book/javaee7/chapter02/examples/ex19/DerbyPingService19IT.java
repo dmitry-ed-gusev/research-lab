@@ -56,7 +56,7 @@ public class DerbyPingService19IT {
 
   @Test
   public void shouldPingDatabaseWithDispose() throws Exception {
-    DerbyPingService19 pingService = container.instance().select(DerbyPingService19.class).get();
+    DerbyPingService19 pingService = container.select(DerbyPingService19.class).get();
     pingService.ping();
   }
 }

@@ -9,49 +9,50 @@ import java.util.logging.Logger;
 
 /**
  * @author Antonio Goncalves
- *         APress Book - Beginning Java EE 6 with Glassfish
- *         http://www.apress.com/
- *         http://www.antoniogoncalves.org
- *         --
+ * APress Book - Beginning Java EE 6 with Glassfish
+ * http://www.apress.com/
+ * http://www.antoniogoncalves.org
+ * --
  */
 public class ProfileInterceptor27 {
 
-  // ======================================
-  // =             Attributes             =
-  // ======================================
+    // ======================================
+    // =             Attributes             =
+    // ======================================
 
-  @Inject
-  private Logger logger;
+    @Inject
+    private Logger logger;
 
-  // ======================================
-  // =          Lifecycle methods         =
-  // ======================================
+    // ======================================
+    // =          Lifecycle methods         =
+    // ======================================
 
-  @PostConstruct
-  public void logMethod(InvocationContext ic) throws Exception {
-    logger.fine(ic.getTarget().toString());
-    logger.severe(">>>" + ic.getTarget().toString());
-    try {
-      ic.proceed();
-    } finally {
-      logger.severe("<<<" + ic.getTarget().toString());
-      logger.fine(ic.getTarget().toString());
+    @PostConstruct
+    public void logMethod(InvocationContext ic) throws Exception {
+        System.out.println("ProfileInterceptor27 -> logMethod()");
+        logger.fine(ic.getTarget().toString());
+        logger.severe(">>>" + ic.getTarget().toString());
+        try {
+            ic.proceed();
+        } finally {
+            logger.severe("<<<" + ic.getTarget().toString());
+            logger.fine(ic.getTarget().toString());
+        }
     }
-  }
 
-  // ======================================
-  // =           Public Methods           =
-  // ======================================
+    // ======================================
+    // =           Public Methods           =
+    // ======================================
 
-  @AroundInvoke
-  public Object profile(InvocationContext ic) throws Exception {
-    long initTime = System.currentTimeMillis();
-    try {
-      return ic.proceed();
-    } finally {
-      long diffTime = System.currentTimeMillis() - initTime;
-      logger.severe("###" + ic.getMethod() + " took " + diffTime + " millis");
-      logger.fine(ic.getMethod() + " took " + diffTime + " millis");
+    @AroundInvoke
+    public Object profile(InvocationContext ic) throws Exception {
+        long initTime = System.currentTimeMillis();
+        try {
+            return ic.proceed();
+        } finally {
+            long diffTime = System.currentTimeMillis() - initTime;
+            logger.severe("###" + ic.getMethod() + " took " + diffTime + " millis");
+            logger.fine(ic.getMethod() + " took " + diffTime + " millis");
+        }
     }
-  }
 }
