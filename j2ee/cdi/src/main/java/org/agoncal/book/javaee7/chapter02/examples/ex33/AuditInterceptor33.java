@@ -23,7 +23,7 @@ public class AuditInterceptor33 {
   // =             Attributes             =
   // ======================================
 
-  //@Inject
+  @Inject
   private Logger logger;
 
   // ======================================

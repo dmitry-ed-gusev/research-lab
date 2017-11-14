@@ -40,6 +40,7 @@
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <hamcrest.version>1.3</hamcrest.version>
+        <xmlunit.version>1.4</xmlunit.version>
         <jacoco.plugin.version>0.7.7.201606060606</jacoco.plugin.version>
         <!-- Spring/Hibernate frameworks (parts) versions -->
         <spring.version>4.3.2.RELEASE</spring.version>
@@ -150,6 +151,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>${xmlunit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

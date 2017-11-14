@@ -21,7 +21,7 @@ public class LoggingInterceptor29 {
   // =             Attributes             =
   // ======================================
 
-  //@Inject
+  @Inject
   private Logger logger;
 
   // ======================================

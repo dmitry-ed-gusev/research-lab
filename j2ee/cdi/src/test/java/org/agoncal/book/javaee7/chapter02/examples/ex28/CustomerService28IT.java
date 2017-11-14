@@ -43,7 +43,7 @@ public class CustomerService28IT {
 
   @Test
   public void shouldSeeInterceptor() throws Exception {
-    CustomerService28 customerService = container.instance().select(CustomerService28.class).get();
+    CustomerService28 customerService = container.select(CustomerService28.class).get();
     customerService.createCustomer(new Customer28());
   }
 }

@@ -23,7 +23,7 @@ public class LoggingInterceptor33 {
   // =             Attributes             =
   // ======================================
 
-  //@Inject
+  @Inject
   private Logger logger;
 
   // ======================================
