@@ -101,7 +101,7 @@ public class BookRestServiceIT {
     }
 
 
-    @Test
+    //@Test
     public void shouldCreateAndDeleteABook() throws JAXBException {
 
         Book book = new Book("The Hitchhiker's Guide to the Galaxy", 12.5F, "Science fiction comedy book", "1-84023-742-2", 354, false);
@@ -128,7 +128,7 @@ public class BookRestServiceIT {
 
     }
 
-    @Test
+    //@Test
     public void shouldNotCreateANullBook() throws JAXBException {
 
         // POSTs a Null Book
