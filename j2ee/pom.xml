@@ -53,7 +53,7 @@
 
     <modules>
         <module>cdi</module>
-		<module>validation</module>
+        <module>validation</module>
         <module>rest</module>
     </modules>
 
