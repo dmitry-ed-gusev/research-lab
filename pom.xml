@@ -73,6 +73,11 @@
             <name>Alt repo #2</name>
             <url>https://mvnrepository.com/artifact/org.apache.ant/ant-jsch</url>
         </repository>
+        <repository>
+            <id>alt-repo-3</id>
+            <name>Alt repo #3</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
     </repositories>
 
     <build>
@@ -216,6 +221,7 @@
                 <module>bigdata</module>
                 <module>socialnet</module>
                 <module>j2ee</module>
+                <module>nlp</module>
             </modules>
         </profile>
 
@@ -237,6 +243,7 @@
                 <module>bigdata</module>
                 <module>socialnet</module>
                 <module>j2ee</module>
+                <module>nlp</module>
             </modules>
         </profile>
 
@@ -253,6 +260,7 @@
                 <module>scripts</module>
                 <module>utilities</module>
                 <module>tmpresearch</module>
+                <module>nlp</module>
                 <!--<module>bigdata</module>-->
                 <!--<module>socialnet</module>-->
                 <!--<module>j2ee</module>-->
@@ -273,7 +281,8 @@
                 <module>tmpresearch</module>
                 <module>utilities</module>
                 <!--<module>bigdata</module>-->
-                <module>j2ee</module>
+                <!--<module>j2ee</module>-->
+                <module>nlp</module>
             </modules>
         </profile>
 
