@@ -277,8 +277,8 @@
             </properties>
             <!-- modules to build -->
             <modules>
-                <module>scripts</module>
-                <module>tmpresearch</module>
+                <!--<module>scripts</module>-->
+                <!--<module>tmpresearch</module>-->
                 <module>utilities</module>
                 <!--<module>bigdata</module>-->
                 <!--<module>j2ee</module>-->

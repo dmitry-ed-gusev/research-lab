@@ -28,7 +28,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>gusevdm.gusevdm.nlp.NLPProcessor</mainClass>
+                            <mainClass>gusevdm.application.AppMain</mainClass>
                             <classpathPrefix>${common.libraries.prefix}/</classpathPrefix>
                         </manifest>
                     </archive>
@@ -37,6 +37,7 @@
                 </configuration>
                 <version>${maven.plugin.jar}</version>
             </plugin>
+
             <!-- copying dependencies -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -51,11 +52,11 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outputDirectory>${project.build.directory}/panalyzer/${common.libraries.prefix}
-                    </outputDirectory>
-                    <artifactItems/>
+                    <!--<outputDirectory>${project.build.directory}/panalyzer/${common.libraries.prefix}</outputDirectory>-->
+                    <outputDirectory>${app.assembly.dir}/${common.libraries.prefix}</outputDirectory>
                 </configuration>
             </plugin>
+
             <!-- copying other files -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -70,11 +71,11 @@
                 </executions>
                 <configuration>
                     <tasks>
-                        <copy todir="${project.build.directory}/panalyzer" flatten="false" overwrite="true"
+                        <copy todir="${app.assembly.dir}" flatten="false" overwrite="true"
                               verbose="true" failonerror="true">
                             <fileset dir="${basedir}" includes="panalyzer.bat"/>
                             <fileset dir="${basedir}" includes="panalyzer.properties"/>
-                            <fileset dir="${basedir}" includes="garbage.txt"/>
+                            <fileset dir="${basedir}" includes="readme.txt"/>
                         </copy>
                     </tasks>
                 </configuration>
@@ -97,6 +98,20 @@
             <groupId>dgusev</groupId>
             <artifactId>utilities</artifactId>
             <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
