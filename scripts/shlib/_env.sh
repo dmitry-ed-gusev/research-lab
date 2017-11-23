@@ -11,8 +11,8 @@
 # - Usage file - utility description
 USAGE_FILE='mysys_usage.txt'
 # - Debug mode for script. If DEBUG_MODE=true script will wait for a key press after every logic part
-# - of installation. Set DEBUG value to any other, than "true" - script will slip any question.
-DEBUG_MODE=false
+# - of installation. Set DEBUG value to any other, than "true" - script will skip any question.
+DEBUG_MODE=true
 # - get current date/time (for backup/other purposes)
 CURRENT_DATE=$(date +"%Y-%m-%d")
 CURRENT_TIME=$(date +"%H%M%S")

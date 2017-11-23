@@ -2,19 +2,22 @@
 #
 # =============================================================================
 #   This script installs Jenkins server CI tool. Installation properties:
-#      * installation port: 5000
+#      * installation port: 5000 (accessible through Apache)
 #      * will be launched as a daemon up on start. Startup script /etc/init.d/jenkins
 #      * The 'jenkins' user will be created to start this service
-#      * Log file will be placed in /var/log/jenkins/jenkins.log
+#      * JENKINS_HOME usually is set at /var/lib/jenkins
+#      * Log file usually will be placed in /var/log/jenkins/jenkins.log
 #      * Config file /etc/default/jenkins will hold configuration for the Jenkins server
 #      * Jenkins by default will listen on port 8181. Access this port with browser to
 #        start using Jenkins
+#      * By default for first login inti Jenkins use user <admin> and password, that will be
+#        generated in JENKINS_HOME/secrets/initialAdminPassword (use root privileges)
 #
 #   WARNING! Script should not be started as user 'root' (sudo ./<script_name>)!
 #   It is recommended to update whole system before running this script!
 #
 #   Created:  Gusev Dmitry, 27.11.2016
-#   Modified: Gusev Dmitrii, 26.09.2017
+#   Modified: Gusev Dmitrii, 06.11.2017
 # =============================================================================
 
 # -- Install necessary Jenkins dependencies:
@@ -64,13 +67,3 @@ sudo a2ensite jenkins
 echo "Listen ${JENKINS_APACHE_PORT}" | sudo tee -a ${APACHE_HOME}/ports.conf
 # - restart Apache (after port adding)
 sudo service apache2 restart
-
-# ***** DEBUG OUTPUT (wait for any key press) *****
-if [ "${DEBUG_MODE}" == "true" ]; then
-	read -rsp $'Press any key to continue...\n' -n1 key
-fi
-
-# -- Reboot system after updating
-if [ "${REBOOT_AFTER_UPDATE}" == "YES" ]; then
-    sudo reboot now
-fi

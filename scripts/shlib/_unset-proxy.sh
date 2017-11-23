@@ -11,17 +11,7 @@
 #   if necessary.
 #
 #   Created:  Gusev Dmitry, 19.04.2017
-#   Modified:
+#   Modified: Gusev Dmitrii, 06.11.2017
 # ===================================================================
 
 # todo: implement this function
-
-# ***** DEBUG OUTPUT (wait for any key press) *****
-if [ "$DEBUG_MODE" == "true" ]; then
-	read -rsp $'Press any key to continue...\n' -n1 key
-fi
-
-# -- Reboot system after proxy setup
-if [ "$REBOOT_AFTER_UPDATE" == "YES" ]; then
-    sudo reboot now
-fi

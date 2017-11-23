@@ -11,7 +11,7 @@
 #   if necessary.
 #
 #   Created:  Gusev Dmitry, 16.04.2017
-#   Modified:
+#   Modified: Gusev Dmitrii, 06.11.2017
 # ===================================================================
 
 # todo: switch setting up a proxy on/off by cmd line argument
@@ -54,14 +54,4 @@ fi
 grep -Fq "Acquire::https::Proxy" /etc/apt/apt.conf
 if [ $? -ne 0 ]; then
     echo "echo 'Acquire::https::Proxy \"${PROXY}\";' >> /etc/apt/apt.conf" | sudo sh
-fi
-
-# ***** DEBUG OUTPUT (wait for any key press) *****
-if [ "$DEBUG_MODE" == "true" ]; then
-	read -rsp $'Press any key to continue...\n' -n1 key
-fi
-
-# -- Reboot system after proxy setup
-if [ "$REBOOT_AFTER_UPDATE" == "YES" ]; then
-    sudo reboot now
 fi

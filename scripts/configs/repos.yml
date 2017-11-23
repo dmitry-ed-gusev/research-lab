@@ -6,16 +6,28 @@ repos:
  - mantis-pdc
  - mantis-ops
  - mantis-systems
+ - mantis-udi
+ - mantis-model
+ - mantis-model-generator
+ - mantis-analytics
+ - mantis-hadoop-clients
+ - mantis-teradata
+ - mantis-test
  - csv2abstract
  - csv2assembly
  - csv2hive
+ - sqoop-msd
  - ingest-script-generator
+ - dit-core
+ - data_integrity
+ - jiragraphs
 # - bigdata-training
 build_repos:
  - csv2abstract
  - csv2hive
  - mantis-bds
  - research
+ - dit-core
 
 # - mantis11 # -> build takes too much time
 # - mantis-bds # -> build includes python scripts

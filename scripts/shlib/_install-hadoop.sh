@@ -12,7 +12,7 @@
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #  
 #   Created:  Gusev Dmitry, 10.04.2017
-#   Modified: Gusev Dmitry, 01.08.2017
+#   Modified: Gusev Dmitry, 06.11.2017
 # =============================================================================
 
 # todo: check installation of Java before
@@ -21,19 +21,19 @@
 
 # -- Installing Apache Hadoop
 # - delete target Hadoop TAR GZ file if it exists
-if [ -f $HADOOP_ARCHIVE ] ; then
-    rm $HADOOP_ARCHIVE
+if [ -f ${HADOOP_ARCHIVE} ] ; then
+    rm ${HADOOP_ARCHIVE}
 fi
 # - download Apache Hadoop from repository
-wget $HADOOP_BINARY_URL
+wget ${HADOOP_BINARY_URL}
 # - extract Hadoop from archive
-tar xvfz $HADOOP_ARCHIVE
+tar xvfz ${HADOOP_ARCHIVE}
 # - move Hadoop to /opt directory
-sudo mv $HADOOP_NAME /opt
+sudo mv ${HADOOP_NAME} /opt
 # - add path to Hadoop executable to PATH variable (system wide).
 # "" - in this quotes variables will be processed/evaluated (values used)
 # '' - in this quotes variables will be used 'as is' (no values)
-echo "HADOOP_HOME=/opt/$HADOOP_NAME" | sudo tee /etc/profile.d/hadoop.sh
+echo "HADOOP_HOME=/opt/${HADOOP_NAME}" | sudo tee /etc/profile.d/hadoop.sh
 echo 'PATH="$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH"' | sudo tee -a /etc/profile.d/hadoop.sh
 sudo chmod +x /etc/profile.d/hadoop.sh
 # - create tmp folder for Hadoop (and set access rights)
@@ -44,18 +44,8 @@ sudo chmod -R 777 /tmp-hadoop
 ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 # - copy pre-set config files to Hadoop
-cp shlib/hadoop-preset/* /opt/$HADOOP_NAME/etc/hadoop/
+cp shlib/hadoop-preset/* /opt/${HADOOP_NAME}/etc/hadoop/
 # - set proper JAVA_HOME variable
-pylib/fedit.py -f /opt/$HADOOP_NAME/etc/hadoop/hadoop-env.sh -t starts -s "export JAVA_HOME" -d "export JAVA_HOME=$JAVA_HOME"
+pylib/fedit.py -f /opt/${HADOOP_NAME}/etc/hadoop/hadoop-env.sh -t starts -s "export JAVA_HOME" -d "export JAVA_HOME=$JAVA_HOME"
 
 echo "Don't forget to execute command [hdfs namenode -format] before Hadoop usage!"
-
-# ***** DEBUG OUTPUT (wait for any key press) *****
-if [ "$DEBUG_MODE" == "true" ]; then
-	read -rsp $'Press any key to continue...\n' -n1 key
-fi
-
-# -- Reboot system after installing Hadoop
-if [ "$REBOOT_AFTER_UPDATE" == "YES" ]; then
-    sudo reboot now
-fi
