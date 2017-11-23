@@ -59,7 +59,8 @@ public class MapUtilsTest {
 
     @Test
     public void testSortMapByValue() {
-        final int size = 10000;
+        // todo: if value is big (>100_000) -> often fails!!!
+        final int size = 10_000;
 
         // init test map
         Random random = new Random(System.currentTimeMillis());
@@ -74,6 +75,7 @@ public class MapUtilsTest {
         //System.out.println(testMap);
 
         // test size
+        // todo: fails to often (floating error!!!)
         Assert.assertEquals(size, testMap.size());
         // test contents
         Integer previous = null;
