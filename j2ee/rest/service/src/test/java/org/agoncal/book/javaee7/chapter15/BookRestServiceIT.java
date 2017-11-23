@@ -40,7 +40,7 @@ public class BookRestServiceIT {
     // =             Attributes             =
     // ======================================
 
-    private static URI uri = UriBuilder.fromUri("http://localhost/chapter15-service-1.0/rs/book").port(8080).build();
+    private static URI uri = UriBuilder.fromUri("http://localhost/service-1.0/rs/book").port(8080).build();
     private static Client client = ClientBuilder.newClient();
 
     private static final String XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><book><description>Science fiction comedy book</description><illustrations>false</illustrations><isbn>1-84023-742-2</isbn><nbOfPage>354</nbOfPage><price>12.5</price><title>The Hitchhiker's Guide to the Galaxy</title></book>";
@@ -101,7 +101,7 @@ public class BookRestServiceIT {
     }
 
 
-    //@Test
+    @Test
     public void shouldCreateAndDeleteABook() throws JAXBException {
 
         Book book = new Book("The Hitchhiker's Guide to the Galaxy", 12.5F, "Science fiction comedy book", "1-84023-742-2", 354, false);
@@ -128,7 +128,7 @@ public class BookRestServiceIT {
 
     }
 
-    //@Test
+    @Test
     public void shouldNotCreateANullBook() throws JAXBException {
 
         // POSTs a Null Book
