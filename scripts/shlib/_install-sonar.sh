@@ -2,13 +2,17 @@
 #
 # =============================================================================
 #   This script installs SonarQube 5.X.X Server will start on system start.
-#   Listen port 9000, context [/sonar].
+#   Installation properties:
+#       * sonar process will listen port 9000
+#       * sonar context on server -> [/sonar], so Sonar will be accessible by URL
+#         http://<host name>:9000/sonar
+#       * initial user/password: admin/admin
 #
 #   WARNING! Script should not be started as user 'root' (sudo ./<script_name>)!
 #   It is recommended to update whole system before running this script!
 #
 #   Created:  Gusev Dmitry, 27.11.2016
-#   Modified: Gusev Dmitrii, 06.11.2017
+#   Modified: Gusev Dmitrii, 25.11.2017
 #
 # =============================================================================
 
@@ -26,15 +30,13 @@ fi
 wget ${SONAR_BINARY_URL}
 # - unzip (quietly) Sonar from archive
 unzip -q ${SONAR_ARCHIVE}
-# todo: do we need it?
 # - set executable bit for Sonar starting script
 sudo chmod +x ${SONAR_NAME}/bin/${SONAR_PLATFORM}/sonar.sh
 # - move Sonar to /opt directory
 sudo mv ${SONAR_NAME} /opt
-
-# todo: doesn't work current mysql installation
 # - set up Sonar server DB in MySql server (execute script)
-mysql -u ${MYSQL_USER} -p${MYSQL_PASS} < shlib/create_sonar_db.sql
+pwd
+mysql -u root -p${MYSQL_ROOT_PASS} < shlib/create_sonar_db.sql
 
 # - set up Sonar config (jdbc url/user/pass) -> /opt/<sonar_home>/conf/sonar.properties
 sudo sed -i "/#sonar.jdbc.username=/ c\sonar.jdbc.username=sonar" /opt/${SONAR_NAME}/conf/sonar.properties
