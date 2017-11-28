@@ -17,8 +17,8 @@
 # =============================================================================
 
 # -- Update system quietly. If you remove comments from /dev/null, you won't see any info.
-sudo /usr/bin/apt-get -qy update # > /dev/null
-sudo /usr/bin/apt-get -qy upgrade # > /dev/null
-sudo /usr/bin/apt-get -qy dist-upgrade # > dev/null
+sudo /usr/bin/apt -qy update # > /dev/null
+sudo /usr/bin/apt -qy upgrade # > /dev/null
+sudo /usr/bin/apt -qy dist-upgrade # > dev/null
 # -- Remove unnecessary packages (old kernel/headers for example, after updating)
-sudo /usr/bin/apt-get -qy autoremove
+sudo /usr/bin/apt -qy autoremove

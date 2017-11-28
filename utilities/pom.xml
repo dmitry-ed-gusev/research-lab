@@ -15,7 +15,6 @@
 
     <properties>
         <assemblyDirectory>dgutils</assemblyDirectory>
-        <common.libraries.prefix>libs</common.libraries.prefix>
         <mainClass>gusev.dmitry.jtils.Main</mainClass>
         <jar.name>${project.artifactId}-${env}</jar.name>
     </properties>
@@ -43,6 +42,10 @@
                     </archive>
                     <!-- put jar file into another directory -->
                     <outputDirectory>${project.build.directory}/${assemblyDirectory}</outputDirectory>
+                    <!-- todo: excluded log4j config from including in final JAR file -->
+                    <excludes>
+                        <exclude>log4j.properties</exclude>
+                    </excludes>
                 </configuration>
                 <version>${maven.plugin.jar}</version>
             </plugin>
@@ -52,14 +55,17 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <configuration>
-                    <outputDirectory>${project.build.directory}/${assemblyDirectory}/${common.libraries.prefix}</outputDirectory>
+                    <outputDirectory>${project.build.directory}/${assemblyDirectory}/${common.libraries.prefix}
+                    </outputDirectory>
                     <artifactItems/>
                 </configuration>
                 <executions>
                     <execution>
                         <id>dep-copy</id>
                         <phase>${prod.build.phase}</phase>
-                        <goals><goal>copy-dependencies</goal></goals>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -71,16 +77,19 @@
                     <execution>
                         <id>copy-files</id>
                         <phase>${prod.build.phase}</phase>
-                        <goals><goal>run</goal></goals>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                 </executions>
                 <configuration>
                     <tasks>
                         <!-- copy and filter batch files  -->
-                        <copy todir="${project.build.directory}/${assemblyDirectory}" flatten="false" overwrite="true" verbose="true" failonerror="true">
+                        <copy todir="${project.build.directory}/${assemblyDirectory}" flatten="false" overwrite="true"
+                              verbose="true" failonerror="true">
                             <fileset dir="${basedir}" includes="*.bat"/>
                             <filterset>
-                                <filter token="JAR_NAME"  value="${jar.name}"/>
+                                <filter token="JAR_NAME" value="${jar.name}"/>
                             </filterset>
                         </copy>
                     </tasks>
@@ -140,4 +149,4 @@
         </dependency>
     </dependencies>
 
- </project>
+</project>

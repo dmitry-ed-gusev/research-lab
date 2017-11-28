@@ -4,11 +4,15 @@
 #   This is a main script of system scripts suite for update/setup Linux
 #   system. Developed and tested under Ubuntu Server 16.04 x64 LTS.
 #
+#   Tech notes:
+#       * order of options processing (in script) is important. Options may
+#          be specified in any order, but will be processed in correct order.
+#
 #   WARNING! Script should not be started as user 'root' (with command like:
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #
 #   Created:  Gusev Dmitry, 26.11.2016
-#   Modified: Gusev Dmitry, 06.11.2017
+#   Modified: Gusev Dmitry, 23.11.2017
 # =============================================================================
 
 # todo: implement combining options/exit after each option
@@ -87,24 +91,7 @@ do
 	esac
 done
 
-# -- SIMPLE OPTION: setup system/APT proxy server. This option is independent
-# -- and may be combined with other options, but should be processed before them.
-if [ "$SET_PROXY" == "YES" ]; then
-    echo "Setup system/APT proxy server [${PROXY}]."
-    SET_PROXY=NO
-    source shlib/_setup-proxy.sh
-fi
-
-# -- SIMPLE OPTION: remove (unset) system and APT utility proxy. This option is independent
-# -- and may be combined with other options, but should be processed before them.
-if [ "$UNSET_PROXY" == YES ]; then
-    echo "Unset (remove) system/APT proxy server."
-    UNSET_PROXY=NO
-    source shlib/_unset-proxy.sh
-fi
-
-# -- SIMPLE OPTION: print statistics. This option is completely independent
-# -- and can't be combined with others.
+# #1. SIMPLE OPTION: print statistics. This option is completely independent and can't be combined with others.
 if [ "$SHOW_STAT" == "YES" ]; then
     echo "System statistics:"
     SHOW_STAT=NO
@@ -112,7 +99,24 @@ if [ "$SHOW_STAT" == "YES" ]; then
     exit 0
 fi
 
-# -- INSTALL/UPDATE OPTION: update the system. This option can be combined with others.
+# #2. SIMPLE OPTION: setup system/APT proxy server. This option is independent and may be combined with other
+# options, but should be processed before them. Also switch off unset proxy option.
+if [ "$SET_PROXY" == "YES" ]; then
+    echo "Setup system/APT proxy server [${PROXY}]."
+    SET_PROXY=NO
+    UNSET_PROXY=NO
+    source shlib/_setup-proxy.sh
+fi
+
+# #3. SIMPLE OPTION: remove (unset) system and APT utility proxy. This option is independent and may be combined
+# with other options, but should be processed before them.
+if [ "$UNSET_PROXY" == YES ]; then
+    echo "Unset (remove) system/APT proxy server."
+    UNSET_PROXY=NO
+    source shlib/_unset-proxy.sh
+fi
+
+# #4. INSTALL/UPDATE OPTION: update the system. This option can be combined with others.
 if [ "$UPDATE_SYSTEM" == "YES" ]; then
 	echo "Updating the system..."
 	UPDATE_SYSTEM=NO
@@ -122,16 +126,22 @@ if [ "$UPDATE_SYSTEM" == "YES" ]; then
     source shlib/_system-update.sh
 fi
 
-# -- INSTALL/UPDATE OPTION: install base software packages. This option can be combined
-# -- with other options.
+# #5. INSTALL/UPDATE OPTION: install base software packages. This option can be combined with other options.
 if [ "$INSTALL_BASE" == "YES" ]; then
     echo "Installing base software packages."
     INSTALL_BASE=NO
     source shlib/_install-base.sh
 fi
 
-# -- INSTALL/UPDATE OPTION: install Oracle Java JDK. This option can be combined with
-# -- other options.
+# #6. INSTALL/UPDATE OPTION: install MySql (client and server). This option is independent and can be combined
+# with other options (probably depends on system update).
+if [ "$INSTALL_MYSQL" == "YES" ]; then
+    echo "Installing MySql DBMS."
+    INSTALL_MYSQL=NO
+    source shlib/_install-mysql.sh
+fi
+
+# #7. INSTALL/UPDATE OPTION: install Oracle Java JDK. This option can be combined with other options.
 if [ "$INSTALL_JAVA" == "YES" ]; then
     echo "Installing: Oracle JDK. Version: ${JAVA_VERSION}."
     echo "Installing: Apache Ant tool. Version: ${ANT_VERSION}."
@@ -140,42 +150,34 @@ if [ "$INSTALL_JAVA" == "YES" ]; then
     source shlib/_install-java.sh
 fi
 
-# -- INSTALL/UPDATE OPTION: install Jenkins.
+# #8. INSTALL/UPDATE OPTION: install Jenkins.
 if [ "$INSTALL_JENKINS" == "YES" ]; then
     echo "Installing Jenkins server."
     INSTALL_JENKINS=NO
     source shlib/_install-jenkins.sh
 fi
 
-# -- INSTALL/UPDATE OPTION: install Sonar Qube (code analyzer).
+# #9. INSTALL/UPDATE OPTION: install Sonar Qube (code analyzer).
 if [ "$INSTALL_SONAR" == "YES" ]; then
     echo "Installing Sonar server."
     INSTALL_SONAR=NO
     source shlib/_install-sonar.sh
 fi
 
-# -- INSTALL/UPDATE OPTION: install Apache Hadoop. This option can be combined with
-# -- other options, but is dependent on INSTALL_BASE and INSTALL_JAVA options.
+# #10. INSTALL/UPDATE OPTION: install Apache Hadoop. This option can be combined with other options,
+# but is dependent on INSTALL_BASE and INSTALL_JAVA options (should be done first).
 if [ "$INSTALL_HADOOP" == "YES" ]; then
     echo "Installing Apache Hadoop. Version: ${HADOOP_VERSION}"
     INSTALL_HADOOP=NO
     source shlib/_install-hadoop.sh
 fi
 
-# -- INSTALL/UPDATE OPTION: install Apache Hive. This option can be combined with
-# -- other options, but is dependent on INSTALL_BASE, INSTALL_JAVA, INSTALL_HADOOP options.
+# #11. INSTALL/UPDATE OPTION: install Apache Hive. This option can be combined with other options, but is
+# dependent on INSTALL_BASE, INSTALL_JAVA, INSTALL_HADOOP options (should be done first).
 if [ "$INSTALL_HIVE" == "YES" ]; then
     echo "Installing Apache Hive. Version: ${HIVE_VERSION}"
     INSTALL_HIVE=NO
     source shlib/_install-hive.sh
-fi
-
-# -- INSTALL/UPDATE OPTION: install MySql (client and server). This option is independent
-# -- and can be combined with other options (probably depends on system update)
-if [ "$INSTALL_MYSQL" == "YES" ]; then
-    echo "Installing MySql DBMS."
-    INSTALL_MYSQL=NO
-    source shlib/_install-mysql.sh
 fi
 
 # ***** DEBUG OUTPUT (wait for any key press) *****
