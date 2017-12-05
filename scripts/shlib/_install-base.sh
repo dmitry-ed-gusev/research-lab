@@ -25,3 +25,8 @@ sudo apt -qy install apache2 apache2-utils
 sudo apt -qy install nfs-kernel-server nfs-common
 # -- install GIT
 sudo apt -qy install git
+
+# -- install pip (python package manager) and virtualenv
+wget https://bootstrap.pypa.io/get-pip.py
+sudo -H python get-pip.py
+sudo -H pip install virtualenv
