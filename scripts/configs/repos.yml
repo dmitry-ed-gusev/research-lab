@@ -1,4 +1,23 @@
 repos_dir: c:/projects
+
+#https://gusevdm@stash.merck.com/scm/man/mantis-systems.git
+#https://gusevdm@stash.merck.com/scm/man/mantis-ops.git
+#https://gusevdm@stash.merck.com/scm/man/mantis-pdc.git
+#https://gusevdm@stash.merck.com/scm/man/mantis-hadoop-clients.git
+#https://gusevdm@stash.merck.com/scm/man/mantis-hive-rest-service.git
+#https://gusevdm@stash.merck.com/scm/man/mantis-model.git
+#https://gusevdm@stash.merck.com/scm/man/mantis-model-generator.git
+#https://gusevdm@stash.merck.com/scm/man/mantis-test.git
+#https://gusevdm@stash.merck.com/scm/man/mantis-udi.git
+#https://gusevdm@stash.merck.com/scm/man/mantis-bds.git
+#https://gusevdm@stash.merck.com/scm/man/mantis-teradata.git
+#https://gusevdm@stash.merck.com/scm/bdp/mantis.git
+#https://gusevdm@stash.merck.com/scm/bdp/mantis11.git
+#https://gusevdm@stash.merck.com/scm/bdp/ingest-script-generator.git
+#https://gusevdm@stash.merck.com/scm/bdp/csv2hive.git
+#https://gusevdm@stash.merck.com/scm/bdp/csv2abstract.git
+#https://gusevdm@stash.merck.com/scm/enigma/csv2assembly.git
+
 repos:
  - mantis
  - mantis11
