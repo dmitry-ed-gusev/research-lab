@@ -48,6 +48,10 @@ For deploy to remote/local server (via ssh/scp) specify cmd line parameters for 
 * -Dpass=\<pass value> - remote host user's password
 * -Dpath=\<path value> - path for deploy on remote host
 
+### Build on MSD-tuned Maven  ###
+Create empty settings.xml file (with just empty settings tag), put it somewhere and, when build, just
+specify: mvn [goals] -s [abs path to your custom (empty) settings.xml file]
+
 **Example:**
 
 mvn clean install -DskipDeploy=false -Duser=myuser -Dpass=mypass -Dhost=myhost -Dpath=/home/user
