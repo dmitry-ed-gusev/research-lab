@@ -25,9 +25,15 @@ vk_token*
 # -- ignore temporary word files
 ~$*.docx
 .DS_Store
-
+# -- python tests coverage
 .coverage
+coverage.xml
 nose2*
 htmlcov
+# -- python virtual environment
+.venv/
+# -- deployable archives
 *.jar
 *.war
+# -- PAnalyzer app output directory
+panalyzer/
