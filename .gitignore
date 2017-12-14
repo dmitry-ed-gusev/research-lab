@@ -25,3 +25,9 @@ vk_token*
 # -- ignore temporary word files
 ~$*.docx
 .DS_Store
+
+.coverage
+nose2*
+htmlcov
+*.jar
+*.war
