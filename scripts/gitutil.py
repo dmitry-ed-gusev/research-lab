@@ -103,6 +103,10 @@ if not args.config_dir or not args.config_dir.strip() \
 config = conf.Configuration()
 config.load(args.config_dir)
 
+print "->", config.get('stash.address')
+sys.exit(123)
+
+
 # get repositories configs (paths)
 base_dir = config.get('repos_dir')
 # fix base projects dir (path ending)

@@ -36,7 +36,7 @@ ANT_ARCHIVE="$ANT_NAME-bin.tar.gz"
 ANT_BINARY_URL="http://apache-mirror.rbc.ru/pub/apache/ant/binaries/$ANT_ARCHIVE"
 
 # -- Apache Maven settings
-MAVEN_VERSION="3.3.9"
+MAVEN_VERSION="3.5.2"
 MAVEN_NAME="apache-maven-$MAVEN_VERSION"
 MAVEN_ARCHIVE="$MAVEN_NAME-bin.tar.gz"
 MAVEN_BINARY_URL="http://apache-mirror.rbc.ru/pub/apache/maven/maven-3/$MAVEN_VERSION/binaries/$MAVEN_ARCHIVE"

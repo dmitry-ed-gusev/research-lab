@@ -1,6 +1,9 @@
 repos_dir: c:/projects
 
-#https://gusevdm@stash.merck.com/scm/man/mantis-systems.git
+# general stash settings
+stash:
+  address: https://gusevdm@stash.merck.com/scm/
+
 #https://gusevdm@stash.merck.com/scm/man/mantis-ops.git
 #https://gusevdm@stash.merck.com/scm/man/mantis-pdc.git
 #https://gusevdm@stash.merck.com/scm/man/mantis-hadoop-clients.git
@@ -11,12 +14,36 @@ repos_dir: c:/projects
 #https://gusevdm@stash.merck.com/scm/man/mantis-udi.git
 #https://gusevdm@stash.merck.com/scm/man/mantis-bds.git
 #https://gusevdm@stash.merck.com/scm/man/mantis-teradata.git
-#https://gusevdm@stash.merck.com/scm/bdp/mantis.git
-#https://gusevdm@stash.merck.com/scm/bdp/mantis11.git
 #https://gusevdm@stash.merck.com/scm/bdp/ingest-script-generator.git
-#https://gusevdm@stash.merck.com/scm/bdp/csv2hive.git
-#https://gusevdm@stash.merck.com/scm/bdp/csv2abstract.git
-#https://gusevdm@stash.merck.com/scm/enigma/csv2assembly.git
+
+reps:
+  mantis:
+    key: bdp
+    build: yes
+  mantis11:
+    key: bdp
+    build: no # -> build takes too much time
+  mantis-bds:
+    key: man
+    build: no # -> build includes python scripts
+  mantis-pdc:
+    key: man
+    build: yes
+  mantis-ops:
+    key: man
+    build: yes
+  mantis-systems:
+    key: man
+    build: no # -> build includes python scripts and artifacts building
+  csv2assembly:
+    key: enigma
+    build: no
+  csv2abstract:
+    key: bdp
+    build: no
+  csv2hive:
+    key: bdp
+    build: yes
 
 repos:
  - mantis
@@ -47,7 +74,3 @@ build_repos:
  - mantis-bds
  - research
  - dit-core
-
-# - mantis11 # -> build takes too much time
-# - mantis-bds # -> build includes python scripts
-# - mantis-systems # -> build includes python scripts and artifacts building
