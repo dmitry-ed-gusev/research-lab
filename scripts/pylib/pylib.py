@@ -13,7 +13,7 @@ from os import walk, rename
 
 def count_lines(filename):
     """
-    COunt lines in given file.
+    Count lines in given file.
     :return: count of lines
     """
     counter = 0
