@@ -8,7 +8,7 @@
     Modified: Gusev Dmitrii, 09.10.2017
 """
 
-import jira_constants as jconst
+import _jira_constants as jconst
 from jira_utility_base import JiraUtilityBase, JiraException
 
 # issue link type

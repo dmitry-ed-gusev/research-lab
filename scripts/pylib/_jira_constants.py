@@ -17,7 +17,6 @@ CONST_COMMON_ENCODING = "utf-8"
 CONST_TEAMS_LIST = ("ada", "ada_all", "nova", "nova_all", "bmtef", "bmtef_all")
 
 # config file keys
-CONFIG_KEY_CFG_FILE = "config.file"
 CONFIG_KEY_ADDRESS = "jira.address"
 CONFIG_KEY_USER = "jira.user"
 CONFIG_KEY_PASS = "jira.password"

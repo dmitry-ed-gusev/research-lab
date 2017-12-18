@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 virtualenv .venv
 virtualenv --relocatable .venv
 
@@ -10,7 +11,10 @@ pip install jira prettytable bs4
 #PYTHONPATH=${WORKSPACE}/pymocks:$PYTHONPATH
 #export PYTHONPATH
 
-python -m nose2 -v --plugin nose2.plugins.junitxml -X --with-coverage --coverage-report xml -vvv
+python -m nose2 -v -s pytests --plugin nose2.plugins.junitxml -X --with-coverage --coverage pylib \
+    --coverage-report xml --coverage-report html
+
+#python -m nose2 -v -s tests --plugin nose2.plugins.junitxml -X --with-coverage --coverage pipeline --coverage-report xml
 
 #pip install robotframework
 #pip install robotframework-sshlibrary

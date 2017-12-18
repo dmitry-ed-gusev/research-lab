@@ -11,7 +11,8 @@
 import argparse
 from configuration import Configuration
 from jira_utility_extended import JiraUtilityExtended, JIRA_OPTIONS
-import jira_constants as jconst
+import _common_constants as myconst
+import _jira_constants as jconst
 
 
 def prepare_arg_parser():
@@ -53,6 +54,7 @@ def prepare_arg_parser():
     return parser
 
 
+# todo: make method common - init config object with overriding by cmd line parameters
 def init_jira_utility_config():
     print "init_jira_utility_config() is working."
     # get argparse namespace (will be filled with vars after parsing)
@@ -60,7 +62,7 @@ def init_jira_utility_config():
     # prepare cmd line parser and parse cmd line (put all in specified namespace)
     args = prepare_arg_parser().parse_args(namespace=argparse_namespace)
     # load configuration from specified or default config, don't merge with environment
-    config = Configuration(getattr(args, jconst.CONFIG_KEY_CFG_FILE), is_merge_env=False)
+    config = Configuration(getattr(args, myconst.CONFIG_KEY_CFG_FILE), is_merge_env=False)
 
     # add cmd line arguments to config (overwrite existing, if set value)
     for key, value in vars(argparse_namespace).items():

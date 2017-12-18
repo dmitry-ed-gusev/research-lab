@@ -2,32 +2,40 @@
 # coding=utf-8
 
 import os
+import logging
 from string import Template
-from pylib import ConfigError
-from pylib import parse_yaml
+from pyutilities import parse_yaml
 
 YAML_EXTENSION_1 = '.yml'
 YAML_EXTENSION_2 = '.yaml'
 
 
+# todo: replace all print() out with logging
 class Configuration(object):
     """Tree-like configuration-holding structure, allows loading from YAML and retrieving values
         by using chained hierarchical key with dot-separated levels, e.g. "hdfs.namenode.address"
     """
 
     def __init__(self, path=None, is_merge_env=True):
+        # init internal dictionary
         self.config_dict = {}
 
+        # init logger
+        self.log = logging.getLogger(__name__)
+        self.log.addHandler(logging.NullHandler())
+
+        # if provided file path - try to load config
         if path and path.strip():
             print "Provided path [%s] for instant loading. Proceeding." % path
             self.load(path, is_merge_env)
 
     def load(self, path, is_merge_env=True):
-        """Parses all YAML files from the given directory to add them into this configuration instance
-        
-            :param path: directory to load files from
+        """Parses YAML file(s) from the given directory/file to add content into this configuration instance
+            :param is_merge_env: merge parameters with environment (True) or not (False)
+            :param path: directory/file to load files from
             :type path: str
         """
+        self.log.debug('load() is working. Path [{}], is_merge_env [{}].'.format(path, is_merge_env))
         # fail-fast checks
         if not path or not path.strip():
             raise ConfigError('Provided empty path for config loading!')
@@ -166,6 +174,9 @@ class Configuration(object):
         else:
             return self.__get_value(keys[1], values[keys[0]])
 
+
+class ConfigError(Exception):
+    """Invalid configuration error"""
 
 # def load_config():
 #     """ Load configuration from env['CONFIG_LOCATION'] (if specified) or 'config'\n

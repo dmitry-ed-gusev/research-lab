@@ -10,8 +10,8 @@
 """
 
 from pylib.jira_utility_extended import JiraUtilityExtended
-from pylib.jira_utility_init import init_jira_utility_config
-import pylib.jira_constants as jconst
+from pylib._jira_init import init_jira_utility_config
+import pylib._jira_constants as jconst
 
 print 'JIRA Utility: starting...'
 # init configuration - parse cmd line and load from config file

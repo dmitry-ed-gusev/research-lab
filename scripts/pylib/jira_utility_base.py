@@ -11,9 +11,9 @@
 
 import prettytable
 import codecs
-import jira_constants as jconst
+import _jira_constants as jconst
 from jira import JIRA
-from pylib import JiraException
+from pyutilities import JiraException
 from configuration import Configuration, ConfigError
 
 
