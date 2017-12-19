@@ -38,9 +38,10 @@ class ConfigurationTest(unittest.TestCase):
                 parse_yaml('foo_ioerror.file')
 
     def test_parse_yaml_empty_path(self):
-        with self.assertRaises(IOError):
-            with patch('pylib.pyutilities.open', mock_open(read_data='n: v'), create=True):
-                parse_yaml('')
+        for path in ['', '   ']:
+            with self.assertRaises(IOError):
+                with patch('pylib.pyutilities.open', mock_open(read_data='n: v'), create=True):
+                    parse_yaml(path)
 
 
 """
