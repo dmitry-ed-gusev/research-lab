@@ -10,6 +10,7 @@
 # todo: implement proper logging!
 
 import os
+import sys
 import csv
 import yaml
 import argparse
@@ -102,16 +103,32 @@ def to_title(path):
             print('to title case:' + before + ' -> ' + after)
 
 
-def list_files(path):
+def _list_files(path, files):
     """
-    :param path:
+    Internal function for listing (recursively) all files in specified directory.
+	Don't use it directly, use list_files()
+	:param path:
     :return:
     """
-    print "listing files..."
+    print "Listing files in [{}]".format(path)
+    # print "STDOUT encoding ->", sys.stdout.encoding  # <- just a debug output
     for (dirpath, dirnames, filenames) in walk(unicode(path)):
         for filename in filenames:
-            print "->", filename
+            print filename.encode(sys.stdout.encoding, errors='replace')
+            files.append(filename)
 
+	
+def list_files(path):
+	"""
+	List all files in a specified path and return list of found files.
+	:param path: path to directory
+	:return: list of files
+	"""
+	print "list_files() is working. Path [{}].".format(path)
+	# todo: add checks for path (not empty/exists/is dir)
+	files = []
+	_list_files(path, files)
+	return files
 
 def parse_yaml(file_path):
     """
@@ -155,4 +172,7 @@ class JiraException(Exception):
 
 if __name__ == '__main__':
     #print "pyutilities: Don't try to execute library as standalone app!"
-    list_files('/media/vinnypuhh/MyData/Cloud/YandexDisk/DOCS AND BOOKS')
+    #list_files('/media/vinnypuhh/MyData/Cloud/YandexDisk/DOCS AND BOOKS')
+	files = list_files('D:/')
+	print len(files)
+	
