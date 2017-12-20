@@ -98,8 +98,19 @@ def to_title(path):
         for filename in filenames:
             before = prefix + filename
             after = prefix + filename.title()
-            rename(before, after)
+            # rename(before, after)
             print('to title case:' + before + ' -> ' + after)
+
+
+def list_files(path):
+    """
+    :param path:
+    :return:
+    """
+    print "listing files..."
+    for (dirpath, dirnames, filenames) in walk(unicode(path)):
+        for filename in filenames:
+            print "->", filename
 
 
 def parse_yaml(file_path):
@@ -140,3 +151,8 @@ def init_config(parser, is_merge_env = False):
 
 class JiraException(Exception):
     """JIRA Exception, used if something is wrong with/in JIRA interaction."""
+
+
+if __name__ == '__main__':
+    #print "pyutilities: Don't try to execute library as standalone app!"
+    list_files('/media/vinnypuhh/MyData/Cloud/YandexDisk/DOCS AND BOOKS')
