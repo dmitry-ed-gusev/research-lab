@@ -24,7 +24,7 @@ def prepare_arg_parser():
     parser = argparse.ArgumentParser(description='JIRA Utility.')
 
     # config file for loading, optional
-    parser.add_argument('--config', dest=jconst.CONFIG_KEY_CFG_FILE, action='store',
+    parser.add_argument('--config', dest=myconst.CONFIG_KEY_CFG_FILE, action='store',
                         default=jconst.CONST_CONFIG_FILE, help='YAML configuration file/path')
     # jira address and user, optional
     parser.add_argument('-a', '--address', dest=jconst.CONFIG_KEY_ADDRESS, action='store', help='JIRA address')
@@ -58,18 +58,26 @@ def prepare_arg_parser():
 def init_jira_utility_config():
     print "init_jira_utility_config() is working."
     # get argparse namespace (will be filled with vars after parsing)
-    argparse_namespace = argparse.Namespace()
+    # argparse_namespace = argparse.Namespace()
     # prepare cmd line parser and parse cmd line (put all in specified namespace)
-    args = prepare_arg_parser().parse_args(namespace=argparse_namespace)
+    # args = prepare_arg_parser().parse_args(namespace=argparse_namespace)
+    args = prepare_arg_parser().parse_args()
     # load configuration from specified or default config, don't merge with environment
     config = Configuration(getattr(args, myconst.CONFIG_KEY_CFG_FILE), is_merge_env=False)
 
+    #print vars(argparse_namespace)
+    print vars(args)
+    print type(args)
+
     # add cmd line arguments to config (overwrite existing, if set value)
-    for key, value in vars(argparse_namespace).items():
-        if value:
-            config.set(key, value)
+    #for key, value in vars(argparse_namespace).items():
+    #    if value:
+    #        config.set(key, value)
 
     # just a debug output
     print "Configuration: %s" % config.config_dict
     # return created config
     return config
+
+
+init_jira_utility_config()

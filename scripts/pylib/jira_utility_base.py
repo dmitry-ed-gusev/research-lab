@@ -6,18 +6,17 @@
     exception. Maybe some useful methods will be added.
 
     Created: Gusev Dmitrii, 04.04.2017
-    Modified: Gusev Dmitrii, 01.10.2017
+    Modified: Gusev Dmitrii, 20.12.2017
 """
 
 import prettytable
 import codecs
 import _jira_constants as jconst
 from jira import JIRA
-from pyutilities import JiraException
 from configuration import Configuration, ConfigError
 
 
-# todo: check jira address and username (should be not empty!)
+# todo: check jira address and username (shouldn't be empty!)
 class JiraUtilityBase(object):
     """ Class JIRAUtilityBase. Intended for interaction with JIRA and performing some useful actions. """
 
@@ -330,3 +329,7 @@ class JiraUtilityBase(object):
             counter += 1
         # return generated report
         return report
+
+
+class JiraException(Exception):
+    """JIRA Exception, used if something is wrong with/in JIRA interaction."""

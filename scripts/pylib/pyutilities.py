@@ -55,7 +55,8 @@ def count_lines(filename):
     # open file, received as first cmd line argument, mode - read+Unicode
     with open(filename, mode='rU') as file:
         # skip initial space - don't work without it
-        reader = csv.reader(file, delimiter=b',', skipinitialspace=True, quoting=csv.QUOTE_MINIMAL, quotechar=b'"', lineterminator="\n")
+        reader = csv.reader(file, delimiter=b',', skipinitialspace=True, quoting=csv.QUOTE_MINIMAL, quotechar=b'"',
+                            lineterminator="\n")
         # counting rows in a cycle
         for row in reader:
             # just a debug output
@@ -66,73 +67,46 @@ def count_lines(filename):
     return counter
 
 
-def to_upper_case(path):
-    """
-    Rename all files in a given directory to upper case
-    :return: nothing
-    """
-    print("to_upper_case() is working.")
-    # -- go trough path recursively and search all files
-    # for (dirpath, dirnames, filenames) in walk(unicode(path)): <- python 2
-    for (dirpath, dirnames, filenames) in walk(path):
-        # -- iterate over found files in concrete directory and rename them (to upper case)
-        prefix = dirpath + '\\'
-        for filename in filenames:
-            before = prefix + filename
-            after = prefix + filename.upper()
-            rename(before, after)
-            print('to upper case:', before, '->', after)
-
-
-def to_title(path):
-    """
-    Rename all files in a given directory to title case (all
-    words with uppercase first letter)
-    :return: nothing
-    """
-    print ("to_title() is working.")
-    # -- go trough path recursively and search all files
-    # for (dirpath, dirnames, filenames) in walk(unicode(path)): <- python 2
-    for (dirpath, dirnames, filenames) in walk(path):
-        # -- iterate over found files in concrete directory and rename them (to upper case)
-        prefix = dirpath + '\\'
-        for filename in filenames:
-            before = prefix + filename
-            after = prefix + filename.title()
-            # rename(before, after)
-            print('to title case:' + before + ' -> ' + after)
-
-
-def _list_files(path, files):
+def _list_files(path, files_buffer, out_to_console=False):
     """
     Internal function for listing (recursively) all files in specified directory.
-	Don't use it directly, use list_files()
-	:param path:
-    :return:
+    Don't use it directly, use list_files()
+    :param path: path to iterate through
+    :param files_buffer: buffer list for collection files
+    :param out_to_console: out to console processing file
     """
-    print "Listing files in [{}]".format(path)
     # print "STDOUT encoding ->", sys.stdout.encoding  # <- just a debug output
     for (dirpath, dirnames, filenames) in walk(unicode(path)):
         for filename in filenames:
-            print filename.encode(sys.stdout.encoding, errors='replace')
-            files.append(filename)
+            abs_path = dirpath + '/' + filename
+            if out_to_console:  # debug output
+                if sys.stdout.encoding is not None:  # sometimes encoding may be null!
+                    print abs_path.encode(sys.stdout.encoding, errors='replace')
+                else:
+                    print abs_path
+            files_buffer.append(abs_path)
 
-	
-def list_files(path):
-	"""
-	List all files in a specified path and return list of found files.
-	:param path: path to directory
-	:return: list of files
-	"""
-	print "list_files() is working. Path [{}].".format(path)
-	# todo: add checks for path (not empty/exists/is dir)
-	files = []
-	_list_files(path, files)
-	return files
+
+def list_files(path, out_to_console=False):
+    """
+    List all files in a specified path and return list of found files.
+    :param path: path to directory
+    :param out_to_console: do or don't output to system console
+    :return: list of files
+    """
+    log.debug("list_files() is working. Path [{}].".format(path))
+    if not path or not path.strip():  # fail-fast #1
+        raise IOError("Can't list files in empty path!")
+    if not os.path.exists(path) or not os.path.isdir(path):  # fail-fast #2
+        raise IOError("Path [{}] doesn't exist or not a directory!".format(path))
+    files = []
+    _list_files(path, files, out_to_console)
+    return files
+
 
 def parse_yaml(file_path):
     """
-    Parses single YAML file and return its contents as object (dictionary)
+    Parses single YAML file and return its contents as object (dictionary).
     :param file_path: path to YAML file to load settings from
     :return python object with YAML file contents
     """
@@ -141,9 +115,10 @@ def parse_yaml(file_path):
         raise IOError("Empty path to YAML file!")
     with open(file_path, 'r') as cfg_file:
         cfg_file_content = cfg_file.read()
-        if "\t" in cfg_file_content:    # no tabs allowed in file content
+        if "\t" in cfg_file_content:  # no tabs allowed in file content
             raise IOError("Config file [{}] contains 'tab' character!".format(file_path))
         return yaml.load(cfg_file_content)
+
 
 """
 def init_config(parser, is_merge_env = False):
@@ -166,13 +141,8 @@ def init_config(parser, is_merge_env = False):
 """
 
 
-class JiraException(Exception):
-    """JIRA Exception, used if something is wrong with/in JIRA interaction."""
-
-
 if __name__ == '__main__':
-    #print "pyutilities: Don't try to execute library as standalone app!"
-    #list_files('/media/vinnypuhh/MyData/Cloud/YandexDisk/DOCS AND BOOKS')
-	files = list_files('D:/')
-	print len(files)
-	
+    print "pyutilities: Don't try to execute library as standalone app!"
+    # list_files('/media/vinnypuhh/MyData/Cloud/YandexDisk/DOCS AND BOOKS')
+    # list = list_files('/media/vinnypuhh/MyData', True)
+    # print len(list)

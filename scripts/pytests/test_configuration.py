@@ -2,72 +2,77 @@
 # coding=utf-8
 
 import os
-import mock
-
+import unittest
+from helpers import init_logger
+from mock import patch
 from pylib.configuration import Configuration, ConfigError
-from config_aware_test_case import ConfigAwareTestCase
-
-# todo: add more test cases
 
 
-class ConfigurationTest(ConfigAwareTestCase):
+class ConfigurationTest(unittest.TestCase):
 
-    INVALID_PATHS = ['', "", '   ', "    ", "non-exist path"]
+    CONFIGS_PATH = "pytests/configs"
+
+    @classmethod
+    def setUpClass(cls):
+        init_logger()
 
     def setUp(self):
+        # init config before each test, don't merge with environment
         self.config = Configuration(is_merge_env=False)
 
-    def test_LoadInvalidPathFail(self):
-        for invalid_path in ConfigurationTest.INVALID_PATHS:
+    def tearDown(self):
+        self.config = None
+
+    def test_load_invalid_path(self):
+        for invalid_path in ['', "", '   ', "    ", "non-exist path"]:
             with self.assertRaises(ConfigError):
                 self.config.load(invalid_path)
 
-    def test_MergeConfigFiles(self):
-        self.config.load(self.config_dir)
-        # Property from env-related files (config/test.yml)
-        self.assertEqual(self.config.get("logging.file_log_level"), "DEBUG")
-        # Property from common (config/common.yml)
-        self.assertEqual(self.config.get("yarn_queue"), "mantis")
+    def test_merge_config_files(self):
+        self.config.load(ConfigurationTest.CONFIGS_PATH)
+        self.assertEqual(self.config.get("section1.key1"), "value1")
+        self.assertEqual(self.config.get("section2.key3"), "value3")
 
-    def test_MergeEnvVariables(self):
-        os.environ["yarn_queue"] = "test"
+    def test_merge_env_variables(self):
+        os.environ["simple_key"] = "env_value"
+        self.config.load(ConfigurationTest.CONFIGS_PATH, is_merge_env=False)
+        self.assertEqual(self.config.get("simple_key"), "file_value")
         self.config.merge_env()
-        self.assertEqual(self.config.get("yarn_queue"), "test")
+        self.assertEqual(self.config.get("simple_key"), "env_value")
 
-    def test_GetNotExistingProp(self):
+    def test_get_not_existing_property(self):
         with self.assertRaises(ConfigError):
             self.config.get("non_existing")
 
-    def test_GetTopProperty(self):
+    def test_get_top_property(self):
         self.config.merge_dict({'f': 'h'})
         self.assertEqual(self.config.get('f'), 'h')
 
-    def test_SetTopProperty(self):
+    def test_set_top_property(self):
         self.config.set('m', 'n')
         self.assertEqual(self.config.get('m'), 'n')
 
-    def test_GetDeepProperty(self):
+    def test_get_deep_property(self):
         self.config.merge_dict({'x': {'y': {'z': '100'}}})
         self.assertEqual(self.config.get('x.y.z'), '100')
 
-    def test_SetDeepProperty(self):
+    def test_set_deep_property(self):
         self.config.set('a.b.c', 'e')
         self.assertEqual(self.config.get('a.b.c'), 'e')
 
-    def test_ReplaceDeepProperty(self):
+    def test_replace_deep_property(self):
         self.config.merge_dict({'a': {'b': {'c': 'd'}}})
+        self.assertEqual(self.config.get('a.b.c'), 'd')
         self.config.set('a.b.c', 'e')
         self.assertEqual(self.config.get('a.b.c'), 'e')
 
-    # test with mocks (patches) for some functions
-    @mock.patch('pylib.configuration.parse_yaml')
-    @mock.patch('pylib.configuration.os.path')
-    def test_LoadFromSingleYamlFile(self, mock_path, mock_parse_yaml):
-
+    @patch('pylib.configuration.parse_yaml')
+    @patch('pylib.configuration.os')
+    def test_load_from_single_yaml(self, mock_os, mock_parse_yaml):
         # set returned results for mocks
-        mock_path.exists.return_value = True
-        mock_path.isfile.return_value = True
-        mock_path.isdir.return_value = False
+        mock_os.exists.return_value = True
+        mock_os.isfile.return_value = True
+        mock_os.isdir.return_value = False
         mock_parse_yaml.return_value = {"key": "value"}
 
         # check that key doesn't exist in config
@@ -76,13 +81,49 @@ class ConfigurationTest(ConfigAwareTestCase):
 
         # load config from mocked file
         self.config.load("/config/myyaml123.yml", False)
-
         # check that now key exists in config
         self.assertEqual(self.config.get("key"), "value")
 
-    # todo: implement test with mocks!
-    def test_LoadFromManyYarnFiles(self):
-        print "!!!"
+    @patch('pylib.configuration.parse_yaml')
+    @patch('pylib.configuration.os')
+    def test_load_from_directory(self, mock_os, mock_parse_yaml):
+        # mock for os.path()
+        mock_os.exists.return_value = True
+        mock_os.isfile.return_value = True
+        mock_os.isdir.return_value = True
+        # mock for os.listdir() - list of files
+        mock_os.listdir.return_value = ['file1.yml', 'file2.yml']
+        # each call to parse_yaml() will return next value
+        mock_parse_yaml.side_effect = [{"key1": "value1"}, {"key2": "value2"}]
 
-    def tearDown(self):
-        self.config = None
+        self.config.load("mydir", False)  # load config
+        # assertions
+        self.assertEqual(self.config.get("key1"), "value1")
+        self.assertEqual(self.config.get("key2"), "value2")
+
+    @patch.object(Configuration, 'load')
+    def test_init_with_path(self, mock_load):
+        # case 1 - merge with environment
+        Configuration('some_path1', is_merge_env=True)
+        mock_load.assert_called_with('some_path1', True)
+        # case 2 - don't merge with environment
+        Configuration('some_path2', is_merge_env=False)
+        mock_load.assert_called_with('some_path2', False)
+
+    def test_init_with_dict_override(self):
+        config = Configuration(dict_to_merge={'key': 'value'}, is_override_config=True)
+        self.assertEqual(config.get('key'), 'value')
+
+    @patch('pylib.configuration.parse_yaml')
+    @patch('pylib.configuration.os')  # name for patch should be equals to import in real module!
+    def test_init_with_dict_dont_override(self, mock_os, mock_parse_yaml):
+        # set returned results for mocks
+        mock_os.exists.return_value = True
+        mock_os.isfile.return_value = True
+        mock_os.isdir.return_value = False
+        mock_parse_yaml.return_value = {"key": "initial_value"}
+        # init config instance
+        config = Configuration(path_to_config='yaml_file.yml',
+                               dict_to_merge={'key': 'new_value', 'aaa': 'bbb'}, is_override_config=False)
+        # assertions
+        self.assertEqual(config.get('key'), 'initial_value')
