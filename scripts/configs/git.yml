@@ -4,6 +4,11 @@ repos_dir: c:/projects
 stash:
   address: https://gusevdm@stash.merck.com/scm/
 
+proxy:
+  use: yes
+  http: 127.0.0.1:3180
+  https: 127.0.0.1:3180
+
 #https://gusevdm@stash.merck.com/scm/man/mantis-ops.git
 #https://gusevdm@stash.merck.com/scm/man/mantis-pdc.git
 #https://gusevdm@stash.merck.com/scm/man/mantis-hadoop-clients.git

@@ -5,10 +5,10 @@
     Extended utility class/module for JIRA.
 
     Created: Gusev Dmitrii, 07.10.2017
-    Modified: Gusev Dmitrii, 09.10.2017
+    Modified: Gusev Dmitrii, 24.12.2017
 """
 
-import _jira_constants as jconst
+import common_constants as myconst
 from jira_utility_base import JiraUtilityBase, JiraException
 
 # issue link type
@@ -35,9 +35,9 @@ class JiraUtilityExtended(JiraUtilityBase):
     def print_current_status_report(self, out_file=None):
         print "JIRAUtilityExtended.print_current_status_report() is working."
         # preparing parameters
-        team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
+        team_name = self.config.get(myconst.CONFIG_KEY_TEAM_NAME)
         print "Specified team name: [%s]." % team_name
-        team = self.config.get(jconst.CONFIG_KEY_TEAM_MEMBERS % team_name)
+        team = self.config.get(myconst.CONFIG_KEY_TEAM_MEMBERS % team_name)
         print "Members of team [%s]: %s" % (team_name, team)
         # report header and body
         report = 'Current "In Progress" status'
@@ -61,9 +61,9 @@ class JiraUtilityExtended(JiraUtilityBase):
         """
         print "JIRAUtilityExtended.print_closed_issues_report() is working."
         # preparing parameters
-        team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
+        team_name = self.config.get(myconst.CONFIG_KEY_TEAM_NAME)
         print "Specified team name: [%s]." % team_name
-        team = self.config.get(jconst.CONFIG_KEY_TEAM_MEMBERS % team_name)
+        team = self.config.get(myconst.CONFIG_KEY_TEAM_MEMBERS % team_name)
         print "Members of team [%s]: %s" % (team_name, team)
         # generate report header
         report = '[] Team closed issues report'
@@ -92,7 +92,7 @@ class JiraUtilityExtended(JiraUtilityBase):
         :param out_file: file to print report to (if needed)
         """
         print "JIRAUtilityExtended.print_sprint_issues_report() is working."
-        sprint = self.config.get(jconst.CONFIG_KEY_SPRINT)
+        sprint = self.config.get(myconst.CONFIG_KEY_SPRINT)
         print "Sprint for issues search [%s]." % sprint
         # generate report header
         report = 'Issues report for {}.\n'.format(sprint)
@@ -104,11 +104,11 @@ class JiraUtilityExtended(JiraUtilityBase):
 
     def add_component_to_sprint_issues(self):
         print "JIRAUtilityExtended.add_component_to_sprint_issues() is working."
-        sprint = self.config.get(jconst.CONFIG_KEY_SPRINT)
+        sprint = self.config.get(myconst.CONFIG_KEY_SPRINT)
         # get team, project name and component name
-        team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
-        project = self.config.get(jconst.CONFIG_KEY_TEAM_PROJECT % team_name)
-        component = self.config.get(jconst.CONFIG_KEY_TEAM_COMPONENT % team_name)
+        team_name = self.config.get(myconst.CONFIG_KEY_TEAM_NAME)
+        project = self.config.get(myconst.CONFIG_KEY_TEAM_PROJECT % team_name)
+        component = self.config.get(myconst.CONFIG_KEY_TEAM_COMPONENT % team_name)
         print "Sprint for adding component: [%s], team [%s], project [%s], component [%s]." \
               % (sprint, team_name, project, component)
         # add component to all found issues
@@ -116,10 +116,10 @@ class JiraUtilityExtended(JiraUtilityBase):
 
     def add_label_to_sprint_issues(self):
         print "JIRAUtilityExtended.add_label_to_sprint_issues() is working."
-        sprint = self.config.get(jconst.CONFIG_KEY_SPRINT)
+        sprint = self.config.get(myconst.CONFIG_KEY_SPRINT)
         # get team, project name and label name
-        team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
-        label = self.config.get(jconst.CONFIG_KEY_TEAM_LABEL % team_name)
+        team_name = self.config.get(myconst.CONFIG_KEY_TEAM_NAME)
+        label = self.config.get(myconst.CONFIG_KEY_TEAM_LABEL % team_name)
         print "Sprint for adding label: [%s], team [%s], label [%s]." % (sprint, team_name, label)
         # add component to all found issues
         self.add_label_to_issues(self.get_all_sprint_issues(sprint), label)
@@ -166,7 +166,7 @@ class JiraUtilityExtended(JiraUtilityBase):
                 found_issues.append(issue)
 
             counter += 1
-            if counter % jconst.CONST_PROCESSING_STEP_COUNTER == 0:
+            if counter % myconst.CONST_PROCESSING_STEP_COUNTER == 0:
                 print "Processed [%s] issues." % counter
 
 

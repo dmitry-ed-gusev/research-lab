@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+"""
+    Utility class for holding configuration. Can merge configuration with environment variables.
+    Can load configuration from YAML files. See docstring for Configuration class.
+
+    Created: Gusev Dmitrii, 24.12.2017
+    Modified:
+"""
+
 import os
 import logging
 from string import Template
@@ -193,22 +201,3 @@ class Configuration(object):
 
 class ConfigError(Exception):
     """Invalid configuration error"""
-
-# def load_config():
-#     """ Load configuration from env['CONFIG_LOCATION'] (if specified) or 'config'\n
-#         Also initialize logger-required fields (mdc_pid = current pid, other fields = 'ERROR'
-#     """
-#     if 'CONFIG_LOCATION' in os.environ:
-#         config_location = os.environ['CONFIG_LOCATION']
-#     else:
-#         config_location = os.path.dirname(__file__) + '/../../config'
-#     config = Configuration()
-#     config.set('step_name', 'ERROR')
-#     config.set('source_system', 'ERROR')
-#     config.set('source_system_location', 'ERROR')
-#     config.set('source_system_env', 'ERROR')
-#     config.set('source_table', 'ERROR')
-#     config.set('mdc_pid', os.getpid())
-#     config.load(config_location)
-#     config.set('config_location', os.path.abspath(config_location))
-#     return config

@@ -3,6 +3,11 @@ jira:
   address:   https://issues.merck.com
   user:      gusevdm
 
+proxy:
+  use: yes
+  http: 127.0.0.1:3180
+  https: 127.0.0.1:3180
+
 # Specific issue settings (relate jira usage model)
 issue:
   # label for unlinked issue (exclude such issues from search)

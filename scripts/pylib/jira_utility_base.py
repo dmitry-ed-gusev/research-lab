@@ -11,12 +11,13 @@
 
 import prettytable
 import codecs
-import _jira_constants as jconst
+import common_constants as myconst
 from jira import JIRA
 from configuration import Configuration, ConfigError
 
 
 # todo: check jira address and username (shouldn't be empty!)
+# todo: replace print statements with logging
 class JiraUtilityBase(object):
     """ Class JIRAUtilityBase. Intended for interaction with JIRA and performing some useful actions. """
 
@@ -58,11 +59,11 @@ class JiraUtilityBase(object):
         Also init internal field [jira].
         """
         print "JIRAUtilityBase.connect() is working."
-        address = self.config.get(jconst.CONFIG_KEY_ADDRESS)
-        user = self.config.get(jconst.CONFIG_KEY_USER)
+        address = self.config.get(myconst.CONFIG_KEY_ADDRESS)
+        user = self.config.get(myconst.CONFIG_KEY_USER)
         # check - if we aren't connected -> connect, otherwise - skip (just inform)
         if not self.jira:
-            password = self.config.get(jconst.CONFIG_KEY_PASS)
+            password = self.config.get(myconst.CONFIG_KEY_PASS)
             print "connect() -> connecting to [{}] as user [{}].".format(address, user)
             self.__jira = JIRA(address, basic_auth=(user, password))
             print "JIRAUtilityBase: connected to [{}] as user [{}].".format(address, user)
@@ -82,9 +83,9 @@ class JiraUtilityBase(object):
         self.connect()
         # search for issues by provided jql and return them
         issues = []
-        batch_size = jconst.CONST_JIRA_ISSUES_BATCH_SIZE
+        batch_size = myconst.CONST_JIRA_ISSUES_BATCH_SIZE
         total_processed = 0
-        while batch_size == jconst.CONST_JIRA_ISSUES_BATCH_SIZE:
+        while batch_size == myconst.CONST_JIRA_ISSUES_BATCH_SIZE:
             # get issues part (in a size of batch, default = 50 - see JIRAUtilityBase.ISSUES_BATCH_SIZE)
             issues_batch = self.jira.search_issues(jql_str=jql, maxResults=False, startAt=total_processed)
             batch_size = len(issues_batch)  # update current batch size
@@ -184,7 +185,7 @@ class JiraUtilityBase(object):
                     issue.update(fields={"components": existing_components})  # <- very long operation!
 
                 counter += 1
-                if counter % jconst.CONST_PROGRESS_STEP_COUNTER == 0:  # report progress
+                if counter % myconst.CONST_PROGRESS_STEP_COUNTER == 0:  # report progress
                     print "Processed -> {}/{}".format(counter, len(issues))
             print "Summary: updated [{}] issue(s).".format(counter)
         else:
@@ -247,13 +248,13 @@ class JiraUtilityBase(object):
             report_file = out_file
         else:
             try:
-                report_file = self.config.get(jconst.CONFIG_KEY_OUTPUT_FILE)
+                report_file = self.config.get(myconst.CONFIG_KEY_OUTPUT_FILE)
             except ConfigError:  # do nothing on error (key not exists)
                 pass
         # out report to file
         if report_file:
             print "Output report to file [%s]." % report_file
-            with codecs.open(report_file, 'w', jconst.CONST_COMMON_ENCODING) as out:
+            with codecs.open(report_file, 'w', myconst.CONST_COMMON_ENCODING) as out:
                 out.write(report)
 
     @staticmethod
@@ -275,7 +276,7 @@ class JiraUtilityBase(object):
                 issue.fields.labels.append(label_name)
                 issue.update(fields={"labels": issue.fields.labels})
             counter += 1
-            if counter % jconst.CONST_PROGRESS_STEP_COUNTER == 0:  # report progress
+            if counter % myconst.CONST_PROGRESS_STEP_COUNTER == 0:  # report progress
                 print "Processed -> {}/{}".format(counter, len(issues))
         print "Summary: updated [{}] issue(s).".format(counter)
 

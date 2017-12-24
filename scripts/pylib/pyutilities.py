@@ -2,22 +2,18 @@
 #  -*- coding: utf-8 -*-
 
 """
- Common utilities in python. Can be useful in different cases.
- Created: Gusev Dmitrii, 04.04.2017
- Modified: Gusev Dmitrii, 17.12.2017
+    Common utilities in python. Can be useful in different cases.
+    Created: Gusev Dmitrii, 04.04.2017
+    Modified: Gusev Dmitrii, 24.12.2017
 """
-
-# todo: implement proper logging!
 
 import os
 import sys
 import csv
 import yaml
-import argparse
 import logging
 import logging.config
-import _common_constants as const
-from os import walk, rename
+from os import walk
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
 # don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
@@ -118,27 +114,6 @@ def parse_yaml(file_path):
         if "\t" in cfg_file_content:  # no tabs allowed in file content
             raise IOError("Config file [{}] contains 'tab' character!".format(file_path))
         return yaml.load(cfg_file_content)
-
-
-"""
-def init_config(parser, is_merge_env = False):
-    print "init_config() is working."
-    # get argparse namespace (will be filled with vars after parsing)
-    argparse_namespace = argparse.Namespace()
-    # prepare cmd line parser and parse cmd line (put all in specified namespace)
-    args = parser.parse_args(namespace=argparse_namespace)
-    # load configuration from specified or default config, don't merge with environment (default)
-    config = Configuration(getattr(args, const.CONFIG_KEY_CFG_FILE), is_merge_env=is_merge_env)
-    # add cmd line arguments to config (overwrite existing, if value is present)
-    for key, value in vars(argparse_namespace).items():
-        if value:
-            config.set(key, value)
-
-    # just a debug output
-    print "Configuration: %s" % config.config_dict
-    # return created config
-    return config
-"""
 
 
 if __name__ == '__main__':

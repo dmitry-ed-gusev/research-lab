@@ -11,47 +11,10 @@
 import argparse
 from configuration import Configuration
 from jira_utility_extended import JiraUtilityExtended, JIRA_OPTIONS
-import _common_constants as myconst
+import common_constants as myconst
 import _jira_constants as jconst
 
 
-def prepare_arg_parser():
-    """
-    Prepare arguments and return cmd line parser.
-    :return: prepared cmd line parser
-    """
-    # create arguments parser
-    parser = argparse.ArgumentParser(description='JIRA Utility.')
-
-    # config file for loading, optional
-    parser.add_argument('--config', dest=myconst.CONFIG_KEY_CFG_FILE, action='store',
-                        default=jconst.CONST_CONFIG_FILE, help='YAML configuration file/path')
-    # jira address and user, optional
-    parser.add_argument('-a', '--address', dest=jconst.CONFIG_KEY_ADDRESS, action='store', help='JIRA address')
-    parser.add_argument('-u', '--user', dest=jconst.CONFIG_KEY_USER, action='store', help='JIRA user')
-    # mandatory cmd line parameter(s): jira password, option to execute
-    parser.add_argument('-p', '--pass', dest=jconst.CONFIG_KEY_PASS, action='store', required=True, help='JIRA password')
-    # possible options (actions) to be done by this script
-    parser.add_argument('--option', dest=jconst.CONFIG_KEY_OPTION, action='store', required=True,
-                        choices=JIRA_OPTIONS, help='Type of option/action')
-    # sprint name, optional
-    parser.add_argument('--sprint', dest=jconst.CONFIG_KEY_SPRINT, action='store', help='JIRA Sprint name')
-    # team name, optional
-    parser.add_argument('--team', dest=jconst.CONFIG_KEY_TEAM_NAME, action='store', choices=jconst.CONST_TEAMS_LIST,
-                        help='Team for report generating')
-    # some optional settings for detailed configuration: report output file, days back for 'Closed issues' report,
-    # create simple report (flag), show label column in a report (flag)
-    parser.add_argument('--file', dest=jconst.CONFIG_KEY_OUTPUT_FILE, action='store', default=None,
-                        help='Output file name for report')
-    parser.add_argument('--daysBack', dest=jconst.CONFIG_KEY_DAYS_BACK, action='store', default=0,
-                        help='Days back for closed issues report')
-    parser.add_argument('--simpleReport', dest=jconst.CONFIG_KEY_USE_SIMPLE_REPORT, action='store_true',
-                        help='Generate simple report (by default - detailed)')
-    parser.add_argument('--showLabel', dest=jconst.CONFIG_KEY_SHOW_LABEL_COLUMN, action='store_true',
-                        help='Show "Label" column in a report')
-
-    # return prepared parser
-    return parser
 
 
 # todo: make method common - init config object with overriding by cmd line parameters
