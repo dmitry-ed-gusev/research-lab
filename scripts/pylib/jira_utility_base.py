@@ -6,11 +6,12 @@
     exception. Maybe some useful methods will be added.
 
     Created: Gusev Dmitrii, 04.04.2017
-    Modified: Gusev Dmitrii, 20.12.2017
+    Modified: Gusev Dmitrii, 25.12.2017
 """
 
-import prettytable
 import codecs
+import prettytable
+import logging
 import common_constants as myconst
 from jira import JIRA
 from configuration import Configuration, ConfigError
@@ -21,7 +22,7 @@ from configuration import Configuration, ConfigError
 class JiraUtilityBase(object):
     """ Class JIRAUtilityBase. Intended for interaction with JIRA and performing some useful actions. """
 
-    # internal property, could be accessed outside, but cannot be assigned
+    # internal read-only property, could be accessed outside, but cannot be assigned
     @property
     def jira(self):
         return self.__jira
@@ -35,7 +36,11 @@ class JiraUtilityBase(object):
         System method: initializer for JIRAUtilityBase class.
         :param config: Configuration object or string path to config file/directory
         """
-        print "JIRAUtilityBase.__init__() is working. Config [%s]." % config
+        # init logger
+        self.log = logging.getLogger(__name__)
+        self.log.addHandler(logging.NullHandler())
+
+        self.log.debug("Initializing JIRA Base Utility class.\nConfig [{}].".format(config))
         # if specified config file/object - use it, ignore other params.
         if config:
             if isinstance(config, str):
@@ -58,17 +63,36 @@ class JiraUtilityBase(object):
         Internal system method: connect to JIRA instance (with params from config - initialized in constructor).
         Also init internal field [jira].
         """
-        print "JIRAUtilityBase.connect() is working."
+        self.log.debug("connect() is working.")
         address = self.config.get(myconst.CONFIG_KEY_ADDRESS)
         user = self.config.get(myconst.CONFIG_KEY_USER)
         # check - if we aren't connected -> connect, otherwise - skip (just inform)
         if not self.jira:
             password = self.config.get(myconst.CONFIG_KEY_PASS)
-            print "connect() -> connecting to [{}] as user [{}].".format(address, user)
-            self.__jira = JIRA(address, basic_auth=(user, password))
-            print "JIRAUtilityBase: connected to [{}] as user [{}].".format(address, user)
+            http_proxy = self.config.get(myconst.CONFIG_KEY_PROXY_HTTP)
+            https_proxy = self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS)
+
+            if True or http_proxy or https_proxy:  # connect through proxy
+                import urllib3
+                urllib3.disable_warnings()
+                self.log.info("JIRA: connecting to [{}] as user [{}] through proxy [{}/{}]."
+                              .format(address, user, http_proxy, https_proxy))
+
+                options = {'server': 'https://issues.merck.com',
+                           'rest_path': 'api',
+                           'rest_api_version': '2',
+                           'verify': False}
+                self.__jira = JIRA(options=options, basic_auth=('gusevdm', 'Vinnypuhh22!'),
+                                   validate=True,
+                                   proxies={'http': 'http://127.0.0.1:3180', 'https': 'http://127.0.0.1:3180'})
+
+            else:
+                self.log.info("JIRA: connecting to [{}] as user [{}].".format(address, user))
+                self.__jira = JIRA(address, basic_auth=(user, password))
+
+            self.log.info("JIRA: connected to [{}] as user [{}].".format(address, user))
         else:
-            print "JIRAUtilityBase: already connected to [{}] as user [{}].".format(address, user)
+            self.log.info("JIRA: already connected to [{}] as user [{}].".format(address, user))
 
     def execute_jql(self, jql):
         """

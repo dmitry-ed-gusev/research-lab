@@ -7,6 +7,10 @@
     Modified: Gusev Dmitrii, 24.12.2017
 """
 
+# loggers for utilities
+LOGGER_NAME_JIRAUTIL = 'jirautil'
+LOGGER_NAME_GITUTIL = 'gitutil'
+
 # common constants/defaults
 CONST_GIT_CONFIG_FILE = "configs/git.yml"
 CONST_JIRA_CONFIG_FILE = "configs/jira.yml"
@@ -20,7 +24,6 @@ CONST_TEAMS_LIST = ("ada", "ada_all", "nova", "nova_all", "bmtef", "bmtef_all")
 CONST_JIRA_ISSUES_BATCH_SIZE = 50
 
 # keys for proxy
-CONFIG_KEY_PROXY_USE = 'proxy.use'
 CONFIG_KEY_PROXY_HTTP = 'proxy.http'
 CONFIG_KEY_PROXY_HTTPS = 'proxy.https'
 # key for argparse -> config file name

@@ -5,7 +5,7 @@
     Extended utility class/module for JIRA.
 
     Created: Gusev Dmitrii, 07.10.2017
-    Modified: Gusev Dmitrii, 24.12.2017
+    Modified: Gusev Dmitrii, 25.12.2017
 """
 
 import common_constants as myconst
@@ -15,14 +15,13 @@ from jira_utility_base import JiraUtilityBase, JiraException
 IMPLEMENTS = "Implementation"
 # issue link outward direction type
 IMPLEMENTS_TYPE = "implements / must come before"
-# named JQL queries
 
 
 class JiraUtilityExtended(JiraUtilityBase):
 
     def __init__(self, config):
-        print "JIRAUtilityExtended.__init__() is working. Config [%s]." % config
         super(JiraUtilityExtended, self).__init__(config)
+        self.log.debug("Initializing JIRA Extended Utility class.")
 
     def execute_option(self, option):
         print "JIRAUtilityExtended.execute_option() is working. Option [%s]." % option

@@ -1,10 +1,9 @@
 # Common JIRA settings. You can't/mustn't put password here!
 jira:
-  address:   https://issues.merck.com
+  address:   https://issues.merck.com/
   user:      gusevdm
 
 proxy:
-  use: yes
   http: 127.0.0.1:3180
   https: 127.0.0.1:3180
 
@@ -12,6 +11,9 @@ proxy:
 issue:
   # label for unlinked issue (exclude such issues from search)
   unlinked:  unlinked
+
+sprint:
+  name: asdf
 
 # epics list
 epics:

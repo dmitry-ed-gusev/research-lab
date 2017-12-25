@@ -39,7 +39,12 @@ loggers:
         level: DEBUG
         #handlers: [console]
         #propagate: yes
-
+    jirautil:
+        level: DEBUG
+    gitutil:
+        level: DEBUG
+    jira:
+        level: DEBUG
 # root logger
 root:
     level: INFO

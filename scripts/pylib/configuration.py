@@ -40,21 +40,16 @@ class Configuration(object):
         # init internal dictionary
         self.config_dict = {}
 
-        # todo: if merge with env = True -> merge with env (call method)?
-
-        # if provided file path - try to load config
-        if path_to_config and path_to_config.strip():
+        if path_to_config and path_to_config.strip():  # if provided file path - try to load config
             self.log.debug("Loading config from [{}].".format(path_to_config))
             self.load(path_to_config, is_merge_env)
 
-        # merge config from file(s) with dictionary, if any
-        if dict_to_merge:
+        if dict_to_merge:  # merge config from file(s) with dictionary, if any
             self.log.debug("Merging with provided dictionary. Override: [{}].".format(is_override_config))
-            if is_override_config:  # if override -> just update internal
-                self.config_dict.update(dict_to_merge)
-            else:  # if not override - check each key and put if not exist
-                for key, value in dict_to_merge.items():
-                    if key not in self.config_dict.keys():
+            for key, value in dict_to_merge.items():
+                if is_override_config or key not in self.config_dict.keys():
+                    # override key only with non-empty value
+                    if value:
                         self.set(key, value)
 
     def load(self, path, is_merge_env=True):
@@ -197,6 +192,9 @@ class Configuration(object):
             return values[keys[0]]
         else:
             return self.__get_value(keys[1], values[keys[0]])
+
+    def __str__(self):
+        return str(self.config_dict)
 
 
 class ConfigError(Exception):
