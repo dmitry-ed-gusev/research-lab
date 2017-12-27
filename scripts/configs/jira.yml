@@ -9,13 +9,14 @@ proxy:
   http: 127.0.0.1:3180
   https: 127.0.0.1:3180
 
+# default output file (for reports)
+output:
+  file: jira_report.out
+
 # Specific issue settings (relate jira usage model)
 issue:
   # label for unlinked issue (exclude such issues from search)
   unlinked:  unlinked
-
-sprint:
-  name: asdf
 
 # epics list
 epics:

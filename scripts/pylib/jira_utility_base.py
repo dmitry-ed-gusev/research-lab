@@ -6,7 +6,7 @@
     exception. Maybe some useful methods will be added.
 
     Created: Gusev Dmitrii, 04.04.2017
-    Modified: Gusev Dmitrii, 25.12.2017
+    Modified: Gusev Dmitrii, 27.12.2017
 """
 
 import codecs
@@ -14,11 +14,9 @@ import prettytable
 import logging
 import common_constants as myconst
 from jira import JIRA
-from configuration import Configuration, ConfigError
+from configuration import Configuration
 
 
-# todo: check jira address and username (shouldn't be empty!)
-# todo: replace print statements with logging
 class JiraUtilityBase(object):
     """ Class JIRAUtilityBase. Intended for interaction with JIRA and performing some useful actions. """
 
@@ -46,10 +44,10 @@ class JiraUtilityBase(object):
             if isinstance(config, str):
                 if not config.strip():
                     raise JiraException("Empty configuration object/path provided!")
-                print "Provided config is string path. Loading."
+                self.log.debug("Provided config is string path. Loading.")
                 self.__config = Configuration(config)
             elif isinstance(config, Configuration):
-                print "Provided config is Configuration() object."
+                self.log.debug("Provided config is Configuration() object.")
                 self.__config = config
             else:
                 raise JiraException("Unknown configuration object type! Not a string path/object!")
@@ -115,7 +113,7 @@ class JiraUtilityBase(object):
         :param jql: JQL query to be executed in a JIRA
         :return: found issues list
         """
-        print "JIRAUtilityBase.execute_jql() is working. JQL [%s]." % jql
+        self.log.debug("execute_jql() is working. JQL [{}].".format(jql))
         if not jql or not jql.strip():  # fast check
             raise JiraException('Provided JQL is empty!')
         # connect to JIRA
@@ -140,17 +138,17 @@ class JiraUtilityBase(object):
         :param project_name: name of project for which we will get the key
         :return: project key or None
         """
-        print "JIRAUtilityBase.get_project_key() is working. Search project key by name: [{}].".format(project_name)
+        self.log.debug("get_project_key() is working. Search project key by name: [{}].".format(project_name))
         self.connect()
         if not project_name or not project_name.strip():  # fail-fast - provided project name
             raise JiraException('Empty project name for project key search!')
         # search project key
         for project in self.jira.projects():
             if project.name == project_name:
-                print "Found key [{}] for project [{}].".format(project.key, project_name)
+                self.log.debug("Found key [{}] for project [{}].".format(project.key, project_name))
                 return project.key
         # project/key not found
-        print "Key for project [{}] not found!".format(project_name)
+        self.log.debug("Key for project [{}] not found!".format(project_name))
         return None
 
     def get_component_by_name(self, project_name, component_name):
@@ -161,18 +159,18 @@ class JiraUtilityBase(object):
         :param component_name: name for component search
         :return: found component or None
         """
-        print "JIRAUtilityBase.get_component() is working. Search component: [{}] for project: [{}]."\
-            .format(component_name, project_name)
+        self.log.debug("get_component() is working. Search component: [{}] for project: [{}]."
+                       .format(component_name, project_name))
         # fail-fast - check of parameters
         if not project_name or not project_name.strip() or not component_name or not component_name.strip():
             raise JiraException('Empty project name [{}] or component name [{}]!'.format(project_name, component_name))
         # search over project components
         for component in self.jira.project_components(self.get_project_key(project_name)):
             if component.name == component_name:
-                print "Found component by name [{}].".format(component_name)
+                self.log.debug("Found component by name [{}].".format(component_name))
                 return component
         # component not found
-        print "Component by name [{}] not found!".format(component_name)
+        self.log.debug("Component by name [{}] not found!".format(component_name))
         return None
 
     def get_all_sprint_issues(self, sprint_name):
@@ -181,12 +179,12 @@ class JiraUtilityBase(object):
         :param sprint_name: name of sprint for issues search
         :return: list of sprint issues
         """
-        print "JIRAUtilityBase.get_all_sprint_issues() is working. Search issues for sprint: [{}].".format(sprint_name)
+        self.log.debug("get_all_sprint_issues() is working. Search issues for sprint: [{}].".format(sprint_name))
         if not sprint_name or not sprint_name.strip():  # fail-fast
             raise JiraException("Empty sprint name!")
         # generate jql
         jql = 'sprint = "{}"'.format(sprint_name)
-        print "Generated JQL [{}].".format(jql)
+        self.log.debug("Generated JQL [{}].".format(jql))
         return self.execute_jql(jql)  # search for issues and return them
 
     def add_component_to_issues(self, issues, project_name, component_name):
@@ -197,7 +195,7 @@ class JiraUtilityBase(object):
         :param component_name: component name
         :return:
         """
-        print "JIRAUtilityBase.add_component_to_issues() is working."
+        self.log.debug("add_component_to_issues() is working.")
 
         if not project_name or not project_name.strip():  # fail-fast
             raise JiraException('Project name is empty!')
@@ -225,10 +223,10 @@ class JiraUtilityBase(object):
 
                 counter += 1
                 if counter % myconst.CONST_PROGRESS_STEP_COUNTER == 0:  # report progress
-                    print "Processed -> {}/{}".format(counter, len(issues))
-            print "Summary: updated [{}] issue(s).".format(counter)
+                    self.log.debug("Processed -> {}/{}".format(counter, len(issues)))
+            self.log.debug("Summary: updated [{}] issue(s).".format(counter))
         else:
-            print "Component [{}] not found!".format(component_name)
+            self.log.debug("Component [{}] not found!".format(component_name))
 
     def get_issue(self, issue_key):
         """
@@ -236,7 +234,7 @@ class JiraUtilityBase(object):
         :param issue_key: issue key for search (<project key>-<number>).
         :return:
         """
-        print "JIRAUtilityBase.get_issue() is working. Get issue by key: [{}].".format(issue_key)
+        self.log.debug("get_issue() is working. Get issue by key: [{}].".format(issue_key))
         return self.jira.issue(issue_key)
 
     def get_all_closed_issues_for_user(self, user, last_days_count=0):
@@ -248,7 +246,7 @@ class JiraUtilityBase(object):
         closed issues for all time, if < 0, raise exception
         :return: found issues list
         """
-        print "JIRAUtilityBase.get_all_issues_for_user() is working. Search issues for user: [{}].".format(user)
+        self.log.debug("get_all_issues_for_user() is working. Search issues for user: [{}].".format(user))
 
         # fast checks
         if not user or not user.strip:
@@ -260,18 +258,18 @@ class JiraUtilityBase(object):
         jql = 'assignee = {} AND status changed to (Closed, Done)'.format(user)
         if last_days_count > 0:
             jql += ' after -{}d'.format(last_days_count)
-        print "Generated JQL [{}].".format(jql)
+        self.log.debug("Generated JQL [{}].".format(jql))
         # execute jql and return result
         return self.execute_jql(jql)
 
     def get_current_status_for_user(self, user):
-        print "JIRAUtilityBase.get_current_status_for_user() is working. User: [%s]." % user
+        self.log.debug("get_current_status_for_user() is working. User: [{}].".format(user))
         # fast checks
         if not user or not user.strip:
             raise JiraException('User name is empty!')
         # generate jql
         jql = 'assignee = {} AND status = "In Progress"'.format(user)
-        print "Generated JQL [{}]".format(jql)
+        self.log.debug("Generated JQL [{}]".format(jql))
         # execute jql and return result
         return self.execute_jql(jql)
 
@@ -281,33 +279,29 @@ class JiraUtilityBase(object):
         If internal config doesn't exist too - do nothing.
         :return:
         """
+        self.log.debug("write_report_toFile() is working. Output file [{}].".format(out_file))
         # select report output file (if specified)
-        report_file = None
         if out_file and out_file.strip():
             report_file = out_file
         else:
-            try:
-                report_file = self.config.get(myconst.CONFIG_KEY_OUTPUT_FILE)
-            except ConfigError:  # do nothing on error (key not exists)
-                pass
-        # out report to file
+            report_file = self.config.get(myconst.CONFIG_KEY_OUTPUT_FILE, '')
+        # out report to file (if no file - no output!)
         if report_file:
-            print "Output report to file [%s]." % report_file
+            self.log.debug("Output report to file [{}].".format(report_file))
             with codecs.open(report_file, 'w', myconst.CONST_COMMON_ENCODING) as out:
                 out.write(report)
+        else:
+            self.log.warn("Can't output to file with empty name!")
 
-    @staticmethod
-    def add_label_to_issues(issues, label_name):
+    def add_label_to_issues(self, issues, label_name):
         """
         Add specified label to specified issues list.
         :param issues: issues for add label to
         :param label_name: label to add to each issue
         """
-        print "JIRAUtilityBase.add_label_to_issues() is working. Adding label [{}].".format(label_name)
-
+        self.log.debug("add_label_to_issues() is working. Adding label [{}].".format(label_name))
         if not label_name or not label_name.strip():  # fail-fast
             raise JiraException('Label is empty!')
-
         # iterate over issues and add team label to each
         counter = 0
         for issue in issues:
@@ -316,27 +310,25 @@ class JiraUtilityBase(object):
                 issue.update(fields={"labels": issue.fields.labels})
             counter += 1
             if counter % myconst.CONST_PROGRESS_STEP_COUNTER == 0:  # report progress
-                print "Processed -> {}/{}".format(counter, len(issues))
-        print "Summary: updated [{}] issue(s).".format(counter)
+                self.log.debug("Processed -> {}/{}".format(counter, len(issues)))
+        self.log.debug("Summary: updated [{}] issue(s).".format(counter))
 
-    @staticmethod
-    def print_raw_issue(issue):
+    def print_raw_issue(self, issue):
         """
         This method is intended mostly for debug purposes - print JIRA issue as a raw JSON
         :param issue: issue object for printing
         """
-        print "JIRAUtilityBase.print_raw_issue() is working."
-        print issue.raw
+        self.log.debug("print_raw_issue() is working.")
+        print "Raw issue:\n\t", issue.raw
 
-    @staticmethod
-    def get_issues_report(issues, show_label=False):
+    def get_issues_report(self, issues, show_label=False):
         """
         Generate and return report for issues
         :param issues: list of issues
         :param show_label: show "Labels" column in a report, True by default
         :return: generated report
         """
-        print "JIRAUtilityBase.get_issues_report() is working."
+        self.log.debug("get_issues_report() is working.")
 
         # create report header
         header_list = ['#', 'Issue', 'Type', 'SP']

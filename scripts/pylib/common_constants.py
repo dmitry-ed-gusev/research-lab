@@ -4,7 +4,7 @@
 """
     List of useful common constants for all modules.
     Created: Gusev Dmitrii, 17.12.2017
-    Modified: Gusev Dmitrii, 24.12.2017
+    Modified: Gusev Dmitrii, 27.12.2017
 """
 
 # loggers for utilities

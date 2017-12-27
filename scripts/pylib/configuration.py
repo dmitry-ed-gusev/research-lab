@@ -5,8 +5,8 @@
     Utility class for holding configuration. Can merge configuration with environment variables.
     Can load configuration from YAML files. See docstring for Configuration class.
 
-    Created: Gusev Dmitrii, 24.12.2017
-    Modified:
+    Created: Gusev Dmitrii, XX.08.2017
+    Modified: Gusev Dmitrii, 27.12.2017
 """
 
 import os
@@ -18,7 +18,6 @@ YAML_EXTENSION_1 = '.yml'
 YAML_EXTENSION_2 = '.yaml'
 
 
-# todo: replace all print() out with logging
 class Configuration(object):
     """Tree-like configuration-holding structure, allows loading from YAML and retrieving values
     by using chained hierarchical key with dot-separated levels, e.g. "hdfs.namenode.address".
