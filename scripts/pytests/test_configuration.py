@@ -44,6 +44,11 @@ class ConfigurationTest(unittest.TestCase):
         with self.assertRaises(ConfigError):
             self.config.get("non_existing")
 
+    def test_get_not_exisitng_complex_property(self):
+        self.config.set('level1', None)
+        with self.assertRaises(ConfigError):
+            self.config.get('level1.level2')
+
     def test_get_top_property(self):
         self.config.merge_dict({'f': 'h'})
         self.assertEqual(self.config.get('f'), 'h')

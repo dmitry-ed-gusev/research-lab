@@ -153,7 +153,7 @@ class Configuration(object):
         except KeyError as err:
             if default is not None:
                 return default
-            raise ConfigError("Configuration entry %s not found" % err.message)
+            raise ConfigError("Configuration entry [{}] not found".format(key))
 
     def set(self, key, value):
         """Sets config value, creating all the nested levels if necessary
@@ -187,6 +187,8 @@ class Configuration(object):
             :type values: dict
             :rtype: Any
         """
+        if not values:
+            raise KeyError
         keys = key.split(".", 1)
         if len(keys) < 2:
             return values[keys[0]]
