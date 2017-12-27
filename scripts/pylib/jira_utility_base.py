@@ -64,35 +64,50 @@ class JiraUtilityBase(object):
         Also init internal field [jira].
         """
         self.log.debug("connect() is working.")
-        address = self.config.get(myconst.CONFIG_KEY_ADDRESS)
-        user = self.config.get(myconst.CONFIG_KEY_USER)
         # check - if we aren't connected -> connect, otherwise - skip (just inform)
         if not self.jira:
-            password = self.config.get(myconst.CONFIG_KEY_PASS)
-            http_proxy = self.config.get(myconst.CONFIG_KEY_PROXY_HTTP)
-            https_proxy = self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS)
+            self.log.debug("JIRA: doesn't connected yet. Connecting.")
 
-            if True or http_proxy or https_proxy:  # connect through proxy
+            # collect connection parameters
+            jira_address = self.config.get(myconst.CONFIG_KEY_JIRA_ADDRESS, '')
+            jira_rest_path = self.config.get(myconst.CONFIG_KEY_JIRA_REST_PATH, '')
+            jira_api_ver = self.config.get(myconst.CONFIG_KEY_JIRA_API_VERSION, '')
+            user = self.config.get(myconst.CONFIG_KEY_JIRA_USER, '')
+            password = self.config.get(myconst.CONFIG_KEY_JIRA_PASS, '')
+            http_proxy = self.config.get(myconst.CONFIG_KEY_PROXY_HTTP, '')
+            https_proxy = self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS, '')
+
+            # create connection options
+            options = {
+                'server': jira_address,
+                'rest_path': jira_rest_path,
+                'rest_api_version': jira_api_ver,
+                'verify': False
+            }
+
+            # add proxies (if set)
+            proxies = {}
+            if http_proxy:
+                proxies['http'] = http_proxy
+            if https_proxy:
+                proxies['https'] = https_proxy
+
+            self.log.info("JIRA: connection to jira server:"
+                          "\n\tuser -> {}\n\toptions -> {}\n\tproxies -> {}"
+                          .format(user, options, proxies))
+
+            if proxies:  # connect through proxy
+                # just a workaround to get rid of warnings :)
                 import urllib3
                 urllib3.disable_warnings()
-                self.log.info("JIRA: connecting to [{}] as user [{}] through proxy [{}/{}]."
-                              .format(address, user, http_proxy, https_proxy))
-
-                options = {'server': 'https://issues.merck.com',
-                           'rest_path': 'api',
-                           'rest_api_version': '2',
-                           'verify': False}
-                self.__jira = JIRA(options=options, basic_auth=('gusevdm', 'Vinnypuhh22!'),
-                                   validate=True,
-                                   proxies={'http': 'http://127.0.0.1:3180', 'https': 'http://127.0.0.1:3180'})
-
+                # connecting (and get instance of JIRA object)
+                self.__jira = JIRA(options=options, basic_auth=(user, password), proxies=proxies)
             else:
-                self.log.info("JIRA: connecting to [{}] as user [{}].".format(address, user))
-                self.__jira = JIRA(address, basic_auth=(user, password))
+                self.__jira = JIRA(options=options, basic_auth=(user, password))
 
-            self.log.info("JIRA: connected to [{}] as user [{}].".format(address, user))
+            self.log.info("JIRA: successfully connected.")
         else:
-            self.log.info("JIRA: already connected to [{}] as user [{}].".format(address, user))
+            self.log.info("JIRA: already connected.")
 
     def execute_jql(self, jql):
         """

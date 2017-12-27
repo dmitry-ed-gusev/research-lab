@@ -28,10 +28,12 @@ CONFIG_KEY_PROXY_HTTP = 'proxy.http'
 CONFIG_KEY_PROXY_HTTPS = 'proxy.https'
 # key for argparse -> config file name
 CONFIG_KEY_CFG_FILE = "config.file"
-# config file keys
-CONFIG_KEY_ADDRESS = "jira.address"
-CONFIG_KEY_USER = "jira.user"
-CONFIG_KEY_PASS = "jira.password"
+# config keys for JIRA
+CONFIG_KEY_JIRA_ADDRESS = "jira.address"
+CONFIG_KEY_JIRA_REST_PATH = 'jira.rest_path'
+CONFIG_KEY_JIRA_API_VERSION = 'jira.rest_api_version'
+CONFIG_KEY_JIRA_USER = "jira.user"
+CONFIG_KEY_JIRA_PASS = "jira.password"
 # config key -> sprint name
 CONFIG_KEY_SPRINT = "sprint.name"
 # config key -> JQL query for direct execution

@@ -29,12 +29,12 @@ def prepare_arg_parser():
     parser.add_argument('--config', dest=myconst.CONFIG_KEY_CFG_FILE, action='store',
                         default=myconst.CONST_JIRA_CONFIG_FILE, help='YAML configuration file/path')
     # jira address and user, proxy server (http/https) optional
-    parser.add_argument('-a', '--address', dest=myconst.CONFIG_KEY_ADDRESS, action='store', help='JIRA address')
-    parser.add_argument('-u', '--user', dest=myconst.CONFIG_KEY_USER, action='store', help='JIRA user')
+    parser.add_argument('-a', '--address', dest=myconst.CONFIG_KEY_JIRA_ADDRESS, action='store', help='JIRA address')
+    parser.add_argument('-u', '--user', dest=myconst.CONFIG_KEY_JIRA_USER, action='store', help='JIRA user')
     parser.add_argument('--proxy.http', dest=myconst.CONFIG_KEY_PROXY_HTTP, action='store', help='HTTP proxy')
     parser.add_argument('--proxy.https', dest=myconst.CONFIG_KEY_PROXY_HTTPS, action='store', help='HTTPS proxy')
     # mandatory cmd line parameter(s): jira password, option to execute
-    parser.add_argument('-p', '--pass', dest=myconst.CONFIG_KEY_PASS, action='store', required=True, help='JIRA password')
+    parser.add_argument('-p', '--pass', dest=myconst.CONFIG_KEY_JIRA_PASS, action='store', required=True, help='JIRA password')
     # possible options (actions) to be done by this script
     parser.add_argument('--option', dest=myconst.CONFIG_KEY_OPTION, action='store', required=True,
                         choices=JIRA_OPTIONS, help='Type of option/action')
