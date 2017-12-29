@@ -9,6 +9,6 @@ Launching unittests with arguments python -m unittest discover -s C:/projects/re
 
 Creating and installing ssh keys
 1. execute ssh-keygen (see params) on local machine (it generates both public/private keys)
-2. execute ss-copy-id (see params) on local machine to copy public key to remote server
+2. execute ssh-copy-id (see params) on local machine to copy public key to remote server
 3. check :)
 4. nice resource: https://wiki.archlinux.org/index.php/SSH_keys
