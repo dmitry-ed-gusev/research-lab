@@ -2,30 +2,30 @@
 # coding=utf-8
 
 """
-    Extended utility class/module for JIRA.
+    Extended utility class/module for JIRA. Inherited from base class.
 
     Created: Gusev Dmitrii, 07.10.2017
-    Modified: Gusev Dmitrii, 09.10.2017
+    Modified: Gusev Dmitrii, 27.12.2017
 """
 
-import jira_constants as jconst
+import common_constants as myconst
 from jira_utility_base import JiraUtilityBase, JiraException
 
 # issue link type
 IMPLEMENTS = "Implementation"
 # issue link outward direction type
 IMPLEMENTS_TYPE = "implements / must come before"
-# named JQL queries
 
 
 class JiraUtilityExtended(JiraUtilityBase):
+    """Extended class with some additional JIRA-related features."""
 
     def __init__(self, config):
-        print "JIRAUtilityExtended.__init__() is working. Config [%s]." % config
         super(JiraUtilityExtended, self).__init__(config)
+        self.log.debug("Initializing JIRA Extended Utility class.")
 
     def execute_option(self, option):
-        print "JIRAUtilityExtended.execute_option() is working. Option [%s]." % option
+        self.log.debug("JIRAUtilityExtended.execute_option() is working. Option [{}].".format(option))
         if not option or not option.strip() or option not in JIRA_OPTIONS:
             raise JiraException("Invalid or empty option provided [%s]!" % option)
         # call corresponding method
@@ -35,9 +35,9 @@ class JiraUtilityExtended(JiraUtilityBase):
     def print_current_status_report(self, out_file=None):
         print "JIRAUtilityExtended.print_current_status_report() is working."
         # preparing parameters
-        team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
+        team_name = self.config.get(myconst.CONFIG_KEY_TEAM_NAME)
         print "Specified team name: [%s]." % team_name
-        team = self.config.get(jconst.CONFIG_KEY_TEAM_MEMBERS % team_name)
+        team = self.config.get(myconst.CONFIG_KEY_TEAM_MEMBERS % team_name)
         print "Members of team [%s]: %s" % (team_name, team)
         # report header and body
         report = 'Current "In Progress" status'
@@ -59,11 +59,11 @@ class JiraUtilityExtended(JiraUtilityBase):
         :param out_file: file to print report to (if needed)
         :param simple_report: if true, only issues counts will be printed (default false)
         """
-        print "JIRAUtilityExtended.print_closed_issues_report() is working."
+        self.log.debug("print_closed_issues_report() is working.")
         # preparing parameters
-        team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
+        team_name = self.config.get(myconst.CONFIG_KEY_TEAM_NAME)
         print "Specified team name: [%s]." % team_name
-        team = self.config.get(jconst.CONFIG_KEY_TEAM_MEMBERS % team_name)
+        team = self.config.get(myconst.CONFIG_KEY_TEAM_MEMBERS % team_name)
         print "Members of team [%s]: %s" % (team_name, team)
         # generate report header
         report = '[] Team closed issues report'
@@ -91,8 +91,8 @@ class JiraUtilityExtended(JiraUtilityBase):
         Generate and print report "All named sprint issues."
         :param out_file: file to print report to (if needed)
         """
-        print "JIRAUtilityExtended.print_sprint_issues_report() is working."
-        sprint = self.config.get(jconst.CONFIG_KEY_SPRINT)
+        self.log.debug("print_sprint_issues_report() is working.")
+        sprint = self.config.get(myconst.CONFIG_KEY_SPRINT)
         print "Sprint for issues search [%s]." % sprint
         # generate report header
         report = 'Issues report for {}.\n'.format(sprint)
@@ -103,32 +103,31 @@ class JiraUtilityExtended(JiraUtilityBase):
         self.write_report_to_file(report, out_file)
 
     def add_component_to_sprint_issues(self):
-        print "JIRAUtilityExtended.add_component_to_sprint_issues() is working."
-        sprint = self.config.get(jconst.CONFIG_KEY_SPRINT)
+        self.log.debug("add_component_to_sprint_issues() is working.")
+        sprint = self.config.get(myconst.CONFIG_KEY_SPRINT)
         # get team, project name and component name
-        team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
-        project = self.config.get(jconst.CONFIG_KEY_TEAM_PROJECT % team_name)
-        component = self.config.get(jconst.CONFIG_KEY_TEAM_COMPONENT % team_name)
+        team_name = self.config.get(myconst.CONFIG_KEY_TEAM_NAME)
+        project = self.config.get(myconst.CONFIG_KEY_TEAM_PROJECT % team_name)
+        component = self.config.get(myconst.CONFIG_KEY_TEAM_COMPONENT % team_name)
         print "Sprint for adding component: [%s], team [%s], project [%s], component [%s]." \
               % (sprint, team_name, project, component)
         # add component to all found issues
         self.add_component_to_issues(self.get_all_sprint_issues(sprint), project, component)
 
     def add_label_to_sprint_issues(self):
-        print "JIRAUtilityExtended.add_label_to_sprint_issues() is working."
-        sprint = self.config.get(jconst.CONFIG_KEY_SPRINT)
+        self.log.debug("add_label_to_sprint_issues() is working.")
+        sprint = self.config.get(myconst.CONFIG_KEY_SPRINT)
         # get team, project name and label name
-        team_name = self.config.get(jconst.CONFIG_KEY_TEAM_NAME)
-        label = self.config.get(jconst.CONFIG_KEY_TEAM_LABEL % team_name)
+        team_name = self.config.get(myconst.CONFIG_KEY_TEAM_NAME)
+        label = self.config.get(myconst.CONFIG_KEY_TEAM_LABEL % team_name)
         print "Sprint for adding label: [%s], team [%s], label [%s]." % (sprint, team_name, label)
         # add component to all found issues
         self.add_label_to_issues(self.get_all_sprint_issues(sprint), label)
 
-    @staticmethod
-    def get_not_implements_tasks(issues):
-        print "JIRAUtilityExtended.get_not_implements_tasks() is working. Issues count [{}].".format(len(issues))
+    def get_not_implements_tasks(self, issues):
+        self.log.debug("get_not_implements_tasks() is working. Issues count [{}].".format(len(issues)))
 
-        if not issues or len(issues) == 0:
+        if not issues or len(issues) == 0:  # fail-fast
             raise JiraException("Empty issues list!")
 
         counter = 0
@@ -166,7 +165,7 @@ class JiraUtilityExtended(JiraUtilityBase):
                 found_issues.append(issue)
 
             counter += 1
-            if counter % jconst.CONST_PROCESSING_STEP_COUNTER == 0:
+            if counter % myconst.CONST_PROCESSING_STEP_COUNTER == 0:
                 print "Processed [%s] issues." % counter
 
 
