@@ -23,17 +23,28 @@ CONST_TEAMS_LIST = ("ada", "ada_all", "nova", "nova_all", "bmtef", "bmtef_all")
 # JIRA specific constants
 CONST_JIRA_ISSUES_BATCH_SIZE = 50
 
-# keys for proxy
+# keys for proxy (common)
 CONFIG_KEY_PROXY_HTTP = 'proxy.http'
 CONFIG_KEY_PROXY_HTTPS = 'proxy.https'
-# key for argparse -> config file name
+# key for argparse -> config file name (common)
 CONFIG_KEY_CFG_FILE = "config.file"
+
 # config keys for JIRA
 CONFIG_KEY_JIRA_ADDRESS = "jira.address"
 CONFIG_KEY_JIRA_REST_PATH = 'jira.rest_path'
 CONFIG_KEY_JIRA_API_VERSION = 'jira.rest_api_version'
 CONFIG_KEY_JIRA_USER = "jira.user"
 CONFIG_KEY_JIRA_PASS = "jira.password"
+
+# config keys for GIT/Stash
+CONFIG_KEY_STASH_ADDRESS = "stash.address"
+CONFIG_KEY_STASH_USER = "stash.user"
+CONFIG_KEY_STASH_PASS = "stash.password"
+
+CONFIG_KEY_REP_LOCATION_WIN = 'location.win'
+CONFIG_KEY_REP_LOCATION_LINUX = 'location.linux'
+CONFIG_KEY_REP_LOCATION_MACOS = 'location.macos'
+
 # config key -> sprint name
 CONFIG_KEY_SPRINT = "sprint.name"
 # config key -> JQL query for direct execution
