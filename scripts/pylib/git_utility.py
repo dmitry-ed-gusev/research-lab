@@ -8,12 +8,35 @@
     Modified: Gusev Dmitrii, 24.12.2017
 """
 
-import subprocess as sub
+from subprocess import Popen
+from subprocess import check_output
+#import subprocess as sub
 
 # some useful constants
 SEPARATOR = '==============================================='
 MVN_EXECUTABLE = 'mvn.cmd'
 GIT_EXECUTABLE = 'git'
+
+
+def git_restore_proxy():
+    pass
+
+
+def select_local_location(config):
+    """
+
+    :param config:
+    :return:
+    """
+    pass
+
+
+def git_repo_clone():
+    """
+
+    :return:
+    """
+    pass
 
 
 def git_repo_update(repo_path):

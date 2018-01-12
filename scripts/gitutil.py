@@ -7,13 +7,12 @@
  Modified: Gusev Dmitrii, 25.04.2017
 """
 
-import os
-import sys
 import argparse
 import logging
 import pylib.common_constants as myconst
+import pylib.git_utility as gitutil
 from pylib.configuration import Configuration
-from pylib.pyutilities import setup_logging
+from pylib.pyutilities import setup_logging, git_set_global_proxy, git_clean_global_proxy
 
 
 def prepare_arg_parser():
@@ -26,6 +25,12 @@ def prepare_arg_parser():
     # config file for loading, optional
     parser.add_argument('--config', dest=myconst.CONFIG_KEY_CFG_FILE, action='store',
                         default=myconst.CONST_GIT_CONFIG_FILE, help='YAML configuration file/path')
+    # proxy settings, optional
+    parser.add_argument('--proxy.http', dest=myconst.CONFIG_KEY_PROXY_HTTP, action='store', help='HTTP proxy')
+    parser.add_argument('--proxy.https', dest=myconst.CONFIG_KEY_PROXY_HTTPS, action='store', help='HTTPS proxy')
+    # stash password, mandatory
+    parser.add_argument('-p', '--pass', dest=myconst.CONFIG_KEY_STASH_PASS, action='store', required=True, help='JIRA password')
+    # additional parameters
     # parser.add_argument('--no-git-update', dest='git_update_off', action='store_true', help='Skip updating git repos')
     # parser.add_argument('--no-mvn-build', dest='mvn_build_off', action='store_true', help='Skip Maven build')
     # parser.add_argument('--javadoc', dest='javadoc', action='store_true', help='Download Maven dependencies javadoc')
@@ -36,13 +41,20 @@ def prepare_arg_parser():
 def git_utility_start():
     setup_logging()
     # get module-level logger
-    log = logging.getLogger('gitutil')
+    log = logging.getLogger(myconst.LOGGER_NAME_GITUTIL)
     log.info("Starting GIT Utility...")
     # parse cmd line arguments
     cmd_line_args = prepare_arg_parser().parse_args()
     # create configuration
     config = Configuration(path_to_config=getattr(cmd_line_args, myconst.CONFIG_KEY_CFG_FILE),
                            dict_to_merge=vars(cmd_line_args), is_override_config=True, is_merge_env=False)
+    log.debug("Loaded Configuration:\n\t{}".format(config.config_dict))
+
+    # set up proxy for git (globally)
+    git_set_global_proxy(config.get(myconst.CONFIG_KEY_PROXY_HTTP), config.get(myconst.CONFIG_KEY_PROXY_HTTPS))
+
+    # clean proxy for git (globally)
+    git_clean_global_proxy()
 
 
 if __name__ == '__main__':

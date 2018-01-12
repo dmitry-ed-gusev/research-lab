@@ -1,11 +1,15 @@
-repos_dir: c:/projects
+# repositories storage for different systems
+location:
+  win:    c:/projects
+  linux:  /home/gusevdm
+  macos:  /Users/gusevdm
 
 # general stash settings
 stash:
-  address: https://gusevdm@stash.merck.com/scm/
+  address:  https://gusevdm@stash.merck.com/scm/
+  user:     gusevdm
 
 proxy:
-  use: yes
   http: 127.0.0.1:3180
   https: 127.0.0.1:3180
 
@@ -21,7 +25,7 @@ proxy:
 #https://gusevdm@stash.merck.com/scm/man/mantis-teradata.git
 #https://gusevdm@stash.merck.com/scm/bdp/ingest-script-generator.git
 
-reps:
+repositories:
   mantis:
     key: bdp
     build: yes
@@ -30,7 +34,7 @@ reps:
     build: no # -> build takes too much time
   mantis-bds:
     key: man
-    build: no # -> build includes python scripts
+    build: no # -> build includes python scripts, experimental
   mantis-pdc:
     key: man
     build: yes
@@ -50,6 +54,7 @@ reps:
     key: bdp
     build: yes
 
+# obsolete settings, will be removed
 repos:
  - mantis
  - mantis11

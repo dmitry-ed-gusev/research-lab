@@ -14,12 +14,17 @@ import yaml
 import logging
 import logging.config
 from os import walk
+from subprocess import Popen
+# from subprocess import check_output
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
 # don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
 log = logging.getLogger(__name__)
 # to avoid errors like 'no handlers' for libraries it's necessary to add NullHandler.
 log.addHandler(logging.NullHandler())
+
+# some useful constants
+GIT_EXECUTABLE = 'git'
 
 
 def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO, env_key='LOG_CFG'):
@@ -114,6 +119,23 @@ def parse_yaml(file_path):
         if "\t" in cfg_file_content:  # no tabs allowed in file content
             raise IOError("Config file [{}] contains 'tab' character!".format(file_path))
         return yaml.load(cfg_file_content)
+
+
+def git_set_global_proxy(http=None, https=None):  # todo: unit tests!
+    log.debug("git_set_global_proxy() is working. Setting proxies: http -> [{}], https -> [{}]".format(http, https))
+
+    if http:
+        log.debug("Setting HTTP proxy: {}".format(http))
+        Popen([GIT_EXECUTABLE, 'config', '--global', 'http.proxy', http])
+    if https:
+        log.debug("Setting HTTPS proxy: {}".format(http))
+        Popen([GIT_EXECUTABLE, 'config', '--global', 'https.proxy', https])
+
+
+def git_clean_global_proxy():  # todo: unit tests!
+    log.debug("git_clean_global_proxy() is working.")
+    Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'http.proxy'])
+    Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'https.proxy'])
 
 
 if __name__ == '__main__':
