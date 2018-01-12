@@ -17,7 +17,6 @@
         <jar.name>crawler-${env}-${project.version}</jar.name>
         <main.class>dg.social.crawler.SCrawler</main.class>
         <assembly.dir>${project.build.directory}/scrawler</assembly.dir>
-        <libraries.prefix>lib</libraries.prefix>
     </properties>
 
     <build>
@@ -48,7 +47,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <mainClass>${main.class}</mainClass>
-                            <classpathPrefix>${libraries.prefix}/</classpathPrefix>
+                            <classpathPrefix>${common.libraries.prefix}/</classpathPrefix>
                         </manifest>
                     </archive>
                     <outputDirectory>${assembly.dir}</outputDirectory>
@@ -61,7 +60,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <configuration>
-                    <outputDirectory>${assembly.dir}/${libraries.prefix}</outputDirectory>
+                    <outputDirectory>${assembly.dir}/${common.libraries.prefix}</outputDirectory>
                     <artifactItems/>
                 </configuration>
                 <executions>

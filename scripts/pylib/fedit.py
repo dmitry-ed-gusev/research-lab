@@ -2,9 +2,9 @@
 # coding=utf-8
 
 """
- Inplace file editing utility.
- Created: Gusev Dmitrii, 13.04.2017
- Modified: Gusev Dmitrii, 16.04.2017
+    Inplace file editing utility.
+    Created: Gusev Dmitrii, 13.04.2017
+    Modified: Gusev Dmitrii, 16.04.2017
 """
 
 # todo: implement: add line mode (if not found needed line)

@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -163,7 +164,7 @@ public class CommonUtilsTest {
     }
 
     @Test
-    public void getMonthDateRangeTest() {
+    public void testGetMonthDateRange() {
         CommonUtilsTest.dateRangeHelper(0, 0);
         CommonUtilsTest.dateRangeHelper(1, 1);
         CommonUtilsTest.dateRangeHelper(9, 9);
@@ -173,6 +174,12 @@ public class CommonUtilsTest {
         CommonUtilsTest.dateRangeHelper(4, 0);
         CommonUtilsTest.dateRangeHelper(-0, -9);
         CommonUtilsTest.dateRangeHelper(-1, 0);
+    }
+
+    @Test
+    public void testReadCSVFile() throws IOException {
+        List<String> sample = new ArrayList<>(Arrays.asList("one", "two", "three", "four", "five", "шесть"));
+        assertEquals(sample, CommonUtils.readCSVFile("src/test/resources/csvfile.txt", "UTF-8"));
     }
 
 }

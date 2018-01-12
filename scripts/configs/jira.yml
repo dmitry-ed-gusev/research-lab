@@ -1,7 +1,17 @@
 # Common JIRA settings. You can't/mustn't put password here!
 jira:
-  address:   https://issues.merck.com
-  user:      gusevdm
+  address:          https://issues.merck.com
+  rest_path:        api
+  rest_api_version: 2
+  user:             gusevdm
+
+proxy:
+  http: 127.0.0.1:3180
+  https: 127.0.0.1:3180
+
+# default output file (for reports)
+output:
+  file: jira_report.out
 
 # Specific issue settings (relate jira usage model)
 issue:
