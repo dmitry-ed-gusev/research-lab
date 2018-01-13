@@ -4,7 +4,7 @@
 """
     Common utilities in python. Can be useful in different cases.
     Created: Gusev Dmitrii, 04.04.2017
-    Modified: Gusev Dmitrii, 24.12.2017
+    Modified: Gusev Dmitrii, 13.01.2017
 """
 
 import os
@@ -15,7 +15,6 @@ import logging
 import logging.config
 from os import walk
 from subprocess import Popen
-# from subprocess import check_output
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
 # don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
@@ -49,19 +48,18 @@ def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO
 
 def count_lines(filename):
     """
-    Count lines in given file.
+    Count lines in any given file.
     :return: count of lines
     """
     counter = 0
     # open file, received as first cmd line argument, mode - read+Unicode
-    with open(filename, mode='rU') as file:
+    with open(filename, mode='rU') as infile:
         # skip initial space - don't work without it
-        reader = csv.reader(file, delimiter=b',', skipinitialspace=True, quoting=csv.QUOTE_MINIMAL, quotechar=b'"',
+        reader = csv.reader(infile, delimiter=b',', skipinitialspace=True, quoting=csv.QUOTE_MINIMAL, quotechar=b'"',
                             lineterminator="\n")
         # counting rows in a cycle
-        for row in reader:
-            # just a debug output
-            # print row
+        for _ in reader:
+            # print row  # <- just a debug output
             counter += 1
     # debug - print count to console
     print "Lines count: {}".format(counter)
@@ -126,16 +124,20 @@ def git_set_global_proxy(http=None, https=None):  # todo: unit tests!
 
     if http:
         log.debug("Setting HTTP proxy: {}".format(http))
-        Popen([GIT_EXECUTABLE, 'config', '--global', 'http.proxy', http])
+        process = Popen([GIT_EXECUTABLE, 'config', '--global', 'http.proxy', http])
+        process.wait()
     if https:
         log.debug("Setting HTTPS proxy: {}".format(http))
-        Popen([GIT_EXECUTABLE, 'config', '--global', 'https.proxy', https])
+        process = Popen([GIT_EXECUTABLE, 'config', '--global', 'https.proxy', https])
+        process.wait()
 
 
 def git_clean_global_proxy():  # todo: unit tests!
     log.debug("git_clean_global_proxy() is working.")
-    Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'http.proxy'])
-    Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'https.proxy'])
+    process = Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'http.proxy'])
+    process.wait()
+    process = Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'https.proxy'])
+    process.wait()
 
 
 if __name__ == '__main__':
