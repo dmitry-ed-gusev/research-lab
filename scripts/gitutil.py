@@ -4,14 +4,14 @@
 """
  Go through list of repositories and 'git pull' + 'mvn clean install' on them.
  Created: Gusev Dmitrii, 03.04.2017
- Modified: Gusev Dmitrii, 25.04.2017
+ Modified: Gusev Dmitrii, 14.01.2018
 """
 
 import argparse
 import logging
 import pylib.common_constants as myconst
-import pylib.git_utility as gitutil
 from pylib.configuration import Configuration
+from pylib.git_utility import GitUtility
 from pylib.pyutilities import setup_logging, git_set_global_proxy, git_clean_global_proxy
 
 
@@ -31,6 +31,7 @@ def prepare_arg_parser():
     # stash password, mandatory
     parser.add_argument('-p', '--pass', dest=myconst.CONFIG_KEY_STASH_PASS, action='store', required=True, help='JIRA password')
     # additional parameters
+    # todo: add params for: clone, build, update, javadoc and sources all/specific
     # parser.add_argument('--no-git-update', dest='git_update_off', action='store_true', help='Skip updating git repos')
     # parser.add_argument('--no-mvn-build', dest='mvn_build_off', action='store_true', help='Skip Maven build')
     # parser.add_argument('--javadoc', dest='javadoc', action='store_true', help='Download Maven dependencies javadoc')
@@ -50,8 +51,14 @@ def git_utility_start():
                            dict_to_merge=vars(cmd_line_args), is_override_config=True, is_merge_env=False)
     log.debug("Loaded Configuration:\n\t{}".format(config.config_dict))
 
+    # todo: move set/clean proxy into GitUtility class!
     # set up proxy for git (globally)
     git_set_global_proxy(config.get(myconst.CONFIG_KEY_PROXY_HTTP), config.get(myconst.CONFIG_KEY_PROXY_HTTPS))
+
+    # init GitUtility class
+    git = GitUtility(config)
+    # clone all repositories
+    git.clone()
 
     # clean proxy for git (globally)
     git_clean_global_proxy()

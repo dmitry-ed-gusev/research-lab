@@ -1,13 +1,13 @@
 # repositories storage for different systems
 location:
   win:    c:/projects
-  linux:  /home/gusevdm
-  macos:  /Users/gusevdm
+  linux:  /home/gusevdm/projects
+  macos:  /Users/gusevdm/projects
 
 # general stash settings
 stash:
-  address:  https://gusevdm@stash.merck.com/scm/
-  user:     gusevdm
+  address:  https://gusevdm:{}@stash.merck.com/scm/
+  #user:     gusevdm
 
 proxy:
   http: 127.0.0.1:3180
