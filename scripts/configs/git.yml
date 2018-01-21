@@ -13,18 +13,7 @@ proxy:
   http: 127.0.0.1:3180
   https: 127.0.0.1:3180
 
-#https://gusevdm@stash.merck.com/scm/man/mantis-ops.git
-#https://gusevdm@stash.merck.com/scm/man/mantis-pdc.git
-#https://gusevdm@stash.merck.com/scm/man/mantis-hadoop-clients.git
-#https://gusevdm@stash.merck.com/scm/man/mantis-hive-rest-service.git
-#https://gusevdm@stash.merck.com/scm/man/mantis-model.git
-#https://gusevdm@stash.merck.com/scm/man/mantis-model-generator.git
-#https://gusevdm@stash.merck.com/scm/man/mantis-test.git
-#https://gusevdm@stash.merck.com/scm/man/mantis-udi.git
-#https://gusevdm@stash.merck.com/scm/man/mantis-bds.git
-#https://gusevdm@stash.merck.com/scm/man/mantis-teradata.git
-#https://gusevdm@stash.merck.com/scm/bdp/ingest-script-generator.git
-
+# repositories list with keys and build attribute
 repositories:
   mantis:
     key: bdp
@@ -44,43 +33,54 @@ repositories:
   mantis-systems:
     key: man
     build: no # -> build includes python scripts and artifacts building
+  mantis-teradata:
+    key:    man
+    build:  no
+  mantis-udi:
+    key:    man
+    build:  no
+  mantis-analytics:
+    key:    man
+    build:  no
+  mantis-model:
+    key:   man
+    build: no
+  mantis-model-generator:
+    key:   man
+    build: no
+  mantis-hadoop-clients:
+    key:    man
+    build:  no
+  mantis-hive-rest-service:
+    key:    man
+    build:  no
+  mantis-test:
+    key:    man
+    build:  no
+  ingest-script-generator:
+    key:    bdp
+    build:  no
+  sqoop-msd:
+    key:    bdp
+    build:  no
   csv2assembly:
     key: enigma
     build: no
   csv2abstract:
     key: bdp
-    build: no
+    build: yes
   csv2hive:
     key: bdp
     build: yes
-
-# obsolete settings, will be removed
-repos:
- - mantis
- - mantis11
- - mantis-bds
- - mantis-pdc
- - mantis-ops
- - mantis-systems
- - mantis-udi
- - mantis-model
- - mantis-model-generator
- - mantis-analytics
- - mantis-hadoop-clients
- - mantis-teradata
- - mantis-test
- - csv2abstract
- - csv2assembly
- - csv2hive
- - sqoop-msd
- - ingest-script-generator
- - dit-core
- - data_integrity
- - jiragraphs
-# - bigdata-training
-build_repos:
- - csv2abstract
- - csv2hive
- - mantis-bds
- - research
- - dit-core
+  dit-core:
+    key:    svt
+    build:  no
+  data_integrity:
+    key: svt
+    build: no
+  jira-utils:
+    key:  mrlitsc
+    build: no
+  jiragraphs:
+    key:    ~kejzlar
+    build:  no

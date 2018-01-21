@@ -57,11 +57,18 @@ def git_utility_start():
 
     # init GitUtility class
     git = GitUtility(config)
+
     # clone all repositories
-    git.clone()
+    # git.clone()
+
+    # update all repositories
+    git.update()
 
     # clean proxy for git (globally)
     git_clean_global_proxy()
+
+    #import subprocess as sub
+    #sub.Popen(['git', 'config', '--list', '--global'], cwd='/Users/gusevdm', shell=False)
 
 
 if __name__ == '__main__':

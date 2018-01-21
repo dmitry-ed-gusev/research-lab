@@ -79,13 +79,30 @@ class GitUtility(object):
         Clones repo by specified url to local location. Internal method.
         :param repo_url:
         """
+        self.log.debug('__repo_clone(): starting clone for [{}].'.format(repo_url))
         try:
-            self.log.debug('__repo_clone(): starting clone for [{}].'.format(repo_url))
             process = Popen([GIT_EXECUTABLE, 'clone', repo_url], cwd=self.location)
             process.wait()
             self.log.debug('Clone for [{}] finished.'.format(repo_url))
-        except StandardError as we:
-            self.log.error('Error cloning repo [{}]! {}'.format(repo_url, we))
+        except StandardError as se:
+            self.log.error('Error cloning repo [{}]! {}'.format(repo_url, se))
+
+    def __repo_update(self, repo_name):
+        """
+        Pull repository and run gc() on it.
+        :param repo_name:
+        :return:
+        """
+        repo_path = self.location + '/' + repo_name
+        self.log.debug('__repo_update(): updating repository [{}].'.format(repo_path))
+        try:
+            process = Popen([GIT_EXECUTABLE, 'pull'], cwd=repo_path)
+            process.wait()
+            process = Popen([GIT_EXECUTABLE, 'gc'], cwd=repo_path)
+            process.wait()
+        except StandardError as se:
+            self.log.error('Error updating repo [{}]! {}'.format(repo_path, se))
+        pass
 
     def clone(self):
         """ Clone all repositories, mentioned in config file. """
@@ -94,26 +111,11 @@ class GitUtility(object):
         for repository in self.repos_list:
             self.__repo_clone(self.__generate_repo_url(repository))
 
-
-def git_repo_update(repo_path):
-    """
-    Pull repository from GIT server, after pull - do gc on repository.
-    :param repo_path:
-    :return:
-    """
-    print "\n{}\nUpdating repository [{}].".format(SEPARATOR, repo_path)
-    try:
-        # status of current repo
-        p = sub.Popen([GIT_EXECUTABLE, 'status'], cwd=repo_path)
-        p.wait()
-        # update current repo
-        p = sub.Popen([GIT_EXECUTABLE, 'pull'], cwd=repo_path)
-        p.wait()
-        # run gc() on current repository
-        p = sub.Popen([GIT_EXECUTABLE, 'gc'], cwd=repo_path)
-        p.wait()
-    except WindowsError as we:
-        print "ERROR: {}".format(we)
+    def update(self):
+        """ Update (pull) and gc() all repositories, mentioned in config file. """
+        self.log.info('GitUtility: update():\n\trepositories: [{}]'.format(self.repos_list))
+        for repository in self.repos_list:
+            self.__repo_update(repository)
 
 
 def git_repo_build(repo_path, javadoc=False, sources=False):
