@@ -13,11 +13,13 @@ proxy:
   http: 127.0.0.1:3180
   https: 127.0.0.1:3180
 
+settings: research/scripts/configs/msd-settings.xml
+
 # repositories list with keys and build attribute
 repositories:
   mantis:
     key: bdp
-    build: yes
+    build: no
   mantis11:
     key: bdp
     build: no # -> build takes too much time

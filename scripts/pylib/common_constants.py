@@ -22,6 +22,8 @@ CONST_COMMON_ENCODING = "utf-8"
 CONST_TEAMS_LIST = ("ada", "ada_all", "nova", "nova_all", "bmtef", "bmtef_all")
 # JIRA specific constants
 CONST_JIRA_ISSUES_BATCH_SIZE = 50
+# settings for Maven build (not on msd machine)
+CONST_SETTINGS = 'settings'
 
 # keys for proxy (common)
 CONFIG_KEY_PROXY_HTTP = 'proxy.http'
