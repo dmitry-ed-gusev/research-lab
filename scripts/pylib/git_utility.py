@@ -12,15 +12,12 @@ import logging
 import platform
 import pylib.common_constants as myconst
 from subprocess import Popen
+from pylib.pyutilities import git_set_global_proxy, git_clean_global_proxy
 
 # some useful constants
-# SEPARATOR = '==============================================='
-MVN_EXECUTABLE = 'mvn.cmd'
+MVN_EXECUTABLE_WIN = 'mvn.cmd'
+MVN_EXECUTABLE_NIX = 'mvn'
 GIT_EXECUTABLE = 'git'
-# configure module logger
-# log = logging.getLogger(__name__)
-# log.addHandler(logging.NullHandler())
-
 
 class GitUtility(object):
     """
@@ -44,6 +41,7 @@ class GitUtility(object):
 
         # init internal state of class
         self.location = self.__select_location()
+        self.mvn_exec = self.__select_mvn_executable()
         self.repos_list = self.config.get(myconst.CONFIG_KEY_REPO).keys()
         self.log.debug('Loaded repos list [{}].'.format(self.repos_list))
 
@@ -61,6 +59,9 @@ class GitUtility(object):
         # debug out and return value
         self.log.debug('__select_location(): selected location [{}].'.format(location))
         return location
+
+    def __select_mvn_executable(self):
+        pass
 
     def __generate_repo_url(self, repo_name):
         """
@@ -102,20 +103,59 @@ class GitUtility(object):
             process.wait()
         except StandardError as se:
             self.log.error('Error updating repo [{}]! {}'.format(repo_path, se))
+
+    def __repo_build(self, repo_name):
+        """
+        Build specified repository, if specified - download sources/javadoc for dependencies.
+        :param repo_name:
+        :return:
+        """
+        repo_path = self.location + '/' + repo_name
+        self.log.debug('__repo_build(): building repository [{}].'.format(repo_path))
+        try:
+            # build current repo
+            p = sub.Popen([MVN_EXECUTABLE, 'clean', 'install'], cwd=repo_path)
+            p.wait()
+
+        # download javadoc for dependencies
+        if javadoc:
+            # download all sources and docs related to dependencies
+            p = sub.Popen([MVN_EXECUTABLE, 'dependency:resolve', '-Dclassifier=javadoc'], cwd=repo_path)
+            p.wait()
+
+        # download sources for dependencies
+        if sources:
+            p = sub.Popen([MVN_EXECUTABLE, 'dependency:resolve', '-Dclassifier=sources'], cwd=repo_path)
+            p.wait()
+
+    except WindowsError as we:
+        print "ERROR: {}".format(we)
         pass
 
     def clone(self):
-        """ Clone all repositories, mentioned in config file. """
+        """
+        Clone all repositories, mentioned in config file.
+        Set proxy before updating and clean after it.
+        """
+        git_set_global_proxy(self.config.get(myconst.CONFIG_KEY_PROXY_HTTP),
+                             self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS))
         self.log.info('GitUtility: clone():\n\trepositories: [{}]\n\tdestination: [{}].'
                       .format(self.repos_list, self.location))
         for repository in self.repos_list:
             self.__repo_clone(self.__generate_repo_url(repository))
+        git_clean_global_proxy()
 
     def update(self):
-        """ Update (pull) and gc() all repositories, mentioned in config file. """
+        """
+        Update (pull) and gc() all repositories, mentioned in config file.
+        Set proxy before updating and clean after it.
+        """
+        git_set_global_proxy(self.config.get(myconst.CONFIG_KEY_PROXY_HTTP),
+                             self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS))
         self.log.info('GitUtility: update():\n\trepositories: [{}]'.format(self.repos_list))
         for repository in self.repos_list:
             self.__repo_update(repository)
+        git_clean_global_proxy()
 
 
 def git_repo_build(repo_path, javadoc=False, sources=False):
