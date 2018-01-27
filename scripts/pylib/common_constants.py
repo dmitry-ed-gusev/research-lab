@@ -4,7 +4,7 @@
 """
     List of useful common constants for all modules.
     Created: Gusev Dmitrii, 17.12.2017
-    Modified: Gusev Dmitrii, 13.01.2017
+    Modified: Gusev Dmitrii, 27.01.2017
 """
 
 # loggers for utilities
@@ -22,8 +22,16 @@ CONST_COMMON_ENCODING = "utf-8"
 CONST_TEAMS_LIST = ("ada", "ada_all", "nova", "nova_all", "bmtef", "bmtef_all")
 # JIRA specific constants
 CONST_JIRA_ISSUES_BATCH_SIZE = 50
+
 # settings for Maven build (not on msd machine)
-CONST_SETTINGS = 'settings'
+CONFIG_KEY_MVN_SETTINGS = 'mvn_settings'
+# option - clone repositories
+CONFIG_KEY_GIT_CLONE = 'git-clone'
+# option - switch build off
+CONFIG_KEY_MVN_BUILD_OFF = 'no-build'
+# options - download javadoc
+CONFIG_KEY_MVN_JAVADOC = 'javadoc'
+CONFIG_KEY_MVN_SOURCES = 'sources'
 
 # keys for proxy (common)
 CONFIG_KEY_PROXY_HTTP = 'proxy.http'
@@ -46,6 +54,7 @@ CONFIG_KEY_STASH_PASS = "stash.password"
 CONFIG_KEY_REPO = 'repositories'
 CONFIG_KEY_REPO_KEY = 'repositories.{}.key'
 CONFIG_KEY_REPO_BUILD = 'repositories.{}.build'
+
 CONFIG_KEY_REP_LOCATION_WIN = 'location.win'
 CONFIG_KEY_REP_LOCATION_LINUX = 'location.linux'
 CONFIG_KEY_REP_LOCATION_MACOS = 'location.macos'

@@ -2,9 +2,10 @@
 # coding=utf-8
 
 """
- Go through list of repositories and 'git pull' + 'mvn clean install' on them.
- Created: Gusev Dmitrii, 03.04.2017
- Modified: Gusev Dmitrii, 14.01.2018
+    GIT utility, simplifies work with many repositories. By default - update and build repositories
+    specified in config file. Has some config parameters for fine tuning.
+    Created: Gusev Dmitrii, 03.04.2017
+    Modified: Gusev Dmitrii, 27.01.2018
 """
 
 import argparse
@@ -12,7 +13,7 @@ import logging
 import pylib.common_constants as myconst
 from pylib.configuration import Configuration
 from pylib.git_utility import GitUtility
-from pylib.pyutilities import setup_logging, git_set_global_proxy, git_clean_global_proxy
+from pylib.pyutilities import setup_logging
 
 
 def prepare_arg_parser():
@@ -29,13 +30,17 @@ def prepare_arg_parser():
     parser.add_argument('--proxy.http', dest=myconst.CONFIG_KEY_PROXY_HTTP, action='store', help='HTTP proxy')
     parser.add_argument('--proxy.https', dest=myconst.CONFIG_KEY_PROXY_HTTPS, action='store', help='HTTPS proxy')
     # stash password, mandatory
-    parser.add_argument('-p', '--pass', dest=myconst.CONFIG_KEY_STASH_PASS, action='store', required=True, help='JIRA password')
+    parser.add_argument('--pass', dest=myconst.CONFIG_KEY_STASH_PASS, action='store',
+                        required=True, help='JIRA password (mandatory)')
     # additional parameters
-    # todo: add params for: clone, build, update, javadoc and sources all/specific
-    # parser.add_argument('--no-git-update', dest='git_update_off', action='store_true', help='Skip updating git repos')
-    # parser.add_argument('--no-mvn-build', dest='mvn_build_off', action='store_true', help='Skip Maven build')
-    # parser.add_argument('--javadoc', dest='javadoc', action='store_true', help='Download Maven dependencies javadoc')
-    # parser.add_argument('--sources', dest='sources', action='store_true', help='Download Maven dependencies sources')
+    parser.add_argument('--clone', dest=myconst.CONFIG_KEY_GIT_CLONE, action='store_true',
+                        help='Clone repositories instead of update them')
+    parser.add_argument('--no-mvn-build', dest=myconst.CONFIG_KEY_MVN_BUILD_OFF, action='store_true',
+                        help='Switch Maven build off (options --javadoc/--sources will take no effect in this case)')
+    parser.add_argument('--javadoc', dest=myconst.CONFIG_KEY_MVN_JAVADOC, action='store_true',
+                        help='Download javadoc packages for Maven dependencies')
+    parser.add_argument('--sources', dest=myconst.CONFIG_KEY_MVN_SOURCES, action='store_true',
+                        help='Download sources for Maven dependencies')
     return parser
 
 
@@ -51,66 +56,19 @@ def git_utility_start():
                            dict_to_merge=vars(cmd_line_args), is_override_config=True, is_merge_env=False)
     log.debug("Loaded Configuration:\n\t{}".format(config.config_dict))
 
-    # todo: move set/clean proxy into GitUtility class!
-    # set up proxy for git (globally)
-    git_set_global_proxy(config.get(myconst.CONFIG_KEY_PROXY_HTTP), config.get(myconst.CONFIG_KEY_PROXY_HTTPS))
-
     # init GitUtility class
     git = GitUtility(config)
 
-    # clone all repositories
-    # git.clone()
+    # update or clone repositories - depending on settings/options
+    if config.get(myconst.CONFIG_KEY_GIT_CLONE, default=False):
+        git.clone()
+    else:
+        git.update()
 
-    # update all repositories
-    git.update()
-
-    # clean proxy for git (globally)
-    git_clean_global_proxy()
-
-    #import subprocess as sub
-    #sub.Popen(['git', 'config', '--list', '--global'], cwd='/Users/gusevdm', shell=False)
+    # build repositories, if not switched off
+    if not config.get(myconst.CONFIG_KEY_MVN_BUILD_OFF, default=False):
+        git.build()
 
 
 if __name__ == '__main__':
     git_utility_start()
-
-
-
-# # try to load config from specified directory
-# if not args.config_dir or not args.config_dir.strip() \
-#         or not os.path.isdir(args.config_dir) or not os.path.exists(args.config_dir):
-#     print "Config dir [{}] is invalid!".format(args.config_dir)
-#     sys.exit(1)
-#
-# # config dir is ok - loading
-# config = conf.Configuration()
-# config.load(args.config_dir)
-#
-# print "->", config.get('stash.address')
-# sys.exit(123)
-#
-#
-# # get repositories configs (paths)
-# base_dir = config.get('repos_dir')
-# # fix base projects dir (path ending)
-# if not (base_dir.endswith("\\") or base_dir.endswith("/")):
-#     base_dir += "/"
-# # get repos list from config
-# repos_list = config.get('repos')
-# build_list = config.get('build_repos')
-#
-# # update all repos in list (git status/pull/gc), if not switched off
-# if not args.git_update_off:
-#     for repo in repos_list:
-#         git_update(base_dir + repo)
-# else:
-#     print "\nUpdating repositories from GIT is turned OFF."
-#
-# # build all repos in build list
-# if not args.mvn_build_off:
-#     for repo in build_list:
-#         mvn_build(base_dir + repo, args.javadoc, args.sources)
-# else:
-#     print "\nMaven build if turned OFF."
-#
-# print "\n{}\nRepositories processing has finished.".format(SEPARATOR)
