@@ -45,6 +45,7 @@ loggers:
         level: DEBUG
     jira:
         level: DEBUG
+
 # root logger
 root:
     level: INFO
