@@ -42,8 +42,10 @@ def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO
         with open(path, 'rt') as f:
             config = yaml.safe_load(f.read())
         logging.config.dictConfig(config)
+        log.info('Loaded logging config from [{}].'.format(path))
     else:
         logging.basicConfig(level=default_level)
+        log.info('Using basic logging config. Can"t load config from [{}].'.format(path))
 
 
 def count_lines(filename):
