@@ -122,8 +122,12 @@ def parse_yaml(file_path):
 
 
 def git_set_global_proxy(http=None, https=None):  # todo: unit tests!
+    """
+    Set specified proxies (both http/https) for local git globally.
+    :param http:
+    :param https:
+    """
     log.debug("git_set_global_proxy() is working. Setting proxies: http -> [{}], https -> [{}]".format(http, https))
-
     if http:
         log.debug("Setting HTTP proxy: {}".format(http))
         process = Popen([GIT_EXECUTABLE, 'config', '--global', 'http.proxy', http])
@@ -135,11 +139,26 @@ def git_set_global_proxy(http=None, https=None):  # todo: unit tests!
 
 
 def git_clean_global_proxy():  # todo: unit tests!
+    """
+    Clear git global proxies (both http/https).
+    """
     log.debug("git_clean_global_proxy() is working.")
     process = Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'http.proxy'])
     process.wait()
     process = Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'https.proxy'])
     process.wait()
+
+
+def filter_str(string):
+    """
+    Filter out all symbols from string except letters, numbers, spaces, commas.
+    :param string:
+    :return:
+    """
+    if not string or not string.strip():  # if empty, return 'as is'
+        return string
+    # filter out all except symbols, spaces, or comma
+    return ''.join(char for char in string if char.isalnum() or char.isspace() or char == ',')
 
 
 if __name__ == '__main__':

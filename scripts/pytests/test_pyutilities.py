@@ -2,16 +2,17 @@
 # coding=utf-8
 
 """
-    Unit tests for
+    Unit tests for pyutilities module. Covers most of methods in a module.
+    Created: Gusev Dmitrii, 2017
+    Modified: Gusev Dmitrii, 04.02.2018
 """
-# todo: implement tests!
 
 import yaml
 import unittest
 import logging
 import logging.config
 from mock import patch, mock_open
-from pylib.pyutilities import parse_yaml, list_files, _list_files
+from pylib.pyutilities import parse_yaml, list_files, _list_files, filter_str
 
 
 class ConfigurationTest(unittest.TestCase):
@@ -57,20 +58,9 @@ class ConfigurationTest(unittest.TestCase):
         self.assertEquals(1, len(files))
         self.assertEquals('/path/file1', files[0])
 
+    def test_filter_str_for_empty(self):
+        for string in ['', '    ', None]:
+            self.assertEquals(string, filter_str(string))
 
-"""
->>> with patch('__main__.open', mock_open(read_data='bibble'), create=True) as m:
-...     with open('foo') as h:
-...         result = h.read()
-...
->>> m.assert_called_once_with('foo')
->>> assert result == 'bibble'
-
-@patch.object(Configuration, 'get')
-@patch.object(JIRA, '__init__')
-def test_ConnectNotConnectedYet(self, mock_jira, mock_config):
-    mock_jira.return_value = None
-    mock_config.return_value = 'some value'
-    self.jira.connect()
-    self.assertTrue(mock_jira.called)\
-"""
+    def test_filter_str_for_string(self):
+        self.assertEquals('45, 555', filter_str('45, .555'))
