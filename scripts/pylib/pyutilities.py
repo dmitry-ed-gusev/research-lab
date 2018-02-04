@@ -149,18 +149,6 @@ def git_clean_global_proxy():  # todo: unit tests!
     process.wait()
 
 
-def filter_str(string):
-    """
-    Filter out all symbols from string except letters, numbers, spaces, commas.
-    :param string:
-    :return:
-    """
-    if not string or not string.strip():  # if empty, return 'as is'
-        return string
-    # filter out all except symbols, spaces, or comma
-    return ''.join(char for char in string if char.isalnum() or char.isspace() or char == ',')
-
-
 if __name__ == '__main__':
     print "pyutilities: Don't try to execute library as standalone app!"
     # list_files('/media/vinnypuhh/MyData/Cloud/YandexDisk/DOCS AND BOOKS')

@@ -12,7 +12,7 @@ import unittest
 import logging
 import logging.config
 from mock import patch, mock_open
-from pylib.pyutilities import parse_yaml, list_files, _list_files, filter_str
+from pylib.pyutilities import parse_yaml, list_files, _list_files
 
 
 class ConfigurationTest(unittest.TestCase):
@@ -57,10 +57,3 @@ class ConfigurationTest(unittest.TestCase):
         _list_files('zzz', files, True)
         self.assertEquals(1, len(files))
         self.assertEquals('/path/file1', files[0])
-
-    def test_filter_str_for_empty(self):
-        for string in ['', '    ', None]:
-            self.assertEquals(string, filter_str(string))
-
-    def test_filter_str_for_string(self):
-        self.assertEquals('45, 555', filter_str('45, .555'))
