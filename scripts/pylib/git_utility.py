@@ -162,6 +162,7 @@ class GitUtility(object):
                       .format(self.repos_list, self.location))
         for repository in self.repos_list:
             self.__repo_clone(self.__generate_repo_url(repository))
+        # todo: bug!!! cleaning proxy always, despite was it set or not (clean only if set!!!)
         git_clean_global_proxy()
 
     def update(self):  # todo: use decorator here!
@@ -174,6 +175,7 @@ class GitUtility(object):
         self.log.info('GitUtility: update():\n\trepositories: [{}]'.format(self.repos_list))
         for repository in self.repos_list:
             self.__repo_update(repository)
+        # todo: bug!!! cleaning proxy always, despite was it set or not (clean only if set!!!)
         git_clean_global_proxy()
 
     def build(self):
