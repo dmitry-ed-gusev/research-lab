@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+"""
+    DB utilities module (persistance layer). This is a library module.
+
+    Created: Gusev Dmitrii, 02.02.2017
+    Modified: Gusev Dmitrii, 05.02.2017
+"""
+
 import logging
-from pylib.pyutilities import setup_logging
 import sqlite3 as sql
 
 # init module logging
-setup_logging(default_path='logging.yml')
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
@@ -18,16 +23,29 @@ DB_SCRIPT = """
     DROP TABLE IF EXISTS areas;
     DROP TABLE IF EXISTS commissions;
     DROP TABLE IF EXISTS addresses;
+    DROP TABLE IF EXISTS geo_points;
     -- create tables
-    CREATE TABLE areas (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);
-    CREATE TABLE commissions(id INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT, 
+    CREATE TABLE areas (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, name TEXT);
+    CREATE TABLE commissions(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, city TEXT, 
       territory_commission TEXT, sector_commission TEXT, people_count INTEGER);
-    CREATE TABLE addresses(id INTEGER PRIMARY KEY AUTOINCREMENT, street TEXT, buildings TEXT, 
+    CREATE TABLE addresses(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, street TEXT, buildings TEXT, 
       commission_id INTEGER REFERENCES commissions(id) ON DELETE RESTRICT);
+    -- geo points from CIK RF database
+    CREATE TABLE geo_points(geo_point_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, id INTEGER, 
+      intid INTEGER, cik_text TEXT, levelid INTEGER, children TEXT, 
+      parent_id INTEGER REFERENCES geo_points(geo_point_id) ON DELETE RESTRICT, processed INTEGER DEFAULT 0);
+    CREATE UNIQUE INDEX geo_point_id_unique ON geo_points(id);
 """
 
 
+# todo: add exceptions handling for db operations (in case of exception close connection etc.)
+
 def db_create(dbname):
+    """
+    Create DB by executing DDL SQL script.
+    :param dbname:
+    :return:
+    """
     log.debug('db_create: creating database structure.')
     # connect to sqlite db
     conn = sql.connect(dbname)
@@ -66,6 +84,7 @@ def db_add_commissions(dbname, commissions_list):
     :return:
     """
     log.debug('db_add_commissions(): adding commissions.')
+    raise StandardError('Not implemented!')
 
 
 def db_add_commission(dbname, city, territory_commission, sector_commission, people_count):
@@ -113,6 +132,105 @@ def db_add_address(dbname, street, buildings, commission_id):
     connection.commit()
     log.debug('Last inserted id = [{}].'.format(last_id))
     return last_id
+
+
+def db_add_single_geo_point(dbname, id, intid, cik_text, levelid, children, parent_id, processed=0):
+    """"""
+    if not intid:
+        intid = 'NULL'
+    insert_sql = "INSERT INTO geo_points(id, intid, cik_text, levelid, children, parent_id, processed) " \
+                 "VALUES ({}, {}, '{}', {}, '{}', {}, {})"\
+        .format(id, intid, cik_text, levelid, children, parent_id, processed)
+    log.debug('db_add_geo_point(): adding geopoint.\n\tSQL -> [{}].'.format(insert_sql))
+
+    connection = sql.connect(dbname)
+    try:
+        cursor = connection.cursor()
+        cursor.execute(insert_sql)
+        last_id = cursor.lastrowid
+        connection.commit()
+        log.debug('Geo point has been added. Last inserted id = [{}].'.format(last_id))
+        return last_id
+    finally:
+        connection.close()
+
+
+def db_add_multiple_geo_points(dbname, list_of_geo_points):
+    """"""
+    log.debug('db_add_multiple_geo_points(): adding multiple geo points.')
+    sql_list = []
+    insert_sql = "INSERT INTO geo_points(id, intid, cik_text, levelid, children, parent_id, processed) " \
+                 "VALUES ({}, {}, '{}', {}, '{}', {}, {})"
+    # process all specified geo points
+    for geo_point in list_of_geo_points:
+        # get info from list entry
+        id = geo_point[0]
+        intid = geo_point[1]
+        cik_text = geo_point[2]
+        levelid = geo_point[3]
+        children = geo_point[4]
+        parent_id = geo_point[5]
+        processed = geo_point[6]
+        # add values to query and add query to list
+        sql_list.append(insert_sql.format(id, intid, cik_text, levelid, children, parent_id, processed))
+
+    # execute multip[le sqls
+    connection = sql.connect(dbname)
+    cursor = connection.cursor()
+    for query in sql_list:
+        cursor.execute(query)
+    # commit all added points
+    connection.commit()
+    log.debug('Geo points list [len = {}] has been added.'.format(len(list_of_geo_points)))
+
+
+def db_get_not_processed_geo_points_ids(dbname):
+    """"""
+    log.debug('db_get_not_processed_geo_points_ids(): processing.')
+    select_sql = "SELECT geo_point_id, id, intid, cik_text FROM geo_points WHERE processed = 0"
+    connection = sql.connect(dbname)
+    cursor = connection.cursor()
+    cursor.execute(select_sql)
+    # iterate over rows and put them into result
+    result = []
+    for row in cursor:
+        result.append(row)
+    return result
+
+
+def db_mark_geo_point_as_processed(dbname, geo_point_id):
+    """"""
+    log.debug('db_mark_geo_point_as_processed(): mark point [{}] as processed.'.format(geo_point_id))
+    update_sql = "UPDATE geo_points SET processed = 1 WHERE geo_point_id = {}".format(geo_point_id)
+    connection = sql.connect(dbname)
+    cursor = connection.cursor()
+    cursor.execute(update_sql)
+    connection.commit()
+
+
+def db_get_geo_point_id(dbname, id, intid, cik_text, levelid):
+    """"""
+    if not intid:
+        intid = 'is NULL'
+    else:
+        intid = '= {}'.format(intid)
+    select_sql = "SELECT geo_point_id FROM geo_points WHERE id = {} AND intid {} AND cik_text = '{}' AND levelid = {}"\
+        .format(id, intid, cik_text, levelid)
+    log.debug('db_get_geo_point_id(): selecting id.\n\tSQL -> [{}]'.format(select_sql))
+    connection = sql.connect(dbname)
+    cursor = connection.cursor()
+    cursor.execute(select_sql)
+
+    # process result
+    result = cursor.fetchone()
+    if result:  # something found
+        id = result[0]
+    else:  # nothing found
+        id = -1
+
+    connection.close()
+    # cursor.close()
+    return id
 
 
 if __name__ == '__main__':

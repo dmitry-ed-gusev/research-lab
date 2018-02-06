@@ -45,6 +45,8 @@ loggers:
         level:  DEBUG
     geodb:
         level:  DEBUG
+    #geocik:
+    #    level:  DEBUG
 
 # root logger
 root:
