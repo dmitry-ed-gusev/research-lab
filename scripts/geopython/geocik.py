@@ -136,6 +136,13 @@ def process_geo_points():
 
 # starting point for [geocik] module
 log.info('Starting [geocik] module...')
+
+# setup proxy if needed
+proxy = urllib2.ProxyHandler({'http': 'webproxy.merck.com:8080', 'https': 'webproxy.merck.com:8080'})
+opener = urllib2.build_opener(proxy)
+urllib2.install_opener(opener)
+log.info('Proxy for http/https has been installed.')
+
 # create db if not exists
 if not os.path.exists(DB_NAME):
     log.warn("Database [{}] doesn't exist! Creating...".format(DB_NAME))
