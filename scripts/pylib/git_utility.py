@@ -151,26 +151,26 @@ class GitUtility(object):
         except StandardError as se:
             self.log.error('Error building repo [{}]! {}'.format(repo_path, se))
 
-    def clone(self):
+    def clone(self):  # todo: use decorator here!
         """
         Clone all repositories, mentioned in config file.
         Set proxy before updating and clean after it.
         """
-        git_set_global_proxy(self.config.get(myconst.CONFIG_KEY_PROXY_HTTP),
-                             self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS))
+        git_set_global_proxy(self.config.get(myconst.CONFIG_KEY_PROXY_HTTP, ''),
+                             self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS, ''))
         self.log.info('GitUtility: clone():\n\trepositories: [{}]\n\tdestination: [{}].'
                       .format(self.repos_list, self.location))
         for repository in self.repos_list:
             self.__repo_clone(self.__generate_repo_url(repository))
         git_clean_global_proxy()
 
-    def update(self):
+    def update(self):  # todo: use decorator here!
         """
         Update (pull) and gc() all repositories, mentioned in config file.
         Set proxy before updating and clean after it.
         """
-        git_set_global_proxy(self.config.get(myconst.CONFIG_KEY_PROXY_HTTP),
-                             self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS))
+        git_set_global_proxy(self.config.get(myconst.CONFIG_KEY_PROXY_HTTP, ''),
+                             self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS, ''))
         self.log.info('GitUtility: update():\n\trepositories: [{}]'.format(self.repos_list))
         for repository in self.repos_list:
             self.__repo_update(repository)

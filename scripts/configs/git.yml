@@ -9,11 +9,12 @@ stash:
   address:  https://gusevdm:{}@stash.merck.com/scm/
   #user:     gusevdm
 
-proxy:
-  http: 127.0.0.1:3180
-  https: 127.0.0.1:3180
+#proxy:
+#  http: 127.0.0.1:3180
+#  https: 127.0.0.1:3180
 
-mvn_settings: configs/msd-settings.xml
+# special settings for projects
+#mvn_settings: configs/msd-settings.xml
 
 # repositories list with keys and build attribute
 repositories:
