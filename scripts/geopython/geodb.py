@@ -198,10 +198,12 @@ def db_get_not_processed_geo_points_ids(dbname):
     return result
 
 
-def db_mark_geo_point_as_processed(dbname, geo_point_id):
+def db_mark_geo_point_as_processed(dbname, geo_point_id, processed_status=1):
     """"""
-    log.debug('db_mark_geo_point_as_processed(): mark point [{}] as processed.'.format(geo_point_id))
-    update_sql = "UPDATE geo_points SET processed = 1 WHERE geo_point_id = {}".format(geo_point_id)
+    log.debug('db_mark_geo_point_as_processed(): mark point [{}] as processed with status [{}].'
+              .format(geo_point_id, processed_status))
+    update_sql = "UPDATE geo_points SET processed = {} WHERE geo_point_id = {}"\
+        .format(processed_status, geo_point_id)
     connection = sql.connect(dbname)
     cursor = connection.cursor()
     cursor.execute(update_sql)

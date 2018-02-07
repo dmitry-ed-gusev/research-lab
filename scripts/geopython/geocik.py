@@ -2,11 +2,13 @@
 # coding=utf-8
 
 """
+    Parser for CIK geo information for election commissions.
     Created: Gusev Dmitrii, 05.02.2017
-    Modified: Gusev Dmitrii, 05.02.2017
+    Modified: Gusev Dmitrii, 06.02.2017
 """
 
 import os
+import errno
 import logging
 import json
 import urllib2
@@ -22,7 +24,8 @@ log = logging.getLogger('geocik')
 # some useful constants
 JSON_ENCODING = 'windows-1251'
 DATA_ENCODING = 'utf-8'
-
+USE_PROXY = False
+PROXY_SERVER = 'webproxy.merck.com:8080'
 # useful URLs for processing
 URL_TOP = 'http://cikrf.ru/services/lk_tree'
 URL_POINT = 'http://cikrf.ru/services/lk_tree/?id={}'
@@ -59,6 +62,19 @@ def add_geo_points(json_points, parent_id, batching=True):
         db_add_multiple_geo_points(DB_NAME, points_list)
 
 
+def save_file_with_path(file_path, content):
+    log.debug('save_file_with_path(): saving content to [{}].'.format(file_path))
+    if not os.path.exists(os.path.dirname(file_path)):
+        try:
+            os.makedirs(os.path.dirname(file_path))
+        except OSError as exc:  # guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+    # write content to a file
+    with open(file_path, "w") as f:
+        f.write(content)
+
+
 def init_geo_points(pretty_debug=False):
     """
     Initializing existing (!) geo points db. Operation is idempotent!
@@ -72,11 +88,11 @@ def init_geo_points(pretty_debug=False):
 
     # pretty print json (just debug)
     if pretty_debug:
-        print json.dumps(myjson, sort_keys=True, indent=4, encoding='windows-1251')
+        print json.dumps(myjson, sort_keys=True, indent=4, encoding=JSON_ENCODING)
 
     # get first geo point from json
     id = myjson[0]['id']
-    text = myjson[0]['text'].encode('utf-8')
+    text = myjson[0]['text'].encode(DATA_ENCODING)
     children = 'True'
     intid = myjson[0]['a_attr']['intid']
     levelid = myjson[0]['a_attr']['levelid']
@@ -103,6 +119,8 @@ def process_geo_points():
     continue add data to existing database.
     """
     log.debug('process_geo_points(): processing geo points.')
+
+    http_response = ''  # initialization of variable
     # get not processed from db and process them
     not_processed = db_get_not_processed_geo_points_ids(DB_NAME)
     while len(not_processed) > 0:
@@ -123,12 +141,19 @@ def process_geo_points():
             else:
                 url = URL_POINT
 
-            # get json
-            myjson = json.load(urllib2.urlopen(url.format(id)), encoding='windows-1251')
-            # add all found geo points to db
-            add_geo_points(myjson, geo_point_id)
-            # mark current geo point as processed
-            db_mark_geo_point_as_processed(DB_NAME, geo_point_id)
+            try:
+                # get source data
+                http_response = urllib2.urlopen(url.format(id)).read()  # open url
+                myjson = json.loads(http_response, encoding=JSON_ENCODING)  # parse json
+                # process data
+                add_geo_points(myjson, geo_point_id)  # add all found geo points to db
+                db_mark_geo_point_as_processed(DB_NAME, geo_point_id)  # mark current point as processed (= 1)
+            except ValueError as ve:
+                log.error('Error processing object id = [{}]! Message: {}'.format(id, ve.message))
+                # mark current geo point as processed with errors (= 2)
+                db_mark_geo_point_as_processed(DB_NAME, geo_point_id, processed_status=2)
+                # save on disk only erroneous objects (ids)
+                save_file_with_path('json_errors/{}.json'.format(id), http_response)  # save response to file
 
         # after processing first part - get new not processed points
         not_processed = db_get_not_processed_geo_points_ids(DB_NAME)
@@ -137,11 +162,11 @@ def process_geo_points():
 # starting point for [geocik] module
 log.info('Starting [geocik] module...')
 
-# setup proxy if needed
-proxy = urllib2.ProxyHandler({'http': 'webproxy.merck.com:8080', 'https': 'webproxy.merck.com:8080'})
-opener = urllib2.build_opener(proxy)
-urllib2.install_opener(opener)
-log.info('Proxy for http/https has been installed.')
+if USE_PROXY:  # setup proxy if needed
+    proxy = urllib2.ProxyHandler({'http': PROXY_SERVER, 'https': PROXY_SERVER})
+    opener = urllib2.build_opener(proxy)
+    urllib2.install_opener(opener)
+    log.info('Proxy for http/https has been installed.')
 
 # create db if not exists
 if not os.path.exists(DB_NAME):
@@ -150,5 +175,13 @@ if not os.path.exists(DB_NAME):
 
 # init db first time
 init_geo_points()
-# process/continue with geo points information
-process_geo_points()
+
+# process/continue with geo points information (in case of error - re-try)
+tries_count = 10
+tries = 0
+while tries < tries_count:
+    try:
+        process_geo_points()
+    except Exception as e:
+        log.error('Something went wrong! Message: {}'.format(e.message))
+    tries += 1
