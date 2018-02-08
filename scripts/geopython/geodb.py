@@ -157,7 +157,14 @@ def db_add_single_geo_point(dbname, id, intid, cik_text, levelid, children, pare
 
 def db_add_multiple_geo_points(dbname, list_of_geo_points):
     """"""
-    log.debug('db_add_multiple_geo_points(): adding multiple geo points.')
+    # log.debug('db_add_multiple_geo_points(): adding multiple geo points.')  # <- too much output
+
+    # if list is empty - quick return
+    if not list_of_geo_points or len(list_of_geo_points) == 0:
+        log.debug('List of geo points is empty. Nothing to add.')
+        return
+
+    # list isn't empty - processing
     sql_list = []
     insert_sql = "INSERT INTO geo_points(id, intid, cik_text, levelid, children, parent_id, processed) " \
                  "VALUES ({}, {}, '{}', {}, '{}', {}, {})"

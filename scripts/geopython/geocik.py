@@ -35,7 +35,7 @@ URL_SPB_AREA = 'http://cikrf.ru/services/lk_tree/?ret=0&id={}'
 
 
 def add_geo_points(json_points, parent_id, batching=True):
-    log.debug('add_geo_points(): adding geo points to db')
+    # log.debug('add_geo_points(): adding geo points to db')  # <- too much output
 
     # iterate over children and put them to db
     points_list = []
@@ -77,7 +77,8 @@ def save_file_with_path(file_path, content):
 
 def init_geo_points(pretty_debug=False):
     """
-    Initializing existing (!) geo points db. Operation is idempotent!
+    Initializing existing (!) geo points db. Initializes top of geo points hierarchy.
+    Operation is idempotent!
     :param pretty_debug:
     :return:
     """
@@ -113,6 +114,7 @@ def init_geo_points(pretty_debug=False):
     add_geo_points(myjson[0]['children'], last_id, batching=False)
 
 
+# todo: add starting point for processing (for top level)
 def process_geo_points():
     """
     Process (fill in with necessary data/fetch data) geo points db, can be executed multiple times - will
