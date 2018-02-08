@@ -2,9 +2,10 @@
 # coding=utf-8
 
 """
-    Unit tests for
+    Unit tests for pyutilities module. Covers most of methods in a module.
+    Created: Gusev Dmitrii, 2017
+    Modified: Gusev Dmitrii, 04.02.2018
 """
-# todo: implement tests!
 
 import yaml
 import unittest
@@ -56,21 +57,3 @@ class ConfigurationTest(unittest.TestCase):
         _list_files('zzz', files, True)
         self.assertEquals(1, len(files))
         self.assertEquals('/path/file1', files[0])
-
-
-"""
->>> with patch('__main__.open', mock_open(read_data='bibble'), create=True) as m:
-...     with open('foo') as h:
-...         result = h.read()
-...
->>> m.assert_called_once_with('foo')
->>> assert result == 'bibble'
-
-@patch.object(Configuration, 'get')
-@patch.object(JIRA, '__init__')
-def test_ConnectNotConnectedYet(self, mock_jira, mock_config):
-    mock_jira.return_value = None
-    mock_config.return_value = 'some value'
-    self.jira.connect()
-    self.assertTrue(mock_jira.called)\
-"""
