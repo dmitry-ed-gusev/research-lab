@@ -15,7 +15,7 @@ import urllib2
 from sqlite3 import IntegrityError
 from pylib.pyutilities import setup_logging
 from geodb import DB_NAME, db_create, db_add_single_geo_point, db_get_not_processed_geo_points_ids, \
-    db_mark_geo_point_as_processed, db_add_multiple_geo_points, db_get_geo_point_id
+    db_add_multiple_geo_points, db_get_geo_point_id, GeoDB
 
 # module initialization
 setup_logging(default_path='logging.yml')
@@ -34,7 +34,7 @@ URL_SPB = 'http://cikrf.ru/services/lk_tree/?ret=1&id={}'
 URL_SPB_AREA = 'http://cikrf.ru/services/lk_tree/?ret=0&id={}'
 
 
-def add_geo_points(json_points, parent_id, batching=True):
+def add_geo_points(json_points, parent_id, batching=True, geodb_instance=None):
     # log.debug('add_geo_points(): adding geo points to db')  # <- too much output
 
     # iterate over children and put them to db
@@ -59,10 +59,13 @@ def add_geo_points(json_points, parent_id, batching=True):
 
     if batching:
         # add a bunch of points (batch)
-        db_add_multiple_geo_points(DB_NAME, points_list)
+        if geodb_instance:
+            geodb_instance.db_add_multiple_geo_points(DB_NAME, points_list)
+        else:
+            db_add_multiple_geo_points(DB_NAME, points_list)
 
 
-def save_file_with_path(file_path, content):
+def save_file_with_path(file_path, content):  # todo: move it to utilities module
     log.debug('save_file_with_path(): saving content to [{}].'.format(file_path))
     if not os.path.exists(os.path.dirname(file_path)):
         try:
@@ -122,6 +125,9 @@ def process_geo_points():
     """
     log.debug('process_geo_points(): processing geo points.')
 
+    # use GeoDB instance
+    geodb = GeoDB(DB_NAME)
+
     http_response = ''  # initialization of variable
     # get not processed from db and process them
     not_processed = db_get_not_processed_geo_points_ids(DB_NAME)
@@ -148,12 +154,18 @@ def process_geo_points():
                 http_response = urllib2.urlopen(url.format(id)).read()  # open url
                 myjson = json.loads(http_response, encoding=JSON_ENCODING)  # parse json
                 # process data
-                add_geo_points(myjson, geo_point_id)  # add all found geo points to db
-                db_mark_geo_point_as_processed(DB_NAME, geo_point_id)  # mark current point as processed (= 1)
+                add_geo_points(myjson, geo_point_id, geodb_instance=geodb)  # add all found geo points to db
+
+                geodb.db_mark_geo_point_as_processed(DB_NAME, geo_point_id)
+                # db_mark_geo_point_as_processed(DB_NAME, geo_point_id)  # mark current point as processed (= 1)
+
             except ValueError as ve:
                 log.error('Error processing object id = [{}]! Message: {}'.format(id, ve.message))
+
                 # mark current geo point as processed with errors (= 2)
-                db_mark_geo_point_as_processed(DB_NAME, geo_point_id, processed_status=2)
+                geodb.db_mark_geo_point_as_processed(DB_NAME, geo_point_id, processed_status=2)
+                # db_mark_geo_point_as_processed(DB_NAME, geo_point_id, processed_status=2)
+
                 # save on disk only erroneous objects (ids)
                 save_file_with_path('json_errors/{}.json'.format(id), http_response)  # save response to file
 
