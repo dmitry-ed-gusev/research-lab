@@ -4,28 +4,26 @@
 """
     Parser for CIK geo information for election commissions.
     Created: Gusev Dmitrii, 05.02.2017
-    Modified: Gusev Dmitrii, 06.02.2017
+    Modified: Gusev Dmitrii, 11.02.2017
 """
 
 import os
-import errno
 import logging
 import json
 import urllib2
 from sqlite3 import IntegrityError
-from pylib.pyutilities import setup_logging
+from pylib.pyutilities import setup_logging, save_file_with_path
 from geodb import DB_NAME, db_create, db_add_single_geo_point, db_get_not_processed_geo_points_ids, \
     db_add_multiple_geo_points, db_get_geo_point_id, GeoDB
 
-# module initialization
-setup_logging(default_path='logging.yml')
-log = logging.getLogger('geocik')
 
 # some useful constants
 JSON_ENCODING = 'windows-1251'
 DATA_ENCODING = 'utf-8'
 USE_PROXY = False
 PROXY_SERVER = 'webproxy.merck.com:8080'
+LOGGING_CONFIG = 'logging.yml'
+LOGGER_NAME = 'geocik'
 # useful URLs for processing
 URL_TOP = 'http://cikrf.ru/services/lk_tree'
 URL_POINT = 'http://cikrf.ru/services/lk_tree/?id={}'
@@ -34,7 +32,7 @@ URL_SPB = 'http://cikrf.ru/services/lk_tree/?ret=1&id={}'
 URL_SPB_AREA = 'http://cikrf.ru/services/lk_tree/?ret=0&id={}'
 
 
-def add_geo_points(json_points, parent_id, batching=True, geodb_instance=None):
+def add_geo_points(json_points, parent_id, batching=True, geodb_instance=None, text_filter=None):
     # log.debug('add_geo_points(): adding geo points to db')  # <- too much output
 
     # iterate over children and put them to db
@@ -48,14 +46,30 @@ def add_geo_points(json_points, parent_id, batching=True, geodb_instance=None):
             point_intid = 'NULL'
         point_levelid = point['a_attr']['levelid']
 
+        # if we use filtering by text - apply it
         if batching:  # if batching -> add point to list
-            points_list.append([point_id, point_intid, point_text, point_levelid, point_children, parent_id, 0])
+
+            if text_filter:  # apply text filtering
+                if text_filter in point_text:
+                    points_list.append([point_id, point_intid, point_text, point_levelid, point_children, parent_id, 0])
+            else:
+                points_list.append([point_id, point_intid, point_text, point_levelid, point_children, parent_id, 0])
+
         else:  # if not batching -> directly add geo point (one by one)
-            try:
-                db_add_single_geo_point(DB_NAME, point_id, point_intid, point_text, point_levelid,
-                                        point_children, parent_id)
-            except IntegrityError as ie:
-                log.warn('Geo point already exists! Message: {}'.format(ie.message))
+
+            if text_filter:  # apply text filter
+                if text_filter in point_text:
+                    try:
+                        db_add_single_geo_point(DB_NAME, point_id, point_intid, point_text, point_levelid,
+                                                point_children, parent_id)
+                    except IntegrityError as ie:
+                        log.warn('Geo point already exists! Message: {}'.format(ie.message))
+            else:
+                try:
+                    db_add_single_geo_point(DB_NAME, point_id, point_intid, point_text, point_levelid,
+                                            point_children, parent_id)
+                except IntegrityError as ie:
+                    log.warn('Geo point already exists! Message: {}'.format(ie.message))
 
     if batching:
         # add a bunch of points (batch)
@@ -65,20 +79,7 @@ def add_geo_points(json_points, parent_id, batching=True, geodb_instance=None):
             db_add_multiple_geo_points(DB_NAME, points_list)
 
 
-def save_file_with_path(file_path, content):  # todo: move it to utilities module
-    log.debug('save_file_with_path(): saving content to [{}].'.format(file_path))
-    if not os.path.exists(os.path.dirname(file_path)):
-        try:
-            os.makedirs(os.path.dirname(file_path))
-        except OSError as exc:  # guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
-    # write content to a file
-    with open(file_path, "w") as f:
-        f.write(content)
-
-
-def init_geo_points(pretty_debug=False):
+def init_geo_points(pretty_debug=False, text_filter=None):
     """
     Initializing existing (!) geo points db. Initializes top of geo points hierarchy.
     Operation is idempotent!
@@ -105,8 +106,8 @@ def init_geo_points(pretty_debug=False):
     log.debug('id -> {}, text -> {}, children -> {}, intid -> {}, levelid -> {}'
               .format(id, text, type(children), intid, levelid))
 
+    # add first (top-level) point to db
     try:
-        # add first point to db
         last_id = db_add_single_geo_point(DB_NAME, id, intid, text, levelid, children, 0, processed=1)
     except IntegrityError as ie:
         log.warn('Top level element already added! Message: {}'.format(ie.message))
@@ -114,7 +115,7 @@ def init_geo_points(pretty_debug=False):
 
     # add top-level points to db (without batching, one by one). if we use batching and adding one by one, we
     # won't miss any top level point that isn't exist in db (we will add missed and won't touch existing)
-    add_geo_points(myjson[0]['children'], last_id, batching=False)
+    add_geo_points(myjson[0]['children'], last_id, batching=False, text_filter=text_filter)
 
 
 # todo: add starting point for processing (for top level)
@@ -173,6 +174,9 @@ def process_geo_points():
         not_processed = db_get_not_processed_geo_points_ids(DB_NAME)
 
 
+# module initialization
+setup_logging(default_path='logging.yml')
+log = logging.getLogger('geocik')
 # starting point for [geocik] module
 log.info('Starting [geocik] module...')
 
@@ -188,7 +192,7 @@ if not os.path.exists(DB_NAME):
     db_create(DB_NAME)  # create target db
 
 # init db first time
-init_geo_points()
+init_geo_points(text_filter='Санкт-Петербург')
 
 # process/continue with geo points information (in case of error - re-try)
 tries_count = 10

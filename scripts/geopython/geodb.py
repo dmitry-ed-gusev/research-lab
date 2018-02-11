@@ -5,7 +5,7 @@
     DB utilities module (persistance layer). This is a library module.
 
     Created: Gusev Dmitrii, 02.02.2017
-    Modified: Gusev Dmitrii, 05.02.2017
+    Modified: Gusev Dmitrii, 11.02.2017
 """
 
 import logging
@@ -16,7 +16,9 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 # common constants
-DB_NAME = 'geodata.sqlite'
+# DB_NAME = 'geodata.sqlite'
+DB_NAME = 'geodb.sqlite'
+
 # database script
 DB_SCRIPT = """
     -- drop tables
@@ -270,18 +272,6 @@ def db_get_not_processed_geo_points_ids(dbname):
     for row in cursor:
         result.append(row)
     return result
-
-
-# def db_mark_geo_point_as_processed(dbname, geo_point_id, processed_status=1):
-#     """"""
-#     log.debug('db_mark_geo_point_as_processed(): mark point [{}] as processed with status [{}].'
-#               .format(geo_point_id, processed_status))
-#     update_sql = "UPDATE geo_points SET processed = {} WHERE geo_point_id = {}"\
-#         .format(processed_status, geo_point_id)
-#     connection = sql.connect(dbname)
-#     cursor = connection.cursor()
-#     cursor.execute(update_sql)
-#     connection.commit()
 
 
 def db_get_geo_point_id(dbname, id, intid, cik_text, levelid):
