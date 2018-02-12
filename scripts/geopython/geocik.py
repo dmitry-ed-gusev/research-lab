@@ -16,6 +16,7 @@ from pylib.pyutilities import setup_logging, save_file_with_path
 from geodb import DB_NAME, db_create, db_add_single_geo_point, db_get_not_processed_geo_points_ids, \
     db_add_multiple_geo_points, db_get_geo_point_id, GeoDB
 
+# todo: add cmd line parameters/argparse
 
 # some useful constants
 JSON_ENCODING = 'windows-1251'
@@ -175,7 +176,7 @@ def process_geo_points():
 
 
 # module initialization
-setup_logging(default_path='logging.yml')
+setup_logging(default_path='geopython/logging.yml')
 log = logging.getLogger('geocik')
 # starting point for [geocik] module
 log.info('Starting [geocik] module...')
