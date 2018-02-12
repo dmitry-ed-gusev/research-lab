@@ -163,6 +163,48 @@ def save_file_with_path(file_path, content):  # todo: move it to utilities modul
         f.write(content)
 
 
+# todo: functions (decorators) below are copied from inet :) - take a look
+def benchmark(func):
+    """
+    Декоратор, выводящий время, которое заняло
+    выполнение декорируемой функции.
+    """
+    import time
+
+    def wrapper(*args, **kwargs):
+        t = time.clock()
+        res = func(*args, **kwargs)
+        print func.__name__, time.clock() - t
+        return res
+    return wrapper
+
+
+def logging(func):
+    """
+    Декоратор, логирующий работу кода.
+    (хорошо, он просто выводит вызовы, но тут могло быть и логирование!)
+    """
+    def wrapper(*args, **kwargs):
+        res = func(*args, **kwargs)
+        print func.__name__, args, kwargs
+        return res
+    return wrapper
+
+
+def counter(func):
+    """
+    Декоратор, считающий и выводящий количество вызовов
+    декорируемой функции.
+    """
+    def wrapper(*args, **kwargs):
+        wrapper.count += 1
+        res = func(*args, **kwargs)
+        print "{0} была вызвана: {1}x".format(func.__name__, wrapper.count)
+        return res
+    wrapper.count = 0
+    return wrapper
+
+
 if __name__ == '__main__':
     print "pyutilities: Don't try to execute library as standalone app!"
     # list_files('/media/vinnypuhh/MyData/Cloud/YandexDisk/DOCS AND BOOKS')
