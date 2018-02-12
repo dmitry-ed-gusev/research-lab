@@ -4,7 +4,7 @@
 """
     Utility module for interacting with GIT.
     Created: Gusev Dmitrii, 22.05.2017
-    Modified: Gusev Dmitrii, 27.01.2018
+    Modified: Gusev Dmitrii, 12.02.2018
 """
 
 import logging
@@ -16,6 +16,8 @@ from pylib.pyutilities import git_set_global_proxy, git_clean_global_proxy
 
 # some useful constants
 GIT_EXECUTABLE = 'git'
+REPO_FUNCTION_CLONE = 'clone'
+REPO_FUNCTION_UPDATE = 'update'
 
 
 class GitUtility(object):
@@ -88,12 +90,15 @@ class GitUtility(object):
         self.log.debug('__generate_repo_url(): generated repo url [{}].'.format(repo_url))
         return repo_url
 
-    def __repo_clone(self, repo_url):
+    def __repo_clone(self, repo_name):
         """
         Clones repo by specified url to local location. Internal method.
-        :param repo_url:
+        :param repo_name:
         """
-        self.log.debug('__repo_clone(): starting clone for [{}].'.format(repo_url))
+        self.log.debug('__repo_clone(): starting clone for [{}].'.format(repo_name))
+        # generating repo url
+        repo_url = self.__generate_repo_url(repo_name)
+        # cloning specified repository
         try:
             process = Popen([GIT_EXECUTABLE, 'clone', repo_url], cwd=self.location)
             process.wait()
@@ -151,32 +156,25 @@ class GitUtility(object):
         except StandardError as se:
             self.log.error('Error building repo [{}]! {}'.format(repo_path, se))
 
-    def clone(self):  # todo: use decorator here!
-        """
-        Clone all repositories, mentioned in config file.
-        Set proxy before updating and clean after it.
-        """
-        git_set_global_proxy(self.config.get(myconst.CONFIG_KEY_PROXY_HTTP, ''),
-                             self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS, ''))
-        self.log.info('GitUtility: clone():\n\trepositories: [{}]\n\tdestination: [{}].'
-                      .format(self.repos_list, self.location))
+    def process_repositories(self, repo_function=REPO_FUNCTION_CLONE):
+        self.log.info('GitUtility: processing repositories with [{}]:\n[{}]'
+                      .format(repo_function, self.repos_list))
+        # get proxies from config
+        http_proxy = self.config.get(myconst.CONFIG_KEY_PROXY_HTTP, '')
+        https_proxy = self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS, '')
+        # set proxies (http/https)
+        git_set_global_proxy(http_proxy, https_proxy)
+        # perform processing
         for repository in self.repos_list:
-            self.__repo_clone(self.__generate_repo_url(repository))
-        # todo: bug!!! cleaning proxy always, despite was it set or not (clean only if set!!!)
-        git_clean_global_proxy()
-
-    def update(self):  # todo: use decorator here!
-        """
-        Update (pull) and gc() all repositories, mentioned in config file.
-        Set proxy before updating and clean after it.
-        """
-        git_set_global_proxy(self.config.get(myconst.CONFIG_KEY_PROXY_HTTP, ''),
-                             self.config.get(myconst.CONFIG_KEY_PROXY_HTTPS, ''))
-        self.log.info('GitUtility: update():\n\trepositories: [{}]'.format(self.repos_list))
-        for repository in self.repos_list:
-            self.__repo_update(repository)
-        # todo: bug!!! cleaning proxy always, despite was it set or not (clean only if set!!!)
-        git_clean_global_proxy()
+            if REPO_FUNCTION_CLONE == repo_function:
+                self.__repo_clone(repository)
+            elif REPO_FUNCTION_UPDATE == repo_function:
+                self.__repo_update(repository)
+            else:
+                raise StandardError('Invalid option for repository processing [{}]!'.format(repo_function))
+        # clean git proxies, if any was set
+        if http_proxy or https_proxy:
+            git_clean_global_proxy()
 
     def build(self):
         """
