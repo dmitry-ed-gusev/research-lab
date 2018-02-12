@@ -179,7 +179,7 @@ def benchmark(func):
     return wrapper
 
 
-def logging(func):
+def logger(func):
     """
     Декоратор, логирующий работу кода.
     (хорошо, он просто выводит вызовы, но тут могло быть и логирование!)
