@@ -5,7 +5,7 @@
     DB utilities module (persistance layer). This is a library module.
 
     Created: Gusev Dmitrii, 02.02.2017
-    Modified: Gusev Dmitrii, 05.02.2017
+    Modified: Gusev Dmitrii, 11.02.2017
 """
 
 import logging
@@ -16,7 +16,9 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 # common constants
-DB_NAME = 'geodata.sqlite'
+# DB_NAME = 'geodata.sqlite'
+DB_NAME = 'geodb.sqlite'
+
 # database script
 DB_SCRIPT = """
     -- drop tables
@@ -36,6 +38,72 @@ DB_SCRIPT = """
       parent_id INTEGER REFERENCES geo_points(geo_point_id) ON DELETE RESTRICT, processed INTEGER DEFAULT 0);
     CREATE UNIQUE INDEX geo_point_id_unique ON geo_points(id);
 """
+
+
+class GeoDB(object):
+    """ Class for utilizing sqlite3 connection. """
+    def __init__(self, dbname):
+        # init logger
+        self.log = logging.getLogger(__name__)
+        self.log.addHandler(logging.NullHandler())
+        self.log.debug('Creating GeoDB instance.')
+        self.__dbname = dbname
+        self.__connection = None
+        self.__cursor = None
+
+    # todo: create decorator for closing connection on exception
+    # todo: create executor method for utilizing with all other methods
+    def db_mark_geo_point_as_processed(self, dbname, geo_point_id, processed_status=1):
+        """"""
+        log.debug('GeoDB.db_mark_geo_point_as_processed(): mark point [{}] as processed with status [{}].'
+                  .format(geo_point_id, processed_status))
+        update_sql = "UPDATE geo_points SET processed = {} WHERE geo_point_id = {}" \
+            .format(processed_status, geo_point_id)
+        # check connection
+        if not self.__connection:
+            self.__connection = sql.connect(dbname)
+            self.__cursor = self.__connection.cursor()
+        try:
+            # performing db operations
+            self.__cursor.execute(update_sql)
+            self.__connection.commit()
+        except StandardError as se:
+            self.log.error('Error occured: {}'.format(se.message))
+            self.__connection.close()
+
+    def db_add_multiple_geo_points(self, dbname, list_of_geo_points):
+        """"""
+        # log.debug('db_add_multiple_geo_points(): adding multiple geo points.')  # <- too much output
+        # if list is empty - quick return
+        if not list_of_geo_points or len(list_of_geo_points) == 0:
+            self.log.debug('List of geo points is empty. Nothing to add.')
+            return
+        # list isn't empty - processing
+        sql_list = []
+        insert_sql = "INSERT INTO geo_points(id, intid, cik_text, levelid, children, parent_id, processed) " \
+                     "VALUES ({}, {}, '{}', {}, '{}', {}, {})"
+        # process all specified geo points
+        for geo_point in list_of_geo_points:
+            # get info from list entry
+            id = geo_point[0]
+            intid = geo_point[1]
+            cik_text = geo_point[2]
+            levelid = geo_point[3]
+            children = geo_point[4]
+            parent_id = geo_point[5]
+            processed = geo_point[6]
+            # add values to query and add query to list
+            sql_list.append(insert_sql.format(id, intid, cik_text, levelid, children, parent_id, processed))
+        # check connection
+        if not self.__connection:
+            self.__connection = sql.connect(dbname)
+            self.__cursor = self.__connection.cursor()
+        # execute multip[le sqls
+        for query in sql_list:
+            self.__cursor.execute(query)
+        # commit all added points
+        self.__connection.commit()
+        self.log.debug('Geo points list [len = {}] has been added.'.format(len(list_of_geo_points)))
 
 
 # todo: add exceptions handling for db operations (in case of exception close connection etc.)
@@ -155,6 +223,7 @@ def db_add_single_geo_point(dbname, id, intid, cik_text, levelid, children, pare
         connection.close()
 
 
+# todo: remove this method - it has been moved to GeoDB object
 def db_add_multiple_geo_points(dbname, list_of_geo_points):
     """"""
     # log.debug('db_add_multiple_geo_points(): adding multiple geo points.')  # <- too much output
@@ -203,18 +272,6 @@ def db_get_not_processed_geo_points_ids(dbname):
     for row in cursor:
         result.append(row)
     return result
-
-
-def db_mark_geo_point_as_processed(dbname, geo_point_id, processed_status=1):
-    """"""
-    log.debug('db_mark_geo_point_as_processed(): mark point [{}] as processed with status [{}].'
-              .format(geo_point_id, processed_status))
-    update_sql = "UPDATE geo_points SET processed = {} WHERE geo_point_id = {}"\
-        .format(processed_status, geo_point_id)
-    connection = sql.connect(dbname)
-    cursor = connection.cursor()
-    cursor.execute(update_sql)
-    connection.commit()
 
 
 def db_get_geo_point_id(dbname, id, intid, cik_text, levelid):
