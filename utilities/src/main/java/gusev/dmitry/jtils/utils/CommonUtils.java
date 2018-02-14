@@ -14,14 +14,17 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import static gusev.dmitry.jtils.utils.LambdaUtils.not;
 
 /**
  * Some useful common utils for whole application. Utils for different cases - counting, work with dbases etc.
  * Class is final and can't be instantiated, all methods are static.
  * <p>
- * Transliteration was made by Gafetdinov Denis.
+ * Transliteration was made by Gafetdinov Denis (many thanks!).
  *
  * @author Gusev Dmitry, Gafetdinov Denis.
  * @version 4.0 (DATE: 28.05.2017)
@@ -31,82 +34,81 @@ public final class CommonUtils {
 
     private static Log LOG = LogFactory.getLog(CommonUtils.class);
 
+    private static final String DEFAULT_ENCODING = "UTF-8";
+
     // this static member is used for transliteration method
-    private static final Map<Character, String> CHARS_MAP = new HashMap<>();
-
-    static {
-        // uppercase letters pairs
-        CHARS_MAP.put('А', "A");
-        CHARS_MAP.put('Б', "B");
-        CHARS_MAP.put('В', "V");
-        CHARS_MAP.put('Г', "G");
-        CHARS_MAP.put('Д', "D");
-        CHARS_MAP.put('Е', "E");
-        CHARS_MAP.put('Ё', "E");
-        CHARS_MAP.put('Ж', "Zh");
-        CHARS_MAP.put('З', "Z");
-        CHARS_MAP.put('И', "I");
-        CHARS_MAP.put('Й', "I");
-        CHARS_MAP.put('К', "K");
-        CHARS_MAP.put('Л', "L");
-        CHARS_MAP.put('М', "M");
-        CHARS_MAP.put('Н', "N");
-        CHARS_MAP.put('О', "O");
-        CHARS_MAP.put('П', "P");
-        CHARS_MAP.put('Р', "R");
-        CHARS_MAP.put('С', "S");
-        CHARS_MAP.put('Т', "T");
-        CHARS_MAP.put('У', "U");
-        CHARS_MAP.put('Ф', "F");
-        CHARS_MAP.put('Х', "H");
-        CHARS_MAP.put('Ц', "C");
-        CHARS_MAP.put('Ч', "Ch");
-        CHARS_MAP.put('Ш', "Sh");
-        CHARS_MAP.put('Щ', "Sh");
-        CHARS_MAP.put('Ъ', "'");
-        CHARS_MAP.put('Ы', "Y");
-        CHARS_MAP.put('Ь', "'");
-        CHARS_MAP.put('Э', "E");
-        CHARS_MAP.put('Ю', "U");
-        CHARS_MAP.put('Я', "Ya");
+    private static final Map<Character, String> CHARS_MAP = new HashMap<Character, String>() {{
+        put('А', "A");
+        put('Б', "B");
+        put('В', "V");
+        put('Г', "G");
+        put('Д', "D");
+        put('Е', "E");
+        put('Ё', "E");
+        put('Ж', "Zh");
+        put('З', "Z");
+        put('И', "I");
+        put('Й', "I");
+        put('К', "K");
+        put('Л', "L");
+        put('М', "M");
+        put('Н', "N");
+        put('О', "O");
+        put('П', "P");
+        put('Р', "R");
+        put('С', "S");
+        put('Т', "T");
+        put('У', "U");
+        put('Ф', "F");
+        put('Х', "H");
+        put('Ц', "C");
+        put('Ч', "Ch");
+        put('Ш', "Sh");
+        put('Щ', "Sh");
+        put('Ъ', "'");
+        put('Ы', "Y");
+        put('Ь', "'");
+        put('Э', "E");
+        put('Ю', "U");
+        put('Я', "Ya");
         //lowercase letters pairs
-        CHARS_MAP.put('а', "a");
-        CHARS_MAP.put('б', "b");
-        CHARS_MAP.put('в', "v");
-        CHARS_MAP.put('г', "g");
-        CHARS_MAP.put('д', "d");
-        CHARS_MAP.put('е', "e");
-        CHARS_MAP.put('ё', "e");
-        CHARS_MAP.put('ж', "zh");
-        CHARS_MAP.put('з', "z");
-        CHARS_MAP.put('и', "i");
-        CHARS_MAP.put('й', "i");
-        CHARS_MAP.put('к', "k");
-        CHARS_MAP.put('л', "l");
-        CHARS_MAP.put('м', "m");
-        CHARS_MAP.put('н', "n");
-        CHARS_MAP.put('о', "o");
-        CHARS_MAP.put('п', "p");
-        CHARS_MAP.put('р', "r");
-        CHARS_MAP.put('с', "s");
-        CHARS_MAP.put('т', "t");
-        CHARS_MAP.put('у', "u");
-        CHARS_MAP.put('ф', "f");
-        CHARS_MAP.put('х', "h");
-        CHARS_MAP.put('ц', "c");
-        CHARS_MAP.put('ч', "ch");
-        CHARS_MAP.put('ш', "sh");
-        CHARS_MAP.put('щ', "sh");
-        CHARS_MAP.put('ъ', "'");
-        CHARS_MAP.put('ы', "y");
-        CHARS_MAP.put('ь', "'");
-        CHARS_MAP.put('э', "e");
-        CHARS_MAP.put('ю', "u");
-        CHARS_MAP.put('я', "ya");
-    }
+        put('а', "a");
+        put('б', "b");
+        put('в', "v");
+        put('г', "g");
+        put('д', "d");
+        put('е', "e");
+        put('ё', "e");
+        put('ж', "zh");
+        put('з', "z");
+        put('и', "i");
+        put('й', "i");
+        put('к', "k");
+        put('л', "l");
+        put('м', "m");
+        put('н', "n");
+        put('о', "o");
+        put('п', "p");
+        put('р', "r");
+        put('с', "s");
+        put('т', "t");
+        put('у', "u");
+        put('ф', "f");
+        put('х', "h");
+        put('ц', "c");
+        put('ч', "ch");
+        put('ш', "sh");
+        put('щ', "sh");
+        put('ъ', "'");
+        put('ы', "y");
+        put('ь', "'");
+        put('э', "e");
+        put('ю', "u");
+        put('я', "ya");
+    }};
 
-    private CommonUtils() {
-    } // noninstantiability
+    private CommonUtils() { // non-instantiability
+    }
 
     /***/
     public static String getStringResultSet(ResultSet rs, int width) {
@@ -476,7 +478,9 @@ public final class CommonUtils {
 
     } // end of unZipIt
 
-    /** Unzip to current folder. */
+    /**
+     * Unzip to current folder.
+     */
     public static void unZipIt(String zipFile) {
         CommonUtils.unZipIt(zipFile, "");
     }
@@ -507,4 +511,57 @@ public final class CommonUtils {
         return result;
     }
 
-}
+    /***/
+    // todo: add multiple files deletion
+    // todo: add flag throw exception on error or ignore
+    // todo: add return map with error on files deletion
+    public static void deleteFileIfExist(String fileName) throws IOException {
+        LOG.debug(String.format("NLPProcessor.deleteFileIfExist() is working. File [%s].", fileName));
+
+        File file = new File(fileName);
+        if (file.exists()) {
+            boolean isDeleteOK = file.delete();
+            LOG.info(String.format("File [%s] exists. Removing -> [%s].", fileName, isDeleteOK ? "OK" : "Fail"));
+            if (!isDeleteOK) { // if can't delete - we won't process.
+                //LOG.error(String.format("Cant't delete file [%s] by unknown reason!", fileName));
+                throw new IOException(String.format("Cant't delete file [%s] by unknown reason!", fileName));
+            }
+        }
+    }
+
+    /***/
+    public static List<String> readCSVFile(InputStream fileStream, String encoding) throws IOException {
+        LOG.debug("CommonUtils.readCSVFile(Stream) is working.");
+
+        if (fileStream == null) { // fail-fast
+            throw new IOException("Empty file stream!");
+        }
+
+        List<String> result = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                fileStream, StringUtils.isBlank(encoding) ? DEFAULT_ENCODING : encoding))) {
+            String rawLine;
+            while ((rawLine = reader.readLine()) != null) {
+                result.addAll(Arrays.stream(StringUtils.split(rawLine, ','))
+                        .map(StringUtils::trimToEmpty)
+                        .filter(not(StringUtils::isBlank))
+                        .collect(Collectors.toList()));
+            }
+        }
+        return result;
+    }
+
+    /***/
+    // todo: add variable separator
+    // todo: read file from input stream
+    public static List<String> readCSVFile(String fileName, String encoding) throws IOException {
+        LOG.debug("CommonUtils.readCSVFile(String) is working.");
+
+        if (StringUtils.isBlank(fileName)) { // fail-fast
+            throw new IOException("Empty file name!");
+        }
+
+        return CommonUtils.readCSVFile(new FileInputStream(fileName), encoding);
+    }
+
+} // end of CommonUtils class

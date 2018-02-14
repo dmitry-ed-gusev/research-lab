@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev</groupId>
+        <artifactId>nlp</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>nlp-standalone</artifactId>
+    <packaging>jar</packaging>
+    <version>0.1.0</version>
+    <name>NLP Standalone App :: Standalone App for NLP.</name>
+
+    <properties>
+    </properties>
+
+    <build>
+        <finalName>${app.base.name}-app</finalName>
+
+        <plugins>
+            <!-- creating JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>gusevdm.application.AppMain</mainClass>
+                            <classpathPrefix>${common.libraries.prefix}/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                    <!--<outputDirectory>${project.build.directory}/panalyzer</outputDirectory>-->
+                    <outputDirectory>${app.assembly.dir}</outputDirectory>
+                </configuration>
+                <version>${maven.plugin.jar}</version>
+            </plugin>
+
+            <!-- copying dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>panalyzer-dep-copy</id>
+                        <phase>${prod.build.phase}</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--<outputDirectory>${project.build.directory}/panalyzer/${common.libraries.prefix}</outputDirectory>-->
+                    <outputDirectory>${app.assembly.dir}/${common.libraries.prefix}</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- copying other files -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-files</id>
+                        <phase>${prod.build.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <tasks>
+                        <copy todir="${app.assembly.dir}" flatten="false" overwrite="true"
+                              verbose="true" failonerror="true">
+                            <fileset dir="${basedir}" includes="panalyzer.bat"/>
+                            <fileset dir="${basedir}" includes="panalyzer.properties"/>
+                            <fileset dir="${basedir}" includes="readme.txt"/>
+                        </copy>
+                    </tasks>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.main.extras</groupId>
+            <artifactId>glassfish-embedded-all</artifactId>
+            <version>5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>dgusev</groupId>
+            <artifactId>utilities</artifactId>
+            <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+</project>
