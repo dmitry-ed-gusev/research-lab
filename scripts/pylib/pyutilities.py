@@ -8,6 +8,7 @@
 """
 
 import os
+import errno
 import sys
 import csv
 import yaml
@@ -121,7 +122,7 @@ def parse_yaml(file_path):
         return yaml.load(cfg_file_content)
 
 
-def git_set_global_proxy(http=None, https=None):  # todo: unit tests!
+def git_set_global_proxy(http=None, https=None):  # todo: unit tests! make it decorator.
     """
     Set specified proxies (both http/https) for local git globally.
     :param http:
@@ -138,7 +139,7 @@ def git_set_global_proxy(http=None, https=None):  # todo: unit tests!
         process.wait()
 
 
-def git_clean_global_proxy():  # todo: unit tests!
+def git_clean_global_proxy():  # todo: unit tests! make it decorator.
     """
     Clear git global proxies (both http/https).
     """
@@ -147,6 +148,61 @@ def git_clean_global_proxy():  # todo: unit tests!
     process.wait()
     process = Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'https.proxy'])
     process.wait()
+
+
+def save_file_with_path(file_path, content):  # todo: move it to utilities module
+    log.debug('save_file_with_path(): saving content to [{}].'.format(file_path))
+    if not os.path.exists(os.path.dirname(file_path)):
+        try:
+            os.makedirs(os.path.dirname(file_path))
+        except OSError as exc:  # guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+    # write content to a file
+    with open(file_path, "w") as f:
+        f.write(content)
+
+
+# todo: functions (decorators) below are copied from inet :) - take a look
+def benchmark(func):
+    """
+    Декоратор, выводящий время, которое заняло
+    выполнение декорируемой функции.
+    """
+    import time
+
+    def wrapper(*args, **kwargs):
+        t = time.clock()
+        res = func(*args, **kwargs)
+        print func.__name__, time.clock() - t
+        return res
+    return wrapper
+
+
+def logger(func):
+    """
+    Декоратор, логирующий работу кода.
+    (хорошо, он просто выводит вызовы, но тут могло быть и логирование!)
+    """
+    def wrapper(*args, **kwargs):
+        res = func(*args, **kwargs)
+        print func.__name__, args, kwargs
+        return res
+    return wrapper
+
+
+def counter(func):
+    """
+    Декоратор, считающий и выводящий количество вызовов
+    декорируемой функции.
+    """
+    def wrapper(*args, **kwargs):
+        wrapper.count += 1
+        res = func(*args, **kwargs)
+        print "{0} была вызвана: {1}x".format(func.__name__, wrapper.count)
+        return res
+    wrapper.count = 0
+    return wrapper
 
 
 if __name__ == '__main__':

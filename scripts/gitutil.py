@@ -5,14 +5,14 @@
     GIT utility, simplifies work with many repositories. By default - update and build repositories
     specified in config file. Has some config parameters for fine tuning.
     Created: Gusev Dmitrii, 03.04.2017
-    Modified: Gusev Dmitrii, 27.01.2018
+    Modified: Gusev Dmitrii, 12.02.2018
 """
 
 import argparse
 import logging
 import pylib.common_constants as myconst
 from pylib.configuration import Configuration
-from pylib.git_utility import GitUtility
+from pylib.git_utility import GitUtility, REPO_FUNCTION_CLONE, REPO_FUNCTION_UPDATE
 from pylib.pyutilities import setup_logging
 
 
@@ -61,9 +61,9 @@ def git_utility_start():
 
     # update or clone repositories - depending on settings/options
     if config.get(myconst.CONFIG_KEY_GIT_CLONE, default=False):
-        git.clone()
+        git.process_repositories(repo_function=REPO_FUNCTION_CLONE)  # clone by option
     else:
-        git.update()
+        git.process_repositories(repo_function=REPO_FUNCTION_UPDATE)  # update by option
 
     # build repositories, if not switched off
     if not config.get(myconst.CONFIG_KEY_MVN_BUILD_OFF, default=False):
