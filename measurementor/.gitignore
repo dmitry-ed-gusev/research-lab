@@ -1,0 +1,15 @@
+*.iml
+.idea
+.gradle
+/target
+/buildPlugins
+/build
+/conf/qma/asgard/asgard-configuration.json
+application.properties
+application.properties.backup
+/data/elasticsearch
+/out
+application.properties
+.vagrant/
+/kibana
+cobertura.ser
