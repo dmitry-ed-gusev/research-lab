@@ -29,6 +29,8 @@ def prepare_arg_parser():
     # proxy settings, optional
     parser.add_argument('--proxy.http', dest=myconst.CONFIG_KEY_PROXY_HTTP, action='store', help='HTTP proxy')
     parser.add_argument('--proxy.https', dest=myconst.CONFIG_KEY_PROXY_HTTPS, action='store', help='HTTPS proxy')
+    # todo: add --noproxy key - ignore proxy settings in config file
+    # todo: add --nosettings key - ignore special settings in config file
     # stash password, mandatory
     parser.add_argument('--pass', dest=myconst.CONFIG_KEY_STASH_PASS, action='store',
                         required=True, help='JIRA password (mandatory)')
