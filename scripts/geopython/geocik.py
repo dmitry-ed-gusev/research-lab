@@ -174,6 +174,9 @@ def process_geo_points():
         # after processing first part - get new not processed points
         not_processed = db_get_not_processed_geo_points_ids(DB_NAME)
 
+    log.info('All points have been processed.')
+    return True
+
 
 # module initialization
 setup_logging(default_path='geopython/logging.yml')
@@ -193,14 +196,16 @@ if not os.path.exists(DB_NAME):
     db_create(DB_NAME)  # create target db
 
 # init db first time
-init_geo_points(text_filter='Санкт-Петербург')
+# init_geo_points(text_filter='Санкт-Петербург')
+init_geo_points(text_filter='Ленинградская область')
 
 # process/continue with geo points information (in case of error - re-try)
 tries_count = 10
 tries = 0
-while tries < tries_count:
+finished = False
+while tries < tries_count and not finished:
     try:
-        process_geo_points()
+        finished = process_geo_points()
     except Exception as e:
         log.error('Something went wrong! Message: {}'.format(e.message))
     tries += 1
