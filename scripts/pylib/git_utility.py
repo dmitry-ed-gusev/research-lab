@@ -156,6 +156,12 @@ class GitUtility(object):
         except StandardError as se:
             self.log.error('Error building repo [{}]! {}'.format(repo_path, se))
 
+    def __is_repo_exists(self, repo_name):
+        repo_path = self.location + '/' + repo_name
+        check_result = os.path.exists(repo_path)
+        self.log.debug('__is_repo_exists(): checking existence of [{}], result [{}].'.format(repo_name, check_result))
+        return check_result
+
     def process_repositories(self, repo_function=REPO_FUNCTION_CLONE):
         self.log.info('GitUtility: processing repositories with [{}]:\n[{}]'
                       .format(repo_function, self.repos_list))
@@ -166,10 +172,13 @@ class GitUtility(object):
         git_set_global_proxy(http_proxy, https_proxy)
         # perform processing
         for repository in self.repos_list:
-            if REPO_FUNCTION_CLONE == repo_function:
+            # if option is 'clone' or repository doesn't exist - clone it
+            if REPO_FUNCTION_CLONE == repo_function or not self.__is_repo_exists(repository):
                 self.__repo_clone(repository)
+            # option 'update'
             elif REPO_FUNCTION_UPDATE == repo_function:
                 self.__repo_update(repository)
+            # unknown option
             else:
                 raise StandardError('Invalid option for repository processing [{}]!'.format(repo_function))
         # clean git proxies, if any was set
