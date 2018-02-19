@@ -4,8 +4,10 @@
 """
     Utility module for interacting with GIT.
     Created: Gusev Dmitrii, 22.05.2017
-    Modified: Gusev Dmitrii, 12.02.2018
+    Modified: Gusev Dmitrii, 19.02.2018
 """
+
+# todo: add support for same-named repos from different projects/spaces (by key or ???).
 
 import logging
 import os

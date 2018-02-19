@@ -5,7 +5,7 @@
     GIT utility, simplifies work with many repositories. By default - update and build repositories
     specified in config file. Has some config parameters for fine tuning.
     Created: Gusev Dmitrii, 03.04.2017
-    Modified: Gusev Dmitrii, 12.02.2018
+    Modified: Gusev Dmitrii, 19.02.2018
 """
 
 import argparse
