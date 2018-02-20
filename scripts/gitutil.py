@@ -5,7 +5,7 @@
     GIT utility, simplifies work with many repositories. By default - update and build repositories
     specified in config file. Has some config parameters for fine tuning.
     Created: Gusev Dmitrii, 03.04.2017
-    Modified: Gusev Dmitrii, 19.02.2018
+    Modified: Gusev Dmitrii, 20.02.2018
 """
 
 import argparse
@@ -66,7 +66,6 @@ def git_utility_start():
         git.process_repositories(repo_function=REPO_FUNCTION_CLONE)  # clone by option
     else:
         git.process_repositories(repo_function=REPO_FUNCTION_UPDATE)  # update by option
-
     # build repositories, if not switched off
     if not config.get(myconst.CONFIG_KEY_MVN_BUILD_OFF, default=False):
         git.build()

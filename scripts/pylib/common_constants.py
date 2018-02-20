@@ -4,7 +4,7 @@
 """
     List of useful common constants for all modules.
     Created: Gusev Dmitrii, 17.12.2017
-    Modified: Gusev Dmitrii, 27.01.2017
+    Modified: Gusev Dmitrii, 20.02.2017
 """
 
 # loggers for utilities
@@ -51,8 +51,9 @@ CONFIG_KEY_STASH_ADDRESS = "stash.address"
 CONFIG_KEY_STASH_USER = "stash.user"
 CONFIG_KEY_STASH_PASS = "stash.password"
 
+# keys for repositories hierarchy
 CONFIG_KEY_REPO = 'repositories'
-CONFIG_KEY_REPO_KEY = 'repositories.{}.key'
+CONFIG_KEY_REPO_KEY = 'repositories.{}'
 CONFIG_KEY_REPO_BUILD = 'repositories.{}.build'
 
 CONFIG_KEY_REP_LOCATION_WIN = 'location.win'
