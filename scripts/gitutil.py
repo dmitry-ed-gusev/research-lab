@@ -37,7 +37,7 @@ def prepare_arg_parser():
     # additional parameters
     parser.add_argument('--clone', dest=myconst.CONFIG_KEY_GIT_CLONE, action='store_true',
                         help='Clone repositories instead of update them')
-    parser.add_argument('--no-mvn-build', dest=myconst.CONFIG_KEY_MVN_BUILD_OFF, action='store_true',
+    parser.add_argument('--no-build', dest=myconst.CONFIG_KEY_MVN_BUILD_OFF, action='store_true',
                         help='Switch Maven build off (options --javadoc/--sources will take no effect in this case)')
     parser.add_argument('--javadoc', dest=myconst.CONFIG_KEY_MVN_JAVADOC, action='store_true',
                         help='Download javadoc packages for Maven dependencies')
