@@ -3,7 +3,6 @@
 """
 
 import unittest
-from webscraping.scrapelib import *
 
 
 # todo: implement mocks for urllib and create tests
