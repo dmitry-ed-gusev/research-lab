@@ -65,7 +65,7 @@ repositories:
   enigma:  # Enigma team space
     csv2assembly:
       build: no
-  svt:
+  svt:  # test automation tools
     dit-core:
       build:  yes
     data_integrity:
