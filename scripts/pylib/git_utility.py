@@ -177,7 +177,8 @@ class GitUtility(object):
     def __is_repo_exists(self, repo_name):
         repo_path = self.location + '/' + repo_name
         check_result = os.path.exists(repo_path)
-        self.log.debug('__is_repo_exists(): checking existence of [{}], result [{}].'.format(repo_name, check_result))
+        # too much output
+        # self.log.debug('__is_repo_exists(): checking existence of [{}], result [{}].'.format(repo_name, check_result))
         return check_result
 
     def process_repositories(self, repo_function=REPO_FUNCTION_CLONE):

@@ -18,7 +18,7 @@ stash:
 #  https: 127.0.0.1:3180
 
 # special settings for projects
-#mvn_settings: configs/msd-settings.xml
+mvn_settings: configs/msd-settings.xml
 
 # list of repositories
 repositories:
