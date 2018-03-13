@@ -76,6 +76,8 @@ repositories:
   ~kejzlar:  # Tom Kejzlar's repository
     jiragraphs:
       build:  no
+    agilestats:
+      build:  no
   infapfm:  # Informatica Platform repositories
     infa-bdm:
       build:  no
