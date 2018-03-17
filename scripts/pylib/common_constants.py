@@ -10,6 +10,7 @@
 # loggers for utilities
 LOGGER_NAME_JIRAUTIL = 'jirautil'
 LOGGER_NAME_GITUTIL = 'gitutil'
+LOGGER_NAME_CONFUTIL = 'confutil'
 
 # common constants/defaults
 CONST_GIT_CONFIG_FILE = "configs/git.yml"
