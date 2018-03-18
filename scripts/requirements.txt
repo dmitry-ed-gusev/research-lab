@@ -1,0 +1,8 @@
+ansible>=2.4.3.0
+beautifulsoup4>=4.6.0
+jira>=1.0.14
+paramiko>=2.4.0
+prettytable>=0.7.2
+PyYAML>=3.12
+requests>=2.18.4
+urllib3>=1.22
