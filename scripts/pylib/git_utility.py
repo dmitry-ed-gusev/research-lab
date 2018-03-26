@@ -130,6 +130,7 @@ class GitUtility(object):
         :param repo_name:
         :return:
         """
+        # todo: BUG!!! if remote pass has been changed -> it can't be updated (delete folder and clone!)
         repo_path = self.location + '/' + repo_name
         self.log.debug('__repo_update(): updating repository [{}].'.format(repo_path))
         try:

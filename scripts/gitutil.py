@@ -22,7 +22,7 @@ def prepare_arg_parser():
     :return: prepared cmd line parser
     """
     # create arguments parser
-    parser = argparse.ArgumentParser(description='GIT Utility.')
+    parser = argparse.ArgumentParser(description='Git/Stash Utility.')
     # config file for loading, optional
     parser.add_argument('--config', dest=myconst.CONFIG_KEY_CFG_FILE, action='store',
                         default=myconst.CONST_GIT_CONFIG_FILE, help='YAML configuration file/path')
