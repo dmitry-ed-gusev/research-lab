@@ -16,3 +16,8 @@ Project general information:
   username: saturn
   password: Miepu4chah8o
   auth inside app: stolov/1
+
+3. Project JIRA:
+  https://bfg-integral.atlassian.net/secure/RapidBoard.jspa?rapidView=3&projectKey=BTKTEX
+
+4. Architecture has been drawn in: draw.io
