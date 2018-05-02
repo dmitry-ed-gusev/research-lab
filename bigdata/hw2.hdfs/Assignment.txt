@@ -47,4 +47,4 @@ In Hadoop HW 2 should be
 •	bid_result.txt
 •	your code/shell command for counting task
 
-Passed: ???
+Passed: YES

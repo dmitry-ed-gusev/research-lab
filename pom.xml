@@ -222,6 +222,7 @@
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
+                <module>measurementor</module>
             </modules>
         </profile>
 
@@ -244,6 +245,7 @@
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
+                <module>measurementor</module>
             </modules>
         </profile>
 
@@ -264,6 +266,7 @@
                 <!--<module>bigdata</module>-->
                 <!--<module>socialnet</module>-->
                 <!--<module>j2ee</module>-->
+                <module>measurementor</module>
             </modules>
         </profile>
 
@@ -283,6 +286,7 @@
                 <!--<module>bigdata</module>-->
                 <!--<module>j2ee</module>-->
                 <module>nlp</module>
+                <module>measurementor</module>
             </modules>
         </profile>
 
