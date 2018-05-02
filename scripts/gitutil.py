@@ -5,7 +5,7 @@
     GIT utility, simplifies work with many repositories. By default - update and build repositories
     specified in config file. Has some config parameters for fine tuning.
     Created: Gusev Dmitrii, 03.04.2017
-    Modified: Gusev Dmitrii, 12.02.2018
+    Modified: Gusev Dmitrii, 20.02.2018
 """
 
 import argparse
@@ -22,20 +22,22 @@ def prepare_arg_parser():
     :return: prepared cmd line parser
     """
     # create arguments parser
-    parser = argparse.ArgumentParser(description='GIT Utility.')
+    parser = argparse.ArgumentParser(description='Git/Stash Utility.')
     # config file for loading, optional
     parser.add_argument('--config', dest=myconst.CONFIG_KEY_CFG_FILE, action='store',
                         default=myconst.CONST_GIT_CONFIG_FILE, help='YAML configuration file/path')
     # proxy settings, optional
     parser.add_argument('--proxy.http', dest=myconst.CONFIG_KEY_PROXY_HTTP, action='store', help='HTTP proxy')
     parser.add_argument('--proxy.https', dest=myconst.CONFIG_KEY_PROXY_HTTPS, action='store', help='HTTPS proxy')
+    # todo: add --noproxy key - ignore proxy settings in config file
+    # todo: add --nosettings key - ignore special settings in config file
     # stash password, mandatory
     parser.add_argument('--pass', dest=myconst.CONFIG_KEY_STASH_PASS, action='store',
                         required=True, help='JIRA password (mandatory)')
     # additional parameters
     parser.add_argument('--clone', dest=myconst.CONFIG_KEY_GIT_CLONE, action='store_true',
                         help='Clone repositories instead of update them')
-    parser.add_argument('--no-mvn-build', dest=myconst.CONFIG_KEY_MVN_BUILD_OFF, action='store_true',
+    parser.add_argument('--nobuild', dest=myconst.CONFIG_KEY_MVN_BUILD_OFF, action='store_true',
                         help='Switch Maven build off (options --javadoc/--sources will take no effect in this case)')
     parser.add_argument('--javadoc', dest=myconst.CONFIG_KEY_MVN_JAVADOC, action='store_true',
                         help='Download javadoc packages for Maven dependencies')
@@ -64,7 +66,6 @@ def git_utility_start():
         git.process_repositories(repo_function=REPO_FUNCTION_CLONE)  # clone by option
     else:
         git.process_repositories(repo_function=REPO_FUNCTION_UPDATE)  # update by option
-
     # build repositories, if not switched off
     if not config.get(myconst.CONFIG_KEY_MVN_BUILD_OFF, default=False):
         git.build()

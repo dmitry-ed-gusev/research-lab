@@ -4,11 +4,12 @@
 """
     Utility module for interacting with GIT.
     Created: Gusev Dmitrii, 22.05.2017
-    Modified: Gusev Dmitrii, 12.02.2018
+    Modified: Gusev Dmitrii, 20.02.2018
 """
 
 import logging
 import os
+import errno
 import platform
 import pylib.common_constants as myconst
 from subprocess import Popen
@@ -41,8 +42,16 @@ class GitUtility(object):
         # init internal state of class
         self.location = self.__select_location()
         self.mvn_exec = self.__select_mvn_executable()
-        self.repos_list = self.config.get(myconst.CONFIG_KEY_REPO).keys()
-        self.log.debug('Loaded repos list [{}].'.format(self.repos_list))
+
+        # init list of repositories
+        self.repos_keys_list = self.config.get(myconst.CONFIG_KEY_REPO).keys()  # get only keys list
+        self.repos_list = []
+        for key in self.repos_keys_list:
+            repos = self.config.get(myconst.CONFIG_KEY_REPO_KEY.format(key))
+            for repo_name in repos:
+                self.repos_list.append(''.join([key, '/', repo_name]))  # construct repo name with key and name
+        self.log.info('Loaded repos list: {}'.format(self.repos_list))
+
         # init special maven settings - calculate path
         mvn_settings = self.config.get(myconst.CONFIG_KEY_MVN_SETTINGS, default='')
         if mvn_settings:
@@ -85,8 +94,7 @@ class GitUtility(object):
         :return:
         """
         repo_url = self.config.get(myconst.CONFIG_KEY_STASH_ADDRESS)\
-            .format(self.config.get(myconst.CONFIG_KEY_STASH_PASS)) + \
-            self.config.get(myconst.CONFIG_KEY_REPO_KEY.format(repo_name)) + '/' + repo_name + '.git'
+            .format(self.config.get(myconst.CONFIG_KEY_STASH_PASS)) + '/' + repo_name + '.git'
         self.log.debug('__generate_repo_url(): generated repo url [{}].'.format(repo_url))
         return repo_url
 
@@ -96,11 +104,21 @@ class GitUtility(object):
         :param repo_name:
         """
         self.log.debug('__repo_clone(): starting clone for [{}].'.format(repo_name))
-        # generating repo url
+        # generating repo url and path
         repo_url = self.__generate_repo_url(repo_name)
+        repo_path = self.location + '/' + repo_name[:repo_name.find('/')]
+        self.log.debug('__repo_clone(): generated repo path [{}].'.format(repo_path))
+        # check target dir and create it, if necessary
+        if not os.path.exists(repo_path):
+            self.log.warn("Repo path [{}] doesn't exist! Creating.".format(repo_path))
+            try:
+                os.makedirs(repo_path)
+            except OSError as exc:  # guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
         # cloning specified repository
         try:
-            process = Popen([GIT_EXECUTABLE, 'clone', repo_url], cwd=self.location)
+            process = Popen([GIT_EXECUTABLE, 'clone', repo_url], cwd=repo_path)
             process.wait()
             self.log.debug('Clone for [{}] finished.'.format(repo_url))
         except StandardError as se:
@@ -112,6 +130,7 @@ class GitUtility(object):
         :param repo_name:
         :return:
         """
+        # todo: BUG!!! if remote pass has been changed -> it can't be updated (delete folder and clone!)
         repo_path = self.location + '/' + repo_name
         self.log.debug('__repo_update(): updating repository [{}].'.format(repo_path))
         try:
@@ -156,6 +175,13 @@ class GitUtility(object):
         except StandardError as se:
             self.log.error('Error building repo [{}]! {}'.format(repo_path, se))
 
+    def __is_repo_exists(self, repo_name):
+        repo_path = self.location + '/' + repo_name
+        check_result = os.path.exists(repo_path)
+        # too much output
+        # self.log.debug('__is_repo_exists(): checking existence of [{}], result [{}].'.format(repo_name, check_result))
+        return check_result
+
     def process_repositories(self, repo_function=REPO_FUNCTION_CLONE):
         self.log.info('GitUtility: processing repositories with [{}]:\n[{}]'
                       .format(repo_function, self.repos_list))
@@ -166,10 +192,13 @@ class GitUtility(object):
         git_set_global_proxy(http_proxy, https_proxy)
         # perform processing
         for repository in self.repos_list:
-            if REPO_FUNCTION_CLONE == repo_function:
+            # if option is 'clone' or repository doesn't exist - clone it
+            if REPO_FUNCTION_CLONE == repo_function or not self.__is_repo_exists(repository):
                 self.__repo_clone(repository)
+            # option 'update'
             elif REPO_FUNCTION_UPDATE == repo_function:
                 self.__repo_update(repository)
+            # unknown option
             else:
                 raise StandardError('Invalid option for repository processing [{}]!'.format(repo_function))
         # clean git proxies, if any was set
@@ -182,7 +211,7 @@ class GitUtility(object):
         """
         self.log.info('GitUtility: build():\n\trepositories: [{}]'.format(self.repos_list))
         for repository in self.repos_list:
-            if self.config.get(myconst.CONFIG_KEY_REPO_BUILD.format(repository)):
+            if self.config.get(myconst.CONFIG_KEY_REPO_BUILD.format(repository.replace('/', '.'))):
                 self.__repo_build(repository)
 
 

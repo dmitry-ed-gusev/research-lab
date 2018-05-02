@@ -1,3 +1,8 @@
+# Configuration file for python GIT utility.
+#
+# Created: Gusev Dmitrii, 2017
+# Modified: Gusev Dmitrii, 20.02.2017
+
 # repositories storage for different systems
 location:
   win:    c:/projects
@@ -6,84 +11,83 @@ location:
 
 # general stash settings
 stash:
-  address:  https://gusevdm:{}@stash.merck.com/scm/
-  #user:     gusevdm
+  address:  https://gusevdm:{}@stash.merck.com/scm
 
-proxy:
-  http: 127.0.0.1:3180
-  https: 127.0.0.1:3180
+#proxy:
+#  http: 127.0.0.1:3180
+#  https: 127.0.0.1:3180
 
 # special settings for projects
 mvn_settings: configs/msd-settings.xml
 
-# repositories list with keys and build attribute
+# list of repositories
 repositories:
-  mantis:
-    key: bdp
-    build: no
-  mantis11:
-    key: bdp
-    build: yes # -> build takes too much time
-  mantis-bds:
-    key: man
-    build: no # -> build includes python scripts, experimental
-  mantis-pdc:
-    key: man
-    build: no
-  mantis-ops:
-    key: man
-    build: no
-  mantis-systems:
-    key: man
-    build: yes # -> build includes python scripts and artifacts building
-  mantis-teradata:
-    key:    man
-    build:  no
-  mantis-udi:
-    key:    man
-    build:  no
-  mantis-analytics:
-    key:    man
-    build:  no
-  mantis-model:
-    key:   man
-    build: no
-  mantis-model-generator:
-    key:   man
-    build: yes
-  mantis-hadoop-clients:
-    key:    man
-    build:  yes
-  mantis-hive-rest-service:
-    key:    man
-    build:  yes
-  mantis-test:
-    key:    man
-    build:  no
-  ingest-script-generator:
-    key:    bdp
-    build:  yes
-  sqoop-msd:
-    key:    bdp
-    build:  no
-  csv2assembly:
-    key: enigma
-    build: no
-  csv2abstract:
-    key: bdp
-    build: yes
-  csv2hive:
-    key: bdp
-    build: yes
-  dit-core:
-    key:    svt
-    build:  yes
-  data_integrity:
-    key: svt
-    build: yes
-  jira-utils:
-    key:  mrlitsc
-    build: no
-  jiragraphs:
-    key:    ~kejzlar
-    build:  no
+  bdp:  # BigData platform
+    mantis:
+      build: no
+    mantis11:
+      build: yes
+    ingest-script-generator:
+      build:  yes
+    sqoop-msd:
+      build:  no
+    csv2abstract:
+      build: yes
+    csv2hive:
+      build: yes
+  man:  # Mantis
+    mantis-bds:
+      build: no
+    mantis-pdc:
+      build: no
+    mantis-ops:
+      build: no
+    mantis-systems:
+      build: yes
+    mantis-teradata:
+      build: no
+    mantis-udi:
+      build: no
+    mantis-analytics:
+      build:  no
+    mantis-model:
+      build: no
+    mantis-model-generator:
+      build: yes
+    mantis-hadoop-clients:
+      build:  yes
+    mantis-hive-rest-service:
+      build:  yes
+    mantis-test:
+      build:  no
+    keytruda-prototype:  # keytruda repository
+      build:  no
+  enigma:  # Enigma team space
+    csv2assembly:
+      build: no
+  svt:  # test automation tools
+    dit-core:
+      build:  yes
+    data_integrity:
+      build: yes
+  mrlitsc:
+    jira-utils:
+      build: no
+  ~kejzlar:  # Tom Kejzlar's repository
+    jiragraphs:
+      build:  no
+    agilestats:
+      build:  no
+  infapfm:  # Informatica Platform repositories
+    infa-bdm:
+      build:  no
+    informatica-monitoring:
+      build:  no
+    mantis:
+      build:  no
+    mantis-delivery:
+      build:  no
+    mantis-misc:
+      build:  no
+    mx_radar:
+      build:  no

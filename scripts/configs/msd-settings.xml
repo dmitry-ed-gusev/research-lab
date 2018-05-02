@@ -15,7 +15,7 @@
     <proxies>
       <proxy>
         <id>msd-local-proxy</id>
-        <active>true</active>
+        <active>false</active>
         <protocol>http</protocol>
         <host>127.0.0.1</host>
         <port>3180</port>

@@ -2,7 +2,7 @@
 # coding=utf-8
 
 """
-    Inplace file editing utility.
+    Inplace/inline file editing utility.
     Created: Gusev Dmitrii, 13.04.2017
     Modified: Gusev Dmitrii, 16.04.2017
 """

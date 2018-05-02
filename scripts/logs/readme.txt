@@ -1,0 +1,1 @@
+This is logs directory. This file is here just for add this directory to Git.
