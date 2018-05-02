@@ -1,0 +1,89 @@
+# repositories storage for different systems
+location:
+  win:    c:/projects
+  linux:  /home/gusevdm/projects
+  macos:  /Users/gusevdm/projects
+
+# general stash settings
+stash:
+  address:  https://gusevdm:{}@stash.merck.com/scm/
+  #user:     gusevdm
+
+proxy:
+  http: 127.0.0.1:3180
+  https: 127.0.0.1:3180
+
+# special settings for projects
+mvn_settings: configs/msd-settings.xml
+
+# repositories list with keys and build attribute
+repositories:
+  mantis:
+    key: bdp
+    build: no
+  mantis11:
+    key: bdp
+    build: yes # -> build takes too much time
+  mantis-bds:
+    key: man
+    build: no # -> build includes python scripts, experimental
+  mantis-pdc:
+    key: man
+    build: no
+  mantis-ops:
+    key: man
+    build: no
+  mantis-systems:
+    key: man
+    build: yes # -> build includes python scripts and artifacts building
+  mantis-teradata:
+    key:    man
+    build:  no
+  mantis-udi:
+    key:    man
+    build:  no
+  mantis-analytics:
+    key:    man
+    build:  no
+  mantis-model:
+    key:   man
+    build: no
+  mantis-model-generator:
+    key:   man
+    build: yes
+  mantis-hadoop-clients:
+    key:    man
+    build:  yes
+  mantis-hive-rest-service:
+    key:    man
+    build:  yes
+  mantis-test:
+    key:    man
+    build:  no
+  ingest-script-generator:
+    key:    bdp
+    build:  yes
+  sqoop-msd:
+    key:    bdp
+    build:  no
+  csv2assembly:
+    key: enigma
+    build: no
+  csv2abstract:
+    key: bdp
+    build: yes
+  csv2hive:
+    key: bdp
+    build: yes
+  dit-core:
+    key:    svt
+    build:  yes
+  data_integrity:
+    key: svt
+    build: yes
+  jira-utils:
+    key:  mrlitsc
+    build: no
+  jiragraphs:
+    key:    ~kejzlar
+    build:  no

@@ -4,15 +4,15 @@
 #   Don't directly change other scripts parameters - put them here.
 #
 #   Created:  Gusev Dmitry, 26.11.2016
-#   Modified: Gusev Dmitrii, 26.09.2017
+#   Modified: Gusev Dmitrii, 25.11.2017
 # ===================================================================
 
 # ============================== Common settings ==============================
 # - Usage file - utility description
 USAGE_FILE='mysys_usage.txt'
 # - Debug mode for script. If DEBUG_MODE=true script will wait for a key press after every logic part
-# - of installation. Set DEBUG value to any other, than "true" - script will slip any question.
-DEBUG_MODE=false
+# - of installation. Set DEBUG value to any other, than "true" - script will skip any question.
+DEBUG_MODE=true
 # - get current date/time (for backup/other purposes)
 CURRENT_DATE=$(date +"%Y-%m-%d")
 CURRENT_TIME=$(date +"%H%M%S")
@@ -36,15 +36,17 @@ ANT_ARCHIVE="$ANT_NAME-bin.tar.gz"
 ANT_BINARY_URL="http://apache-mirror.rbc.ru/pub/apache/ant/binaries/$ANT_ARCHIVE"
 
 # -- Apache Maven settings
-MAVEN_VERSION="3.3.9"
+MAVEN_VERSION="3.5.2"
 MAVEN_NAME="apache-maven-$MAVEN_VERSION"
 MAVEN_ARCHIVE="$MAVEN_NAME-bin.tar.gz"
 MAVEN_BINARY_URL="http://apache-mirror.rbc.ru/pub/apache/maven/maven-3/$MAVEN_VERSION/binaries/$MAVEN_ARCHIVE"
 
 # -- Jenkins version 1.596LTS is the last version with JDK6 support (for master/slaves).
 #JENKINS_DEB=jenkins_1.596.3_all.deb
-JENKINS_KEY_SERVER=https://jenkins-ci.org/debian/jenkins-ci.org.key
-JENKINS_SOURCES_STRING="http://pkg.jenkins-ci.org/debian binary/"
+#JENKINS_KEY_SERVER=https://jenkins-ci.org/debian/jenkins-ci.org.key
+JENKINS_KEY_SERVER=https://pkg.jenkins.io/debian/jenkins.io.key
+#JENKINS_SOURCES_STRING="http://pkg.jenkins-ci.org/debian binary/"
+JENKINS_SOURCES_STRING="https://pkg.jenkins.io/debian binary/"
 JENKINS_INTERNAL_PORT=8181
 JENKINS_APACHE_PORT=5000
 #JENKINS_NAME=jenkins

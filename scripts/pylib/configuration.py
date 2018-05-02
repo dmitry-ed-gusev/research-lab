@@ -1,10 +1,18 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+"""
+    Utility class for holding configuration. Can merge configuration with environment variables.
+    Can load configuration from YAML files. See docstring for Configuration class.
+
+    Created: Gusev Dmitrii, XX.08.2017
+    Modified: Gusev Dmitrii, 27.12.2017
+"""
+
 import os
+import logging
 from string import Template
-from pylib import ConfigError
-from pylib import parse_yaml
+from pyutilities import parse_yaml
 
 YAML_EXTENSION_1 = '.yml'
 YAML_EXTENSION_2 = '.yaml'
@@ -12,31 +20,54 @@ YAML_EXTENSION_2 = '.yaml'
 
 class Configuration(object):
     """Tree-like configuration-holding structure, allows loading from YAML and retrieving values
-        by using chained hierarchical key with dot-separated levels, e.g. "hdfs.namenode.address"
+    by using chained hierarchical key with dot-separated levels, e.g. "hdfs.namenode.address".
+    Can include environment variables (switch by key), environment usually override internal values.
+    :param path_to_config ???
+    :param dict_to_merge ???
+    :param is_override_config ???
+    :param is_merge_env ???
     """
 
-    def __init__(self, path=None, is_merge_env=True):
+    def __init__(self, path_to_config=None, dict_to_merge=None, is_override_config=True, is_merge_env=True):
+        # init logger
+        self.log = logging.getLogger(__name__)
+        self.log.addHandler(logging.NullHandler())
+        self.log.debug("Initializing Configuration instance:" +
+                       "\n\tpath -> [{}]\n\tdict -> [{}]\n\toverride config -> [{}]\n\tmerge env -> [{}]"
+                       .format(path_to_config, dict_to_merge, is_override_config, is_merge_env))
+
+        # init internal dictionary
         self.config_dict = {}
 
-        if path and path.strip():
-            print "Provided path [%s] for instant loading. Proceeding." % path
-            self.load(path, is_merge_env)
+        if path_to_config and path_to_config.strip():  # if provided file path - try to load config
+            self.log.debug("Loading config from [{}].".format(path_to_config))
+            self.load(path_to_config, is_merge_env)
+
+        if dict_to_merge:  # merge config from file(s) with dictionary, if any
+            self.log.debug("Merging with provided dictionary. Override: [{}].".format(is_override_config))
+            for key, value in dict_to_merge.items():
+                if is_override_config or key not in self.config_dict.keys():
+                    # override key only with non-empty value
+                    if value:
+                        self.set(key, value)
 
     def load(self, path, is_merge_env=True):
-        """Parses all YAML files from the given directory to add them into this configuration instance
-        
-            :param path: directory to load files from
+        """Parses YAML file(s) from the given directory/file to add content into this configuration instance
+            :param is_merge_env: merge parameters with environment (True) or not (False)
+            :param path: directory/file to load files from
             :type path: str
         """
+        self.log.debug('load() is working. Path [{}], is_merge_env [{}].'.format(path, is_merge_env))
         # fail-fast checks
         if not path or not path.strip():
             raise ConfigError('Provided empty path for config loading!')
         if not os.path.exists(path):
             raise ConfigError('Provided path [%s] doesn\'t exist!' % path)
 
+        # todo: extract two methods - load from file/load from dir + refactor unit tests
         # if provided path to single file - load it, otherwise - load from directory
         if os.path.isfile(path) and (path.endswith(YAML_EXTENSION_1) or path.endswith(YAML_EXTENSION_2)):
-            print "Provided path [%s] is a YAML file. Loading." % path
+            self.log.debug("Provided path [{}] is a YAML file. Loading.".format(path))
             try:
                 self.merge_dict(parse_yaml(path))
             except ConfigError as ex:
@@ -44,18 +75,16 @@ class Configuration(object):
 
         # loading from directory (all YAML files)
         elif os.path.isdir(path):
-            print "Provided path [%s] is a directory. Loading all YAML files." % path
+            self.log.debug("Provided path [{}] is a directory. Loading all YAML files.".format(path))
             for some_file in os.listdir(path):
-                print "Found [%s]." % some_file
                 file_path = os.path.join(path, some_file)
-                if os.path.isfile(file_path) and (some_file.endswith(YAML_EXTENSION_1) or some_file.endswith(YAML_EXTENSION_2)):
-                    print "Loading configuration from [%s]." % some_file
+                if os.path.isfile(file_path) and \
+                        (some_file.endswith(YAML_EXTENSION_1) or some_file.endswith(YAML_EXTENSION_2)):
+                    self.log.debug("Loading configuration from [{}].".format(some_file))
                     try:
                         self.merge_dict(parse_yaml(file_path))
                     except ConfigError as ex:
                         raise ConfigError('ERROR while merging file %s to configuration.\n%s' % (file_path, ex.message))
-                else:
-                    print "[%s] skipped. Not a file or wrong extension." % some_file
 
         # unknown file/dir type
         else:
@@ -67,11 +96,12 @@ class Configuration(object):
             self.merge_env()
 
     def merge_dict(self, new_dict):
-        """Adds another dictionary (respecting nested subdictionaries) to config
-        
-            :param new_dict: dictionary to be added
-            :type new_dict: dict
+        """Adds another dictionary (respecting nested sub-dictionaries) to config.
+        If there are same keys in both dictionaries, raise ConfigError (no overwrites!)
+        :param new_dict: dictionary to be added
+        :type new_dict: dict
         """
+        self.log.debug("merge_dict() is working. Dictionary to merge [{}].".format(new_dict))
         dict1 = self.config_dict
         if len(dict1) != 0:
             result = self.__add_entity__(dict1, new_dict)
@@ -83,13 +113,12 @@ class Configuration(object):
     def __add_entity__(self, dict1, dict2, current_key=''):
         """Adds second dictionary to the first (processing nested dicts recursively)
         No overwriting is accepted.
-        
-            :param dict1: target dictionary
-            :type dict1: dict
-            :param dict2: source dictionary (exception raising if it is not dict)
-            :type dict2: dict
-            :return: the first parameter (i.e. target dictionary)
-            :rtype: dict
+        :param dict1: target dictionary
+        :type dict1: dict
+        :param dict2: source dictionary (exception raising if it is not dict)
+        :type dict2: dict
+        :return: the first parameter (i.e. target dictionary)
+        :rtype: dict
         """
         if isinstance(dict2, dict) and isinstance(dict1, dict):
             for key in dict2.keys():
@@ -106,12 +135,12 @@ class Configuration(object):
 
     def merge_env(self):
         """Adds environment variables to this config instance"""
+        self.log.debug("merge_env() is working.")
         for item in os.environ:
             self.config_dict[item.lower()] = os.environ[item]
 
     def get(self, key, default=None):
         """Retrieves config value for given key.
-            
             :param key: text key, which could be complex, e.g. "key1.key2.key3" to reach nested dictionaries
             :type key: str
             :type default: Any
@@ -123,12 +152,11 @@ class Configuration(object):
         except KeyError as err:
             if default is not None:
                 return default
-            raise ConfigError("Configuration entry %s not found" % err.message)
+            raise ConfigError("Configuration entry [{}] not found".format(key))
 
     def set(self, key, value):
         """Sets config value, creating all the nested levels if necessary
-        
-            :type key: str 
+            :type key: str
             :type value: Any
         """
         keys = key.split(".")
@@ -142,7 +170,6 @@ class Configuration(object):
 
     def resolve_and_set(self, key, value):
         """Performs template substitution in "value" using mapping from config (only top-level), then sets it in config
-        
             :param key: key to assign value to (could be multi-level)
             :type key: str
             :param value: value with substitution patterns e.g. "system-$env" (see string.Template)
@@ -154,34 +181,22 @@ class Configuration(object):
 
     def __get_value(self, key, values):
         """Internal method for using in "get", recursively search for dictionaries by key parts and retrieves value
-        
             :type key: str
             :param values: dictionary to search in
             :type values: dict
             :rtype: Any
         """
+        if not values:
+            raise KeyError
         keys = key.split(".", 1)
         if len(keys) < 2:
             return values[keys[0]]
         else:
             return self.__get_value(keys[1], values[keys[0]])
 
+    def __str__(self):
+        return str(self.config_dict)
 
-# def load_config():
-#     """ Load configuration from env['CONFIG_LOCATION'] (if specified) or 'config'\n
-#         Also initialize logger-required fields (mdc_pid = current pid, other fields = 'ERROR'
-#     """
-#     if 'CONFIG_LOCATION' in os.environ:
-#         config_location = os.environ['CONFIG_LOCATION']
-#     else:
-#         config_location = os.path.dirname(__file__) + '/../../config'
-#     config = Configuration()
-#     config.set('step_name', 'ERROR')
-#     config.set('source_system', 'ERROR')
-#     config.set('source_system_location', 'ERROR')
-#     config.set('source_system_env', 'ERROR')
-#     config.set('source_table', 'ERROR')
-#     config.set('mdc_pid', os.getpid())
-#     config.load(config_location)
-#     config.set('config_location', os.path.abspath(config_location))
-#     return config
+
+class ConfigError(Exception):
+    """Invalid configuration error"""

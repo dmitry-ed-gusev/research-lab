@@ -9,7 +9,7 @@
 #   sudo ./<script_name>)! Script will ask for such privileges, if necessary.
 #  
 #   Created:  Gusev Dmitry, 10.04.2017
-#   Modified: Gusev Dmitrii, 02.08.2017
+#   Modified: Gusev Dmitrii, 06.11.2017
 # =============================================================================
 
 # -- Installing Apache Hive
@@ -27,16 +27,6 @@ sudo mv ${HIVE_FULL_NAME} /opt
 # - add path to Hive executable to PATH variable (system wide).
 # "" - in this quotes variables will be processed/evaluated (values used)
 # '' - in this quotes variables will be used 'as is' (no values)
-echo "export HIVE_HOME=/opt/$HIVE_FULL_NAME" | sudo tee /etc/profile.d/hive.sh
+echo "export HIVE_HOME=/opt/${HIVE_FULL_NAME}" | sudo tee /etc/profile.d/hive.sh
 echo 'export PATH="$HIVE_HOME/bin:$PATH"' | sudo tee -a /etc/profile.d/hive.sh
 sudo chmod +x /etc/profile.d/hive.sh
-
-# ***** DEBUG OUTPUT (wait for any key press) *****
-if [ "${DEBUG_MODE}" == "true" ]; then
-	read -rsp $'Press any key to continue...\n' -n1 key
-fi
-
-# -- Reboot system after installing Hadoop
-if [ "${REBOOT_AFTER_UPDATE}" == "YES" ]; then
-    sudo reboot now
-fi
