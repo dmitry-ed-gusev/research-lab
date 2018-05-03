@@ -1,4 +1,4 @@
-package gusevdm.nlp;
+package gusev.dmitry.jtils.nlp;
 
 import gusev.dmitry.jtils.nlp.NGramma;
 import org.junit.Test;
