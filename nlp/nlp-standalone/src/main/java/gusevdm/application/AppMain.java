@@ -1,8 +1,6 @@
 package gusevdm.application;
 
-import gusev.dmitry.jtils.utils.CommonUtils;
 import gusevdm.deployer.AppDeployerGlassfish;
-import gusevdm.engine.NLPEngine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glassfish.embeddable.GlassFishException;
@@ -39,18 +37,18 @@ public class AppMain {
         try {
             // todo: add config loading and getting needed values
             // delete output file if exists
-            CommonUtils.deleteFileIfExist(TMP_FILE_NAME);
+            //CommonUtils.deleteFileIfExist(TMP_FILE_NAME);
             // clean input data (rewrite them in output file)
-            NLPEngine.cleanInputData(inputFile, TMP_FILE_NAME,
-                    AppConfig.DEFAULT_ENCODING, AppConfig.DEFAULT_PROGRESS_COUNTER);
+            //NLPEngine.cleanInputData(inputFile, TMP_FILE_NAME,
+            //        AppConfig.DEFAULT_ENCODING, AppConfig.DEFAULT_PROGRESS_COUNTER);
 
             // delete ingrams file
-            CommonUtils.deleteFileIfExist(outputFile);
+            //CommonUtils.deleteFileIfExist(outputFile);
             // build ngrams on cured data
-            NLPEngine.buildNgramsMap(TMP_FILE_NAME, outputFile,
-                    AppConfig.DEFAULT_ENCODING, AppConfig.DEFAULT_PROGRESS_COUNTER);
+            //NLPEngine.buildNgramsMap(TMP_FILE_NAME, outputFile,
+            //        AppConfig.DEFAULT_ENCODING, AppConfig.DEFAULT_PROGRESS_COUNTER);
 
-        } catch (IOException e) {
+        } catch (Exception /*IOException*/ e) {
             LOG.error(e);
         }
     }
