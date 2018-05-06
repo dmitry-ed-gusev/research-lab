@@ -1,6 +1,5 @@
-package gusevdm.nlp;
+package gusev.dmitry.jtils.nlp;
 
-import gusev.dmitry.jtils.nlp.NLPUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
