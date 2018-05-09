@@ -7,11 +7,11 @@
 location:
   win:    c:/projects
   linux:  /home/gusevdm/projects
-  macos:  /Users/gusevdm/projects
+  macos:  /Users/gusevdmi/projects
 
 # general stash settings
 stash:
-  address:  https://gusevdm:{}@stash.merck.com/scm
+  address:  https://gusevdmi:{}@stash.merck.com/scm
 
 #proxy:
 #  http: 127.0.0.1:3180
