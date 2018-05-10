@@ -50,3 +50,11 @@ Project general information:
     - проксирование запросов за картой через виртуальную машину LuxmsBI; для этого необходимо открыть
         доступ к ресурсу http://*.tile.openstreetmap.org/ только с виртуальной машины LuxmsBI и выполнить
         настройку платформы силами инженеров обеспечивающих поддержку платформы LuxmsBI
+
+6. Keys for VMWare:
+    FG3TU-DDX1M-084CY-MFYQX-QC0RD <- this one is used and OK (10.05.2018)
+    YZ71K-A0Y1P-48EGY-TQWEC-M7AY0
+    FV14H-DCG9Q-H84LY-XMXZT-Z3UY8
+    FF5D2-0RX46-H88KP-7YP7E-Z7KTD
+    AZ71U-FZX5P-H81ZP-Q4XQX-XVR9A
+    ZY59H-87W0Q-H84EZ-87MXC-X7HC4
