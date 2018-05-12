@@ -51,6 +51,10 @@ Project general information:
         доступ к ресурсу http://*.tile.openstreetmap.org/ только с виртуальной машины LuxmsBI и выполнить
         настройку платформы силами инженеров обеспечивающих поддержку платформы LuxmsBI
 
+    12.05.2018
+        Created admin user: admin/admin
+        Created simple user: user/user
+
 6. Keys for VMWare:
     FG3TU-DDX1M-084CY-MFYQX-QC0RD <- this one is used and OK (10.05.2018)
     YZ71K-A0Y1P-48EGY-TQWEC-M7AY0
