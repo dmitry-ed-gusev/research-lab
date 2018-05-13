@@ -58,3 +58,7 @@ Project general information:
     FF5D2-0RX46-H88KP-7YP7E-Z7KTD
     AZ71U-FZX5P-H81ZP-Q4XQX-XVR9A
     ZY59H-87W0Q-H84EZ-87MXC-X7HC4
+
+7. Cisco VPN and BTC DB Server (DataTex):
+    VPN: gateway/connection point: vpn.btcgroup.ru, credentials: GusevDE/zZgKS3q25114
+    DB Server: login/pass: nowbfg/nowbfg, connection: jdbc:oracle:thin:@10.61.60.21:1521:ORADATA, schema now4
