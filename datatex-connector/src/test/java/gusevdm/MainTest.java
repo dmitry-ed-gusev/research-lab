@@ -1,5 +1,6 @@
 package gusevdm;
 
+import gusevdm.helpers.ExitStatus;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -16,8 +17,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static gusevdm.CSV2AbstractDefaults.CommandLineOption.OPTION_HELP;
-import static gusevdm.CSV2AbstractDefaults.CommandLineOption.OPTION_LOG_LEVEL;
+import static gusevdm.helpers.CommandLineOption.OPTION_HELP;
+import static gusevdm.helpers.CommandLineOption.OPTION_LOG_LEVEL;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyVararg;
@@ -69,7 +70,7 @@ public class MainTest {
 
         main.run("arg");
 
-        verify(runtime).exit(CSV2AbstractDefaults.ExitStatus.OK.getValue());
+        verify(runtime).exit(ExitStatus.OK.getValue());
     }
 
     @Test
@@ -88,7 +89,7 @@ public class MainTest {
 
         // test verification
         verify(runtime, times(logLevels.size())).exit(exitStatusCaptor.capture()); // verify
-        exitStatusCaptor.getAllValues().forEach(value -> assertEquals(CSV2AbstractDefaults.ExitStatus.MISUSE.getValue(), (int) value));
+        exitStatusCaptor.getAllValues().forEach(value -> assertEquals(ExitStatus.MISUSE.getValue(), (int) value));
     }
 
     @Test
@@ -104,7 +105,7 @@ public class MainTest {
 
         main.run("arg");
 
-        verify(runtime).exit(CSV2AbstractDefaults.ExitStatus.MISUSE.getValue());
+        verify(runtime).exit(ExitStatus.MISUSE.getValue());
     }
 
     @Test
@@ -113,7 +114,7 @@ public class MainTest {
 
         main.run("arg");
 
-        verify(runtime).exit(CSV2AbstractDefaults.ExitStatus.MISUSE.getValue());
+        verify(runtime).exit(ExitStatus.MISUSE.getValue());
     }
 
     @Test
@@ -122,7 +123,7 @@ public class MainTest {
 
         main.run("arg");
 
-        verify(runtime).exit(CSV2AbstractDefaults.ExitStatus.MISUSE.getValue());
+        verify(runtime).exit(ExitStatus.MISUSE.getValue());
     }
 
     @Test
@@ -131,7 +132,7 @@ public class MainTest {
 
         main.run("arg");
 
-        verify(runtime).exit(CSV2AbstractDefaults.ExitStatus.MISUSE.getValue());
+        verify(runtime).exit(ExitStatus.MISUSE.getValue());
     }
 
     @Test
@@ -140,7 +141,7 @@ public class MainTest {
 
         main.run("arg");
 
-        verify(runtime).exit(CSV2AbstractDefaults.ExitStatus.MISUSE.getValue());
+        verify(runtime).exit(ExitStatus.MISUSE.getValue());
     }
 
     @Test
@@ -149,7 +150,7 @@ public class MainTest {
 
         main.run("arg");
 
-        verify(runtime).exit(CSV2AbstractDefaults.ExitStatus.GENERAL_ERROR.getValue());
+        verify(runtime).exit(ExitStatus.GENERAL_ERROR.getValue());
     }
 
     @Test
@@ -158,7 +159,7 @@ public class MainTest {
 
         main.run("arg");
 
-        verify(runtime).exit(CSV2AbstractDefaults.ExitStatus.GENERAL_ERROR.getValue());
+        verify(runtime).exit(ExitStatus.GENERAL_ERROR.getValue());
     }
 
     class TestOptionException extends OptionException {

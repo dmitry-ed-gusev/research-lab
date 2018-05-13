@@ -1,5 +1,7 @@
 package gusevdm;
 
+import gusevdm.helpers.ExitStatus;
+import gusevdm.rest.LuxMSRestClient;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -14,11 +16,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import static com.sun.org.apache.xalan.internal.xsltc.dom.CollatorFactoryBase.DEFAULT_LOCALE;
-import static gusevdm.CSV2AbstractDefaults.CommandLineOption.*;
+import static gusevdm.helpers.CommandLineOption.*;
 
-/**
- * Command-line entry point for CSV2Abstract.
- */
+/** Command-line entry point for LuxMS REST Client. */
 
 public class Main {
 
@@ -28,28 +28,30 @@ public class Main {
     private static final String HINT_MSG          =
             String.format("Try '%s --%s' for more information.", Main.class.getName(), OPTION_HELP.getName());
 
-    private final OptionSpec<String> dataset;
-    private final OptionSpec<String> csv;
-    private final OptionSpec<String> schema;
-    private final OptionSpec<String> credentials;
+    //private final OptionSpec<String> dataset;
+    //private final OptionSpec<String> csv;
+    //private final OptionSpec<String> schema;
+    private final OptionSpec<String> environment;
     private final OptionParser       parser;
     private final Runtime            runtime;
-    private       CSV2Abstract       csv2Abstract = null;
+    //private       CSV2Abstract       csv2Abstract = null;
 
     private Main() {
         this(new OptionParser(), Runtime.getRuntime());
     }
 
+    /** Constructor. Init cmd line parameters. */
     Main(OptionParser parser, Runtime runtime) {
         LOGGER.debug("Main constructor() is working.");
 
         this.parser  = parser;
         this.runtime = runtime;
-
+        // use POSIX correct syntax for cmd line parameters
         parser.posixlyCorrect(true);
-
+        // setup option for help
         parser.accepts(OPTION_HELP.getName(), OPTION_HELP.getDescription()).forHelp();
 
+        /*
         this.dataset = parser.accepts(OPTION_DATASET.getName(), OPTION_DATASET.getDescription())
                 .withRequiredArg()
                 .ofType(String.class)
@@ -62,7 +64,9 @@ public class Main {
                 .withRequiredArg()
                 .ofType(String.class)
                 .required();
-        this.credentials = parser.accepts(CREDENTIALS.getName(), CREDENTIALS.getDescription())
+        */
+
+        this.environment = parser.accepts(ENVIRONMENT.getName(), ENVIRONMENT.getDescription())
                 .withRequiredArg()
                 .ofType(String.class)
                 .required();
@@ -71,7 +75,7 @@ public class Main {
         parser.accepts(OPTION_LOG_LEVEL.getName(), OPTION_LOG_LEVEL.getDescription()).withRequiredArg().ofType(String.class);
 
         // switches
-        parser.accepts(OPTION_REINDEX.getName(), OPTION_REINDEX.getDescription());
+        //parser.accepts(OPTION_REINDEX.getName(), OPTION_REINDEX.getDescription());
     }
 
 
@@ -106,51 +110,60 @@ public class Main {
                 checkAndSetLogLevel(optionSet);
             }
 
-            validateDatasetName(optionSet);
+            //validateDatasetName(optionSet);
             run(optionSet);
 
         } catch (OptionException e) {    // NOSONAR Sonar expects the exception to be either logged or rethrown
             LOGGER.error(String.format(ERROR_MSG, e.getMessage()), e);
             LOGGER.info(HINT_MSG);
-            runtime.exit(CSV2AbstractDefaults.ExitStatus.MISUSE.getValue());
+            runtime.exit(ExitStatus.MISUSE.getValue());
         } catch (IllegalArgumentException e) {  // NOSONAR
             LOGGER.error(String.format(ERROR_MSG, e.getMessage()), e);
-            runtime.exit(CSV2AbstractDefaults.ExitStatus.MISUSE.getValue());
+            runtime.exit(ExitStatus.MISUSE.getValue());
         } catch (CSV2AbstractException e) {
             LOGGER.error("Execution time error", e);
-            runtime.exit(CSV2AbstractDefaults.ExitStatus.GENERAL_ERROR.getValue());
+            runtime.exit(ExitStatus.GENERAL_ERROR.getValue());
         } catch (Exception e) { // NOSONAR: we have to catch all cases and try to log them
             LOGGER.error("Unexpected exception", e);
-            runtime.exit(CSV2AbstractDefaults.ExitStatus.GENERAL_ERROR.getValue());
+            runtime.exit(ExitStatus.GENERAL_ERROR.getValue());
         }
     }
 
+    /** Real run() - after all initializations. */
     void run(OptionSet optionSet) {
         LOGGER.debug("Main.run(OptionSet) is working.");
-
+        /*
         if (this.csv2Abstract != null) {
             LOGGER.debug("Default Csv2Abstract module overridden. Using new module.");
             this.csv2Abstract.run();
         } else {
             LOGGER.debug("Using default Csv2Abstarct implementation.");
-            String credentialsFile = optionSet.valueOf(credentials);
+            String credentialsFile = optionSet.valueOf(environment);
             Environment.load(credentialsFile);
             CSV2Abstract csv2AbstractTool = new CSV2Abstract(optionSet.valueOf(dataset), optionSet.valueOf(csv),
                     optionSet.valueOf(schema), optionSet.has(OPTION_REINDEX.getName()));
             csv2AbstractTool.run();
         }
+        */
 
+        String credentialsFile = optionSet.valueOf(environment);
+        Environment.load(credentialsFile);
+
+        LuxMSRestClient luxRest = new LuxMSRestClient();
+        //luxRest.loginByGET();
+        luxRest.loginByPOST();
+        //luxRest.createDataset("my_dataset", "my dataset description", true);
     }
 
-    void setCsv2Abstract(CSV2Abstract csv2Abstract) {
-        this.csv2Abstract = csv2Abstract;
-    }
+    //void setCsv2Abstract(CSV2Abstract csv2Abstract) {
+    //    this.csv2Abstract = csv2Abstract;
+    //}
 
     private void showHelpAndExit() throws IOException {
         StringWriter stringWriter = new StringWriter();
         parser.printHelpOn(stringWriter);
         LOGGER.info(stringWriter.toString());
-        runtime.exit(CSV2AbstractDefaults.ExitStatus.OK.getValue());
+        runtime.exit(ExitStatus.OK.getValue());
     }
 
     private void checkAndSetLogLevel(OptionSet optionSet) {
@@ -164,11 +177,13 @@ public class Main {
             } else {
                 LOGGER.warn(String.format("Invalid value [%s] for logging level!", strLevel));
                 LOGGER.info(HINT_MSG);
-                runtime.exit(CSV2AbstractDefaults.ExitStatus.MISUSE.getValue());
+                runtime.exit(ExitStatus.MISUSE.getValue());
             }
         }
     }
 
+    /*
+    // Validate dataset name - check for illegal characters.
     private void validateDatasetName(OptionSet optionSet) {
         LOGGER.debug("Main.validateDatasetName() is working.");
         String datasetName = optionSet.valueOf(this.dataset);
@@ -184,4 +199,5 @@ public class Main {
     private static boolean isLowerCaseLatinLetter(char c) {
         return c >= 'a' && c <= 'z';
     }
+    */
 }

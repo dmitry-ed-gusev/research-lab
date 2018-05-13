@@ -23,6 +23,8 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
  * Base class for Enigma Abstract REST clients.
  */
 
+// https://stackoverflow.com/questions/32042944/upgrade-from-jersey-client-1-9-to-jersey-client-2-8
+
 public abstract class RestClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestClient.class);
@@ -77,6 +79,30 @@ public abstract class RestClient {
 
         LOGGER.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(entity, response);
+    }
+
+    /** Excute simple configurable POST request. */
+    /*RestResponse*/ void executeSimplePost(String resource, MediaType mediaType, Cookie cookie) {
+        LOGGER.debug("RestCLient.executeSimplePost() is working.");
+
+        String pathWithResource = this.getPath();
+        if (resource != null) {
+            pathWithResource = pathWithResource + resource;
+        }
+
+        LOGGER.debug(String.format("Building client. Path: [%s], media type: [%s], cookie: [%s].",
+                pathWithResource, mediaType, cookie));
+
+        ClientResponse response = this.jerseyClient.resource(pathWithResource)
+                .accept("application/x-www-form-urlencoded")
+                .cookie(cookie)
+                .entity("username=bi")
+                .entity("password=bi")
+                .post(ClientResponse.class);
+
+        //return this.buildResponse()
+
+        System.out.println("RESPONSE -> " + response);
     }
 
     protected RestResponse executePut(String resource, JSONObject entity) {

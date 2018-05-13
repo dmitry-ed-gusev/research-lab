@@ -12,3 +12,6 @@ parsekit_credentials:
   parsekit_password: password
 
 luxms_environment:
+  lux_url:      http://192.168.0.178
+  lux_user:     bi
+  lux_password: bi

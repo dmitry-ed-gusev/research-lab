@@ -13,9 +13,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-/**
- * Holder for Enigma connection settings.
- */
+/** Connection properties. */
 
 @NotThreadSafe
 public class Environment {
@@ -25,6 +23,12 @@ public class Environment {
     // regex pattern for checking invalid chars in URL
     private   static final Pattern URL_INVALID_CHARS              = Pattern.compile("[\\x00-\\x1F]");
 
+    // LuxMS BI environment properties
+    private static final String LUXMS_ENV_PROPERTY = "luxms_environment";
+    private static final String LUXMS_URL_PROPERTY = "lux_url";
+    private static final String LUXMS_USER_PROPERTY = "lux_user";
+    private static final String LUXMS_PASS_PROPERTY = "lux_password";
+
     private static final String ABSTRACT_CREDENTIALS_PROPERTY = "abstract_credentials";
 
     private   static final String ABSTRACT_URL_PROPERTY           = "abstract_url";
@@ -33,10 +37,11 @@ public class Environment {
 
     private   static final String METABASE_URL_PROPERTY           = "metabase_url";
     private   static final String METABASE_USER_PROPERTY          = "metabase_user";
-    private   static final String METABASE_PASSWORD_PROPERTY      = "metabase_password";   // NOSONAR: Sonar treats the field as a hard-coded password
+    private   static final String METABASE_PASSWORD_PROPERTY      = "metabase_password";
 
     private   static final String RIVER_URL_PROPERTY              = "river_url";
     private   static final String RIVER_API_KEY_PROPERTY          = "river_api_key";
+
     static final String RIVER_TIMEOUT_SECONDS_PROPERTY  = "river.timeout.seconds";
     static final String RIVER_TIMEOUT_ATTEMPTS_PROPERTY = "river.timeout.attempts";
 
@@ -44,13 +49,17 @@ public class Environment {
     static final int    DEFAULT_RIVER_TIMEOUT_ATTEMPTS  = 10;
 
     private   static final List<String> REQUIRED_PROPERTIES = Arrays.asList(
-            ABSTRACT_URL_PROPERTY,
-            ABSTRACT_API_KEY_PROPERTY,
-            METABASE_URL_PROPERTY,
-            METABASE_USER_PROPERTY,
-            METABASE_PASSWORD_PROPERTY,
-            RIVER_URL_PROPERTY,
-            RIVER_API_KEY_PROPERTY
+            LUXMS_URL_PROPERTY,
+            LUXMS_USER_PROPERTY,
+            LUXMS_PASS_PROPERTY
+
+            //ABSTRACT_URL_PROPERTY,
+            //ABSTRACT_API_KEY_PROPERTY,
+            //METABASE_URL_PROPERTY,
+            //METABASE_USER_PROPERTY,
+            //METABASE_PASSWORD_PROPERTY,
+            //RIVER_URL_PROPERTY,
+            //RIVER_API_KEY_PROPERTY
     );
     private static Environment instance;
 
@@ -62,6 +71,18 @@ public class Environment {
 
     private Environment(Map<String, String> credentials) {
         this.credentials = credentials;
+    }
+
+    public String getLuxMSURL() {
+        return credentials.get(LUXMS_URL_PROPERTY);
+    }
+
+    public String getLuxMSUser() {
+        return credentials.get(LUXMS_USER_PROPERTY);
+    }
+
+    public String getLuxMSPassword() {
+        return credentials.get(LUXMS_PASS_PROPERTY);
     }
 
     public String getAbstractUrl() {
@@ -154,7 +175,7 @@ public class Environment {
      * Create instance of {@link Environment} class. Load credentials info from yaml file.
      * Validates credentials and environment properties. This method is not thread safe.
      *
-     * @param credentialsFile Path to yaml-file with Enigma credentials info
+     * @param credentialsFile Path to yaml-file with credentials info
      * @throws IllegalArgumentException if environment is not set up correctly
      */
     @SuppressWarnings("unchecked")
@@ -163,10 +184,12 @@ public class Environment {
         //Load credentials file
         Yaml yaml = new Yaml();
         try (FileInputStream in = new FileInputStream(credentialsFile)) {
+            // load environment properties
             Map<String, Object> credentials = (Map<String, Object>) yaml.load(in);
-            Map<String, String> abstractCredentials = (Map<String, String>) credentials.get(ABSTRACT_CREDENTIALS_PROPERTY);
-            validateEnvironment(abstractCredentials);
-            instance = new Environment(abstractCredentials); // NOSONAR: Sonar asks to synchronize the instance,
+            Map<String, String> luxmsEnv = (Map<String, String>) credentials.get(LUXMS_ENV_PROPERTY);
+            validateEnvironment(luxmsEnv);
+            // initialize Environment instance
+            instance = new Environment(luxmsEnv); // NOSONAR: Sonar asks to synchronize the instance,
             // but this class is intentionally not thread safe.
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid credentials file", e);
@@ -174,18 +197,7 @@ public class Environment {
     }
 
     /**
-     * Make sure that all required system properties are set and not blank. The properties are:
-     * <p>
-     * <ul>
-     * <li>abstract.uri
-     * <li>abstract.api.key
-     * <li>metabase.url
-     * <li>metabase.user
-     * <li>metabase.password
-     * <li>river.uri
-     * <li>river.api.key
-     * </ul>
-     *
+     * Make sure that environment is set up properly.
      * @throws IllegalArgumentException if at least one of the system properties is invalid
      */
     private static void validateEnvironment(Map<String, String> credentials) {
@@ -195,27 +207,31 @@ public class Environment {
         for (String property : REQUIRED_PROPERTIES) {
             validateProperty(property, credentials.getOrDefault(property, null));
         }
-        validateProperty(KNOX_HDFS_URI_PROPERTY, System.getProperty(KNOX_HDFS_URI_PROPERTY));
+
+        //validateProperty(KNOX_HDFS_URI_PROPERTY, System.getProperty(KNOX_HDFS_URI_PROPERTY));
         LOGGER.debug(String.format("Presence of all mandatory properties [%s] checked. All OK.", REQUIRED_PROPERTIES));
 
-        // check URLs (Abstract/Metabase/River) for illegal characters
-        Environment.checkUrl(credentials.get(ABSTRACT_URL_PROPERTY));
-        Environment.checkUrl(credentials.get(METABASE_URL_PROPERTY));
-        Environment.checkUrl(credentials.get(RIVER_URL_PROPERTY));
-        LOGGER.debug("All URLs checked. All OK.");
+        // check URL(s) for illegal characters
+        //Environment.checkUrl(credentials.get(ABSTRACT_URL_PROPERTY));
+        //Environment.checkUrl(credentials.get(METABASE_URL_PROPERTY));
+        //Environment.checkUrl(credentials.get(RIVER_URL_PROPERTY));
+        Environment.checkUrl(credentials.get(LUXMS_URL_PROPERTY));
+        LOGGER.debug("URL(s) checked. All OK.");
     }
 
+    /** Validate single property. */
     private static void validateProperty(String property, String value) {
         if (value == null) {
-            String errorMessage = String.format("Required system property is missing: %s", property);
+            String errorMessage = String.format("Required property is missing: %s", property);
             throw new IllegalArgumentException(errorMessage);
         }
         if (value.trim().isEmpty()) {
-            String errorMessage = String.format("System property is blank: %s", property);
+            String errorMessage = String.format("Required property is blank: %s", property);
             throw new IllegalArgumentException(errorMessage);
         }
     }
 
+    /** Check URL for invalid chars. */
     static void checkUrl(String url) {
         if (URL_INVALID_CHARS.matcher(url).find()) {
             throw new IllegalArgumentException(String.format("URL [%s] contains invalid characters!", url));

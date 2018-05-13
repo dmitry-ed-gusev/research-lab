@@ -248,7 +248,7 @@ public class Csv2AbstractIT {
         CSV2Abstract csv2Abstract        = new CSV2Abstract(ABS_DATASET_NAME, false, new MetabaseRestClient(), riverClient);
         // create Main module for csv2abstract tool
         Main csv2abstractMain            = new Main(new OptionParser(), Runtime.getRuntime());
-        csv2abstractMain.setCsv2Abstract(csv2Abstract);
+        //csv2abstractMain.setCsv2Abstract(csv2Abstract);
         // run csv2abstract tool
         csv2abstractMain.run(cmdLineOptions);
 
