@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.MultivaluedMap;
 
 /** REST response object.  */
 
@@ -12,15 +13,18 @@ public class RestResponse {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestResponse.class);
 
-    private final int status;
+    private final int        status;
     private final JSONObject body;
-    private final Cookie cookie;
+    private final Cookie     cookie;
+    private final MultivaluedMap<String, String> headers;
 
-    public RestResponse(int status, JSONObject body, Cookie cookie) {
+    public RestResponse(int status, JSONObject body, Cookie cookie, MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestResponse constructor() is working.");
         this.status = status;
         this.body   = body;
         this.cookie = cookie;
+        // todo: copy map - breaks immutability!
+        this.headers = headers;
     }
 
     public int getStatus() {
@@ -35,12 +39,18 @@ public class RestResponse {
         return cookie;
     }
 
+    // todo: copy map - breaks immutability!
+    public MultivaluedMap<String, String> getHeaders() {
+        return headers;
+    }
+
     @Override
     public String toString() {
-        return "RestResponse{" +
-                "status=" + status +
-                ", body=" + body +
-                ", cookie(s)=" + cookie +
+        return "RestResponse {" +
+                "status="    + this.status +
+                ", body="    + this.body +
+                ", cookies=" + this.cookie +
+                ", headers=" + this.headers +
                 '}';
     }
 

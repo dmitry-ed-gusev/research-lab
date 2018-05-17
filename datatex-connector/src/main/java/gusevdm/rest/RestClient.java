@@ -12,31 +12,37 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.io.Reader;
 
-import static gusevdm.CSV2AbstractDefaults.STATE_FAILED;
+//import static gusevdm.CSV2AbstractDefaults.STATE_FAILED;
 import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
-
 /**
- * Base class for Enigma Abstract REST clients.
+ * Basic HTTP REST Client.
+ * Client assumes, that data exchange with server is done via JSON data.
  */
 
 // https://stackoverflow.com/questions/32042944/upgrade-from-jersey-client-1-9-to-jersey-client-2-8
 
 public abstract class RestClient {
 
+    // module logger
     private static final Logger LOGGER = LoggerFactory.getLogger(RestClient.class);
-
-    private static final String SERVER_RESPONSE_MSG = "Server response: [%s].";
-    private static final String RESPONSE_COOKIE_KEY = "session";
-    private static final String JSON_FIELD_STATE    = "state";
-
+    // internal jersey client instance
     private final Client     jerseyClient = Client.create();
+    // internal json parser instance
     private final JSONParser jsonParser = new JSONParser();
 
+    // response message
+    private static final String SERVER_RESPONSE_MSG = "Server response: [%s].";
+
+    //private static final String RESPONSE_COOKIE_KEY = "session";
+    //private static final String JSON_FIELD_STATE    = "state";
+
     /**
+     * Should be implemented be each subclass.
      * @return path to recourse for each implementation
      */
     protected abstract String getPath();
@@ -96,13 +102,15 @@ public abstract class RestClient {
         ClientResponse response = this.jerseyClient.resource(pathWithResource)
                 .accept("application/x-www-form-urlencoded")
                 .cookie(cookie)
-                .entity("username=bi")
-                .entity("password=bi")
+                .entity("username=admin&password=admin")
+                //.entity("password=admin")
                 .post(ClientResponse.class);
 
         //return this.buildResponse()
 
-        System.out.println("RESPONSE -> " + response);
+        RestResponse restResponse = this.buildResponse(null, response);
+        System.out.println("===> " + restResponse.toString());
+        //System.out.println("RESPONSE -> " + response);
     }
 
     protected RestResponse executePut(String resource, JSONObject entity) {
@@ -125,6 +133,8 @@ public abstract class RestClient {
         return this.buildResponse(entity, response);
     }
 
+    /** Build jersey client. */
+    // todo: adding request header (see RiverRestClient).
     protected WebResource.Builder buildClient(String resource, MediaType mediaType, Cookie cookie) {
         LOGGER.debug("RestClient.buildClient() is working.");
 
@@ -139,9 +149,11 @@ public abstract class RestClient {
         return this.jerseyClient.resource(pathWithResource).accept(mediaType).cookie(cookie);
     }
 
+    /** Build and return REST response class. */
     protected RestResponse buildResponse(JSONObject request, ClientResponse response) {
         LOGGER.debug("RestClient.buildResponse() is working.");
 
+        // get response entity (body) and status code
         String entity = response.getEntity(String.class);
         int status = response.getStatus();
         LOGGER.info(String.format("Response status: [%s].", status));
@@ -151,24 +163,36 @@ public abstract class RestClient {
             throw new RestException(request, response, "Not OK code returned!");
         }
 
+        // parse response body into JSON object
         JSONObject body;
         try {
             body = (JSONObject) this.jsonParser.parse(entity);
         } catch (ParseException e) {
             throw new RestException(request, response, "Cannot parse response body! " + e.toString());
         }
-        if (body != null && STATE_FAILED.equals(body.get(JSON_FIELD_STATE))) {
-            throw new IndexingException(request, response, body);
-        }
+
+        //if (body != null && STATE_FAILED.equals(body.get(JSON_FIELD_STATE))) {
+        //    throw new IndexingException(request, response, body);
+        //}
+
+        // get response cookies
         Cookie cookie = response.getCookies().stream()
-                .filter(oneCookie -> RESPONSE_COOKIE_KEY.equals(oneCookie.getName()))
+                // todo: implement filtering cookie(s) by key or let caller to do it?
+                //.filter(oneCookie -> RESPONSE_COOKIE_KEY.equals(oneCookie.getName()))
+                //.filter(oneCookie -> "Set-Cookie:".equals(oneCookie.getName()))
                 .findAny()
                 .orElse(null);
-        LOGGER.info(String.format("Response cookie: [%s].", cookie));
+        LOGGER.debug(String.format("Response cookie:%n[%s]%n", cookie));
 
-        return new RestResponse(status, body, cookie);
+        // get response headers
+        MultivaluedMap<String, String> headers = response.getHeaders();
+        LOGGER.debug(String.format("Response headers:%n[%s]%n", headers));
+
+        // create RestResponse instance and return it
+        return new RestResponse(status, body, cookie, headers);
     }
 
+    /***/
     JSONArray parseJsonArray(Reader reader) throws IOException, ParseException {
         LOGGER.debug("RestClient.parseJsonArray() is working.");
         return (JSONArray) this.jsonParser.parse(reader);
