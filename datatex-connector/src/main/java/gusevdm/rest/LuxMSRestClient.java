@@ -17,7 +17,7 @@ public class LuxMSRestClient extends RestClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LuxMSRestClient.class);
 
-    private static final String LUXMS_LOGIN_PATH = "/api/login?username=%s&password=%s";
+    private static final String LUXMS_LOGIN_PATH = "/api/auth/login?username=%s&password=%s";
     private static final String LUXMS_DATASETS_PATH = "/api/db/adm.datasets";
 
     // identity info
@@ -49,7 +49,7 @@ public class LuxMSRestClient extends RestClient {
      * @throws RestException on request execution error
      */
     public void loginByGET() {
-        LOGGER.debug("LuxMSRestClient.login() is working.");
+        LOGGER.debug("LuxMSRestClient.loginByGET() is working.");
         //JSONObject body = new JSONObject();
         //body.put("user",       user);
         //body.put("password",   password);
@@ -62,8 +62,8 @@ public class LuxMSRestClient extends RestClient {
 
     /***/
     public void loginByPOST() {
-        LOGGER.debug("LuxMSRestClient.login() is working.");
-        this.executeSimplePost("/login", null, null);
+        LOGGER.debug("LuxMSRestClient.loginByPOST() is working.");
+        this.executeSimplePost("/api/auth/login", null, null);
     }
 
     /***/
