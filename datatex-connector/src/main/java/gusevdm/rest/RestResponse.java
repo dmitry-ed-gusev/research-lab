@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.core.Cookie;
 
 /** REST response object.  */
+
 public class RestResponse {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestResponse.class);
@@ -18,7 +19,7 @@ public class RestResponse {
     public RestResponse(int status, JSONObject body, Cookie cookie) {
         LOGGER.debug("RestResponse constructor() is working.");
         this.status = status;
-        this.body = body;
+        this.body   = body;
         this.cookie = cookie;
     }
 
@@ -39,7 +40,8 @@ public class RestResponse {
         return "RestResponse{" +
                 "status=" + status +
                 ", body=" + body +
-                ", cookie=" + cookie +
+                ", cookie(s)=" + cookie +
                 '}';
     }
+
 }
