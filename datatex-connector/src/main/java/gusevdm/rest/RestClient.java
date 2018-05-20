@@ -70,7 +70,7 @@ public abstract class RestClient {
     }
 
     /** Execute POST request with JSON entity. */
-    private RestResponse executePost(String resource, JSONObject entity, Cookie cookie,
+    protected RestResponse executePost(String resource, JSONObject entity, Cookie cookie,
                                      MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.executePost(String, JSONObject, Cookie, Headers) is working.");
         LOGGER.debug(
@@ -90,7 +90,7 @@ public abstract class RestClient {
     }
 
     /** Execute simple configurable POST request. */
-    RestResponse executePost(String resource, String entity, MediaType mediaType, Cookie cookie,
+    protected RestResponse executePost(String resource, String entity, MediaType mediaType, Cookie cookie,
                                    MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.executeSimplePost(String, String, MediaType, Cookie, Headers) is working.");
         LOGGER.debug(

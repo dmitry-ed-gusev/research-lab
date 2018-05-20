@@ -1,7 +1,8 @@
 package gusevdm;
 
 import gusevdm.helpers.ExitStatus;
-import gusevdm.rest.LuxMSRestClient;
+import gusevdm.luxms.DataSet;
+import gusevdm.luxms.LuxMSRestClient;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 
 import static com.sun.org.apache.xalan.internal.xsltc.dom.CollatorFactoryBase.DEFAULT_LOCALE;
 import static gusevdm.helpers.CommandLineOption.*;
@@ -151,6 +153,11 @@ public class Main {
 
         LuxMSRestClient luxRest = new LuxMSRestClient();
         luxRest.login();
+        List<DataSet> datasets = luxRest.listDatasets();
+        datasets.forEach(dataset -> LOGGER.debug(String.format("Dataset -> %s", dataset)));
+
+        //luxRest.createDataset("my_dataset", "My New (!) Own Dataset for temp purposes...", true);
+
         //luxRest.createDataset("my_dataset", "my dataset description", true);
     }
 
