@@ -21,15 +21,17 @@ public class LuxMSRestClient extends RestClient {
     // paths for REST client
     private static final String LUXMS_LOGIN_PATH    = "/auth/login";
     private static final String LUXMS_DATASETS_PATH = "/db/adm.datasets";
-    // useful constants
-    private static final String AUTH_HEADER_NAME    = "Set-Cookie";
+    // request/response headers and cookies
+    private static final String AUTH_HEADER         = "Set-Cookie";
+    private static final String SESSION_HEADER      = "LuxmsBI-User-Session";
+    private static final String COOKIE_HEADER       = "Cookie";
 
     // identity info
     private final String path;
     private final String user;
     private final String password;
     // session identity
-    private String identity;
+    private String identity = null;
 
     /** Create instance of LuxMS RESt client, init identity info from environment. */
     public LuxMSRestClient() {
@@ -47,11 +49,30 @@ public class LuxMSRestClient extends RestClient {
     public void login() {
         LOGGER.debug("LuxMSRestClient.login() is working.");
 
+        // prepare data and execute request
         String authEntity = String.format("username=%s&password=%s", this.user, this.password);
         RestResponse response = this.executePost(LUXMS_LOGIN_PATH, authEntity,
                 MediaType.APPLICATION_FORM_URLENCODED_TYPE, null, null);
 
-        System.out.println("---> " + response);
+        // get auth info from response
+        response.getHeaders().forEach((key, values) -> {  // BiConsumer
+            LOGGER.debug(String.format("Header: %s = %s", key, values));
+            if (AUTH_HEADER.equals(key)) {  // found auth header
+                values.forEach(value -> {  // Consumer
+                    if (value.contains(SESSION_HEADER)) { // value contains session header
+                        LOGGER.debug(String.format("*Found session header [%s].", SESSION_HEADER));
+                        // get value of auth identity value
+                        this.identity = value.substring(value.indexOf(SESSION_HEADER) + SESSION_HEADER.length() + 1,
+                                value.indexOf(";"));
+                        LOGGER.debug(String.format("*Found session auth identity [%s].", this.identity));
+                    }
+                }); // values -> forEach
+            } // if found auth header
+        }); // map entries -> forEach
+
+        if (this.identity == null) { // if we can't find identity - we can't work with LuxMS BI server
+            throw new IllegalStateException("Can't find session identity value!");
+        }
     }
 
     /***/
