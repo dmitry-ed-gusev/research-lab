@@ -25,7 +25,7 @@ public class RestClientTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void testBuildClient() {
-        this.restClientChild.buildClient("/path1\n/path2", new MediaType(), new Cookie("name", "value"));
+        this.restClientChild.buildClient("/path1\n/path2", new MediaType(), new Cookie("name", "value"), null);
     }
 
 }

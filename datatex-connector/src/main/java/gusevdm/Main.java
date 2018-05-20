@@ -150,8 +150,7 @@ public class Main {
         Environment.load(credentialsFile);
 
         LuxMSRestClient luxRest = new LuxMSRestClient();
-        //luxRest.loginByGET();
-        luxRest.loginByPOST();
+        luxRest.login();
         //luxRest.createDataset("my_dataset", "my dataset description", true);
     }
 

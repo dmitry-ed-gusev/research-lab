@@ -16,7 +16,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.io.Reader;
 
-//import static gusevdm.CSV2AbstractDefaults.STATE_FAILED;
 import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
 /**
@@ -26,6 +25,7 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
 // https://stackoverflow.com/questions/32042944/upgrade-from-jersey-client-1-9-to-jersey-client-2-8
 
+// todo: move to utilities module
 public abstract class RestClient {
 
     // module logger
@@ -38,9 +38,6 @@ public abstract class RestClient {
     // response message
     private static final String SERVER_RESPONSE_MSG = "Server response: [%s].";
 
-    //private static final String RESPONSE_COOKIE_KEY = "session";
-    //private static final String JSON_FIELD_STATE    = "state";
-
     /**
      * Should be implemented be each subclass.
      * @return path to recourse for each implementation
@@ -49,14 +46,15 @@ public abstract class RestClient {
 
     RestResponse executeGet(String resource) {
         LOGGER.debug("RestClient.executeGet(String) is working.");
-        return this.executeGet(resource, null);
+        return this.executeGet(resource, null, null);
     }
 
-    RestResponse executeGet(String resource, Cookie cookie) {
+    RestResponse executeGet(String resource, Cookie cookie, MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.executeGet(String, Cookie) is working.");
         LOGGER.debug(String.format("GET request parameters:%n\tresource [%s],%n\tcookie [%s].", resource, cookie));
 
-        ClientResponse response = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookie).get(ClientResponse.class);
+        ClientResponse response = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookie, headers)
+                .get(ClientResponse.class);
         LOGGER.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(null, response);
     }
@@ -68,18 +66,22 @@ public abstract class RestClient {
 
     RestResponse executePost(String resource, JSONObject entity) {
         LOGGER.debug("RestClient.executePost(String, JSONObject) is working.");
-        return executePost(resource, entity, null);
+        return executePost(resource, entity, null, null);
     }
 
-    private RestResponse executePost(String resource, JSONObject entity, Cookie cookie) {
-        LOGGER.debug("RestClient.executePost(String, JSONObject, Cookie) is working.");
+    /** Execute POST request with JSON entity. */
+    private RestResponse executePost(String resource, JSONObject entity, Cookie cookie,
+                                     MultivaluedMap<String, String> headers) {
+        LOGGER.debug("RestClient.executePost(String, JSONObject, Cookie, Headers) is working.");
         LOGGER.debug(
-                String.format("POST request parameters:%n\tresource [%s],%n\tentity [%s],%n\tcookie [%s].",
-                        resource, entity, cookie));
+                String.format("POST request parameters:%n\tresource [%s],%n\tentity [%s]," +
+                                "%n\tcookie [%s],%n\theaders [%s]",
+                        resource, entity, cookie, headers));
 
         String entityString = entity.toJSONString();
 
-        ClientResponse response = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookie)
+        // executing POST request with JSON entity
+        ClientResponse response = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookie, headers)
                 .entity(entityString, MediaType.APPLICATION_JSON_TYPE)
                 .post(ClientResponse.class);
 
@@ -87,45 +89,38 @@ public abstract class RestClient {
         return this.buildResponse(entity, response);
     }
 
-    /** Excute simple configurable POST request. */
-    /*RestResponse*/ void executeSimplePost(String resource, MediaType mediaType, Cookie cookie) {
-        LOGGER.debug("RestCLient.executeSimplePost() is working.");
+    /** Execute simple configurable POST request. */
+    RestResponse executePost(String resource, String entity, MediaType mediaType, Cookie cookie,
+                                   MultivaluedMap<String, String> headers) {
+        LOGGER.debug("RestClient.executeSimplePost(String, String, MediaType, Cookie, Headers) is working.");
+        LOGGER.debug(
+                String.format("POST request parameters:%n\tresource [%s],%n\tentity [%s]," +
+                                "%n\tmedia type [%s],%n\tcookie [%s],%n\theaders [%s]",
+                        resource, entity, mediaType, cookie, headers));
 
-        String pathWithResource = this.getPath();
-        if (resource != null) {
-            pathWithResource = pathWithResource + resource;
-        }
-
-        LOGGER.debug(String.format("Building client. Path: [%s], media type: [%s], cookie: [%s].",
-                pathWithResource, mediaType, cookie));
-
-        ClientResponse response = this.jerseyClient.resource(pathWithResource)
-                .accept("application/x-www-form-urlencoded")
-                .cookie(cookie)
-                .entity("username=admin&password=admin")
-                //.entity("password=admin")
+        // execute POST request with string entity
+        ClientResponse response = this.buildClient(resource, mediaType, cookie, headers)
+                .entity(entity, mediaType)
                 .post(ClientResponse.class);
 
-        //return this.buildResponse()
-
-        RestResponse restResponse = this.buildResponse(null, response);
-        System.out.println("===> " + restResponse.toString());
-        //System.out.println("RESPONSE -> " + response);
+        LOGGER.info(String.format(SERVER_RESPONSE_MSG, response));
+        return this.buildResponse(null, response);
     }
 
     protected RestResponse executePut(String resource, JSONObject entity) {
         LOGGER.debug("RestClient.executePut(String, JSONObject) is working.");
-        return executePut(resource, entity, null);
+        return executePut(resource, entity, null, null);
     }
 
-    RestResponse executePut(String resource, JSONObject entity, Cookie cookie) {
+    RestResponse executePut(String resource, JSONObject entity, Cookie cookie,
+                            MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.executePut(String, JSONObject, Cookie) is working.");
         LOGGER.debug(
                 String.format("PUT request parameters:%n\tresource [%s],%n\tentity [%s],%n\tcookie [%s].",
                         resource, entity, cookie));
 
         String entityString = entity.toJSONString();
-        ClientResponse response = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookie)
+        ClientResponse response = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookie, headers)
                 .entity(entityString, MediaType.APPLICATION_JSON_TYPE)
                 .put(ClientResponse.class);
 
@@ -134,10 +129,11 @@ public abstract class RestClient {
     }
 
     /** Build jersey client. */
-    // todo: adding request header (see RiverRestClient).
-    protected WebResource.Builder buildClient(String resource, MediaType mediaType, Cookie cookie) {
+    protected WebResource.Builder buildClient(String resource, MediaType mediaType, Cookie cookie,
+                                              MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.buildClient() is working.");
 
+        // build full path
         String pathWithResource = this.getPath();
         if (resource != null) {
             pathWithResource = pathWithResource + resource;
@@ -146,10 +142,26 @@ public abstract class RestClient {
         LOGGER.debug(String.format("Building client. Path: [%s], media type: [%s], cookie: [%s].",
                 pathWithResource, mediaType, cookie));
 
-        return this.jerseyClient.resource(pathWithResource).accept(mediaType).cookie(cookie);
+        // build jersey client
+        WebResource.Builder builder = this.jerseyClient.resource(pathWithResource).accept(mediaType).cookie(cookie);
+
+        // add headers
+        if (headers != null && !headers.isEmpty()) {  // process all headers from Map
+            headers.forEach((key, values) -> {  // BiConsumer
+                values.forEach(value -> {  // Consumer
+                    LOGGER.debug(String.format("Adding header: %s = %s", key, value));
+                    builder.header(key, value);
+                });
+            });
+        }
+
+        return builder;
     }
 
-    /** Build and return REST response class. */
+    /**
+     * Build and return REST response class.
+     * Response is returned without any processing - "as is".
+     */
     protected RestResponse buildResponse(JSONObject request, ClientResponse response) {
         LOGGER.debug("RestClient.buildResponse() is working.");
 
@@ -159,6 +171,7 @@ public abstract class RestClient {
         LOGGER.info(String.format("Response status: [%s].", status));
         LOGGER.debug(String.format("Response body:%n%s", entity));
 
+        // server returned error code
         if (response.getClientResponseStatus().getFamily() != SUCCESSFUL) {
             throw new RestException(request, response, "Not OK code returned!");
         }
@@ -171,15 +184,8 @@ public abstract class RestClient {
             throw new RestException(request, response, "Cannot parse response body! " + e.toString());
         }
 
-        //if (body != null && STATE_FAILED.equals(body.get(JSON_FIELD_STATE))) {
-        //    throw new IndexingException(request, response, body);
-        //}
-
         // get response cookies
         Cookie cookie = response.getCookies().stream()
-                // todo: implement filtering cookie(s) by key or let caller to do it?
-                //.filter(oneCookie -> RESPONSE_COOKIE_KEY.equals(oneCookie.getName()))
-                //.filter(oneCookie -> "Set-Cookie:".equals(oneCookie.getName()))
                 .findAny()
                 .orElse(null);
         LOGGER.debug(String.format("Response cookie:%n[%s]%n", cookie));

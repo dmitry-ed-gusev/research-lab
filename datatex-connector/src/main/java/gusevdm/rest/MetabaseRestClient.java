@@ -78,7 +78,7 @@ public class MetabaseRestClient extends RestClient {
                 String.format("MetabaseRestClient.isAccessibleAndPublished() is working. Dataset [%s], sessionCookie [%s].",
                         dataset, sessionCookie));
         try {
-            RestResponse response = this.executeGet(String.format(PATH_PATTERN_GET_DATAPATH, dataset), sessionCookie);
+            RestResponse response = this.executeGet(String.format(PATH_PATTERN_GET_DATAPATH, dataset), sessionCookie, null);
             JSONObject result = (JSONObject) response.getBody().get(JSON_FIELD_RESULT);
 
             String datapath     = (String) result.get(JSON_FIELD_DATAPATH);
@@ -124,7 +124,7 @@ public class MetabaseRestClient extends RestClient {
     }
 
     private void publishCollectionIfNeeded(String datapath, boolean forcePublish) {
-        RestResponse response = executeGet(String.format(PATH_PATTERN_GET_DATAPATH, datapath), sessionCookie);
+        RestResponse response = executeGet(String.format(PATH_PATTERN_GET_DATAPATH, datapath), sessionCookie, null);
         JSONObject result = (JSONObject) response.getBody().get(JSON_FIELD_RESULT);
 
         boolean isPublished = (boolean) result.getOrDefault(JSON_FIELD_PUBLISHED, false);
@@ -136,7 +136,7 @@ public class MetabaseRestClient extends RestClient {
             body.put(JSON_FIELD_METADATA, result);
 
             LOGGER.info(String.format("Publishing collection [%s]...", datapath));
-            executePut(PATH_DATAPATH, body, sessionCookie);
+            executePut(PATH_DATAPATH, body, sessionCookie, null);
             LOGGER.info(String.format("Collection [%s] has been published.", datapath));
         } else {
             LOGGER.info(String.format("Collection [%s] is already published and republish isn't requested.", datapath));
@@ -154,7 +154,7 @@ public class MetabaseRestClient extends RestClient {
                 String.format("MetabaseRestClient.publishDataset() is working. Dataset [%s], sessionCookie [%s].",
                         dataset, sessionCookie));
 
-        RestResponse response = executeGet(String.format(PATH_PATTERN_GET_DATAPATH, dataset), sessionCookie);
+        RestResponse response = executeGet(String.format(PATH_PATTERN_GET_DATAPATH, dataset), sessionCookie, null);
         JSONObject result = (JSONObject) response.getBody().get(JSON_FIELD_RESULT);
         boolean isPublished = (boolean) result.getOrDefault(JSON_FIELD_PUBLISHED, false);
 
@@ -166,7 +166,7 @@ public class MetabaseRestClient extends RestClient {
             body.put(JSON_FIELD_METADATA, metadata);
 
             LOGGER.info(String.format("Publishing dataset [%s]...", dataset));
-            executePut(PATH_DATAPATH, body, sessionCookie);
+            executePut(PATH_DATAPATH, body, sessionCookie, null);
             LOGGER.info(String.format("Dataset [%s] has been published.", dataset));
         } else {
             LOGGER.info(String.format("Dataset [%s] is already published and republish isn't requested.", dataset));

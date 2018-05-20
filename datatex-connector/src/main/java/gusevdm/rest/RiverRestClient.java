@@ -180,10 +180,10 @@ public class RiverRestClient extends RestClient {
         return new FileInputStream(this.schemaFile);
     }
 
-    @Override
+    //@Override
     protected WebResource.Builder buildClient(String resource, MediaType mediaType, Cookie cookie) {
         LOGGER.debug("RiverRestClient.buildClient() working.");
-        WebResource.Builder builder = super.buildClient(resource, mediaType, cookie);
+        WebResource.Builder builder = super.buildClient(resource, mediaType, cookie, null);
         builder.header(HEADER_AUTHORIZATION, String.format(HEADER_PATTERN_AUTHORIZATION, apiKey));
         return builder;
     }
