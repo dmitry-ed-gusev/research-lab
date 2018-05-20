@@ -23,9 +23,9 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
  * Client assumes, that data exchange with server is done via JSON data.
  */
 
-// https://stackoverflow.com/questions/32042944/upgrade-from-jersey-client-1-9-to-jersey-client-2-8
-
 // todo: move to utilities module
+// todo: migrate to latest Jersey Client version
+// todo: for Jersey update see: https://stackoverflow.com/questions/32042944/upgrade-from-jersey-client-1-9-to-jersey-client-2-8
 public abstract class RestClient {
 
     // module logger
@@ -124,6 +124,28 @@ public abstract class RestClient {
                 .entity(entityString, MediaType.APPLICATION_JSON_TYPE)
                 .put(ClientResponse.class);
 
+        LOGGER.info(String.format(SERVER_RESPONSE_MSG, response));
+        return this.buildResponse(entity, response);
+    }
+
+    /** Execute DELETE HTTP method. */
+    protected RestResponse executeDelete(String resource, JSONObject entity, Cookie cookie,
+                               MultivaluedMap<String, String> headers) {
+        LOGGER.debug("RestClient.executeDelete(String, JSONObject, Cookie) is working.");
+        LOGGER.debug(
+                String.format("DELETE request parameters:%n\tresource [%s],%n\tentity [%s],%n\tcookie [%s].",
+                        resource, entity, cookie));
+
+        // start client building
+        WebResource.Builder builder = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookie, headers);
+        // add JSON entity, if any
+        if (entity != null) {
+            String entityString = entity.toJSONString();
+            builder.entity(entityString, MediaType.APPLICATION_JSON_TYPE);
+        }
+
+        // execute request
+        ClientResponse response = builder.delete(ClientResponse.class);
         LOGGER.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(entity, response);
     }

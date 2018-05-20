@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import static gusevdm.luxms.DataSet.*;
 
 /** Some helpers methods for LuxMS client. */
+// todo: add other dataset parameters
 
 public final class LuxMSHelper {
 
@@ -16,6 +17,7 @@ public final class LuxMSHelper {
     /***/
     public static DataSet parseDataSet(JSONObject json) {
         LOGGER.debug("LuxMSHelper.parseDataSet() is working.");
+        LOGGER.debug(String.format("Parsing dataset from JSON [%s].", json));
 
         if (json == null) {
             throw new IllegalStateException("Received JSON object is NULL!");

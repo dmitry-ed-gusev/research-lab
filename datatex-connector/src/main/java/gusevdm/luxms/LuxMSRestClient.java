@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.MultivaluedHashMap;
-import javax.xml.crypto.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class LuxMSRestClient extends RestClient {
     // request/response headers and cookies
     private static final String LUXMS_AUTH_HEADER    = "Set-Cookie";
     private static final String LUXMS_SESSION_HEADER = "LuxmsBI-User-Session";
-    private static final String LUXMS_COOKIE_HEADER  = "Cookie";
+    //private static final String LUXMS_COOKIE_HEADER  = "Cookie";
 
     // identity info
     private final String path;
@@ -90,7 +89,6 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /** Lists system datasets (according to provileges). */
-    // todo: return something???
     public List<DataSet> listDatasets() {
         LOGGER.debug("LuxMSRestClient.listDatasets() is working.");
 
@@ -127,24 +125,30 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /** Create new dataset. */
-    // todo: return dataset id (or other parameters)???
     @SuppressWarnings("unchecked")
-    public void createDataset(String datasetTitle, String datasetDesc, boolean isVisible) {
+    public DataSet createDataset(String datasetTitle, String datasetDesc, boolean isVisible) {
         LOGGER.debug("LuxMSRestClient.createDataset() is working.");
 
+        // create JSON for request
         JSONObject body = new JSONObject();
         body.put("title", datasetTitle);
         body.put("description", datasetDesc);
         body.put("is_visible", isVisible ? 1 : 0);
 
+        // execute request
         RestResponse response = this.executePost(LUXMS_DATASETS_PATH, body, null, this.authHeader);
-
-        System.out.println("--->" + response);
+        // parse response and return object
+        return LuxMSHelper.parseDataSet(response.getBody());
     }
 
     /***/
-    public void removeDataset() {
+    public void removeDataset(long id) {
         LOGGER.debug("LuxMSRestClient.removeDataset() is working.");
+
+        RestResponse response = this.executeDelete(LUXMS_DATASETS_PATH + "/" + String.valueOf(id),
+                null, null, this.authHeader);
+
+        System.out.println("removed ===> " + response);
     }
 
     /***/

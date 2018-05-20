@@ -151,14 +151,21 @@ public class Main {
         String credentialsFile = optionSet.valueOf(environment);
         Environment.load(credentialsFile);
 
+        // client instance
         LuxMSRestClient luxRest = new LuxMSRestClient();
+        // login
         luxRest.login();
+
+        // list datasets
         List<DataSet> datasets = luxRest.listDatasets();
         datasets.forEach(dataset -> LOGGER.debug(String.format("Dataset -> %s", dataset)));
 
-        //luxRest.createDataset("my_dataset", "My New (!) Own Dataset for temp purposes...", true);
+        // create dataset
+        //DataSet dataSet = luxRest.createDataset("my_dataset_zzz", "My New (!) Own set", true);
+        //LOGGER.debug(String.format("Created dataset [%s].", dataSet));
 
-        //luxRest.createDataset("my_dataset", "my dataset description", true);
+        // remove dataset
+        luxRest.removeDataset(9);
     }
 
     //void setCsv2Abstract(CSV2Abstract csv2Abstract) {
