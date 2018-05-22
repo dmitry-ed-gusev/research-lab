@@ -74,8 +74,8 @@ repositories:
     jira-utils:
       build: no
   ~kejzlar:  # Tom Kejzlar's repository
-    jiragraphs:
-      build:  no
+    #jiragraphs:  # obsolete repo
+    #  build:  no
     agilestats:
       build:  no
   infapfm:  # Informatica Platform repositories
