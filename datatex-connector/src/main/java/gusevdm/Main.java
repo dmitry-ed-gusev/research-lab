@@ -165,7 +165,7 @@ public class Main {
         //LOGGER.debug(String.format("Created dataset [%s].", dataSet));
 
         // remove dataset
-        luxRest.removeDataset(9);
+        luxRest.removeDataset(8);
     }
 
     //void setCsv2Abstract(CSV2Abstract csv2Abstract) {

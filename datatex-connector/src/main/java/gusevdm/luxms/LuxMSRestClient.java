@@ -138,7 +138,7 @@ public class LuxMSRestClient extends RestClient {
         // execute request
         RestResponse response = this.executePost(LUXMS_DATASETS_PATH, body, null, this.authHeader);
         // parse response and return object
-        return LuxMSHelper.parseDataSet(response.getBody());
+        return LuxMSHelper.parseDataSet(response.getBodyObject());
     }
 
     /***/

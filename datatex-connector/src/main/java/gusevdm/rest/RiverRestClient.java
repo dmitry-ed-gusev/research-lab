@@ -95,8 +95,8 @@ public class RiverRestClient extends RestClient {
         requestBody.put(JSON_FIELD_NAME, collectionName);
         RestResponse response = this.executePost(requestBody);
 
-        String createdCollectionId   = (String) response.getBody().get(JSON_FIELD_ID);
-        String createdCollectionName = (String) response.getBody().get(JSON_FIELD_NAME);
+        String createdCollectionId   = (String) response.getBodyObject().get(JSON_FIELD_ID);
+        String createdCollectionName = (String) response.getBodyObject().get(JSON_FIELD_NAME);
 
         validator.checkCollectionName(collectionName, createdCollectionName);
 
@@ -121,7 +121,7 @@ public class RiverRestClient extends RestClient {
             JSONObject   body     = this.buildCreateDatasetBody(dataset);
             RestResponse response = this.executePost(String.format(PATH_PATTERN_CREATE_DATASET, collectionID), body);
 
-            JSONObject responseBody   = response.getBody();
+            JSONObject responseBody   = response.getBodyObject();
             LOGGER.debug(String.format("Got response JSON: %s.", responseBody));
 
             String createdDatasetName = validator.getAndCheckDatasetName(dataset, responseBody);
@@ -248,7 +248,7 @@ public class RiverRestClient extends RestClient {
                         datasetId, collectionId));
 
         RestResponse response = this.executeGet(String.format(PATH_PATTERN_DATASET_STATE, collectionId, datasetId));
-        JSONObject body = response.getBody();
+        JSONObject body = response.getBodyObject();
         String readCollectionId = (String) body.get(JSON_FIELD_COLLECTION_ID);
         String readDatasetId    = (String) body.get(JSON_FIELD_ID);
 

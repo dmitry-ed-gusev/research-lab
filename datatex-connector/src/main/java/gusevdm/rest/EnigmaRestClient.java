@@ -48,7 +48,7 @@ public class EnigmaRestClient extends RestClient {
         String resource = String.format(PATH_PATTERN_RESOURCE, datapath);
         RestResponse response = executeGet(resource);
 
-        JSONObject body = response.getBody();
+        JSONObject body = response.getBodyObject();
         try {
             String totalRowsString = Optional.ofNullable((JSONObject) body.get(JSON_FIELD_RESULT))
                     .map(result -> (JSONArray) result.get(JSON_FIELD_METADATA))

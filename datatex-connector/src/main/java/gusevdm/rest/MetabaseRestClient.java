@@ -79,7 +79,7 @@ public class MetabaseRestClient extends RestClient {
                         dataset, sessionCookie));
         try {
             RestResponse response = this.executeGet(String.format(PATH_PATTERN_GET_DATAPATH, dataset), sessionCookie, null);
-            JSONObject result = (JSONObject) response.getBody().get(JSON_FIELD_RESULT);
+            JSONObject result = (JSONObject) response.getBodyObject().get(JSON_FIELD_RESULT);
 
             String datapath     = (String) result.get(JSON_FIELD_DATAPATH);
             if (!dataset.equals(datapath)) {
@@ -125,7 +125,7 @@ public class MetabaseRestClient extends RestClient {
 
     private void publishCollectionIfNeeded(String datapath, boolean forcePublish) {
         RestResponse response = executeGet(String.format(PATH_PATTERN_GET_DATAPATH, datapath), sessionCookie, null);
-        JSONObject result = (JSONObject) response.getBody().get(JSON_FIELD_RESULT);
+        JSONObject result = (JSONObject) response.getBodyObject().get(JSON_FIELD_RESULT);
 
         boolean isPublished = (boolean) result.getOrDefault(JSON_FIELD_PUBLISHED, false);
         if (!isPublished || forcePublish) {
@@ -155,7 +155,7 @@ public class MetabaseRestClient extends RestClient {
                         dataset, sessionCookie));
 
         RestResponse response = executeGet(String.format(PATH_PATTERN_GET_DATAPATH, dataset), sessionCookie, null);
-        JSONObject result = (JSONObject) response.getBody().get(JSON_FIELD_RESULT);
+        JSONObject result = (JSONObject) response.getBodyObject().get(JSON_FIELD_RESULT);
         boolean isPublished = (boolean) result.getOrDefault(JSON_FIELD_PUBLISHED, false);
 
         if (!isPublished || forcePublish) {
