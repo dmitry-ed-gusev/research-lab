@@ -51,7 +51,7 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /**
-     * Login to LuxMS BI server and set {@link LuxMSRestClient#identity}.
+     * Login to LuxMS BI server and set {@link LuxMSRestClient#authHeader}.
      * @throws RestException on request execution error
      */
     public void login() {
@@ -91,40 +91,18 @@ public class LuxMSRestClient extends RestClient {
     /** Lists system datasets (according to provileges). */
     public List<DataSet> listDatasets() {
         LOGGER.debug("LuxMSRestClient.listDatasets() is working.");
-
-        ClientResponse response = this.buildClient(LUXMS_DATASETS_PATH,
-                MediaType.APPLICATION_JSON_TYPE, null, this.authHeader)
-                .get(ClientResponse.class);
-
-        // get response entity (body) and status code
-        String entity = response.getEntity(String.class);
-        int status = response.getStatus();
-        LOGGER.info(String.format("Response status: [%s].", status));
-        LOGGER.debug(String.format("Response body:%n%s", entity));
-
-        // server returned error code
-        if (response.getClientResponseStatus().getFamily() != SUCCESSFUL) {
-            throw new RestException(null, response, "Not OK code returned!");
-        }
-
-        // parse response body
-        List<DataSet> result;
-        try {
-            JSONArray jsonArray = (JSONArray) new JSONParser().parse(entity);
-            result = new ArrayList<>();
-            jsonArray.forEach(json -> {
-                DataSet dataSet = LuxMSHelper.parseDataSet((JSONObject) json);
-                result.add(dataSet);
-            });
-
-        } catch (ParseException e) {
-            throw new RestException(null, response, "Cannot parse response body! " + e.toString());
-        }
-
+        // execute request
+        RestResponse response = this.executeGet(LUXMS_DATASETS_PATH, null, this.authHeader);
+        // parse response
+        List<DataSet> result = new ArrayList<>();
+        response.getBodyArray().forEach(json -> {
+            DataSet dataSet = LuxMSHelper.parseDataSet((JSONObject) json);
+            result.add(dataSet);
+        });
         return result;
     }
 
-    /** Create new dataset. */
+    /** Create new dataset. DataSet object with created dataset is returned (in case of success). */
     @SuppressWarnings("unchecked")
     public DataSet createDataset(String datasetTitle, String datasetDesc, boolean isVisible) {
         LOGGER.debug("LuxMSRestClient.createDataset() is working.");
@@ -134,21 +112,22 @@ public class LuxMSRestClient extends RestClient {
         body.put("title", datasetTitle);
         body.put("description", datasetDesc);
         body.put("is_visible", isVisible ? 1 : 0);
-
         // execute request
         RestResponse response = this.executePost(LUXMS_DATASETS_PATH, body, null, this.authHeader);
         // parse response and return object
         return LuxMSHelper.parseDataSet(response.getBodyObject());
     }
 
-    /***/
-    public void removeDataset(long id) {
+    /** Remove dataset by id, return id of removed dataset. */
+    // todo: catch error if dataset does't exit?
+    // todo: check if dataset exists before deletion?
+    public long removeDataset(long id) {
         LOGGER.debug("LuxMSRestClient.removeDataset() is working.");
-
+        // execute request
         RestResponse response = this.executeDelete(LUXMS_DATASETS_PATH + "/" + String.valueOf(id),
                 null, null, this.authHeader);
-
-        System.out.println("removed ===> " + response);
+        // get id of deleted dataset
+        return (long) response.getBodyArray().get(0);
     }
 
     /***/

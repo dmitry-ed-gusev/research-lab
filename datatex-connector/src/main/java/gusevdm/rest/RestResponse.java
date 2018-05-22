@@ -70,6 +70,7 @@ public class RestResponse {
         return "RestResponse {" +
                 "status="    + this.status +
                 ", bodyObject="    + this.bodyObject +
+                ", bodyArray=" + this.bodyArray +
                 ", cookies=" + this.cookie +
                 ", headers=" + this.headers +
                 '}';

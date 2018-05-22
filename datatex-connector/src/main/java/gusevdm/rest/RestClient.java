@@ -26,6 +26,8 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 // todo: move to utilities module
 // todo: migrate to latest Jersey Client version
 // todo: for Jersey update see: https://stackoverflow.com/questions/32042944/upgrade-from-jersey-client-1-9-to-jersey-client-2-8
+// todo: make methods public???
+
 public abstract class RestClient {
 
     // module logger
@@ -44,12 +46,12 @@ public abstract class RestClient {
      */
     protected abstract String getPath();
 
-    RestResponse executeGet(String resource) {
+    public RestResponse executeGet(String resource) {
         LOGGER.debug("RestClient.executeGet(String) is working.");
         return this.executeGet(resource, null, null);
     }
 
-    RestResponse executeGet(String resource, Cookie cookie, MultivaluedMap<String, String> headers) {
+    public RestResponse executeGet(String resource, Cookie cookie, MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.executeGet(String, Cookie) is working.");
         LOGGER.debug(String.format("GET request parameters:%n\tresource [%s],%n\tcookie [%s].", resource, cookie));
 
@@ -198,14 +200,6 @@ public abstract class RestClient {
             throw new RestException(request, response, "Not OK code returned!");
         }
 
-        // parse response body into JSON object
-        JSONObject body;
-        try {
-            body = (JSONObject) this.jsonParser.parse(entity);
-        } catch (ParseException e) {
-            throw new RestException(request, response, "Cannot parse response body! " + e.toString());
-        }
-
         // get response cookies
         Cookie cookie = response.getCookies().stream()
                 .findAny()
@@ -216,8 +210,23 @@ public abstract class RestClient {
         MultivaluedMap<String, String> headers = response.getHeaders();
         LOGGER.debug(String.format("Response headers:%n[%s]%n", headers));
 
+        // parse response body into JSON object
+        //JSONObject body;
+        try {
+            Object body = this.jsonParser.parse(entity);
+            if (body instanceof JSONObject) { // returned JSON object
+                return new RestResponse(status, (JSONObject) body, cookie, headers);
+            } else if (body instanceof JSONArray) { // returned JSON Array
+                return new RestResponse(status, (JSONArray) body, cookie, headers);
+            } else { // unknown object returned
+                throw new IllegalStateException(String.format("Returned unknown object type [%s]!", body));
+            }
+        } catch (ParseException e) {
+            throw new RestException(request, response, "Cannot parse response body! " + e.toString());
+        }
+
         // create RestResponse instance and return it
-        return new RestResponse(status, body, cookie, headers);
+        //return new RestResponse(status, body, cookie, headers);
     }
 
     /***/

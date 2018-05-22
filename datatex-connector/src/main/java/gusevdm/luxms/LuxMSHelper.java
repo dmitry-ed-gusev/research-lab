@@ -16,8 +16,7 @@ public final class LuxMSHelper {
 
     /***/
     public static DataSet parseDataSet(JSONObject json) {
-        LOGGER.debug("LuxMSHelper.parseDataSet() is working.");
-        LOGGER.debug(String.format("Parsing dataset from JSON [%s].", json));
+        LOGGER.debug(String.format("LuxMSHelper.parseDataSet() is working. Parsing dataset from JSON:%n\t[%s].", json));
 
         if (json == null) {
             throw new IllegalStateException("Received JSON object is NULL!");

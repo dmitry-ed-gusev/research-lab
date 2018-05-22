@@ -155,17 +155,15 @@ public class Main {
         LuxMSRestClient luxRest = new LuxMSRestClient();
         // login
         luxRest.login();
-
         // list datasets
         List<DataSet> datasets = luxRest.listDatasets();
         datasets.forEach(dataset -> LOGGER.debug(String.format("Dataset -> %s", dataset)));
-
         // create dataset
         //DataSet dataSet = luxRest.createDataset("my_dataset_zzz", "My New (!) Own set", true);
         //LOGGER.debug(String.format("Created dataset [%s].", dataSet));
-
         // remove dataset
-        luxRest.removeDataset(8);
+        long idRemoved = luxRest.removeDataset(17);
+        LOGGER.debug(String.format("Removed dataset #%s.", idRemoved));
     }
 
     //void setCsv2Abstract(CSV2Abstract csv2Abstract) {
@@ -195,22 +193,4 @@ public class Main {
         }
     }
 
-    /*
-    // Validate dataset name - check for illegal characters.
-    private void validateDatasetName(OptionSet optionSet) {
-        LOGGER.debug("Main.validateDatasetName() is working.");
-        String datasetName = optionSet.valueOf(this.dataset);
-        for (char c: datasetName.toCharArray()) {
-            if (!(isLowerCaseLatinLetter(c) || Character.isDigit(c) || c == '.' || c == '-')) {
-                String errorMessage = String.format("Illegal character [%s] in dataset name: %s.%n" +
-                        "Latin lower case letters, digits, periods and hyphens are allowed.", c, datasetName);
-                throw new IllegalArgumentException(errorMessage);
-            }
-        }
-    }
-
-    private static boolean isLowerCaseLatinLetter(char c) {
-        return c >= 'a' && c <= 'z';
-    }
-    */
 }
