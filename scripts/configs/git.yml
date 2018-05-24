@@ -62,9 +62,9 @@ repositories:
       build:  no
     keytruda-prototype:  # keytruda repository
       build:  no
-  enigma:  # Enigma team space
-    csv2assembly:
-      build: no
+  # enigma:  # Enigma team space
+    # csv2assembly: # I don't have access
+      # build: no
   svt:  # test automation tools
     dit-core:
       build:  yes
