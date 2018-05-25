@@ -281,7 +281,8 @@
             <properties>
                 <env>prod</env>
                 <prod.build.phase>package</prod.build.phase>
-                <prod.deploy.phase>install</prod.deploy.phase>
+                <!--<prod.deploy.phase>install</prod.deploy.phase>-->
+                <prod.deploy.phase>none</prod.deploy.phase>
             </properties>
             <!-- modules to build -->
             <modules>
@@ -290,8 +291,9 @@
                 <module>utilities</module>
                 <!--<module>bigdata</module>-->
                 <!--<module>j2ee</module>-->
-                <module>nlp</module>
-                <module>measurementor</module>
+                <!--<module>nlp</module>-->
+                <!--<module>measurementor</module>-->
+                <module>datatex-connector</module>
             </modules>
         </profile>
 
