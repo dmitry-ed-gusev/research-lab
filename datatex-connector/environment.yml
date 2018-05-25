@@ -1,18 +1,42 @@
-abstract_credentials:
-  river_url: http://localhost:1080
-  river_api_key: asdfghjkl
-  metabase_url: http://localhost:1090
-  metabase_user: metabaseusr
-  metabase_password: metabasepass
-  abstract_url: https://abs-host:1111
-  abstract_api_key: asdfghjkl
-parsekit_credentials:
-  parsekit_url: http://localhost
-  parsekit_user: user
-  parsekit_password: password
-
-luxms_environment:
+# LuxMS server environment (local, development)
+luxms_env_local:
   #lux_url:      http://192.168.0.178/api
   lux_url:      http://192.168.72.128/api
   lux_user:     admin
   lux_password: admin
+
+# LuxMS server environment (virtual, development/test/debug)
+luxms_env_virtual:
+  lux_url:      http://192.168.72.128/api
+  lux_user:     admin
+  lux_password: admin
+
+# LuxMS server environment (production)
+#luxms_env_prod:
+#  lux_url:      http://192.168.72.128/api
+#  lux_user:     admin
+#  lux_password: admin
+
+# DataTex environment (local, development)
+datatex_env_local:
+  db_host:   127.0.0.1
+  db_port:   1521
+  db_user:   user
+  db_pass:   pass
+  db_schema: schema
+
+# DataTex environment (virtual, development/test/debug)
+datatex_env_virtual:
+  db_host:   127.0.0.1
+  db_port:   1521
+  db_user:   user
+  db_pass:   pass
+  db_schema: NOW4
+
+# DataTex environment (production)
+#datatex_env_prod:
+#  db_host:   127.0.0.1
+#  db_port:   1521
+#  db_user:   user
+#  db_pass:   pass
+#  db_schema: schema

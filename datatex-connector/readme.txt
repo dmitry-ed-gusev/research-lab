@@ -11,4 +11,4 @@ DataTex Connector utility, version 0.1.0, 2018 (C) Larga
 
 Запуск утилиты осуществляется с помощью команды:
 
-    java -jar <utility-name>.jar [--help | [--listds/--listtables]]
+    java -jar <utility-name>.jar [--help | [--listds/--listtables/--env <suffix>]]

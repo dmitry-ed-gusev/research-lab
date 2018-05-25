@@ -37,3 +37,5 @@ htmlcov
 *.war
 # -- PAnalyzer app output directory
 panalyzer/
+# -- DataTex connector
+dtex-conn-deploy/
