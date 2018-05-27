@@ -54,9 +54,9 @@ public class RiverRestClient extends RestClient {
     private final Sleeper sleeper;
     private final String  csvFile;
     private final String  schemaFile;
-    private final String  hdfsURI;
-    private final String  path;
-    private final String  apiKey;
+    //private final String  hdfsURI;
+    //private final String  path;
+    //private final String  apiKey;
     private final long    timeoutMilliseconds;
     private final int     timeoutAttempts;
     private final RiverRestValidator validator = new RiverRestValidator();
@@ -72,11 +72,15 @@ public class RiverRestClient extends RestClient {
         this.schemaFile = schemaFile;
         this.sleeper    = sleeper;
 
-        this.hdfsURI             = environment.getKnoxHdfsURI();
-        this.path                = environment.getRiverUrl() + "/v2/collections/";
-        this.apiKey              = environment.getRiverApiKey();
-        this.timeoutMilliseconds = environment.getRiverTimeout(TimeUnit.MILLISECONDS);
-        this.timeoutAttempts     = environment.getRiverTimeoutAttempts();
+        //this.hdfsURI             = environment.getKnoxHdfsURI();
+        //this.path                = environment.getRiverUrl() + "/v2/collections/";
+        //this.apiKey              = environment.getRiverApiKey();
+
+        //this.timeoutMilliseconds = environment.getRiverTimeout(TimeUnit.MILLISECONDS);
+        //this.timeoutAttempts     = environment.getRiverTimeoutAttempts();
+        this.timeoutMilliseconds = 5000;
+        this.timeoutAttempts     = 10;
+
     }
 
     /**
@@ -184,13 +188,14 @@ public class RiverRestClient extends RestClient {
     protected WebResource.Builder buildClient(String resource, MediaType mediaType, Cookie cookie) {
         LOGGER.debug("RiverRestClient.buildClient() working.");
         WebResource.Builder builder = super.buildClient(resource, mediaType, cookie, null);
-        builder.header(HEADER_AUTHORIZATION, String.format(HEADER_PATTERN_AUTHORIZATION, apiKey));
+        //builder.header(HEADER_AUTHORIZATION, String.format(HEADER_PATTERN_AUTHORIZATION, apiKey));
         return builder;
     }
 
     @Override
     protected String getPath() {
-        return this.path;
+        //return this.path;
+        return null;
     }
 
     /**
@@ -237,9 +242,10 @@ public class RiverRestClient extends RestClient {
 
     private String buildCSVUrl() {
         LOGGER.debug("RiverRestClient.buildCSVUrl() working.");
-        String builtUrl = URI.create(hdfsURI + "/" + csvFile + OPERATION_OPEN).normalize().toString();
-        LOGGER.debug(String.format("Built CSV url: [%s].", builtUrl));
-        return builtUrl;
+        //String builtUrl = URI.create(hdfsURI + "/" + csvFile + OPERATION_OPEN).normalize().toString();
+        //LOGGER.debug(String.format("Built CSV url: [%s].", builtUrl));
+        //return builtUrl;
+        return null;
     }
 
     private String readDatasetState(String collectionId, String datasetId) {

@@ -6,8 +6,9 @@ import gusevdm.luxms.LuxMSRestClient;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-import joptsimple.OptionSpec;
 
+import joptsimple.OptionSpec;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
@@ -29,11 +30,12 @@ public class Main {
     private static final String ERROR_MSG         = "Error message: [%s].";
     private static final String HINT_MSG          =
             String.format("Try '%s --%s' for more information.", Main.class.getName(), OPTION_HELP.getName());
+    private static final String DEFAULT_CONFIG    = "environment.yml";
 
     //private final OptionSpec<String> dataset;
     //private final OptionSpec<String> csv;
     //private final OptionSpec<String> schema;
-    private final OptionSpec<String> environment;
+    private final OptionSpec<String> config;
     private final OptionParser       parser;
     private final Runtime            runtime;
     //private       CSV2Abstract       csv2Abstract = null;
@@ -68,13 +70,16 @@ public class Main {
                 .required();
         */
 
-        this.environment = parser.accepts(ENVIRONMENT.getName(), ENVIRONMENT.getDescription())
+        // not required options (optional)
+        parser.accepts(OPTION_LOG_LEVEL.getName(), OPTION_LOG_LEVEL.getDescription())                   // log level
+                .withRequiredArg().ofType(String.class);
+        this.config = parser.accepts(OPTION_CONFIG_FILE.getName(), OPTION_CONFIG_FILE.getDescription()) // config file
                 .withRequiredArg()
-                .ofType(String.class)
-                .required();
-
-        // not required options
-        parser.accepts(OPTION_LOG_LEVEL.getName(), OPTION_LOG_LEVEL.getDescription()).withRequiredArg().ofType(String.class);
+                .ofType(String.class);
+        parser.accepts(OPTION_LIST_DATASETS.getName(), OPTION_LIST_DATASETS.getDescription());          // list datasets
+        parser.accepts(OPTION_LIST_TABLES.getName(), OPTION_LIST_TABLES.getDescription());              // list DB tables
+        parser.accepts(OPTION_ENV_SUFFIX.getName(), OPTION_ENV_SUFFIX.getDescription())                 // env suffix
+                .withRequiredArg().ofType(String.class);
 
         // switches
         //parser.accepts(OPTION_REINDEX.getName(), OPTION_REINDEX.getDescription());
@@ -112,7 +117,7 @@ public class Main {
                 checkAndSetLogLevel(optionSet);
             }
 
-            //validateDatasetName(optionSet);
+            // run main module
             run(optionSet);
 
         } catch (OptionException e) {    // NOSONAR Sonar expects the exception to be either logged or rethrown
@@ -134,6 +139,7 @@ public class Main {
     /** Real run() - after all initializations. */
     void run(OptionSet optionSet) {
         LOGGER.debug("Main.run(OptionSet) is working.");
+
         /*
         if (this.csv2Abstract != null) {
             LOGGER.debug("Default Csv2Abstract module overridden. Using new module.");
@@ -148,7 +154,11 @@ public class Main {
         }
         */
 
-        String credentialsFile = optionSet.valueOf(environment);
+        String credentialsFile = optionSet.valueOf(this.config);
+        if (StringUtils.isBlank(credentialsFile)) {
+            credentialsFile = DEFAULT_CONFIG;
+        }
+        LOGGER.debug(String.format("Using config file [%s].", credentialsFile));
         Environment.load(credentialsFile);
 
         // client instance
@@ -170,14 +180,19 @@ public class Main {
     //    this.csv2Abstract = csv2Abstract;
     //}
 
+    /** Show help screen and exit. */
     private void showHelpAndExit() throws IOException {
+        LOGGER.debug("Main.showHelpAndExit() is working.");
         StringWriter stringWriter = new StringWriter();
         parser.printHelpOn(stringWriter);
         LOGGER.info(stringWriter.toString());
         runtime.exit(ExitStatus.OK.getValue());
-    }
+    } // end of showHelpAndExit()
 
+    /** Set requested logging level. */
     private void checkAndSetLogLevel(OptionSet optionSet) {
+        LOGGER.debug("Main.checkAndSetLogLevel() is working.");
+
         String strLevel = (String) optionSet.valueOf(OPTION_LOG_LEVEL.getName());
 
         if (strLevel != null && !strLevel.trim().isEmpty()) {
@@ -191,6 +206,6 @@ public class Main {
                 runtime.exit(ExitStatus.MISUSE.getValue());
             }
         }
-    }
+    } // end of checkAndSetLogLevel()
 
 }

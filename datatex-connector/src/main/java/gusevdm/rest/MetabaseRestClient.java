@@ -35,9 +35,9 @@ public class MetabaseRestClient extends RestClient {
     private static final String PATH_DATAPATH                      = "/apibase/datapath";
     private static final String PATH_PATTERN_GET_DATAPATH          = "/apibase/datapath?datapath=%s";
     private static final String PATH_PATTERN_GET_CHILDREN_DATAPATH = "/apibase/datapath/children?datapath=%s";
-    private final String path;
-    private final String user;
-    private final String password;
+    //private final String path;
+    //private final String user;
+    //private final String password;
 
     private Cookie sessionCookie;
 
@@ -47,9 +47,9 @@ public class MetabaseRestClient extends RestClient {
 
     MetabaseRestClient(Environment environment) {
         LOGGER.debug("MetabaseRestClient constructor() is working.");
-        this.path = environment.getMetabaseUrl();
-        this.user = environment.getMetabaseUser();
-        this.password = environment.getMetabasePassword();
+        //this.path = environment.getMetabaseUrl();
+        //this.user = environment.getMetabaseUser();
+        //this.password = environment.getMetabasePassword();
     }
 
     /**
@@ -60,8 +60,8 @@ public class MetabaseRestClient extends RestClient {
     public void login() {
         LOGGER.debug("MetabaseRestClient.login() is working.");
         JSONObject body = new JSONObject();
-        body.put("user",       user);
-        body.put("password",   password);
+        //body.put("user",       user);
+        //body.put("password",   password);
         body.put("rememberMe", "true");
         RestResponse response = this.executePost("/signin", body);
         sessionCookie = response.getCookie();
@@ -204,7 +204,8 @@ public class MetabaseRestClient extends RestClient {
 
     @Override
     protected String getPath() {
-        return path;
+        //return path;
+        return null;
     }
 
     @Override

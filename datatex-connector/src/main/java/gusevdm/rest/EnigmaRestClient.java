@@ -24,7 +24,7 @@ public class EnigmaRestClient extends RestClient {
 
     private static final String PATH_PATTERN_META     = "%s/v2/meta/%s";
     private static final String PATH_PATTERN_RESOURCE = "/%s";
-    private final String path;
+    //private final String path;
 
     public EnigmaRestClient() {
         this(Environment.getInstance());
@@ -32,7 +32,7 @@ public class EnigmaRestClient extends RestClient {
 
     EnigmaRestClient(Environment environment) {
         LOGGER.debug("EnigmaRestClient constructor() is working.");
-        this.path = String.format(PATH_PATTERN_META, environment.getAbstractUrl(), environment.getAbstractApiKey());
+        //this.path = String.format(PATH_PATTERN_META, environment.getAbstractUrl(), environment.getAbstractApiKey());
     }
 
     /**
@@ -64,6 +64,7 @@ public class EnigmaRestClient extends RestClient {
 
     @Override
     protected String getPath() {
-        return path;
+        //return path;
+        return null;
     }
 }

@@ -24,34 +24,47 @@ public class Environment {
     private   static final Pattern URL_INVALID_CHARS              = Pattern.compile("[\\x00-\\x1F]");
 
     // LuxMS BI environment properties
-    private static final String LUXMS_ENV_PROPERTY = "luxms_environment";
+    private static final String LUXMS_ENV_PROPERTY = "luxms_env";
     private static final String LUXMS_URL_PROPERTY = "lux_url";
     private static final String LUXMS_USER_PROPERTY = "lux_user";
     private static final String LUXMS_PASS_PROPERTY = "lux_password";
+    // DataTex DB environment properties
+    private static final String DATATEX_ENV_PROPERTY    = "datatex_env";
+    private static final String DATATEX_HOST_PROPERTY   = "db_host";
+    private static final String DATATEX_PORT_PROPERTY   = "db_port";
+    private static final String DATATEX_USER_PROPERTY   = "db_user";
+    private static final String DATATEX_PASS_PROPERTY   = "db_pass";
+    private static final String DATATEX_SCHEMA_PROPERTY = "db_schema";
+    // General properties
+    private static final String GENERAL_CSV_EXPORT_DIR = "csv_directory";
 
-    private static final String ABSTRACT_CREDENTIALS_PROPERTY = "abstract_credentials";
 
-    private   static final String ABSTRACT_URL_PROPERTY           = "abstract_url";
-    private   static final String ABSTRACT_API_KEY_PROPERTY       = "abstract_api_key";
-    private   static final String KNOX_HDFS_URI_PROPERTY          = "knox.hdfs.uri";
+    //private static final String ABSTRACT_CREDENTIALS_PROPERTY = "abstract_credentials";
+    //private   static final String ABSTRACT_URL_PROPERTY           = "abstract_url";
+    //private   static final String ABSTRACT_API_KEY_PROPERTY       = "abstract_api_key";
+    //private   static final String KNOX_HDFS_URI_PROPERTY          = "knox.hdfs.uri";
+    //private   static final String METABASE_URL_PROPERTY           = "metabase_url";
+    //private   static final String METABASE_USER_PROPERTY          = "metabase_user";
+    //private   static final String METABASE_PASSWORD_PROPERTY      = "metabase_password";
+    //private   static final String RIVER_URL_PROPERTY              = "river_url";
+    //private   static final String RIVER_API_KEY_PROPERTY          = "river_api_key";
 
-    private   static final String METABASE_URL_PROPERTY           = "metabase_url";
-    private   static final String METABASE_USER_PROPERTY          = "metabase_user";
-    private   static final String METABASE_PASSWORD_PROPERTY      = "metabase_password";
-
-    private   static final String RIVER_URL_PROPERTY              = "river_url";
-    private   static final String RIVER_API_KEY_PROPERTY          = "river_api_key";
-
-    static final String RIVER_TIMEOUT_SECONDS_PROPERTY  = "river.timeout.seconds";
-    static final String RIVER_TIMEOUT_ATTEMPTS_PROPERTY = "river.timeout.attempts";
-
-    static final long   DEFAULT_RIVER_TIMEOUT_SECONDS   = 5L;
-    static final int    DEFAULT_RIVER_TIMEOUT_ATTEMPTS  = 10;
+    //static final String RIVER_TIMEOUT_SECONDS_PROPERTY  = "river.timeout.seconds";
+    //static final String RIVER_TIMEOUT_ATTEMPTS_PROPERTY = "river.timeout.attempts";
+    //static final long   DEFAULT_RIVER_TIMEOUT_SECONDS   = 5L;
+    //static final int    DEFAULT_RIVER_TIMEOUT_ATTEMPTS  = 10;
 
     private   static final List<String> REQUIRED_PROPERTIES = Arrays.asList(
+            // LuxMS required properties
             LUXMS_URL_PROPERTY,
             LUXMS_USER_PROPERTY,
-            LUXMS_PASS_PROPERTY
+            LUXMS_PASS_PROPERTY,
+            // DataTex required properties
+            DATATEX_HOST_PROPERTY,
+            DATATEX_PORT_PROPERTY,
+            DATATEX_USER_PROPERTY,
+            DATATEX_PASS_PROPERTY,
+            DATATEX_SCHEMA_PROPERTY
 
             //ABSTRACT_URL_PROPERTY,
             //ABSTRACT_API_KEY_PROPERTY,
@@ -66,8 +79,7 @@ public class Environment {
     private Map<String, String> credentials = null;
 
     // For unit tests only. Use getInstance() instead.
-    Environment() {
-    }
+    Environment() {}
 
     private Environment(Map<String, String> credentials) {
         this.credentials = credentials;
@@ -85,6 +97,7 @@ public class Environment {
         return credentials.get(LUXMS_PASS_PROPERTY);
     }
 
+    /*
     public String getAbstractUrl() {
         return credentials.get(ABSTRACT_URL_PROPERTY);
     }
@@ -116,12 +129,14 @@ public class Environment {
     public String getRiverApiKey() {
         return credentials.get(RIVER_API_KEY_PROPERTY);
     }
+    */
 
     /**
      * Get River timeout in desired time unit. If invalid value is set, the default (5 seconds) is returned.
      * @param timeUnit the {@link TimeUnit} to convert the timeout to
      * @return the converted timeout
      */
+    /*
     public long getRiverTimeout(TimeUnit timeUnit) {
         LOGGER.debug("Environment.getRiverTimeout() is working.");
 
@@ -136,11 +151,13 @@ public class Environment {
         }
         return timeUnit.convert(timeout, TimeUnit.SECONDS);
     }
+    */
 
     /**
      * Get River timeout attempts. If invalid value is set, the default (10) is returned.
      * @return the number of attempts of waiting for a state of a River dataset
      */
+    /*
     public int getRiverTimeoutAttempts() {
         LOGGER.debug("Environment.getRiverTimeoutAttempts() is working.");
 
@@ -155,6 +172,7 @@ public class Environment {
         }
         return attempts;
     }
+    */
 
     /**
      * Get instance of {@link Environment} class. Return the same instance on each call. Validate the

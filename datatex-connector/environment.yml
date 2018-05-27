@@ -40,3 +40,8 @@ datatex_env_virtual:
 #  db_user:   user
 #  db_pass:   pass
 #  db_schema: schema
+
+# general options
+general_env:
+  # directory for export CSV files (could be absolute/relative)
+  csv_directory: csv_export
