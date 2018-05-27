@@ -11,6 +11,8 @@ Version 0.1.0
     todo: --listtables     - вывести в консоль список таблиц в указанной схеме DataTex DBMS
     todo: --env <suffix>   - суффикс конфигурации окружения в файле environment.yml;
                        примеры: luxms_env<suffix>, datatex_env<suffix>
+    todo: --config <config>   - альтернативный конфиг файл, если не указан - конфиг по
+                        умолчанию будет использован (environment.yml)
 
 ---------------------------------------------------------------------------
 Version 0.2.0
