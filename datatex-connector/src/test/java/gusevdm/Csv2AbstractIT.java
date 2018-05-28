@@ -243,7 +243,7 @@ public class Csv2AbstractIT {
         };
 
         // prepare dependencies (river rest client and csv2abstarct module)
-        Environment.load(getClass().getClassLoader().getResource(ENIGMA_CREDS_FILE).getPath());
+        //Environment.load(getClass().getClassLoader().getResource(ENIGMA_CREDS_FILE).getPath());
         RiverRestClientChild riverClient = new RiverRestClientChild(CSV_FILE, SCHEMA_FILE);
         CSV2Abstract csv2Abstract        = new CSV2Abstract(ABS_DATASET_NAME, false, new MetabaseRestClient(), riverClient);
         // create Main module for csv2abstract tool

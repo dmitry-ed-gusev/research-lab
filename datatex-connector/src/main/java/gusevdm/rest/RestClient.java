@@ -33,6 +33,7 @@ public abstract class RestClient {
     // module logger
     private static final Logger LOGGER = LoggerFactory.getLogger(RestClient.class);
     // internal jersey client instance
+    // todo: timeout for REST client (Jersey)??? for it's too long! How to set?
     private final Client     jerseyClient = Client.create();
     // internal json parser instance
     private final JSONParser jsonParser = new JSONParser();

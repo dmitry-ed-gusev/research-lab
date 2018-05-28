@@ -29,13 +29,14 @@ public class Main {
 
     private static final String ERROR_MSG         = "Error message: [%s].";
     private static final String HINT_MSG          =
-            String.format("Try '%s --%s' for more information.", Main.class.getName(), OPTION_HELP.getName());
+            String.format("Try '--%s' option for more information.", OPTION_HELP.getName());
     private static final String DEFAULT_CONFIG    = "environment.yml";
 
     //private final OptionSpec<String> dataset;
     //private final OptionSpec<String> csv;
     //private final OptionSpec<String> schema;
     private final OptionSpec<String> config;
+    private final OptionSpec<String> suffix;
     private final OptionParser       parser;
     private final Runtime            runtime;
     //private       CSV2Abstract       csv2Abstract = null;
@@ -74,11 +75,10 @@ public class Main {
         parser.accepts(OPTION_LOG_LEVEL.getName(), OPTION_LOG_LEVEL.getDescription())                   // log level
                 .withRequiredArg().ofType(String.class);
         this.config = parser.accepts(OPTION_CONFIG_FILE.getName(), OPTION_CONFIG_FILE.getDescription()) // config file
-                .withRequiredArg()
-                .ofType(String.class);
+                .withRequiredArg().ofType(String.class);
         parser.accepts(OPTION_LIST_DATASETS.getName(), OPTION_LIST_DATASETS.getDescription());          // list datasets
         parser.accepts(OPTION_LIST_TABLES.getName(), OPTION_LIST_TABLES.getDescription());              // list DB tables
-        parser.accepts(OPTION_ENV_SUFFIX.getName(), OPTION_ENV_SUFFIX.getDescription())                 // env suffix
+        this.suffix = parser.accepts(OPTION_ENV_SUFFIX.getName(), OPTION_ENV_SUFFIX.getDescription())   // env suffix
                 .withRequiredArg().ofType(String.class);
 
         // switches
@@ -99,7 +99,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        LOGGER.info("CSV2Abstract tool starting.");
+        LOGGER.info("DataTex connector is starting...");
         new Main().run(args);
     }
 
@@ -109,18 +109,18 @@ public class Main {
         try {
             OptionSet optionSet = this.parser.parse(args);
 
-            if (optionSet.has(OPTION_HELP.getName())) {
+            if (optionSet.has(OPTION_HELP.getName())) { // show help and exit
                 showHelpAndExit();
             }
 
-            if (optionSet.has(OPTION_LOG_LEVEL.getName())) {
+            if (optionSet.has(OPTION_LOG_LEVEL.getName())) { // new log level specified
                 checkAndSetLogLevel(optionSet);
             }
 
             // run main module
             run(optionSet);
 
-        } catch (OptionException e) {    // NOSONAR Sonar expects the exception to be either logged or rethrown
+        } catch (OptionException e) { // invalid/unexpected option(s) provided (misuse case)
             LOGGER.error(String.format(ERROR_MSG, e.getMessage()), e);
             LOGGER.info(HINT_MSG);
             runtime.exit(ExitStatus.MISUSE.getValue());
@@ -140,26 +140,13 @@ public class Main {
     void run(OptionSet optionSet) {
         LOGGER.debug("Main.run(OptionSet) is working.");
 
-        /*
-        if (this.csv2Abstract != null) {
-            LOGGER.debug("Default Csv2Abstract module overridden. Using new module.");
-            this.csv2Abstract.run();
-        } else {
-            LOGGER.debug("Using default Csv2Abstarct implementation.");
-            String credentialsFile = optionSet.valueOf(environment);
-            Environment.load(credentialsFile);
-            CSV2Abstract csv2AbstractTool = new CSV2Abstract(optionSet.valueOf(dataset), optionSet.valueOf(csv),
-                    optionSet.valueOf(schema), optionSet.has(OPTION_REINDEX.getName()));
-            csv2AbstractTool.run();
-        }
-        */
-
+        // select config file (default or provided via cmd line option)
         String credentialsFile = optionSet.valueOf(this.config);
         if (StringUtils.isBlank(credentialsFile)) {
             credentialsFile = DEFAULT_CONFIG;
         }
         LOGGER.debug(String.format("Using config file [%s].", credentialsFile));
-        Environment.load(credentialsFile);
+        Environment.load(credentialsFile, optionSet.valueOf(this.suffix));
 
         // client instance
         LuxMSRestClient luxRest = new LuxMSRestClient();

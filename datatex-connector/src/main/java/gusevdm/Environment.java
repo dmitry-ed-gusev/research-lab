@@ -1,5 +1,6 @@
 package gusevdm;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -7,9 +8,7 @@ import org.yaml.snakeyaml.Yaml;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -24,10 +23,10 @@ public class Environment {
     private   static final Pattern URL_INVALID_CHARS              = Pattern.compile("[\\x00-\\x1F]");
 
     // LuxMS BI environment properties
-    private static final String LUXMS_ENV_PROPERTY = "luxms_env";
-    private static final String LUXMS_URL_PROPERTY = "lux_url";
-    private static final String LUXMS_USER_PROPERTY = "lux_user";
-    private static final String LUXMS_PASS_PROPERTY = "lux_password";
+    private static final String LUXMS_ENV_PROPERTY      = "luxms_env";
+    private static final String LUXMS_URL_PROPERTY      = "lux_url";
+    private static final String LUXMS_USER_PROPERTY     = "lux_user";
+    private static final String LUXMS_PASS_PROPERTY     = "lux_password";
     // DataTex DB environment properties
     private static final String DATATEX_ENV_PROPERTY    = "datatex_env";
     private static final String DATATEX_HOST_PROPERTY   = "db_host";
@@ -36,7 +35,8 @@ public class Environment {
     private static final String DATATEX_PASS_PROPERTY   = "db_pass";
     private static final String DATATEX_SCHEMA_PROPERTY = "db_schema";
     // General properties
-    private static final String GENERAL_CSV_EXPORT_DIR = "csv_directory";
+    private static final String GENERAL_ENV_PROPERTY    = "general_env";
+    private static final String GENERAL_CSV_EXPORT_DIR  = "csv_directory";
 
 
     //private static final String ABSTRACT_CREDENTIALS_PROPERTY = "abstract_credentials";
@@ -54,6 +54,14 @@ public class Environment {
     //static final long   DEFAULT_RIVER_TIMEOUT_SECONDS   = 5L;
     //static final int    DEFAULT_RIVER_TIMEOUT_ATTEMPTS  = 10;
 
+    // list of environments
+    private static final List<String> ENVIRONMENTS = new ArrayList<String>() {{
+        add(LUXMS_ENV_PROPERTY);
+        add(DATATEX_ENV_PROPERTY);
+        add(GENERAL_ENV_PROPERTY);
+    }};
+
+    // list of all required properties
     private   static final List<String> REQUIRED_PROPERTIES = Arrays.asList(
             // LuxMS required properties
             LUXMS_URL_PROPERTY,
@@ -64,7 +72,9 @@ public class Environment {
             DATATEX_PORT_PROPERTY,
             DATATEX_USER_PROPERTY,
             DATATEX_PASS_PROPERTY,
-            DATATEX_SCHEMA_PROPERTY
+            DATATEX_SCHEMA_PROPERTY,
+            // general required properties
+            GENERAL_CSV_EXPORT_DIR
 
             //ABSTRACT_URL_PROPERTY,
             //ABSTRACT_API_KEY_PROPERTY,
@@ -197,20 +207,38 @@ public class Environment {
      * @throws IllegalArgumentException if environment is not set up correctly
      */
     @SuppressWarnings("unchecked")
-    static void load(String credentialsFile) {
+    static void load(String credentialsFile, String suffix) {
         LOGGER.debug("Environment.load(String credentialsFile) is working.");
         //Load credentials file
         Yaml yaml = new Yaml();
         try (FileInputStream in = new FileInputStream(credentialsFile)) {
-            // load environment properties
+
+            // load the whole file
             Map<String, Object> credentials = (Map<String, Object>) yaml.load(in);
-            Map<String, String> luxmsEnv = (Map<String, String>) credentials.get(LUXMS_ENV_PROPERTY);
-            validateEnvironment(luxmsEnv);
+            // calculate suffix
+            String localSuffix = StringUtils.isBlank(suffix) ? "" : suffix;
+
+            // general environment
+            Map<String, String> environments = new HashMap<>();
+            Map<String, String> tmpEnv; // tmp environment
+            for (String environment : ENVIRONMENTS) {
+                tmpEnv = (Map<String, String>) credentials.get(environment + localSuffix);
+                if (tmpEnv == null || tmpEnv.isEmpty()) {
+                    throw new IllegalStateException(String.format("Can't load environment [%s]!", environment + localSuffix));
+                }
+                // merge environment with others
+                // todo: what if properties with same name in different environments?
+                environments.putAll(tmpEnv);
+            }
+
+            // validate merged environment
+            validateEnvironment(environments);
+
             // initialize Environment instance
-            instance = new Environment(luxmsEnv); // NOSONAR: Sonar asks to synchronize the instance,
+            instance = new Environment(environments); // NOSONAR: Sonar asks to synchronize the instance,
             // but this class is intentionally not thread safe.
         } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid credentials file", e);
+            throw new IllegalArgumentException("Invalid configuration file!", e);
         }
     }
 
@@ -223,7 +251,7 @@ public class Environment {
 
         // check presence of all required properties
         for (String property : REQUIRED_PROPERTIES) {
-            validateProperty(property, credentials.getOrDefault(property, null));
+            validateProperty(property, String.valueOf(credentials.getOrDefault(property, null)));
         }
 
         //validateProperty(KNOX_HDFS_URI_PROPERTY, System.getProperty(KNOX_HDFS_URI_PROPERTY));
