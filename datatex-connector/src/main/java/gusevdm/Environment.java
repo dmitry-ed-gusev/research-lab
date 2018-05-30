@@ -238,7 +238,7 @@ public class Environment {
             instance = new Environment(environments); // NOSONAR: Sonar asks to synchronize the instance,
             // but this class is intentionally not thread safe.
         } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid configuration file!", e);
+            throw new IllegalArgumentException("Invalid configuration file", e);
         }
     }
 

@@ -1,5 +1,6 @@
 package gusevdm;
 
+import gusevdm.datatexdb.DataTexDBClient;
 import gusevdm.helpers.ExitStatus;
 import gusevdm.luxms.DataSet;
 import gusevdm.luxms.LuxMSRestClient;
@@ -148,19 +149,35 @@ public class Main {
         LOGGER.debug(String.format("Using config file [%s].", credentialsFile));
         Environment.load(credentialsFile, optionSet.valueOf(this.suffix));
 
-        // client instance
+        // LuxMS REST client instance
         LuxMSRestClient luxRest = new LuxMSRestClient();
-        // login
-        luxRest.login();
-        // list datasets
-        List<DataSet> datasets = luxRest.listDatasets();
-        datasets.forEach(dataset -> LOGGER.debug(String.format("Dataset -> %s", dataset)));
+
+        if (optionSet.has(OPTION_LIST_DATASETS.getName())) { // list datasets in LuxMS instance
+            LOGGER.debug("Listing datasets in LuxMS BI.");
+            luxRest.login(); // login to server and save api key
+            // list datasets
+            List<DataSet> datasets = luxRest.listDatasets();
+            StringBuilder datasetsList = new StringBuilder();
+            datasets.forEach(dataset -> datasetsList.append(String.format("%s%n", dataset)));
+            LOGGER.info(datasetsList.toString());
+        }
+
         // create dataset
         //DataSet dataSet = luxRest.createDataset("my_dataset_zzz", "My New (!) Own set", true);
         //LOGGER.debug(String.format("Created dataset [%s].", dataSet));
         // remove dataset
-        long idRemoved = luxRest.removeDataset(17);
-        LOGGER.debug(String.format("Removed dataset #%s.", idRemoved));
+        //long idRemoved = luxRest.removeDataset(17);
+        //LOGGER.debug(String.format("Removed dataset #%s.", idRemoved));
+
+        // DataTex DB Client instance
+        DataTexDBClient dbClient = new DataTexDBClient();
+
+        if (optionSet.has(OPTION_LIST_TABLES.getName())) { // list all tables in given schema in DataTex DB
+            LOGGER.debug("Listing all tables in DataTex DB in a given schema.");
+
+            LOGGER.info(dbClient.getTablesList());
+        }
+
     }
 
     //void setCsv2Abstract(CSV2Abstract csv2Abstract) {

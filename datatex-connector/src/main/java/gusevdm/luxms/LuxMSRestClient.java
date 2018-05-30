@@ -54,6 +54,7 @@ public class LuxMSRestClient extends RestClient {
      * Login to LuxMS BI server and set {@link LuxMSRestClient#authHeader}.
      * @throws RestException on request execution error
      */
+    // todo: take a look at [social networks] module - save api key and reuse it
     public void login() {
         LOGGER.debug("LuxMSRestClient.login() is working.");
 
