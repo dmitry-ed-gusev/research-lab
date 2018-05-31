@@ -107,6 +107,13 @@ public class Environment {
         return credentials.get(LUXMS_PASS_PROPERTY);
     }
 
+    // todo: !!!
+    /*
+    public String getDataTex() {
+
+    }
+    */
+
     /*
     public String getAbstractUrl() {
         return credentials.get(ABSTRACT_URL_PROPERTY);
