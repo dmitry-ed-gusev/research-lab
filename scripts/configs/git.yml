@@ -26,15 +26,15 @@ repositories:
     mantis:
       build: no
     mantis11:
-      build: yes
+      build: no
     ingest-script-generator:
-      build:  yes
+      build:  no
     sqoop-msd:
       build:  no
     csv2abstract:
-      build: yes
+      build: no
     csv2hive:
-      build: yes
+      build: no
   man:  # Mantis
     mantis-bds:
       build: no
@@ -43,7 +43,7 @@ repositories:
     mantis-ops:
       build: no
     mantis-systems:
-      build: yes
+      build: no
     mantis-teradata:
       build: no
     mantis-udi:
@@ -53,11 +53,11 @@ repositories:
     mantis-model:
       build: no
     mantis-model-generator:
-      build: yes
+      build: no
     mantis-hadoop-clients:
-      build:  yes
+      build:  no
     mantis-hive-rest-service:
-      build:  yes
+      build:  no
     mantis-test:
       build:  no
     keytruda-prototype:  # keytruda repository
