@@ -147,6 +147,13 @@
             <version>${commons.lang3.version}</version>
         </dependency>
 
+        <!-- https://stackoverflow.com/questions/1074869/find-oracle-jdbc-driver-in-maven-repository -->
+        <dependency>
+            <groupId>com.github.noraui</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>12.1.0.2</version>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
