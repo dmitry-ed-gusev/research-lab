@@ -114,7 +114,7 @@ public class Environment {
     }
 
     public String getDataTexPort() {
-        return credentials.get(DATATEX_PORT_PROPERTY);
+        return String.valueOf(credentials.get(DATATEX_PORT_PROPERTY));
     }
 
     public String getDataTexUser() {

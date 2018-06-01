@@ -43,8 +43,9 @@ public class DataTexDBClient {
     public String getTablesList() throws SQLException {
         LOGGER.debug("DataTexClient.getTablesList() is working.");
 
-        String query = "";
-
+        String query = String.format("SELECT DISTINCT OWNER, OBJECT_NAME FROM ALL_OBJECTS " +
+                "WHERE OBJECT_TYPE = 'TABLE' AND OWNER = '%s' ORDER BY OBJECT_NAME", this.dbSchema, this.dbSchema);
+        LOGGER.debug(String.format("Generated SQL query [%s].", query));
         // connect to DBMS
         Connection conn = this.connect();
         // statement and result set (execute query)
@@ -57,7 +58,7 @@ public class DataTexDBClient {
             LOGGER.debug("Data found, parsing...");
             StringBuilder builder = new StringBuilder();
             do {
-                builder.append(rs.getString(1)).append("%n");
+                builder.append(rs.getString(2)).append("\n");
             } while(rs.next());
             tablesList = builder.toString();
 

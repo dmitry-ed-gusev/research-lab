@@ -7,9 +7,9 @@ luxms_env_local:
 
 # LuxMS server environment (virtual, development/test/debug)
 luxms_env_virtual:
-  lux_url:      http://192.168.72.128/api
+  lux_url:      http://10.61.1.51/api
   lux_user:     admin
-  lux_password: admin
+  lux_password: qweASD
 
 # LuxMS server environment (production)
 #luxms_env_prod:
@@ -30,7 +30,7 @@ datatex_env_virtual:
   db_host:   10.61.60.21
   db_port:   1521
   db_user:   nowbfg
-  db_pass:   ???
+  db_pass:   nowbfg
   db_schema: NOW4
   db_sid:    ORADATA
 
