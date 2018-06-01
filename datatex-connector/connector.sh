@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 # =============================================================================
 #   Script for executing data connector utility. With hardcoded cmd line
