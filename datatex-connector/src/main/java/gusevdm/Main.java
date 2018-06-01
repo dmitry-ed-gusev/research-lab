@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.util.List;
 
 import static com.sun.org.apache.xalan.internal.xsltc.dom.CollatorFactoryBase.DEFAULT_LOCALE;
@@ -175,7 +176,12 @@ public class Main {
         if (optionSet.has(OPTION_LIST_TABLES.getName())) { // list all tables in given schema in DataTex DB
             LOGGER.debug("Listing all tables in DataTex DB in a given schema.");
 
-            LOGGER.info(dbClient.getTablesList());
+            try {
+                LOGGER.info(dbClient.getTablesList());
+            } catch (SQLException e) {
+                LOGGER.error("Can't get list of tables from DataTex DB!", e);
+            }
+
         }
 
     }

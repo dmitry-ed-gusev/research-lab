@@ -148,10 +148,18 @@
         </dependency>
 
         <!-- https://stackoverflow.com/questions/1074869/find-oracle-jdbc-driver-in-maven-repository -->
+        <!--
         <dependency>
             <groupId>com.github.noraui</groupId>
             <artifactId>ojdbc7</artifactId>
             <version>12.1.0.2</version>
+        </dependency>
+        -->
+        <!-- todo: old driver version, probably need to be replaced... -->
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0.3</version>
         </dependency>
 
         <!-- Test dependencies -->

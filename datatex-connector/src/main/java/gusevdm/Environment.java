@@ -34,6 +34,7 @@ public class Environment {
     private static final String DATATEX_USER_PROPERTY   = "db_user";
     private static final String DATATEX_PASS_PROPERTY   = "db_pass";
     private static final String DATATEX_SCHEMA_PROPERTY = "db_schema";
+    private static final String DATATEX_SID_PROPERTY    = "db_sid";
     // General properties
     private static final String GENERAL_ENV_PROPERTY    = "general_env";
     private static final String GENERAL_CSV_EXPORT_DIR  = "csv_directory";
@@ -73,6 +74,7 @@ public class Environment {
             DATATEX_USER_PROPERTY,
             DATATEX_PASS_PROPERTY,
             DATATEX_SCHEMA_PROPERTY,
+            DATATEX_SID_PROPERTY,
             // general required properties
             GENERAL_CSV_EXPORT_DIR
 
@@ -107,12 +109,29 @@ public class Environment {
         return credentials.get(LUXMS_PASS_PROPERTY);
     }
 
-    // todo: !!!
-    /*
-    public String getDataTex() {
-
+    public String getDataTexHost() {
+        return credentials.get(DATATEX_HOST_PROPERTY);
     }
-    */
+
+    public String getDataTexPort() {
+        return credentials.get(DATATEX_PORT_PROPERTY);
+    }
+
+    public String getDataTexUser() {
+        return credentials.get(DATATEX_USER_PROPERTY);
+    }
+
+    public String getDataTexPass() {
+        return credentials.get(DATATEX_PASS_PROPERTY);
+    }
+
+    public String getDataTexSchema() {
+        return credentials.get(DATATEX_SCHEMA_PROPERTY);
+    }
+
+    public String getDataTexSID() {
+        return credentials.get(DATATEX_SID_PROPERTY);
+    }
 
     /*
     public String getAbstractUrl() {

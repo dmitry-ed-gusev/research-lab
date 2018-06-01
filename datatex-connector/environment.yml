@@ -27,11 +27,12 @@ datatex_env_local:
 
 # DataTex environment (virtual, development/test/debug)
 datatex_env_virtual:
-  db_host:   127.0.0.1
+  db_host:   10.61.60.21
   db_port:   1521
-  db_user:   user
-  db_pass:   pass
+  db_user:   nowbfg
+  db_pass:   ???
   db_schema: NOW4
+  db_sid:    ORADATA
 
 # DataTex environment (production)
 #datatex_env_prod:
