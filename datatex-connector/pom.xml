@@ -82,6 +82,7 @@
                             <fileset dir="${basedir}" includes="versions.txt"/>
                             <fileset dir="${basedir}" includes="readme.txt"/>
                             <fileset dir="${basedir}" includes="environment.yml"/>
+                            <fileset dir="${basedir}" includes="connector.sh" />
                         </copy>
                     </tasks>
                 </configuration>
