@@ -1,13 +1,9 @@
 package gusevdm;
 
-import gusevdm.datatexdb.DataTexDBClient;
 import gusevdm.helpers.ExitStatus;
-import gusevdm.luxms.DataSet;
-import gusevdm.luxms.LuxMSRestClient;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-
 import joptsimple.OptionSpec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
@@ -17,8 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.sql.SQLException;
-import java.util.List;
 
 import static com.sun.org.apache.xalan.internal.xsltc.dom.CollatorFactoryBase.DEFAULT_LOCALE;
 import static gusevdm.helpers.CommandLineOption.*;
@@ -29,20 +23,16 @@ public class Main {
 
     private static final Logger LOGGER            = LoggerFactory.getLogger(Main.class);
 
+    // some console messages
     private static final String ERROR_MSG         = "Error message: [%s].";
-    private static final String HINT_MSG          =
-            String.format("Try '--%s' option for more information.", OPTION_HELP.getName());
+    private static final String HINT_MSG          = String.format("Try '--%s' option for help.", OPTION_HELP.getName());
     private static final String VERSION_MSG       = "DataTex Connector utility, version 0.2.0, 2018 (C) Larga";
     private static final String DEFAULT_CONFIG    = "environment.yml";
-
-    //private final OptionSpec<String> dataset;
-    //private final OptionSpec<String> csv;
-    //private final OptionSpec<String> schema;
+    // values for this module (config, suffix, parser, etc...)
     private final OptionSpec<String> config;
     private final OptionSpec<String> suffix;
     private final OptionParser       parser;
     private final Runtime            runtime;
-    //private       CSV2Abstract       csv2Abstract = null;
 
     private Main() {
         this(new OptionParser(), Runtime.getRuntime());
@@ -54,27 +44,10 @@ public class Main {
 
         this.parser  = parser;
         this.runtime = runtime;
-        // use POSIX correct syntax for cmd line parameters
-        parser.posixlyCorrect(true);
-        // setup option for help
-        parser.accepts(OPTION_HELP.getName(), OPTION_HELP.getDescription()).forHelp();
+        parser.posixlyCorrect(true); // use POSIX correct syntax for cmd line parameters
+        parser.accepts(OPTION_HELP.getName(), OPTION_HELP.getDescription()).forHelp(); // setup option for help
 
-        /*
-        this.dataset = parser.accepts(OPTION_DATASET.getName(), OPTION_DATASET.getDescription())
-                .withRequiredArg()
-                .ofType(String.class)
-                .required();
-        this.csv = parser.accepts(OPTION_CSV.getName(), OPTION_CSV.getDescription())
-                .withRequiredArg()
-                .ofType(String.class)
-                .required();
-        this.schema = parser.accepts(OPTION_SCHEMA.getName(), OPTION_SCHEMA.getDescription())
-                .withRequiredArg()
-                .ofType(String.class)
-                .required();
-        */
-
-        // not required options (optional)
+        // not required options (optional). for required options just add .required() to the end
         parser.accepts(OPTION_LOG_LEVEL.getName(), OPTION_LOG_LEVEL.getDescription())                   // log level
                 .withRequiredArg().ofType(String.class);
         this.config = parser.accepts(OPTION_CONFIG_FILE.getName(), OPTION_CONFIG_FILE.getDescription()) // config file
@@ -83,9 +56,10 @@ public class Main {
         parser.accepts(OPTION_LIST_TABLES.getName(), OPTION_LIST_TABLES.getDescription());              // list DB tables
         this.suffix = parser.accepts(OPTION_ENV_SUFFIX.getName(), OPTION_ENV_SUFFIX.getDescription())   // env suffix
                 .withRequiredArg().ofType(String.class);
-
-        // switches
-        //parser.accepts(OPTION_REINDEX.getName(), OPTION_REINDEX.getDescription());
+        parser.accepts(OPTION_DELETE_DATASET.getName(), OPTION_DELETE_DATASET.getDescription())         // delete dataset
+                .withRequiredArg().ofType(Long.class);
+        parser.accepts(OPTION_CREATE_DATASET.getName(), OPTION_CREATE_DATASET.getDescription())         // create dataset
+                .withRequiredArg().ofType(String.class).withValuesSeparatedBy(",");
     }
 
 
@@ -117,7 +91,6 @@ public class Main {
             }
 
             if (optionSet.has(OPTION_LOG_LEVEL.getName())) { // new log level specified
-                LOGGER.info("!!!");
                 checkAndSetLogLevel(optionSet);
             }
 
@@ -149,49 +122,14 @@ public class Main {
         if (StringUtils.isBlank(credentialsFile)) {
             credentialsFile = DEFAULT_CONFIG;
         }
+        // load environment for config
         LOGGER.debug(String.format("Using config file [%s].", credentialsFile));
         Environment.load(credentialsFile, optionSet.valueOf(this.suffix));
 
-        // todo: move working logic to ConnectorEngine
-        // LuxMS REST client instance
-        LuxMSRestClient luxRest = new LuxMSRestClient();
-
-        if (optionSet.has(OPTION_LIST_DATASETS.getName())) { // list datasets in LuxMS instance
-            LOGGER.debug("Listing datasets in LuxMS BI.");
-            luxRest.login(); // login to server and save api key
-            // list datasets
-            List<DataSet> datasets = luxRest.listDatasets();
-            StringBuilder datasetsList = new StringBuilder();
-            datasets.forEach(dataset -> datasetsList.append(String.format("%s%n", dataset)));
-            LOGGER.info(datasetsList.toString());
-        }
-
-        // create dataset
-        //DataSet dataSet = luxRest.createDataset("my_dataset_zzz", "My New (!) Own set", true);
-        //LOGGER.debug(String.format("Created dataset [%s].", dataSet));
-        // remove dataset
-        //long idRemoved = luxRest.removeDataset(17);
-        //LOGGER.debug(String.format("Removed dataset #%s.", idRemoved));
-
-        // DataTex DB Client instance
-        DataTexDBClient dbClient = new DataTexDBClient();
-
-        if (optionSet.has(OPTION_LIST_TABLES.getName())) { // list all tables in given schema in DataTex DB
-            LOGGER.debug("Listing all tables in DataTex DB in a given schema.");
-
-            try {
-                LOGGER.info(dbClient.getTablesList());
-            } catch (SQLException e) {
-                LOGGER.error("Can't get list of tables from DataTex DB!", e);
-            }
-
-        }
-
+        // execute engine (ConnectorEngine)
+        ConnectorEngine engine = new ConnectorEngine(optionSet);
+        engine.execute();
     }
-
-    //void setCsv2Abstract(CSV2Abstract csv2Abstract) {
-    //    this.csv2Abstract = csv2Abstract;
-    //}
 
     /** Show help screen and exit. */
     private void showHelpAndExit() throws IOException {

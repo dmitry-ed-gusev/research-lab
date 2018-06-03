@@ -1,25 +1,18 @@
 package gusevdm.luxms;
 
-import com.sun.jersey.api.client.ClientResponse;
 import gusevdm.Environment;
 import gusevdm.rest.RestClient;
 import gusevdm.rest.RestException;
 import gusevdm.rest.RestResponse;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.MultivaluedHashMap;
-
+import javax.ws.rs.core.MultivaluedMap;
 import java.util.ArrayList;
 import java.util.List;
-
-import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
 public class LuxMSRestClient extends RestClient {
 
@@ -33,12 +26,12 @@ public class LuxMSRestClient extends RestClient {
     private static final String LUXMS_SESSION_HEADER = "LuxmsBI-User-Session";
     //private static final String LUXMS_COOKIE_HEADER  = "Cookie";
 
-    // identity info
+    // identity info for LuxMS server
     private final String path;
     private final String user;
     private final String password;
-    // session identity
-    private String identity = null;
+    // current session identity
+    private String                         identity   = null;
     private MultivaluedMap<String, String> authHeader = null;
 
     /** Create instance of LuxMS RESt client, init identity info from environment. */
@@ -55,9 +48,15 @@ public class LuxMSRestClient extends RestClient {
      * @throws RestException on request execution error
      */
     // todo: take a look at [social networks] module - save api key and reuse it
-    public void login() {
+    // todo: review logging for this method
+    private void login() {
         LOGGER.debug("LuxMSRestClient.login() is working.");
 
+        if (this.identity != null && this.authHeader != null) { // check - are we already logged in?
+            LOGGER.debug("Already logged in!");
+        }
+
+        LOGGER.debug("Not logged in -> logging in...");
         // prepare data and execute request
         String authEntity = String.format("username=%s&password=%s", this.user, this.password);
         RestResponse response = this.executePost(LUXMS_LOGIN_PATH, authEntity,
@@ -90,8 +89,12 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /** Lists system datasets (according to provileges). */
+    @SuppressWarnings("unchecked")
     public List<DataSet> listDatasets() {
         LOGGER.debug("LuxMSRestClient.listDatasets() is working.");
+
+        this.login();
+
         // execute request
         RestResponse response = this.executeGet(LUXMS_DATASETS_PATH, null, this.authHeader);
         // parse response
@@ -108,6 +111,8 @@ public class LuxMSRestClient extends RestClient {
     public DataSet createDataset(String datasetTitle, String datasetDesc, boolean isVisible) {
         LOGGER.debug("LuxMSRestClient.createDataset() is working.");
 
+        this.login();
+
         // create JSON for request
         JSONObject body = new JSONObject();
         body.put("title", datasetTitle);
@@ -123,7 +128,10 @@ public class LuxMSRestClient extends RestClient {
     // todo: catch error if dataset does't exit?
     // todo: check if dataset exists before deletion?
     public long removeDataset(long id) {
-        LOGGER.debug("LuxMSRestClient.removeDataset() is working.");
+        LOGGER.debug(String.format("LuxMSRestClient.removeDataset(long) is working. ID = [%s].", id));
+
+        this.login();
+
         // execute request
         RestResponse response = this.executeDelete(LUXMS_DATASETS_PATH + "/" + String.valueOf(id),
                 null, null, this.authHeader);

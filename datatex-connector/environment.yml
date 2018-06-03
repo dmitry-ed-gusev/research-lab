@@ -1,7 +1,7 @@
 # LuxMS server environment (local, development)
 luxms_env_local:
-  #lux_url:      http://192.168.0.178/api
-  lux_url:      http://192.168.72.128/api
+  lux_url:      http://192.168.0.178/api
+  #lux_url:      http://192.168.72.128/api
   lux_user:     admin
   lux_password: admin
 
