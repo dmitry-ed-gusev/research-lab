@@ -11,7 +11,7 @@ public enum CommandLineOption {
     OPTION_LIST_DATASETS  ("listds",          "List all datasets in LuxMS BI server"),
     OPTION_LIST_TABLES    ("listtables",      "List all tables in DataTex DBMS in a given schema"),
     OPTION_ENV_SUFFIX     ("env",             "Environment suffix for configuration"),
-    OPTION_CONFIG_FILE    ("config",          "Path to config file");
+    OPTION_CONFIG_FILE    ("config",          "Path to alternate config file");
 
     private final String name;
     private final String description;

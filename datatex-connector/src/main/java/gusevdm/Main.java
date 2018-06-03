@@ -32,6 +32,7 @@ public class Main {
     private static final String ERROR_MSG         = "Error message: [%s].";
     private static final String HINT_MSG          =
             String.format("Try '--%s' option for more information.", OPTION_HELP.getName());
+    private static final String VERSION_MSG       = "DataTex Connector utility, version 0.2.0, 2018 (C) Larga";
     private static final String DEFAULT_CONFIG    = "environment.yml";
 
     //private final OptionSpec<String> dataset;
@@ -116,6 +117,7 @@ public class Main {
             }
 
             if (optionSet.has(OPTION_LOG_LEVEL.getName())) { // new log level specified
+                LOGGER.info("!!!");
                 checkAndSetLogLevel(optionSet);
             }
 
@@ -150,6 +152,7 @@ public class Main {
         LOGGER.debug(String.format("Using config file [%s].", credentialsFile));
         Environment.load(credentialsFile, optionSet.valueOf(this.suffix));
 
+        // todo: move working logic to ConnectorEngine
         // LuxMS REST client instance
         LuxMSRestClient luxRest = new LuxMSRestClient();
 
@@ -195,7 +198,10 @@ public class Main {
         LOGGER.debug("Main.showHelpAndExit() is working.");
         StringWriter stringWriter = new StringWriter();
         parser.printHelpOn(stringWriter);
-        LOGGER.info(stringWriter.toString());
+        // build message for --help option
+        StringBuilder msg = new StringBuilder();
+        msg.append("\n\n").append(VERSION_MSG).append("\n\n").append(stringWriter.toString());
+        LOGGER.info(msg.toString());
         runtime.exit(ExitStatus.OK.getValue());
     } // end of showHelpAndExit()
 

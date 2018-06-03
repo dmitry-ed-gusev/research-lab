@@ -1,0 +1,1 @@
+This folder is intended for application log files. This file can be deleted.

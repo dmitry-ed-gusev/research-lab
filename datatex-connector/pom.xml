@@ -27,6 +27,19 @@
     <build>
         <finalName>${app.base.name}-app</finalName>
 
+        <!-- specify building filters -->
+        <filters>
+            <filter>filters/filter-${env}.properties</filter>
+        </filters>
+
+        <!-- turn on resources filtering on build -->
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
         <plugins>
             <!-- creating JAR -->
             <plugin>
@@ -83,6 +96,7 @@
                             <fileset dir="${basedir}" includes="readme.txt"/>
                             <fileset dir="${basedir}" includes="environment.yml"/>
                             <fileset dir="${basedir}" includes="connector.sh" />
+                            <fileset dir="${basedir}" includes="logs/**" />
                         </copy>
                     </tasks>
                 </configuration>
