@@ -55,9 +55,9 @@ repositories:
     mantis-model-generator:
       build: no
     mantis-hadoop-clients:
-      build:  no
+      build:  yes
     mantis-hive-rest-service:
-      build:  no
+      build:  yes
     mantis-test:
       build:  no
     keytruda-prototype:  # keytruda repository
