@@ -1,5 +1,6 @@
 package gusevdm.luxms;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,31 @@ public final class LuxMSHelper {
         dataSet.setSchemaName(json.get(DS_SCHEMA_NAME).toString());
 
         return dataSet;
+    }
+
+    /***/
+    public static JSONObject getJsonForMetric() {
+        throw new NotImplementedException("Not implemented yet!");
+    }
+
+    /***/
+    public static JSONObject getJsonForUnit() {
+        throw new NotImplementedException("Not implemented yet!");
+    }
+
+    /***/
+    public static JSONObject getJsonForLocation() {
+        throw new NotImplementedException("Not implemented yet!");
+    }
+
+    /***/
+    public static JSONObject getJsonForPeriod() {
+        throw new NotImplementedException("Not implemented yet!");
+    }
+
+    /***/
+    public static JSONObject getJsonForData() { // <- точка визуального контроля
+        throw new NotImplementedException("Not implemented yet!");
     }
 
 }

@@ -2,6 +2,7 @@ package gusevdm;
 
 import gusevdm.datatexdb.DataTexDBClient;
 import gusevdm.luxms.DataSet;
+import gusevdm.luxms.LuxMSDataType;
 import gusevdm.luxms.LuxMSRestClient;
 import joptsimple.OptionSet;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static gusevdm.helpers.CommandLineOption.*;
+import static gusevdm.luxms.LuxMSDataType.*;
 
 /** Engine class for DataTex Connector Utility. */
 public class ConnectorEngine {
@@ -33,6 +35,11 @@ public class ConnectorEngine {
     @SuppressWarnings("unchecked")
     public void execute() {
         LOGGER.debug("ConnectorEngine.execute() is working.");
+
+        // todo: !!!
+        this.luxRest.getDatasetTable(METRICS, 1);
+        System.exit(444);
+        // todo: !!!
 
         if (this.options.has(OPTION_LIST_DATASETS.getName())) { // list datasets in LuxMS instance
             LOGGER.info("Listing datasets in LuxMS BI Server.");

@@ -4,6 +4,7 @@ import gusevdm.Environment;
 import gusevdm.rest.RestClient;
 import gusevdm.rest.RestException;
 import gusevdm.rest.RestResponse;
+import org.apache.commons.lang3.NotImplementedException;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * LuxMS BI Server client.
+ */
 public class LuxMSRestClient extends RestClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LuxMSRestClient.class);
@@ -21,6 +25,7 @@ public class LuxMSRestClient extends RestClient {
     // paths for REST client
     private static final String LUXMS_LOGIN_PATH     = "/auth/login";
     private static final String LUXMS_DATASETS_PATH  = "/db/adm.datasets";
+    private static final String LUXMS_API_ENTRY      = "/db";
     // request/response headers and cookies
     private static final String LUXMS_AUTH_HEADER    = "Set-Cookie";
     private static final String LUXMS_SESSION_HEADER = "LuxmsBI-User-Session";
@@ -142,16 +147,46 @@ public class LuxMSRestClient extends RestClient {
     /***/
     public void updateDataset() {
         LOGGER.debug("LuxMSRestClient.updateDataset() is working.");
+        throw new NotImplementedException("Not implemented yet!");
     }
 
     /***/
     public void hideDataset(){
         LOGGER.debug("LuxMSRestClient.hideDataset() is working.");
+        throw new NotImplementedException("Not implemented yet!");
     }
 
     /***/
     public void linkDatasetToGroup() {
         LOGGER.debug("LuxMSRestClient.linkDatasetToGroup() is working.");
+        throw new NotImplementedException("Not implemented yet!");
+    }
+
+    /***/
+    public void getDatasetTable(LuxMSDataType type, long datasetId) {
+        LOGGER.debug("LuxMSRestClient.getDatasetTable() is working.");
+
+        this.login();
+
+        RestResponse response = this.executeGet(LUXMS_API_ENTRY + "/" + String.valueOf(datasetId) +
+            "." + type.getTableName(), null, this.authHeader);
+
+        System.out.println("-> " + response);
+    }
+
+    /***/
+    public void addTableEntry(LuxMSDataType type, long datasetId, JSONObject json) {
+        throw new NotImplementedException("Not implemented yet!");
+    }
+
+    /***/
+    public void updateTableEntry(LuxMSDataType type, long datasetId, JSONObject json) {
+        throw new NotImplementedException("Not implemented yet!");
+    }
+
+    /***/
+    public void removeTableEntry(LuxMSDataType type, long datasetId, JSONObject json) {
+        throw new NotImplementedException("Not implemented yet!");
     }
 
     @Override
