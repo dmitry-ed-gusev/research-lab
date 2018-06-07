@@ -58,6 +58,11 @@ public class LuxLocation implements LuxModelInterface {
         return body;
     }
 
+    @Override
+    public LuxDataType getDataType() {
+        return LuxDataType.LOCATIONS;
+    }
+
     public long getId() {
         return id;
     }

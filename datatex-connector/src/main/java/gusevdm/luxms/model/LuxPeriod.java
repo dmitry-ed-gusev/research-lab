@@ -45,6 +45,11 @@ public class LuxPeriod implements LuxModelInterface {
         return body;
     }
 
+    @Override
+    public LuxDataType getDataType() {
+        return LuxDataType.PERIODS;
+    }
+
     public String getId() {
         return id;
     }

@@ -3,6 +3,7 @@ package gusevdm.luxms;
 import gusevdm.Environment;
 import gusevdm.luxms.model.LuxDataSet;
 import gusevdm.luxms.model.LuxDataType;
+import gusevdm.luxms.model.LuxModelInterface;
 import gusevdm.rest.RestClient;
 import gusevdm.rest.RestException;
 import gusevdm.rest.RestResponse;
@@ -177,17 +178,20 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /***/
-    public void addTableEntry(LuxDataType type, long datasetId, JSONObject json) {
+    public void addTableEntry(long datasetId, LuxModelInterface model) {
+        LOGGER.debug("LuxMSRestClient.addTableEntry() is working.");
+
+
         throw new NotImplementedException("Not implemented yet!");
     }
 
     /***/
-    public void updateTableEntry(LuxDataType type, long datasetId, JSONObject json) {
+    public void updateTableEntry(long datasetId, LuxModelInterface model) {
         throw new NotImplementedException("Not implemented yet!");
     }
 
     /***/
-    public void removeTableEntry(LuxDataType type, long datasetId, JSONObject json) {
+    public void removeTableEntry(long datasetId, LuxModelInterface model) {
         throw new NotImplementedException("Not implemented yet!");
     }
 

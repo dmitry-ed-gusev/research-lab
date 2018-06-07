@@ -52,6 +52,11 @@ public class LuxMetric implements LuxModelInterface {
         return body;
     }
 
+    @Override
+    public LuxDataType getDataType() {
+        return LuxDataType.METRICS;
+    }
+
     public long getId() {
         return id;
     }

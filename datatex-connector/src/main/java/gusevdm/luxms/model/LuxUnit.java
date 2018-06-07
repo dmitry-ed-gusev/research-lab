@@ -1,5 +1,6 @@
 package gusevdm.luxms.model;
 
+import org.apache.commons.csv.CSVRecord;
 import org.json.simple.JSONObject;
 
 /**
@@ -17,6 +18,20 @@ import org.json.simple.JSONObject;
 
 public class LuxUnit implements LuxModelInterface {
 
+    // CSV headers
+    public static final String CSV_HEADER_ID          = "ID";
+    public static final String CSV_HEADER_TITLE       = "TITLE";
+    public static final String CSV_HEADER_SHORT_TITLE = "SHORT_TITLE";
+    public static final String CSV_HEADER_AXIS_TITLE  = "AXIS_TITLE";
+    public static final String CSV_HEADER_PREFIX      = "PREFIX";
+    public static final String CSV_HEADER_SUFFIX      = "SUFFIX";
+    // CSV file header (list of headers)
+    private static final String[] FILE_HEADER = {
+            CSV_HEADER_ID, CSV_HEADER_TITLE, CSV_HEADER_SHORT_TITLE,
+            CSV_HEADER_AXIS_TITLE, CSV_HEADER_PREFIX, CSV_HEADER_SUFFIX
+    };
+
+    // internal state
     private final long   id;
     private final String title;
     private final String shortTitle;
@@ -35,6 +50,11 @@ public class LuxUnit implements LuxModelInterface {
     }
 
     /***/
+    //public LuxUnit(CSVRecord record) {
+    //
+    //}
+
+    /***/
     @SuppressWarnings("unchecked")
     @Override
     public JSONObject getAsJSON() {
@@ -46,6 +66,11 @@ public class LuxUnit implements LuxModelInterface {
         body.put("tiny_title",   this.shortTitle);
         body.put("axis_title",   this.axisTitle);
         return body;
+    }
+
+    @Override
+    public LuxDataType getDataType() {
+        return LuxDataType.UNITS;
     }
 
     public long getId() {
