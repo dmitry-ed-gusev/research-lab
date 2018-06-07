@@ -45,12 +45,14 @@ datatex_env_virtual:
 # general options (local, development)
 general_env_local:
   # directory for export CSV files (could be absolute/relative)
-  csv_directory: csv_export
+  csv_export_dir: csv_export
+  csv_import_dir: csv_import
 
 # general options (virtual, development/test/debug)
 general_env_virtual:
   # directory for export CSV files (could be absolute/relative)
-  csv_directory: csv_export
+  csv_export_dir: csv_export
+  csv_import_dir: csv_import
 
 # general options (production)
 #general_env_prod:

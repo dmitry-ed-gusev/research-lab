@@ -97,6 +97,8 @@
                             <fileset dir="${basedir}" includes="environment.yml"/>
                             <fileset dir="${basedir}" includes="connector.sh" />
                             <fileset dir="${basedir}" includes="logs/**" />
+                            <fileset dir="${basedir}" includes="csv_import/**" />
+                            <fileset dir="${basedir}" includes="csv_export/**" />
                         </copy>
                     </tasks>
                 </configuration>
@@ -160,6 +162,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons.lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.5</version>
         </dependency>
 
         <!-- https://stackoverflow.com/questions/1074869/find-oracle-jdbc-driver-in-maven-repository -->
