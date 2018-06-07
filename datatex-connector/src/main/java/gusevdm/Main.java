@@ -52,14 +52,15 @@ public class Main {
                 .withRequiredArg().ofType(String.class);
         this.config = parser.accepts(OPTION_CONFIG_FILE.getName(), OPTION_CONFIG_FILE.getDescription()) // config file
                 .withRequiredArg().ofType(String.class);
-        parser.accepts(OPTION_LIST_DATASETS.getName(), OPTION_LIST_DATASETS.getDescription());          // list datasets
-        parser.accepts(OPTION_LIST_TABLES.getName(), OPTION_LIST_TABLES.getDescription());              // list DB tables
+        parser.accepts(OPTION_LUX_LIST_DATASETS.getName(), OPTION_LUX_LIST_DATASETS.getDescription());          // list datasets
+        parser.accepts(OPTION_DTEX_LIST_TABLES.getName(), OPTION_DTEX_LIST_TABLES.getDescription());              // list DB tables
         this.suffix = parser.accepts(OPTION_ENV_SUFFIX.getName(), OPTION_ENV_SUFFIX.getDescription())   // env suffix
                 .withRequiredArg().ofType(String.class);
-        parser.accepts(OPTION_DELETE_DATASET.getName(), OPTION_DELETE_DATASET.getDescription())         // delete dataset
+        parser.accepts(OPTION_LUX_DELETE_DATASET.getName(), OPTION_LUX_DELETE_DATASET.getDescription())         // delete dataset
                 .withRequiredArg().ofType(Long.class);
-        parser.accepts(OPTION_CREATE_DATASET.getName(), OPTION_CREATE_DATASET.getDescription())         // create dataset
+        parser.accepts(OPTION_LUX_CREATE_DATASET.getName(), OPTION_LUX_CREATE_DATASET.getDescription())         // create dataset
                 .withRequiredArg().ofType(String.class).withValuesSeparatedBy(",");
+        parser.accepts(OPTION_LUX_IMPORT_CSV.getName(), OPTION_LUX_IMPORT_CSV.getDescription());                // import LuxMS from CSV
     }
 
 

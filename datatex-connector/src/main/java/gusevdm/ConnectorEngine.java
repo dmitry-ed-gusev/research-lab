@@ -40,7 +40,7 @@ public class ConnectorEngine {
         System.exit(444);
         // todo: !!!
 
-        if (this.options.has(OPTION_LIST_DATASETS.getName())) { // list datasets in LuxMS instance
+        if (this.options.has(OPTION_LUX_LIST_DATASETS.getName())) { // list datasets in LuxMS instance
             LOGGER.info("Listing datasets in LuxMS BI Server.");
             // list datasets
             List<LuxDataSet> datasets = this.luxRest.listDatasets();
@@ -50,23 +50,23 @@ public class ConnectorEngine {
             LOGGER.info("LuxMS BI Server datasets:\n" + datasetsList.toString());
         }
 
-        if (this.options.has(OPTION_CREATE_DATASET.getName())) { // create dataset
+        if (this.options.has(OPTION_LUX_CREATE_DATASET.getName())) { // create dataset
             LOGGER.info("Creating dataset.");
             // get values from cmd line option
-            List<String> values = (List<String>) this.options.valuesOf(OPTION_CREATE_DATASET.getName());
+            List<String> values = (List<String>) this.options.valuesOf(OPTION_LUX_CREATE_DATASET.getName());
             // create dataset
             LuxDataSet luxDataSet = this.luxRest.createDataset(values.get(0), values.get(1), true);
             LOGGER.info(String.format("Created dataset:\n\t[%s]", luxDataSet));
         }
 
-        if (this.options.has(OPTION_DELETE_DATASET.getName())) { // remove dataset by ID
-            long datasetId = (long) this.options.valueOf(OPTION_DELETE_DATASET.getName());
+        if (this.options.has(OPTION_LUX_DELETE_DATASET.getName())) { // remove dataset by ID
+            long datasetId = (long) this.options.valueOf(OPTION_LUX_DELETE_DATASET.getName());
             LOGGER.info(String.format("Removing dataset ID = [%s] on LuxMS BI Server.", datasetId));
             long idRemoved = this.luxRest.removeDataset(datasetId);
             LOGGER.debug(String.format("Removed dataset ID = [%s], requested ID = [%s].", idRemoved, datasetId));
         }
 
-        if (this.options.has(OPTION_LIST_TABLES.getName())) { // list all tables in given schema in DataTex DB
+        if (this.options.has(OPTION_DTEX_LIST_TABLES.getName())) { // list all tables in given schema in DataTex DB
             LOGGER.debug("Listing all tables in DataTex DB in a given schema.");
             try {
                 LOGGER.info(this.dTexDB.getTablesList());

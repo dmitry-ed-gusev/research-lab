@@ -26,7 +26,7 @@ public class LuxUnit implements LuxModelInterface {
     public static final String CSV_HEADER_PREFIX      = "PREFIX";
     public static final String CSV_HEADER_SUFFIX      = "SUFFIX";
     // CSV file header (list of headers)
-    private static final String[] FILE_HEADER = {
+    public static final String[] FILE_HEADER = {
             CSV_HEADER_ID, CSV_HEADER_TITLE, CSV_HEADER_SHORT_TITLE,
             CSV_HEADER_AXIS_TITLE, CSV_HEADER_PREFIX, CSV_HEADER_SUFFIX
     };
@@ -41,18 +41,23 @@ public class LuxUnit implements LuxModelInterface {
 
     /***/
     public LuxUnit(long id, String title, String shortTitle, String axisTitle, String prefix, String suffix) {
-        this.id = id;
-        this.title = title;
+        this.id         = id;
+        this.title      = title;
         this.shortTitle = shortTitle;
-        this.prefix = prefix;
-        this.suffix = suffix;
-        this.axisTitle = axisTitle;
+        this.prefix     = prefix;
+        this.suffix     = suffix;
+        this.axisTitle  = axisTitle;
     }
 
     /***/
-    //public LuxUnit(CSVRecord record) {
-    //
-    //}
+    public LuxUnit(CSVRecord record) {
+        this.id         = Long.parseLong(record.get(CSV_HEADER_ID));
+        this.title      = record.get(CSV_HEADER_TITLE);
+        this.shortTitle = record.get(CSV_HEADER_SHORT_TITLE);
+        this.axisTitle  = record.get(CSV_HEADER_AXIS_TITLE);
+        this.prefix     = record.get(CSV_HEADER_PREFIX);
+        this.suffix     = record.get(CSV_HEADER_SUFFIX);
+    }
 
     /***/
     @SuppressWarnings("unchecked")
