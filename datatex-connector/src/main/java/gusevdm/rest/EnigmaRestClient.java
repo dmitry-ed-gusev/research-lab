@@ -7,9 +7,9 @@ import org.json.simple.JSONObject;
 
 import java.util.Optional;
 
-import static gusevdm.CSV2AbstractDefaults.JSON_FIELD_METADATA;
-import static gusevdm.CSV2AbstractDefaults.JSON_FIELD_RESULT;
-import static gusevdm.CSV2AbstractDefaults.JSON_FIELD_VALUE;
+import static gusevdm.ConnectorDefaults.JSON_FIELD_METADATA;
+import static gusevdm.ConnectorDefaults.JSON_FIELD_RESULT;
+import static gusevdm.ConnectorDefaults.JSON_FIELD_VALUE;
 
 /**
  * REST client for Enigma Abstract API.

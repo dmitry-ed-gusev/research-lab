@@ -1,7 +1,7 @@
 package gusevdm.rest;
 
 import com.sun.jersey.api.client.WebResource;
-import gusevdm.CSV2AbstractDefaults;
+import gusevdm.ConnectorDefaults;
 import gusevdm.Environment;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,12 +16,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
-import static gusevdm.CSV2AbstractDefaults.JSON_FIELD_DATAPATH;
+import static gusevdm.ConnectorDefaults.JSON_FIELD_DATAPATH;
 
 /**
  * River REST client implementation.
@@ -231,7 +229,7 @@ public class RiverRestClient extends RestClient {
         // create full body for "create dataset query"
         JSONObject body = new JSONObject();
         body.put(JSON_FIELD_NAME, dataset);
-        body.put(CSV2AbstractDefaults.JSON_FIELD_METADATA, metadata);
+        body.put(ConnectorDefaults.JSON_FIELD_METADATA, metadata);
         body.put(JSON_FIELD_SCHEMA, schema);
         body.put(JSON_FIELD_SOURCE, source);
 

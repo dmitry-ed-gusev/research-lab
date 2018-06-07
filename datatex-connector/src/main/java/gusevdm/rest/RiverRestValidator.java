@@ -1,9 +1,9 @@
 package gusevdm.rest;
 
-import gusevdm.CSV2AbstractDefaults;
+import gusevdm.ConnectorDefaults;
 import org.json.simple.JSONObject;
 
-import static gusevdm.CSV2AbstractDefaults.JSON_FIELD_DATAPATH;
+import static gusevdm.ConnectorDefaults.JSON_FIELD_DATAPATH;
 
 /**
  * Helper class for validation in {@link RiverRestClient}
@@ -12,7 +12,7 @@ import static gusevdm.CSV2AbstractDefaults.JSON_FIELD_DATAPATH;
 class RiverRestValidator {
 
     String getAndCheckDataPath(String dataset, JSONObject responseBody) {
-        JSONObject metadata = (JSONObject) responseBody.get(CSV2AbstractDefaults.JSON_FIELD_METADATA);
+        JSONObject metadata = (JSONObject) responseBody.get(ConnectorDefaults.JSON_FIELD_METADATA);
         if (metadata == null) {
             throw new IllegalStateException(String.format("Got null metadata during creating dataset [%s]!", dataset));
         }

@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.core.Cookie;
 import java.util.regex.Pattern;
 
-import static gusevdm.CSV2AbstractDefaults.JSON_FIELD_DATAPATH;
-import static gusevdm.CSV2AbstractDefaults.JSON_FIELD_METADATA;
-import static gusevdm.CSV2AbstractDefaults.JSON_FIELD_RESULT;
+import static gusevdm.ConnectorDefaults.JSON_FIELD_DATAPATH;
+import static gusevdm.ConnectorDefaults.JSON_FIELD_METADATA;
+import static gusevdm.ConnectorDefaults.JSON_FIELD_RESULT;
 
 
 /**

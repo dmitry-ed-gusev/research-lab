@@ -5,9 +5,9 @@ import gusevdm.rest.RiverRestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static gusevdm.CSV2AbstractDefaults.STATE_AWAITING_METADATA;
-import static gusevdm.CSV2AbstractDefaults.STATE_INDEXED;
-import static gusevdm.CSV2AbstractDefaults.STATE_INDEXING;
+import static gusevdm.ConnectorDefaults.STATE_AWAITING_METADATA;
+import static gusevdm.ConnectorDefaults.STATE_INDEXED;
+import static gusevdm.ConnectorDefaults.STATE_INDEXING;
 
 /**
  * Export CSV files from HDFS folder to Abstract software.
