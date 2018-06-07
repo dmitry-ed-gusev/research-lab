@@ -43,6 +43,7 @@ Period JSON:
         "start_time" : "2015-12-01",  // <- SQL date
         "period_type":6
     }
+
 Periods types:
 1 -> seconds
 2 -> minutes

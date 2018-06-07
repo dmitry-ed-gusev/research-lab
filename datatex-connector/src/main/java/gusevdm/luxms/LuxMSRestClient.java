@@ -1,6 +1,8 @@
 package gusevdm.luxms;
 
 import gusevdm.Environment;
+import gusevdm.luxms.model.LuxDataSet;
+import gusevdm.luxms.model.LuxDataType;
 import gusevdm.rest.RestClient;
 import gusevdm.rest.RestException;
 import gusevdm.rest.RestResponse;
@@ -95,7 +97,7 @@ public class LuxMSRestClient extends RestClient {
 
     /** Lists system datasets (according to provileges). */
     @SuppressWarnings("unchecked")
-    public List<DataSet> listDatasets() {
+    public List<LuxDataSet> listDatasets() {
         LOGGER.debug("LuxMSRestClient.listDatasets() is working.");
 
         this.login();
@@ -103,17 +105,17 @@ public class LuxMSRestClient extends RestClient {
         // execute request
         RestResponse response = this.executeGet(LUXMS_DATASETS_PATH, null, this.authHeader);
         // parse response
-        List<DataSet> result = new ArrayList<>();
+        List<LuxDataSet> result = new ArrayList<>();
         response.getBodyArray().forEach(json -> {
-            DataSet dataSet = LuxMSHelper.parseDataSet((JSONObject) json);
-            result.add(dataSet);
+            LuxDataSet luxDataSet = LuxMSHelper.parseDataSet((JSONObject) json);
+            result.add(luxDataSet);
         });
         return result;
     }
 
-    /** Create new dataset. DataSet object with created dataset is returned (in case of success). */
+    /** Create new dataset. LuxDataSet object with created dataset is returned (in case of success). */
     @SuppressWarnings("unchecked")
-    public DataSet createDataset(String datasetTitle, String datasetDesc, boolean isVisible) {
+    public LuxDataSet createDataset(String datasetTitle, String datasetDesc, boolean isVisible) {
         LOGGER.debug("LuxMSRestClient.createDataset() is working.");
 
         this.login();
@@ -163,7 +165,7 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /***/
-    public void getDatasetTable(LuxMSDataType type, long datasetId) {
+    public void getDatasetTable(LuxDataType type, long datasetId) {
         LOGGER.debug("LuxMSRestClient.getDatasetTable() is working.");
 
         this.login();
@@ -175,17 +177,17 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /***/
-    public void addTableEntry(LuxMSDataType type, long datasetId, JSONObject json) {
+    public void addTableEntry(LuxDataType type, long datasetId, JSONObject json) {
         throw new NotImplementedException("Not implemented yet!");
     }
 
     /***/
-    public void updateTableEntry(LuxMSDataType type, long datasetId, JSONObject json) {
+    public void updateTableEntry(LuxDataType type, long datasetId, JSONObject json) {
         throw new NotImplementedException("Not implemented yet!");
     }
 
     /***/
-    public void removeTableEntry(LuxMSDataType type, long datasetId, JSONObject json) {
+    public void removeTableEntry(LuxDataType type, long datasetId, JSONObject json) {
         throw new NotImplementedException("Not implemented yet!");
     }
 

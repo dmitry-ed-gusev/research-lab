@@ -1,4 +1,4 @@
-package gusevdm.luxms;
+package gusevdm.luxms.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 /** Logical representation of LuxMS BI dataset. */
 // todo: implement BUILDER pattern???
 
-public class DataSet {
+public class LuxDataSet {
 
     // common constants for dataset JSON
     public static final String DS_ID               = "id";
@@ -33,7 +33,7 @@ public class DataSet {
     private boolean isArchive;
 
     /***/
-    public DataSet(long id, String description, String title) {
+    public LuxDataSet(long id, String description, String title) {
         this.id = id;
         this.description = description;
         this.title = title;

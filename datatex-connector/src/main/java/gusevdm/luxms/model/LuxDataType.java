@@ -1,6 +1,6 @@
-package gusevdm.luxms;
+package gusevdm.luxms.model;
 
-public enum LuxMSDataType {
+public enum LuxDataType {
     METRICS       ("metrics",      "metric_id"),
     UNITS         ("units",        "???"),
     LOCATIONS     ("locations",    "loc_id"),
@@ -9,7 +9,7 @@ public enum LuxMSDataType {
     DATA          ("data",         "???");
 
     /***/
-    private LuxMSDataType(String tableName, String keyName) {
+    private LuxDataType(String tableName, String keyName) {
         this.tableName = tableName;
         this.keyName = keyName;
     }

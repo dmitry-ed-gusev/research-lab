@@ -1,8 +1,7 @@
 package gusevdm;
 
 import gusevdm.datatexdb.DataTexDBClient;
-import gusevdm.luxms.DataSet;
-import gusevdm.luxms.LuxMSDataType;
+import gusevdm.luxms.model.LuxDataSet;
 import gusevdm.luxms.LuxMSRestClient;
 import joptsimple.OptionSet;
 import org.slf4j.Logger;
@@ -12,7 +11,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static gusevdm.helpers.CommandLineOption.*;
-import static gusevdm.luxms.LuxMSDataType.*;
+import static gusevdm.luxms.model.LuxDataType.*;
 
 /** Engine class for DataTex Connector Utility. */
 public class ConnectorEngine {
@@ -44,7 +43,7 @@ public class ConnectorEngine {
         if (this.options.has(OPTION_LIST_DATASETS.getName())) { // list datasets in LuxMS instance
             LOGGER.info("Listing datasets in LuxMS BI Server.");
             // list datasets
-            List<DataSet> datasets = this.luxRest.listDatasets();
+            List<LuxDataSet> datasets = this.luxRest.listDatasets();
             StringBuilder datasetsList = new StringBuilder();
             datasetsList.append("\n");
             datasets.forEach(dataset -> datasetsList.append(String.format("\t%s%n%n", dataset)));
@@ -56,8 +55,8 @@ public class ConnectorEngine {
             // get values from cmd line option
             List<String> values = (List<String>) this.options.valuesOf(OPTION_CREATE_DATASET.getName());
             // create dataset
-            DataSet dataSet = this.luxRest.createDataset(values.get(0), values.get(1), true);
-            LOGGER.info(String.format("Created dataset:\n\t[%s]", dataSet));
+            LuxDataSet luxDataSet = this.luxRest.createDataset(values.get(0), values.get(1), true);
+            LOGGER.info(String.format("Created dataset:\n\t[%s]", luxDataSet));
         }
 
         if (this.options.has(OPTION_DELETE_DATASET.getName())) { // remove dataset by ID
