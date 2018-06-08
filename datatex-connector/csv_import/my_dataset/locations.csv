@@ -1,0 +1,4 @@
+ID, TITLE, TREE_LEVEL, PARENT_ID, IS_HIDDEN, LATITUDE, LONGITUDE, SORTING
+1, "Станок №1", 0, , 0, 0, 0, 100
+2, "Станок №2", 0, , 0, 0, 0, 200
+3, "Станок №3", 0, , 0, 0, 0, 300

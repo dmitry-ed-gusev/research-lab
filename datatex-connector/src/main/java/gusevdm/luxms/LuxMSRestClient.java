@@ -108,7 +108,7 @@ public class LuxMSRestClient extends RestClient {
         // parse response
         List<LuxDataSet> result = new ArrayList<>();
         response.getBodyArray().forEach(json -> {
-            LuxDataSet luxDataSet = LuxMSHelper.parseDataSet((JSONObject) json);
+            LuxDataSet luxDataSet = new LuxDataSet((JSONObject) json);
             result.add(luxDataSet);
         });
         return result;
@@ -129,7 +129,7 @@ public class LuxMSRestClient extends RestClient {
         // execute request
         RestResponse response = this.executePost(LUXMS_DATASETS_PATH, body, null, this.authHeader);
         // parse response and return object
-        return LuxMSHelper.parseDataSet(response.getBodyObject());
+        return new LuxDataSet(response.getBodyObject());
     }
 
     /** Remove dataset by id, return id of removed dataset. */

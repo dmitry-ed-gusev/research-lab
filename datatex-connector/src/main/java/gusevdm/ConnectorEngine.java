@@ -1,6 +1,7 @@
 package gusevdm;
 
 import gusevdm.datatexdb.DataTexDBClient;
+import gusevdm.luxms.LuxMSClient;
 import gusevdm.luxms.model.LuxDataSet;
 import gusevdm.luxms.LuxMSRestClient;
 import joptsimple.OptionSet;
@@ -20,14 +21,16 @@ public class ConnectorEngine {
 
     private final OptionSet       options;
     private final LuxMSRestClient luxRest;
-    private final DataTexDBClient dTexDB;
+    private final LuxMSClient     luxmsClient;
+    private final DataTexDBClient datatexClient;
 
     /***/
     public ConnectorEngine(OptionSet options) {
         LOGGER.debug("ConnectorEngine constructor() is working.");
-        this.options = options;
-        this.luxRest = new LuxMSRestClient();
-        this.dTexDB  = new DataTexDBClient();
+        this.options       = options;
+        this.luxRest       = new LuxMSRestClient();
+        this.luxmsClient   = new LuxMSClient();
+        this.datatexClient = new DataTexDBClient();
     }
 
     /***/
@@ -69,7 +72,7 @@ public class ConnectorEngine {
         if (this.options.has(OPTION_DTEX_LIST_TABLES.getName())) { // list all tables in given schema in DataTex DB
             LOGGER.debug("Listing all tables in DataTex DB in a given schema.");
             try {
-                LOGGER.info(this.dTexDB.getTablesList());
+                LOGGER.info(this.datatexClient.getTablesList());
             } catch (SQLException e) {
                 LOGGER.error("Can't get list of tables from DataTex DB!", e);
             }

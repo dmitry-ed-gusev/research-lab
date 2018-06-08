@@ -1,5 +1,8 @@
-package gusevdm.luxms.model;
+package gusevdm.luxms.model.elements;
 
+import gusevdm.luxms.model.LuxDataType;
+import gusevdm.luxms.model.LuxModelInterface;
+import org.apache.commons.csv.CSVRecord;
 import org.json.simple.JSONObject;
 
 /**
@@ -18,6 +21,22 @@ import org.json.simple.JSONObject;
 
 public class LuxMetric implements LuxModelInterface {
 
+    // CSV headers
+    private static final String CSV_HEADER_ID          = "ID";
+    private static final String CSV_HEADER_TITLE       = "TITLE";
+    private static final String CSV_TREE_LEVEL         = "TREE_LEVEL";
+    private static final String CSV_PARENT_ID          = "PARENT_ID";
+    private static final String CSV_IS_HIDDEN          = "IS_HIDDEN";
+    private static final String CSV_UNIT_ID            = "UNIT_ID";
+    private static final String CSV_SORTING            = "SORTING";
+
+    // CSV file header (list of headers)
+    public static final String[] FILE_HEADER = {
+            CSV_HEADER_ID, CSV_HEADER_TITLE, CSV_TREE_LEVEL, CSV_PARENT_ID,
+            CSV_IS_HIDDEN, CSV_UNIT_ID, CSV_SORTING
+    };
+
+    // internal state
     private final long    id;
     private final String  title;
     private final int     treeLevel;
@@ -35,6 +54,17 @@ public class LuxMetric implements LuxModelInterface {
         this.isHidden = isHidden;
         this.unitId = unitId;
         this.sortOrder = sortOrder;
+    }
+
+    /***/
+    public LuxMetric(CSVRecord record) {
+        this.id         = Long.parseLong(record.get(CSV_HEADER_ID));
+        this.title      = record.get(CSV_HEADER_TITLE);
+        this.treeLevel  = Integer.parseInt(record.get(CSV_TREE_LEVEL));
+        this.parentId   = Long.parseLong(record.get(CSV_PARENT_ID));
+        this.isHidden   = (Integer.parseInt(record.get(CSV_IS_HIDDEN)) == 1);
+        this.unitId     = Long.parseLong(record.get(CSV_UNIT_ID));
+        this.sortOrder  = Integer.parseInt(record.get(CSV_SORTING));
     }
 
     /***/

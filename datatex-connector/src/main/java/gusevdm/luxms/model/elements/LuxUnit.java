@@ -1,5 +1,7 @@
-package gusevdm.luxms.model;
+package gusevdm.luxms.model.elements;
 
+import gusevdm.luxms.model.LuxDataType;
+import gusevdm.luxms.model.LuxModelInterface;
 import org.apache.commons.csv.CSVRecord;
 import org.json.simple.JSONObject;
 
@@ -19,12 +21,12 @@ import org.json.simple.JSONObject;
 public class LuxUnit implements LuxModelInterface {
 
     // CSV headers
-    public static final String CSV_HEADER_ID          = "ID";
-    public static final String CSV_HEADER_TITLE       = "TITLE";
-    public static final String CSV_HEADER_SHORT_TITLE = "SHORT_TITLE";
-    public static final String CSV_HEADER_AXIS_TITLE  = "AXIS_TITLE";
-    public static final String CSV_HEADER_PREFIX      = "PREFIX";
-    public static final String CSV_HEADER_SUFFIX      = "SUFFIX";
+    private static final String CSV_HEADER_ID          = "ID";
+    private static final String CSV_HEADER_TITLE       = "TITLE";
+    private static final String CSV_HEADER_SHORT_TITLE = "SHORT_TITLE";
+    private static final String CSV_HEADER_AXIS_TITLE  = "AXIS_TITLE";
+    private static final String CSV_HEADER_PREFIX      = "PREFIX";
+    private static final String CSV_HEADER_SUFFIX      = "SUFFIX";
     // CSV file header (list of headers)
     public static final String[] FILE_HEADER = {
             CSV_HEADER_ID, CSV_HEADER_TITLE, CSV_HEADER_SHORT_TITLE,

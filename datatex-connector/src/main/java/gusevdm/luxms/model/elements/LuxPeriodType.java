@@ -1,4 +1,4 @@
-package gusevdm.luxms.model;
+package gusevdm.luxms.model.elements;
 
 /** Periods types for LuxMS system. */
 public enum LuxPeriodType {

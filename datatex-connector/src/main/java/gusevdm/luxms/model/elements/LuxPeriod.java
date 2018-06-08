@@ -1,5 +1,7 @@
-package gusevdm.luxms.model;
+package gusevdm.luxms.model.elements;
 
+import gusevdm.luxms.model.LuxDataType;
+import gusevdm.luxms.model.LuxModelInterface;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 

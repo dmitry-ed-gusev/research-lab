@@ -1,11 +1,14 @@
-package gusevdm.luxms.model;
+package gusevdm.luxms.model.elements;
 
+import gusevdm.luxms.model.LuxDataType;
+import gusevdm.luxms.model.LuxModelInterface;
+import org.apache.commons.csv.CSVRecord;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 
 /**
- * Location for LuxMS system.
+ * Location for LuxMS system (Where?).
  * Location JSON:
  *     {
  *         "id": 11,
@@ -21,6 +24,23 @@ import java.math.BigDecimal;
 
 public class LuxLocation implements LuxModelInterface {
 
+    // CSV headers
+    private static final String CSV_HEADER_ID          = "ID";
+    private static final String CSV_HEADER_TITLE       = "TITLE";
+    private static final String CSV_TREE_LEVEL         = "TREE_LEVEL";
+    private static final String CSV_PARENT_ID          = "PARENT_ID";
+    private static final String CSV_IS_HIDDEN          = "IS_HIDDEN";
+    private static final String CSV_LATITUDE           = "LATITUDE";
+    private static final String CSV_LONGITUDE          = "LONGITUDE";
+    private static final String CSV_SORTING            = "SORTING";
+
+    // CSV file header (list of headers)
+    public static final String[] FILE_HEADER = {
+            CSV_HEADER_ID, CSV_HEADER_TITLE, CSV_TREE_LEVEL, CSV_PARENT_ID,
+            CSV_IS_HIDDEN, CSV_LATITUDE, CSV_LONGITUDE, CSV_SORTING
+    };
+
+    // internal state
     private final long       id;
     private final String     title;
     private final int        treeLevel;
@@ -40,6 +60,18 @@ public class LuxLocation implements LuxModelInterface {
         this.latitude = latitude;
         this.longitude = longitude;
         this.sortOrder = sortOrder;
+    }
+
+    /***/
+    public LuxLocation(CSVRecord record) {
+        this.id         = Long.parseLong(record.get(CSV_HEADER_ID));
+        this.title      = record.get(CSV_HEADER_TITLE);
+        this.treeLevel  = Integer.parseInt(record.get(CSV_TREE_LEVEL));
+        this.parentId   = Long.parseLong(record.get(CSV_PARENT_ID));
+        this.isHidden   = (Integer.parseInt(record.get(CSV_IS_HIDDEN)) == 1);
+        this.latitude   = new BigDecimal(record.get(CSV_LATITUDE));
+        this.longitude  = new BigDecimal(record.get(CSV_LONGITUDE));
+        this.sortOrder  = Integer.parseInt(record.get(CSV_SORTING));
     }
 
     /***/
