@@ -2,23 +2,26 @@ package gusevdm.luxms.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Logical representation of LuxMS BI dataset. */
-// todo: implement BUILDER pattern???
-
 public class LuxDataSet {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LuxDataSet.class);
+
     // common constants for dataset JSON
-    public static final String DS_ID               = "id";
-    public static final String DS_GUID             = "guid";
-    public static final String DS_PARENT_GUID      = "parent_guid";
-    public static final String DS_DESCRIPTION      = "description";
-    public static final String DS_TITLE            = "title";
-    public static final String DS_IS_VISIBLE       = "is_visible";
-    public static final String DS_SCHEMA_NAME      = "schema_name";
-    public static final String DS_POST_PROCESS_SQL = "postprocess_sql";
-    public static final String DS_OWNER_USER_ID    = "owner_user_id";
-    public static final String DS_IS_ARCHIVE       = "is_archive";
+    private static final String DS_ID               = "id";
+    private static final String DS_GUID             = "guid";
+    private static final String DS_PARENT_GUID      = "parent_guid";
+    private static final String DS_DESCRIPTION      = "description";
+    private static final String DS_TITLE            = "title";
+    private static final String DS_IS_VISIBLE       = "is_visible";
+    private static final String DS_SCHEMA_NAME      = "schema_name";
+    private static final String DS_POST_PROCESS_SQL = "postprocess_sql";
+    private static final String DS_OWNER_USER_ID    = "owner_user_id";
+    private static final String DS_IS_ARCHIVE       = "is_archive";
 
     // internal object state
     private long    id;
@@ -34,9 +37,32 @@ public class LuxDataSet {
 
     /***/
     public LuxDataSet(long id, String description, String title) {
-        this.id = id;
+        LOGGER.debug("LuxDataSet constructor() is working.");
+        this.id          = id;
         this.description = description;
-        this.title = title;
+        this.title       = title;
+    }
+
+    /***/
+    public LuxDataSet(JSONObject json) {
+        LOGGER.debug(String.format("LuxDataSet constructor(JSON) is working. " +
+                "Creating dataset from JSON:%n\t[%s].", json));
+
+        if (json == null) { // fail-fast check
+            throw new IllegalStateException("Received JSON object is NULL!");
+        }
+
+        // create dataset
+        this.setId(Long.parseLong(json.get(DS_ID).toString()));
+        this.setDescription(json.get(DS_DESCRIPTION).toString());
+        this.setTitle(json.get(DS_TITLE).toString());
+        this.setVisible(Integer.parseInt(json.get(DS_IS_VISIBLE).toString()) == 1);
+        this.setArchive(Integer.parseInt(json.get(DS_IS_ARCHIVE).toString()) == 1);
+        this.setGuid(json.get(DS_GUID).toString());
+        this.setOwnerUser(json.get(DS_OWNER_USER_ID) == null ? null : json.get(DS_OWNER_USER_ID).toString());
+        this.setParentGuid(json.get(DS_PARENT_GUID) == null ? null : json.get(DS_PARENT_GUID).toString());
+        this.setPostProcessSql(json.get(DS_POST_PROCESS_SQL) == null ? null : json.get(DS_POST_PROCESS_SQL).toString());
+        this.setSchemaName(json.get(DS_SCHEMA_NAME).toString());
     }
 
     public long getId() {
