@@ -1,16 +1,18 @@
 package gusevdm.luxms.model.elements;
 
+import org.apache.commons.lang3.StringUtils;
+
 /** Periods types for LuxMS system. */
 public enum LuxPeriodType {
 
-    SECONDS  (1),
-    MINUTES  (2),
-    HOURS    (3),
-    DAYS     (4),
-    WEEKS    (5),
-    MONTHS   (6),
-    QUARTERS (7),
-    YEARS    (8);
+    SECOND  (1),
+    MINUTE  (2),
+    HOUR    (3),
+    DAY     (4),
+    WEEK    (5),
+    MONTH   (6),
+    QUARTER (7),
+    YEAR    (8);
 
     private LuxPeriodType(int value) {
         this.value = value;
@@ -20,6 +22,15 @@ public enum LuxPeriodType {
 
     public int getValue() {
         return value;
+    }
+
+    public static LuxPeriodType getTypeByName(String typeName) {
+        if (StringUtils.isBlank(typeName)) {
+            return null;
+        }
+
+        // todo: error processing!!!
+        return LuxPeriodType.valueOf(typeName.toUpperCase());
     }
 
 }

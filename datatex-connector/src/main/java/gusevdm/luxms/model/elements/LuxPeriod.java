@@ -2,9 +2,13 @@ package gusevdm.luxms.model.elements;
 
 import gusevdm.luxms.model.LuxDataType;
 import gusevdm.luxms.model.LuxModelInterface;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.json.simple.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,6 +27,18 @@ public class LuxPeriod implements LuxModelInterface {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
+    // CSV headers
+    private static final String CSV_HEADER_ID          = "ID";
+    private static final String CSV_HEADER_TITLE       = "TITLE";
+    private static final String CSV_START_TIME         = "START_TIME";
+    private static final String CSV_PERIOD_TYPE        = "PERIOD_TYPE";
+
+    // CSV file header (list of headers)
+    public static final String[] FILE_HEADER = {
+            CSV_HEADER_ID, CSV_HEADER_TITLE, CSV_START_TIME, CSV_PERIOD_TYPE
+    };
+
+    // internal state
     private final String        id;
     private final String        title;
     private final Date          startDate;
@@ -34,6 +50,14 @@ public class LuxPeriod implements LuxModelInterface {
         this.title = title;
         this.startDate = startDate;
         this.periodType = periodType;
+    }
+
+    /***/
+    public LuxPeriod(CSVRecord record) throws ParseException {
+        this.id         = record.get(CSV_HEADER_ID);
+        this.title      = record.get(CSV_HEADER_TITLE);
+        this.startDate  = DATE_FORMAT.parse(record.get(CSV_START_TIME));
+        this.periodType = LuxPeriodType.getTypeByName(record.get(CSV_PERIOD_TYPE));
     }
 
     @SuppressWarnings("unchecked")
@@ -66,5 +90,15 @@ public class LuxPeriod implements LuxModelInterface {
 
     public LuxPeriodType getPeriodType() {
         return periodType;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id", id)
+                .append("title", title)
+                .append("startDate", startDate)
+                .append("periodType", periodType)
+                .toString();
     }
 }

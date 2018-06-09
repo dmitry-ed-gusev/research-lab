@@ -3,6 +3,8 @@ package gusevdm.luxms.model.elements;
 import gusevdm.luxms.model.LuxDataType;
 import gusevdm.luxms.model.LuxModelInterface;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
@@ -24,7 +26,7 @@ import java.math.BigDecimal;
 
 public class LuxLocation implements LuxModelInterface {
 
-    // CSV headers
+    // CSV headers (private, internal use)
     private static final String CSV_HEADER_ID          = "ID";
     private static final String CSV_HEADER_TITLE       = "TITLE";
     private static final String CSV_TREE_LEVEL         = "TREE_LEVEL";
@@ -34,7 +36,7 @@ public class LuxLocation implements LuxModelInterface {
     private static final String CSV_LONGITUDE          = "LONGITUDE";
     private static final String CSV_SORTING            = "SORTING";
 
-    // CSV file header (list of headers)
+    // CSV file header (list of headers, public external use)
     public static final String[] FILE_HEADER = {
             CSV_HEADER_ID, CSV_HEADER_TITLE, CSV_TREE_LEVEL, CSV_PARENT_ID,
             CSV_IS_HIDDEN, CSV_LATITUDE, CSV_LONGITUDE, CSV_SORTING
@@ -126,4 +128,19 @@ public class LuxLocation implements LuxModelInterface {
     public int getSortOrder() {
         return sortOrder;
     }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id", id)
+                .append("title", title)
+                .append("treeLevel", treeLevel)
+                .append("parentId", parentId)
+                .append("isHidden", isHidden)
+                .append("latitude", latitude)
+                .append("longitude", longitude)
+                .append("sortOrder", sortOrder)
+                .toString();
+    }
+
 }
