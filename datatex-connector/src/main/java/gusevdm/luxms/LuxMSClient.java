@@ -2,6 +2,8 @@ package gusevdm.luxms;
 
 import gusevdm.Environment;
 import gusevdm.luxms.model.LuxDataType;
+import gusevdm.luxms.model.LuxModelFactory;
+import gusevdm.luxms.model.LuxModelInterface;
 import gusevdm.luxms.model.elements.LuxUnit;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -22,6 +24,33 @@ import static gusevdm.ConnectorDefaults.DEFAULT_ENCODING;
 public class LuxMSClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LuxMSClient.class);
+
+    /***/
+    private static List<LuxModelInterface> loadElementFromCSV(String filePath, LuxDataType elementType) throws IOException {
+        LOGGER.debug("LuxMSClient.loadElementFromCSV() is working.");
+
+        String fileName = "csv_import/my_dataset/units.csv";
+
+        // result
+        List<LuxModelInterface> elements = new ArrayList<>();
+
+        // build CSV format (with specified file header)
+        CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader(elementType.getCsvFileHeader());
+
+        // create CSV file reader (and red the file)
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(fileName), DEFAULT_ENCODING)) {
+
+            // CSV parser instance
+            CSVParser csvParser = new CSVParser(fileReader, csvFormat);
+            List<CSVRecord> csvRecords = csvParser.getRecords();
+            LOGGER.info(String.format("Got records from CSV [%s]. Records count [%s].", fileName, csvRecords.size()));
+
+            // iterate over records, create instances and fill in resulting array
+            csvRecords.forEach(record -> elements.add(LuxModelFactory.getInstance(elementType, record)));
+        }
+
+        return elements;
+    }
 
     /***/
     public static List<LuxUnit> loadFromCSV(long datasetId) {

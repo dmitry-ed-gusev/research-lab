@@ -66,8 +66,8 @@ public class LuxPeriod implements LuxModelInterface {
         JSONObject body = new JSONObject();
         body.put("id",          StringUtils.isBlank(this.id) ? "" : this.id);
         body.put("title",       this.title);
-        body.put("start_time",  this.startDate);
-        body.put("period_type", DATE_FORMAT.format(this.startDate));
+        body.put("start_time",  DATE_FORMAT.format(this.startDate));
+        body.put("period_type", this.periodType.getValue());
         return body;
     }
 
