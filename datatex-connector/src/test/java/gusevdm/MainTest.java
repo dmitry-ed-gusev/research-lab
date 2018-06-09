@@ -98,34 +98,6 @@ public class MainTest {
 
         verify(optionParser).parse("arg");
     }
-    /*
-    @Test
-    public void runInvalidDatasetUpperCase() throws Exception {
-        when(optionSet.valueOf(Matchers.<OptionSpec<String>>any())).thenReturn("test.DATASET");
-
-        main.run("arg");
-
-        verify(runtime).exit(ExitStatus.MISUSE.getValue());
-    }
-
-    @Test
-    public void runInvalidDatasetUnderscore() throws Exception {
-        when(optionSet.valueOf(Matchers.<OptionSpec<String>>any())).thenReturn("test.dataset_a");
-
-        main.run("arg");
-
-        verify(runtime).exit(ExitStatus.MISUSE.getValue());
-    }
-
-    @Test
-    public void runInvalidDatasetNonAsciiCharacter() throws Exception {
-        when(optionSet.valueOf(Matchers.<OptionSpec<String>>any())).thenReturn("test.датасет");
-
-        main.run("arg");
-
-        verify(runtime).exit(ExitStatus.MISUSE.getValue());
-    }
-    */
 
     @Test
     public void runOptionException() throws Exception {
