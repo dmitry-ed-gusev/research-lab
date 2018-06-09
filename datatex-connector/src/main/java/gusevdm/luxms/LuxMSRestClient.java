@@ -187,8 +187,6 @@ public class LuxMSRestClient extends RestClient {
     /***/
     public void addTableEntry(long datasetId, LuxModelInterface model) {
         LOGGER.debug("LuxMSRestClient.addTableEntry() is working.");
-
-
         throw new NotImplementedException("Not implemented yet!");
     }
 

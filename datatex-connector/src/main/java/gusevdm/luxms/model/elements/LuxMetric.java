@@ -63,7 +63,7 @@ public class LuxMetric implements LuxModelInterface {
         this.id         = Long.parseLong(record.get(CSV_HEADER_ID));
         this.title      = record.get(CSV_HEADER_TITLE);
         this.treeLevel  = Integer.parseInt(record.get(CSV_TREE_LEVEL));
-        this.parentId   = Long.parseLong(record.get(CSV_PARENT_ID));
+        this.parentId   = record.get(CSV_PARENT_ID) == null ? -1 : Long.parseLong(record.get(CSV_PARENT_ID));
         this.isHidden   = (Integer.parseInt(record.get(CSV_IS_HIDDEN)) == 1);
         this.unitId     = Long.parseLong(record.get(CSV_UNIT_ID));
         this.sortOrder  = Integer.parseInt(record.get(CSV_SORTING));

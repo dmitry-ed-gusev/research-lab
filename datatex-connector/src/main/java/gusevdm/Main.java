@@ -116,7 +116,7 @@ public class Main {
     }
 
     /** Real run() - after all initializations. */
-    void run(OptionSet optionSet) {
+    void run(OptionSet optionSet) throws IOException {
         LOGGER.debug("Main.run(OptionSet) is working.");
 
         // select config file (default or provided via cmd line option)

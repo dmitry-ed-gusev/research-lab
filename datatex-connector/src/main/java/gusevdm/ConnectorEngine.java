@@ -9,6 +9,7 @@ import joptsimple.OptionSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class ConnectorEngine {
 
     /***/
     @SuppressWarnings("unchecked")
-    public void execute() {
+    public void execute() throws IOException {
         LOGGER.debug("ConnectorEngine.execute() is working.");
 
         if (this.options.has(OPTION_LUX_LIST_DATASETS.getName())) { // list datasets in LuxMS instance
@@ -90,8 +91,10 @@ public class ConnectorEngine {
         }
 
         if (this.options.has(OPTION_LUX_IMPORT_DATASET.getName())) { // import dataset from CSV
-            LOGGER.debug("Importing dataset from CSV files.");
-            // todo: !!!
+            String datasetName = String.valueOf(this.options.valueOf(OPTION_LUX_IMPORT_DATASET.getName()));
+            LOGGER.debug(String.format("Importing dataset [%s] from CSV files.", datasetName));
+
+            this.luxmsClient.loadFromCSV(datasetName);
         }
 
     } // end of execute() method
