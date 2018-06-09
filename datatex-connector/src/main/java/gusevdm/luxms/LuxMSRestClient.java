@@ -8,6 +8,7 @@ import gusevdm.rest.RestClient;
 import gusevdm.rest.RestException;
 import gusevdm.rest.RestResponse;
 import org.apache.commons.lang3.NotImplementedException;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,13 +172,16 @@ public class LuxMSRestClient extends RestClient {
 
         this.login();
 
+        // execute REST request
         RestResponse response = this.executeGet(LUXMS_API_ENTRY + "/" + String.valueOf(datasetId) +
             "." + type.getTableName(), null, this.authHeader);
 
-        System.out.println("-> " + response);
+        StringBuilder result = new StringBuilder();
+        // parsing JSON array and generating result
+        JSONArray jsonArray = response.getBodyArray();
+        jsonArray.forEach(json -> result.append(json).append("\n"));
 
-        // todo: !!!!!!!
-        return null;
+        return result.toString();
     }
 
     /***/

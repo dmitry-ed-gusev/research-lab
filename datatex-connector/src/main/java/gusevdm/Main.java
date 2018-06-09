@@ -77,15 +77,7 @@ public class Main {
 
 
     /**
-     * Run CSV2Abstract with command-line arguments. The available options are:
-     * <p>
-     * <ul>
-     *     <li>{@code --dataset} - qualified name of Abstract dataset to be published (mandatory)
-     *     <li>{@code --csv} - HDFS path to CSV file (mandatory)
-     *     <li>{@code --schema} - HDFS path to JSON schema file (mandatory)
-     *     <li>{@code --reindex - (re)index Abstract collection
-     *     <li>{@code --help} - print help/usage for the tool
-     * </ul>
+     * Application entry point.
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -117,9 +109,6 @@ public class Main {
         } catch (IllegalArgumentException e) {  // NOSONAR
             LOGGER.error(String.format(ERROR_MSG, e.getMessage()), e);
             runtime.exit(ExitStatus.MISUSE.getValue());
-        } catch (CSV2AbstractException e) {
-            LOGGER.error("Execution time error", e);
-            runtime.exit(ExitStatus.GENERAL_ERROR.getValue());
         } catch (Exception e) { // NOSONAR: we have to catch all cases and try to log them
             LOGGER.error("Unexpected exception", e);
             runtime.exit(ExitStatus.GENERAL_ERROR.getValue());

@@ -146,15 +146,6 @@ public class MainTest {
     }
 
     @Test
-    public void runCSV2AbstractException() throws Exception {
-        doThrow(new CSV2AbstractException("error")).when(main).run(optionSet);
-
-        main.run("arg");
-
-        verify(runtime).exit(ExitStatus.GENERAL_ERROR.getValue());
-    }
-
-    @Test
     public void runRuntimeException() throws Exception {
         doThrow(new RuntimeException()).when(main).run(optionSet);
 

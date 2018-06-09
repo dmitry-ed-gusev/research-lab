@@ -20,16 +20,6 @@ public class RestException extends RuntimeException {
         super(message, cause);
     }
 
-    /*
-    RestException(Throwable cause) {
-        super(cause);
-    }
-
-    RestException(ClientResponse response, String message) {
-        this(null, response, message);
-    }
-    */
-
     public RestException(JSONObject request, ClientResponse response, String message) {
         this(request, response, null, message);
     }

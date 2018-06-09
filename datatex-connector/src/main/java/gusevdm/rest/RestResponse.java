@@ -14,7 +14,7 @@ import javax.ws.rs.core.MultivaluedMap;
  */
 
 // todo: fix immutability!
-// todo: move to utilities module
+// todo: move to utilities module???
 public class RestResponse {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestResponse.class);

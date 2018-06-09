@@ -81,11 +81,12 @@ public class ConnectorEngine {
             List<String> values = (List<String>) this.options.valuesOf(OPTION_LUX_SHOW_TABLE.getName());
             // parse values
             Long datasetId = Long.parseLong(values.get(0));
-            LuxDataType dataType = LuxDataType.valueOf(values.get(1));
+            LuxDataType dataType = LuxDataType.getTypeByName(values.get(1));
             // get table from LuxMS dataset
-            this.luxRest.getDatasetTable(dataType, datasetId);
-            System.exit(444);
-            // todo: !!!
+            String datasetTable = this.luxRest.getDatasetTable(dataType, datasetId);
+
+            LOGGER.info(String.format("Content of table [%s] from dataset [%s]:\n%s",
+                    dataType, datasetId, datasetTable));
         }
 
         if (this.options.has(OPTION_LUX_IMPORT_DATASET.getName())) { // import dataset from CSV
