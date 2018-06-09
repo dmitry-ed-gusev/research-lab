@@ -14,7 +14,7 @@ public enum CommandLineOption {
     OPTION_LUX_CREATE_DATASET ("createds",        "Create dataset (by params) in LuxMS BI Server"),
     OPTION_LUX_DELETE_DATASET ("deleteds",        "Delete dataset (by ID) in LuxMS BI Server"),
     OPTION_LUX_SHOW_TABLE     ("showdstable",     "Show (print) contents of given table for given dataset (<dsId,table>)"),
-    OPTION_LUX_IMPORT_CSV     ("importcsv",       "Import data to LuxMS Server (DB)"),
+    OPTION_LUX_IMPORT_DATASET ("importds",        "Import dataset to LuxMS Server DB"),
 
     // options for DataTex system
     OPTION_DTEX_LIST_TABLES   ("listtables",      "List all tables in DataTex DBMS in a given schema");

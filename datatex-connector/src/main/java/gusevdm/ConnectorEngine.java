@@ -4,6 +4,7 @@ import gusevdm.datatexdb.DataTexDBClient;
 import gusevdm.luxms.LuxMSClient;
 import gusevdm.luxms.model.LuxDataSet;
 import gusevdm.luxms.LuxMSRestClient;
+import gusevdm.luxms.model.LuxDataType;
 import joptsimple.OptionSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import static gusevdm.helpers.CommandLineOption.*;
 import static gusevdm.luxms.model.LuxDataType.*;
 
 /** Engine class for DataTex Connector Utility. */
+// todo: move usage of LuxMS Rest client to LuxMS Engine
 public class ConnectorEngine {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEngine.class);
@@ -37,11 +39,6 @@ public class ConnectorEngine {
     @SuppressWarnings("unchecked")
     public void execute() {
         LOGGER.debug("ConnectorEngine.execute() is working.");
-
-        // todo: !!!
-        this.luxRest.getDatasetTable(METRICS, 1);
-        System.exit(444);
-        // todo: !!!
 
         if (this.options.has(OPTION_LUX_LIST_DATASETS.getName())) { // list datasets in LuxMS instance
             LOGGER.info("Listing datasets in LuxMS BI Server.");
@@ -76,7 +73,24 @@ public class ConnectorEngine {
             } catch (SQLException e) {
                 LOGGER.error("Can't get list of tables from DataTex DB!", e);
             }
+        }
 
+        if (this.options.has(OPTION_LUX_SHOW_TABLE.getName())) { // show one table from specified dataset
+            LOGGER.debug("Showing table from LuxMS BI Server dataset.");
+            // get values from cmd line option
+            List<String> values = (List<String>) this.options.valuesOf(OPTION_LUX_SHOW_TABLE.getName());
+            // parse values
+            Long datasetId = Long.parseLong(values.get(0));
+            LuxDataType dataType = LuxDataType.valueOf(values.get(1));
+            // get table from LuxMS dataset
+            this.luxRest.getDatasetTable(dataType, datasetId);
+            System.exit(444);
+            // todo: !!!
+        }
+
+        if (this.options.has(OPTION_LUX_IMPORT_DATASET.getName())) { // import dataset from CSV
+            LOGGER.debug("Importing dataset from CSV files.");
+            // todo: !!!
         }
 
     } // end of execute() method

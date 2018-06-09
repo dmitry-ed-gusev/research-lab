@@ -166,7 +166,7 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /***/
-    public void getDatasetTable(LuxDataType type, long datasetId) {
+    public String getDatasetTable(LuxDataType type, long datasetId) {
         LOGGER.debug("LuxMSRestClient.getDatasetTable() is working.");
 
         this.login();
@@ -175,6 +175,9 @@ public class LuxMSRestClient extends RestClient {
             "." + type.getTableName(), null, this.authHeader);
 
         System.out.println("-> " + response);
+
+        // todo: !!!!!!!
+        return null;
     }
 
     /***/

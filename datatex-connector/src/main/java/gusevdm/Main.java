@@ -50,17 +50,29 @@ public class Main {
         // not required options (optional). for required options just add .required() to the end
         parser.accepts(OPTION_LOG_LEVEL.getName(), OPTION_LOG_LEVEL.getDescription())                   // log level
                 .withRequiredArg().ofType(String.class);
+
         this.config = parser.accepts(OPTION_CONFIG_FILE.getName(), OPTION_CONFIG_FILE.getDescription()) // config file
                 .withRequiredArg().ofType(String.class);
-        parser.accepts(OPTION_LUX_LIST_DATASETS.getName(), OPTION_LUX_LIST_DATASETS.getDescription());          // list datasets
-        parser.accepts(OPTION_DTEX_LIST_TABLES.getName(), OPTION_DTEX_LIST_TABLES.getDescription());              // list DB tables
+
+        parser.accepts(OPTION_LUX_LIST_DATASETS.getName(), OPTION_LUX_LIST_DATASETS.getDescription());  // list datasets
+
+        parser.accepts(OPTION_DTEX_LIST_TABLES.getName(), OPTION_DTEX_LIST_TABLES.getDescription());    // list DB tables
         this.suffix = parser.accepts(OPTION_ENV_SUFFIX.getName(), OPTION_ENV_SUFFIX.getDescription())   // env suffix
                 .withRequiredArg().ofType(String.class);
-        parser.accepts(OPTION_LUX_DELETE_DATASET.getName(), OPTION_LUX_DELETE_DATASET.getDescription())         // delete dataset
+
+        parser.accepts(OPTION_LUX_DELETE_DATASET.getName(), OPTION_LUX_DELETE_DATASET.getDescription())  // delete dataset
                 .withRequiredArg().ofType(Long.class);
-        parser.accepts(OPTION_LUX_CREATE_DATASET.getName(), OPTION_LUX_CREATE_DATASET.getDescription())         // create dataset
+
+        parser.accepts(OPTION_LUX_CREATE_DATASET.getName(), OPTION_LUX_CREATE_DATASET.getDescription())  // create dataset
                 .withRequiredArg().ofType(String.class).withValuesSeparatedBy(",");
-        parser.accepts(OPTION_LUX_IMPORT_CSV.getName(), OPTION_LUX_IMPORT_CSV.getDescription());                // import LuxMS from CSV
+
+        // import dataset from CSV (parameter - name of dataset folder in [csv_import_dir])
+        parser.accepts(OPTION_LUX_IMPORT_DATASET.getName(), OPTION_LUX_IMPORT_DATASET.getDescription())
+                .withRequiredArg().ofType(String.class);
+
+        // show dataset table (parameters - dataset id and table name)
+        parser.accepts(OPTION_LUX_SHOW_TABLE.getName(), OPTION_LUX_SHOW_TABLE.getDescription())
+                .withRequiredArg().ofType(String.class).withValuesSeparatedBy(",");
     }
 
 
@@ -123,6 +135,8 @@ public class Main {
         if (StringUtils.isBlank(credentialsFile)) {
             credentialsFile = DEFAULT_CONFIG;
         }
+
+        // todo: loading environment -> move to ConnectorEngine
         // load environment for config
         LOGGER.debug(String.format("Using config file [%s].", credentialsFile));
         Environment.load(credentialsFile, optionSet.valueOf(this.suffix));

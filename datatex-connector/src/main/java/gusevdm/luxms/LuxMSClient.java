@@ -1,6 +1,7 @@
 package gusevdm.luxms;
 
 import gusevdm.Environment;
+import gusevdm.luxms.model.LuxDataType;
 import gusevdm.luxms.model.elements.LuxUnit;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
