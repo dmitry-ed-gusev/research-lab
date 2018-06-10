@@ -87,6 +87,11 @@ public class LuxUnit implements LuxModelInterface {
         return id;
     }
 
+    @Override
+    public String getStrId() {
+        return String.valueOf(this.id);
+    }
+
     public String getTitle() {
         return title;
     }

@@ -26,7 +26,6 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 // todo: move to utilities module
 // todo: migrate to latest Jersey Client version
 // todo: for Jersey update see: https://stackoverflow.com/questions/32042944/upgrade-from-jersey-client-1-9-to-jersey-client-2-8
-// todo: make methods public???
 
 public abstract class RestClient {
 
@@ -62,18 +61,18 @@ public abstract class RestClient {
         return this.buildResponse(null, response);
     }
 
-    RestResponse executePost(JSONObject entity) {
+    public RestResponse executePost(JSONObject entity) {
         LOGGER.debug("RestClient.executePost(JSONObject) is working.");
         return executePost(null, entity);
     }
 
-    RestResponse executePost(String resource, JSONObject entity) {
+    public RestResponse executePost(String resource, JSONObject entity) {
         LOGGER.debug("RestClient.executePost(String, JSONObject) is working.");
         return executePost(resource, entity, null, null);
     }
 
     /** Execute POST request with JSON entity. */
-    protected RestResponse executePost(String resource, JSONObject entity, Cookie cookie,
+    public RestResponse executePost(String resource, JSONObject entity, Cookie cookie,
                                      MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.executePost(String, JSONObject, Cookie, Headers) is working.");
         LOGGER.debug(
@@ -93,7 +92,7 @@ public abstract class RestClient {
     }
 
     /** Execute simple configurable POST request. */
-    protected RestResponse executePost(String resource, String entity, MediaType mediaType, Cookie cookie,
+    public RestResponse executePost(String resource, String entity, MediaType mediaType, Cookie cookie,
                                    MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.executeSimplePost(String, String, MediaType, Cookie, Headers) is working.");
         LOGGER.debug(
@@ -110,12 +109,12 @@ public abstract class RestClient {
         return this.buildResponse(null, response);
     }
 
-    protected RestResponse executePut(String resource, JSONObject entity) {
+    public RestResponse executePut(String resource, JSONObject entity) {
         LOGGER.debug("RestClient.executePut(String, JSONObject) is working.");
         return executePut(resource, entity, null, null);
     }
 
-    RestResponse executePut(String resource, JSONObject entity, Cookie cookie,
+    public RestResponse executePut(String resource, JSONObject entity, Cookie cookie,
                             MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.executePut(String, JSONObject, Cookie) is working.");
         LOGGER.debug(
@@ -132,7 +131,7 @@ public abstract class RestClient {
     }
 
     /** Execute DELETE HTTP method. */
-    protected RestResponse executeDelete(String resource, JSONObject entity, Cookie cookie,
+    public RestResponse executeDelete(String resource, JSONObject entity, Cookie cookie,
                                MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.executeDelete(String, JSONObject, Cookie) is working.");
         LOGGER.debug(

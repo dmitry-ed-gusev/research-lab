@@ -12,25 +12,25 @@ import java.util.Map;
 
 public class RestException extends RuntimeException {
 
-    public RestException(String message) {
-        super(message);
-    }
-
-    RestException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    private ClientResponse response;
 
     public RestException(JSONObject request, ClientResponse response, String message) {
         this(request, response, null, message);
+        this.response = response; // save response for later
     }
 
     private RestException(JSONObject request, ClientResponse response, JSONObject responseBody, String message) {
         super(prepareMessage(request, response, responseBody, message));
     }
 
+    public ClientResponse getResponse() {
+        return response;
+    }
+
+    /** Prepare message for RuntimeException class. */
     private static String prepareMessage(JSONObject request, ClientResponse response, JSONObject responseBody, String message) {
         StringBuilder fullMessage = new StringBuilder(message)
-                .append("\nReason: ").append(response.getStatus()).append(response.getClientResponseStatus().getReasonPhrase())
+                .append("\nReason: ").append(response.getStatus()).append(" ").append(response.getClientResponseStatus().getReasonPhrase())
                 .append("\nHeaders: ").append(multivalueMapToString(response.getHeaders()));
         if (request != null) {
             fullMessage.append("\nRequest body: ").append(request.toJSONString());
@@ -41,6 +41,7 @@ public class RestException extends RuntimeException {
         return fullMessage.toString();
     }
 
+    /***/
     private static String multivalueMapToString(MultivaluedMap<String, String> map){
         StringBuilder s = new StringBuilder();
         for (Map.Entry<String, List<String>> entry : map.entrySet()) {

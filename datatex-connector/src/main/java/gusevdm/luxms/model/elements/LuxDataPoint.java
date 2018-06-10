@@ -67,10 +67,10 @@ public class LuxDataPoint implements LuxModelInterface {
     public JSONObject getAsJSON() {
         JSONObject body = new JSONObject();
         body.put("id",        this.id > 0 ? this.id : "");
-        body.put("metric_d",  this.metricId);
+        body.put("metric_id", this.metricId);
         body.put("loc_id",    this.locationId);
         body.put("period_id", this.periodId);
-        body.put("value",     this.value);
+        body.put("val",       this.value);
         return body;
     }
 
@@ -81,6 +81,11 @@ public class LuxDataPoint implements LuxModelInterface {
 
     public long getId() {
         return id;
+    }
+
+    @Override
+    public String getStrId() {
+        return String.valueOf(this.id);
     }
 
     public long getMetricId() {

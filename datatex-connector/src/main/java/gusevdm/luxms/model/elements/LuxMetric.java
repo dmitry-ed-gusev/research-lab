@@ -77,7 +77,7 @@ public class LuxMetric implements LuxModelInterface {
         body.put("id",         this.id > 0 ? this.id : "");
         body.put("title",      this.title);
         body.put("tree_level", this.treeLevel);
-        body.put("parent_id",  this.parentId);
+        body.put("parent_id",  this.parentId <= 0 ? null : this.parentId);
         body.put("is_hidden",  this.isHidden ? 1 : 0);
         body.put("unit_id",    this.unitId);
         body.put("srt",        this.sortOrder);
@@ -91,6 +91,11 @@ public class LuxMetric implements LuxModelInterface {
 
     public long getId() {
         return id;
+    }
+
+    @Override
+    public String getStrId() {
+        return String.valueOf(this.id);
     }
 
     public String getTitle() {

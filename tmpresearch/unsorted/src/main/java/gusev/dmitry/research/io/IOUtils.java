@@ -21,7 +21,7 @@ public final class IOUtils {
      */
     // todo: implement!
     public void batchUppercaseFiles(String path) {
-        log.debug("IOUtils.batchUppercaseFiles() working");
+        log.debug("JIOUtils.batchUppercaseFiles() working");
 
         if (StringUtils.isBlank(path)) { // check value of input parameter
             throw new IllegalArgumentException("Empty path!");

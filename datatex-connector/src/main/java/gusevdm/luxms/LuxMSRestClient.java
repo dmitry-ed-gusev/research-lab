@@ -19,9 +19,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * LuxMS BI Server client.
- */
+/** LuxMS BI Server REST client. */
 public class LuxMSRestClient extends RestClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LuxMSRestClient.class);
@@ -63,6 +61,7 @@ public class LuxMSRestClient extends RestClient {
 
         if (this.identity != null && this.authHeader != null) { // check - are we already logged in?
             LOGGER.debug("Already logged in!");
+            return;
         }
 
         LOGGER.debug("Not logged in -> logging in...");
@@ -124,9 +123,11 @@ public class LuxMSRestClient extends RestClient {
 
         // create JSON for request
         JSONObject body = new JSONObject();
-        body.put("title", datasetTitle);
+        body.put("title",       datasetTitle);
         body.put("description", datasetDesc);
-        body.put("is_visible", isVisible ? 1 : 0);
+        body.put("is_visible",  isVisible ? 1 : 0);
+        body.put("is_db_ready", 1);
+        body.put("owner_user_id", 3);
         // execute request
         RestResponse response = this.executePost(LUXMS_DATASETS_PATH, body, null, this.authHeader);
         // parse response and return object
@@ -134,7 +135,7 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /** Remove dataset by id, return id of removed dataset. */
-    // todo: catch error if dataset does't exit?
+    // todo: catch error if dataset doesn't exit?
     // todo: check if dataset exists before deletion?
     public long removeDataset(long id) {
         LOGGER.debug(String.format("LuxMSRestClient.removeDataset(long) is working. ID = [%s].", id));
@@ -185,14 +186,42 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /***/
-    public void addTableEntry(long datasetId, LuxModelInterface model) {
+    public void addTableEntry(long datasetId, LuxModelInterface model, boolean updateIfExists) {
         LOGGER.debug("LuxMSRestClient.addTableEntry() is working.");
-        throw new NotImplementedException("Not implemented yet!");
+
+        this.login();
+
+        // build path
+        String urlPath = LUXMS_API_ENTRY + "/" + datasetId + "." + model.getDataType().getTableName();
+        // try to add (insert) item
+        try {
+
+            RestResponse response = this.executePost(urlPath, model.getAsJSON(), null, this.authHeader);
+            System.out.println("===> " + response);
+
+        } catch (RestException e) { // catch REST exception and process it
+            int status = e.getResponse().getStatus();
+            if (status == 409 && updateIfExists) { // try to UPDATE
+                LOGGER.debug("Got status [409 Conflict]. Trying to update instead of insert.");
+                this.updateTableEntry(datasetId, model);
+            } else { // if status <> 409 or don't update if exists -> re-throw exception
+                throw e;
+            }
+        }
     }
 
     /***/
     public void updateTableEntry(long datasetId, LuxModelInterface model) {
-        throw new NotImplementedException("Not implemented yet!");
+        LOGGER.debug("LuxMSRestClient.updateTableEntry() is working");
+
+        this.login();
+
+        // build path
+        String urlPath = LUXMS_API_ENTRY + "/" + datasetId + "." + model.getDataType().getTableName() +
+                "/" + model.getStrId();
+        // update item via REST
+        RestResponse response = this.executePut(urlPath, model.getAsJSON(), null, this.authHeader);
+        System.out.println("===> " + response);
     }
 
     /***/

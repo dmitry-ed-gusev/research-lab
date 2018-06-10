@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class IOUtilsTest {
+public class JIOUtilsTest {
 
     @Test
     public void testWriteLongToFile() {
@@ -16,7 +16,7 @@ public class IOUtilsTest {
     @Test
     public void testReadLongFromFile() throws IOException {
         assertEquals("Read invalid value!", 234,
-                IOUtils.readLongFromFile("src/test/resources/long_value.txt"));
+                JIOUtils.readLongFromFile("src/test/resources/long_value.txt"));
     }
 
 }

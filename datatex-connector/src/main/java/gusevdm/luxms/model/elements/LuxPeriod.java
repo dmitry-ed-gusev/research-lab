@@ -77,7 +77,12 @@ public class LuxPeriod implements LuxModelInterface {
     }
 
     public String getId() {
-        return id;
+        return this.id;
+    }
+
+    @Override
+    public String getStrId() {
+        return this.id;
     }
 
     public String getTitle() {

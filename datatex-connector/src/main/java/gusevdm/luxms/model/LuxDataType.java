@@ -4,8 +4,9 @@ import gusevdm.luxms.model.elements.*;
 import org.apache.commons.lang3.StringUtils;
 
 public enum LuxDataType {
-    METRICS   ("metrics",   "metrics.csv",   LuxMetric.FILE_HEADER,    "metric_id"),
+    // order of elements is important
     UNITS     ("units",     "units.csv",     LuxUnit.FILE_HEADER,      "???"),
+    METRICS   ("metrics",   "metrics.csv",   LuxMetric.FILE_HEADER,    "metric_id"),
     LOCATIONS ("locations", "locations.csv", LuxLocation.FILE_HEADER,  "loc_id"),
     PERIODS   ("periods",   "periods.csv",   LuxPeriod.FILE_HEADER,    "period_id"),
     DATA      ("data",      "data.csv",      LuxDataPoint.FILE_HEADER, "???");

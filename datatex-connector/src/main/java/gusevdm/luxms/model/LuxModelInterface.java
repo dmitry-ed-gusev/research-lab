@@ -8,10 +8,9 @@ import java.util.List;
 /***/
 public interface LuxModelInterface {
 
-    JSONObject getAsJSON();    // get object as a JSON
+    JSONObject  getAsJSON();   // get object as a JSON
 
     LuxDataType getDataType(); // get type of object
 
-    //String[] getCSVHeader();   // header for CSV file for loading
-
+    String      getStrId();    // get string representation of ID (for REST paths)
 }
