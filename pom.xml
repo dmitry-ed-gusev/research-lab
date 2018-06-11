@@ -51,6 +51,7 @@
         <hibernate.version>5.0.6.Final</hibernate.version>
         <!-- DBMS drivers versions -->
         <dbms.derby.version>10.13.1.1</dbms.derby.version>
+        <dbms.oracle.version>12.2.0.1.0</dbms.oracle.version>
         <!-- my own (local) utilities library useful version -->
         <dgusev.utilities.version>1.0</dgusev.utilities.version>
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
@@ -79,6 +80,11 @@
             <id>alt-repo-3</id>
             <name>Alt repo #3</name>
             <url>http://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>alt-repo-4</id>
+            <name>Alt repo #4</name>
+            <url>https://mvnrepository.com/artifact/org.apache.commons/commons-csv</url>
         </repository>
     </repositories>
 
