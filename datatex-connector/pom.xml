@@ -20,18 +20,15 @@
         <datatex.main.class>gusevdm.Main</datatex.main.class>
         <skipCoverageReport>false</skipCoverageReport>
         <skipIntegrationTests>true</skipIntegrationTests>
-        <!-- Properties for SSH deploy -->
-        <skipDeploy>true</skipDeploy>
-        <!--<host>[specify host with -Dhost=host]</host>
-        <port>22</port>
-        <user>[specify user with -Duser=user]</user>
-        <pass>[specify pass with -Dpass=pass]</pass>
-        <path>[specify path with -Dpath=path]</path>-->
-        <host>10.</host>
+
+        <!-- by default we skip deploy to remote host through SSH, to turn it on use: -Dskip.deploy=false -->
+        <skip.deploy>true</skip.deploy>
+        <!-- remote host properties for deploy through SSH -->
+        <host>10.61.1.51</host>
         <port>22</port>
         <user>bi</user>
         <pass>bi</pass>
-        <path>[specify path with -Dpath=path]</path>
+        <path>/home/bi</path>
     </properties>
 
     <!-- datatex-connector build properties-->
@@ -90,6 +87,7 @@
             <!-- copying other files -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven.plugin.antrun}</version>
                 <executions>
                     <execution>
                         <id>copy-files</id>
@@ -97,23 +95,78 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <tasks>
+                                <copy todir="${app.assembly.dir}" flatten="false" overwrite="true"
+                                      verbose="true" failonerror="true">
+                                    <fileset dir="${basedir}" includes="versions.txt"/>
+                                    <fileset dir="${basedir}" includes="readme.txt"/>
+                                    <fileset dir="${basedir}" includes="environment.yml"/>
+                                    <fileset dir="${basedir}" includes="connector.sh"/>
+                                    <fileset dir="${basedir}" includes="logs/**"/>
+                                    <fileset dir="${basedir}" includes="csv_import/**"/>
+                                    <fileset dir="${basedir}" includes="csv_export/**"/>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+
+                    <!-- deploy app on target server (via ssh/scp) -->
+                    <execution>
+                        <id>project-deploy-app</id>
+                        <phase>${prod.deploy.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks unless="${skip.deploy}">
+                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                         command="mkdir -p ${path}/datatexdir" trust="yes"/>
+                                <!-- remove previously deployed app -->
+                                <!--<sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                         command="rm -f -r ${path}/${app.base.name}" trust="yes"/>-->
+                                <!-- make remote dir(s) (no fail if exists) -->
+                                <!--
+                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                         command="mkdir -p ${path}/bigdata/${project.artifactId}" trust="yes"/>
+                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                         command="mkdir -p ${path}/bigdata/${project.artifactId}/${rawdata.dir}/"
+                                         trust="yes"/>
+                                 -->
+                                <!-- deploy (copy) application -->
+                                <!--
+                                <scp todir="${user}:${pass}@${host}:${path}" port="${port}" trust="yes" failonerror="false">
+                                    <fileset dir="${basedir}" includes="*/**">
+                                        <exclude name="**/${dependencies.output.dir}/**"/>
+                                    </fileset>
+                                </scp>
+                                -->
+                                <!-- copy rawdata for task/module to cluster -->
+                                <!--
+                                <scp todir="${user}:${pass}@${host}:${path}/bigdata/${project.artifactId}/${rawdata.dir}"
+                                     port="${port}" trust="yes" failonerror="false">
+                                    <fileset dir="${basedir}/${rawdata.dir}"/>
+                                </scp>
+                                -->
+                            </tasks>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <tasks>
-                        <copy todir="${app.assembly.dir}" flatten="false" overwrite="true"
-                              verbose="true" failonerror="true">
-                            <fileset dir="${basedir}" includes="versions.txt"/>
-                            <fileset dir="${basedir}" includes="readme.txt"/>
-                            <fileset dir="${basedir}" includes="environment.yml"/>
-                            <fileset dir="${basedir}" includes="connector.sh"/>
-                            <fileset dir="${basedir}" includes="logs/**"/>
-                            <fileset dir="${basedir}" includes="csv_import/**"/>
-                            <fileset dir="${basedir}" includes="csv_export/**"/>
-                        </copy>
-                    </tasks>
-                </configuration>
+                <!-- dependencies for ant scp impl, antrun plugin doesn't use os's scp -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>${jsch.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>${ant.jsch.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
+
         </plugins>
     </build>
 
@@ -241,30 +294,36 @@
                             <!-- deploy app on target server (via ssh/scp) -->
                             <execution>
                                 <id>project-deploy-app</id>
-                                <phase>${prod.deploy.phase}</phase>
+                                <!--<phase>${prod.deploy.phase}</phase>-->
+                                <phase>install</phase>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <!-- make remote dir(s) (no fail if exists) -->
                                         <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                                 command="mkdir -p ${path}/zzz" trust="yes"/>
+                                        <!-- remove previously deployed app -->
+                                        <!--<sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                                 command="rm -f -r ${path}/${app.base.name}" trust="yes"/>-->
+
+                                        <!-- make remote dir(s) (no fail if exists) -->
+                                        <!--<sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
                                                  command="mkdir -p ${path}/bigdata/${project.artifactId}" trust="yes"/>
                                         <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
                                                  command="mkdir -p ${path}/bigdata/${project.artifactId}/${rawdata.dir}/"
-                                                 trust="yes"/>
-                                        <!-- copy module files to cluster (deploy) -->
-                                        <scp todir="${user}:${pass}@${host}:${path}/bigdata/${project.artifactId}"
-                                             port="${port}" trust="yes" failonerror="false">
-                                            <fileset dir="${assembly.dir}">
-                                                <exclude name="**/${dependencies.output.dir}/**"/>
+                                                 trust="yes"/>-->
+                                        <!-- deploy (copy) application -->
+                                        <scp todir="${user}:${pass}@${host}:${path}" port="${port}" trust="yes" failonerror="false">
+                                            <fileset dir="${basedir}" includes="*/**">
+                                                <!--<exclude name="**/${dependencies.output.dir}/**"/>-->
                                             </fileset>
                                         </scp>
                                         <!-- copy rawdata for task/module to cluster -->
-                                        <scp todir="${user}:${pass}@${host}:${path}/bigdata/${project.artifactId}/${rawdata.dir}"
+                                        <!--<scp todir="${user}:${pass}@${host}:${path}/bigdata/${project.artifactId}/${rawdata.dir}"
                                              port="${port}" trust="yes" failonerror="false">
                                             <fileset dir="${basedir}/${rawdata.dir}"/>
-                                        </scp>
+                                        </scp>-->
                                     </target>
                                 </configuration>
                             </execution>

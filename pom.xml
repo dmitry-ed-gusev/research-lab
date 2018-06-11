@@ -287,8 +287,8 @@
             <properties>
                 <env>prod</env>
                 <prod.build.phase>package</prod.build.phase>
-                <!--<prod.deploy.phase>install</prod.deploy.phase>-->
-                <prod.deploy.phase>none</prod.deploy.phase>
+                <prod.deploy.phase>install</prod.deploy.phase>
+                <!--<prod.deploy.phase>none</prod.deploy.phase>-->
             </properties>
             <!-- modules to build -->
             <modules>
