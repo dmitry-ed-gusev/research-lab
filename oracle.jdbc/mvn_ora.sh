@@ -4,6 +4,6 @@
 # todo: check if oracle driver is installed and (if not) - install it (during build).
 
 echo
-echo Install Oracle JDBC Driver, ver. 12.2.0.1.0
+echo Installing Oracle JDBC Driver, ver. 12.2.0.1.0
 mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc8 \
      -Dversion=12.2.0.1.0 -Dpackaging=jar -Dfile=ojdbc8.jar -DgeneratePom=true
