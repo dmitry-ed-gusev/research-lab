@@ -120,34 +120,16 @@
                         </goals>
                         <configuration>
                             <tasks unless="${skip.deploy}">
-                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
-                                         command="mkdir -p ${path}/datatexdir" trust="yes"/>
                                 <!-- remove previously deployed app -->
-                                <!--<sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
-                                         command="rm -f -r ${path}/${app.base.name}" trust="yes"/>-->
-                                <!-- make remote dir(s) (no fail if exists) -->
-                                <!--
                                 <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
-                                         command="mkdir -p ${path}/bigdata/${project.artifactId}" trust="yes"/>
+                                         command="rm -f -r ${path}/${app.base.name}" trust="yes"/>
+                                <!-- create dir for new version of app -->
                                 <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
-                                         command="mkdir -p ${path}/bigdata/${project.artifactId}/${rawdata.dir}/"
-                                         trust="yes"/>
-                                 -->
+                                         command="mkdir -p ${path}/${app.base.name}" trust="yes"/>
                                 <!-- deploy (copy) application -->
-                                <!--
-                                <scp todir="${user}:${pass}@${host}:${path}" port="${port}" trust="yes" failonerror="false">
-                                    <fileset dir="${basedir}" includes="*/**">
-                                        <exclude name="**/${dependencies.output.dir}/**"/>
-                                    </fileset>
+                                <scp todir="${user}:${pass}@${host}:${path}/${app.base.name}" port="${port}" trust="yes" failonerror="false">
+                                    <fileset dir="${basedir}/${app.base.name}" includes="*/**"/>
                                 </scp>
-                                -->
-                                <!-- copy rawdata for task/module to cluster -->
-                                <!--
-                                <scp todir="${user}:${pass}@${host}:${path}/bigdata/${project.artifactId}/${rawdata.dir}"
-                                     port="${port}" trust="yes" failonerror="false">
-                                    <fileset dir="${basedir}/${rawdata.dir}"/>
-                                </scp>
-                                -->
                             </tasks>
                         </configuration>
                     </execution>
