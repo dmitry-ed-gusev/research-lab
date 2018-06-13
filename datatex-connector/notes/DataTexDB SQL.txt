@@ -1,31 +1,59 @@
-Все транзакции в системе диспетчирования за 2017 год
+--------------------------------------------------------------------------------
+Все транзакции в системе диспетчирования за 2017 год:
 
-select min(To_char(progressstartprocessdate, 'DD.MM.YYYY')||' '||To_char(progressstartprocesstime, 'HH24:Mi:SS')) as STARTTIME,
-eprog.etime as ENDTIME,
-sprog.groupstepnumber as STEPNUMBER,
-sprog.operationcode as OPERATION,
-tabl.art as ITEMCODE,
-sprog.machinecode as MACHINE,
-sprog.productionordercode as ORDERCODE,
-round(pprog.qty) as STEPQUANTITY,
-pprog.uom as UOM,
-tabl.custorder as CUSTOMERORDER
-from productionprogress sprog left join (select productionordercode, groupstepnumber, max(To_char(progressenddate, 'DD.MM.YYYY')||' '||To_char(progressendtime, 'HH24:Mi:SS'))  as etime from productionprogress where progresstemplatecode = 'E1' group by productionordercode, groupstepnumber) eprog on sprog.productionordercode = eprog.productionordercode and sprog.groupstepnumber = eprog.groupstepnumber
-left join (select productionordercode, groupstepnumber, primaryuomcode as uom, sum(primaryqty) as qty from productionprogress where progresstemplatecode in ('P1', 'E1') group by productionordercode, primaryuomcode, groupstepnumber) pprog on sprog.productionordercode = pprog.productionordercode and sprog.groupstepnumber = pprog.groupstepnumber,
-(select a.productionordercode, b.subcode01||'-'||b.subcode02||'-'||b.subcode03||'-'||b.subcode04||'-'||b.subcode05||'-'||b.subcode06 as art, b.dlvsalorderlinesalesordercode as custorder from productiondemandstep a, productiondemand b where a.productiondemandcode = b.code and a.productiondemandcountercode = b.countercode group by a.productionordercode, b.subcode01||'-'||b.subcode02||'-'||b.subcode03||'-'||b.subcode04||'-'||b.subcode05||'-'||b.subcode06, b.dlvsalorderlinesalesordercode) tabl
+select
+    min(to_char(progressstartprocessdate, 'DD.MM.YYYY')||' '||to_char(progressstartprocesstime, 'HH24:Mi:SS')) as STARTTIME,
+    eprog.etime               as ENDTIME,
+    sprog.groupstepnumber     as STEPNUMBER,
+    sprog.operationcode       as OPERATION,
+    tabl.art                  as ITEMCODE,
+    sprog.machinecode         as MACHINE,
+    sprog.productionordercode as ORDERCODE,
+    round(pprog.qty)          as STEPQUANTITY,
+    pprog.uom                 as UOM,
+    tabl.custorder            as CUSTOMERORDER
 
-where tabl.productionordercode = sprog.productionordercode
-and sprog.progresstemplatecode = 'S1'
-and to_char(sprog.creationdatetime, 'YYYY') in ('2017')
-group by eprog.etime,
-sprog.groupstepnumber,
-sprog.operationcode,
-tabl.art,
-sprog.machinecode,
-sprog.productionordercode,
-round(pprog.qty),
-pprog.uom,
-tabl.custorder
+from
+    -- original table [Production Progress]
+    productionprogress sprog
+
+    -- alias EPROG: self join on [productionordercode, groupstepnumber] -> for operation end time
+    left join (
+        -- gets end time for order and step
+        select productionordercode, groupstepnumber,
+            max(to_char(progressenddate, 'DD.MM.YYYY')||' '||To_char(progressendtime, 'HH24:Mi:SS')) as etime
+        from productionprogress
+        where progresstemplatecode = 'E1'
+        group by productionordercode, groupstepnumber
+    ) eprog on sprog.productionordercode = eprog.productionordercode and sprog.groupstepnumber = eprog.groupstepnumber
+
+    -- alias PPROG: self join on [productionordercode, groupstepnumber] -> for operation total quantity (sum)
+    left join (
+        -- gets total quantity (sum) for order and step
+        select productionordercode, groupstepnumber, primaryuomcode as uom, sum(primaryqty) as qty
+        from productionprogress
+        where progresstemplatecode in ('P1', 'E1')
+        group by productionordercode, primaryuomcode, groupstepnumber
+    ) pprog on sprog.productionordercode = pprog.productionordercode and sprog.groupstepnumber = pprog.groupstepnumber
+
+    -- alias TABL: join with other tables on [productionordercode] -> for customer order and article number
+    left join (
+        select a.productionordercode, b.dlvsalorderlinesalesordercode as custorder,
+            b.subcode01||'-'||b.subcode02||'-'||b.subcode03||'-'||b.subcode04||'-'||b.subcode05||'-'||b.subcode06 as art
+        from productiondemandstep a, productiondemand b
+        where a.productiondemandcode = b.code and a.productiondemandcountercode = b.countercode
+        group by a.productionordercode, b.dlvsalorderlinesalesordercode,
+            b.subcode01||'-'||b.subcode02||'-'||b.subcode03||'-'||b.subcode04||'-'||b.subcode05||'-'||b.subcode06
+    ) tabl on tabl.productionordercode = sprog.productionordercode
+
+-- get dispatching transactions for concrete year
+where sprog.progresstemplatecode = 'S1' and to_char(sprog.creationdatetime, 'YYYY') in ('2017')
+
+group by eprog.etime, sprog.groupstepnumber, sprog.operationcode, tabl.art, sprog.machinecode,
+    sprog.productionordercode, round(pprog.qty), pprog.uom, tabl.custorder
+
+order by itemcode, machine
+
 --------------------------------------------------------------------------------
 Departments
 select
