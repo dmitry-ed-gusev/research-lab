@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.SQLException;
+import java.text.ParseException;
 
 import static com.sun.org.apache.xalan.internal.xsltc.dom.CollatorFactoryBase.DEFAULT_LOCALE;
 import static gusevdm.helpers.CommandLineOption.*;
@@ -73,6 +75,9 @@ public class Main {
         // show dataset table (parameters - dataset id and table name)
         parser.accepts(OPTION_LUX_SHOW_TABLE.getName(), OPTION_LUX_SHOW_TABLE.getDescription())
                 .withRequiredArg().ofType(String.class).withValuesSeparatedBy(",");
+
+        // Load data from DataTex to LuxMS BI system
+        parser.accepts(OPTION_LOAD_DATA_TO_BI.getName(), OPTION_LOAD_DATA_TO_BI.getDescription());
     }
 
 
@@ -116,7 +121,7 @@ public class Main {
     }
 
     /** Real run() - after all initializations. */
-    void run(OptionSet optionSet) throws IOException {
+    void run(OptionSet optionSet) throws IOException, SQLException, ParseException {
         LOGGER.debug("Main.run(OptionSet) is working.");
 
         // select config file (default or provided via cmd line option)

@@ -40,11 +40,11 @@ public class LuxDataPoint implements LuxModelInterface {
     private final long       id;
     private final long       metricId;
     private final long       locationId;
-    private final String     periodId;
+    private final long       periodId;
     private final BigDecimal value;
 
     /***/
-    public LuxDataPoint(long id, long metricId, long locationId, String periodId, BigDecimal value) {
+    public LuxDataPoint(long id, long metricId, long locationId, long periodId, BigDecimal value) {
         this.id = id;
         this.metricId = metricId;
         this.locationId = locationId;
@@ -57,7 +57,7 @@ public class LuxDataPoint implements LuxModelInterface {
         this.id         = Long.parseLong(record.get(CSV_HEADER_ID));
         this.metricId   = Long.parseLong(record.get(CSV_HEADER_METRIC_ID));
         this.locationId = Long.parseLong(record.get(CSV_HEADER_LOCATION_ID));
-        this.periodId   = record.get(CSV_HEADER_PERIOD_ID);
+        this.periodId   = Long.parseLong(record.get(CSV_HEADER_PERIOD_ID));
         this.value      = new BigDecimal(record.get(CSV_HEADER_VALUE));
     }
 
@@ -96,7 +96,7 @@ public class LuxDataPoint implements LuxModelInterface {
         return locationId;
     }
 
-    public String getPeriodId() {
+    public long getPeriodId() {
         return periodId;
     }
 

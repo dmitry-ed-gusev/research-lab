@@ -1,20 +1,21 @@
 package gusevdm;
 
 import gusevdm.datatexdb.DataTexDBClient;
-import gusevdm.luxms.LuxMSClient;
+import gusevdm.luxms.LuxClient;
 import gusevdm.luxms.model.LuxDataSet;
-import gusevdm.luxms.LuxMSRestClient;
+import gusevdm.luxms.LuxRestClient;
 import gusevdm.luxms.model.LuxDataType;
+import gusevdm.luxms.model.LuxModel;
 import joptsimple.OptionSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 
 import static gusevdm.helpers.CommandLineOption.*;
-import static gusevdm.luxms.model.LuxDataType.*;
 
 /** Engine class for DataTex Connector Utility. */
 // todo: move usage of LuxMS Rest client to LuxMS Engine
@@ -23,22 +24,22 @@ public class ConnectorEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEngine.class);
 
     private final OptionSet       options;
-    private final LuxMSRestClient luxRest;
-    private final LuxMSClient     luxmsClient;
+    private final LuxRestClient luxRest;
+    private final LuxClient luxmsClient;
     private final DataTexDBClient datatexClient;
 
     /***/
     public ConnectorEngine(OptionSet options) {
         LOGGER.debug("ConnectorEngine constructor() is working.");
         this.options       = options;
-        this.luxRest       = new LuxMSRestClient();
-        this.luxmsClient   = new LuxMSClient();
+        this.luxRest       = new LuxRestClient();
+        this.luxmsClient   = new LuxClient();
         this.datatexClient = new DataTexDBClient();
     }
 
     /***/
     @SuppressWarnings("unchecked")
-    public void execute() throws IOException {
+    public void execute() throws IOException, SQLException, ParseException {
         LOGGER.debug("ConnectorEngine.execute() is working.");
 
         if (this.options.has(OPTION_LUX_LIST_DATASETS.getName())) { // list datasets in LuxMS instance
@@ -97,6 +98,15 @@ public class ConnectorEngine {
             this.luxmsClient.loadFromCSV(datasetName);
         }
 
+        if (this.options.has(OPTION_LOAD_DATA_TO_BI.getName())) { // load data from DataTex to LuxMS BI
+            LOGGER.debug("Loading data from DataTex DB into LuxMS BI system.");
+
+            // get data from DataTex DBMS
+            LuxModel model = this.datatexClient.getLuxModelForReport1();
+            // load data into LuxMS BI system
+            this.luxmsClient.loadFromModel(model, 11);
+
+        }
     } // end of execute() method
 
 }

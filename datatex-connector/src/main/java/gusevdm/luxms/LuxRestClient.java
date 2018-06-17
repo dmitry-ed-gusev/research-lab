@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** LuxMS BI Server REST client. */
-public class LuxMSRestClient extends RestClient {
+public class LuxRestClient extends RestClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LuxMSRestClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LuxRestClient.class);
 
     // paths for REST client
     private static final String LUXMS_LOGIN_PATH     = "/auth/login";
@@ -42,8 +42,8 @@ public class LuxMSRestClient extends RestClient {
     private MultivaluedMap<String, String> authHeader = null;
 
     /** Create instance of LuxMS RESt client, init identity info from environment. */
-    public LuxMSRestClient() {
-        LOGGER.debug("LuxMSRestClient constructor() is working.");
+    public LuxRestClient() {
+        LOGGER.debug("LuxRestClient constructor() is working.");
         Environment env = Environment.getInstance();
         this.path = env.getLuxMSURL();
         this.user = env.getLuxMSUser();
@@ -51,13 +51,13 @@ public class LuxMSRestClient extends RestClient {
     }
 
     /**
-     * Login to LuxMS BI server and set {@link LuxMSRestClient#authHeader}.
+     * Login to LuxMS BI server and set {@link LuxRestClient#authHeader}.
      * @throws RestException on request execution error
      */
     // todo: take a look at [social networks] module - save api key and reuse it
     // todo: review logging for this method
     private void login() {
-        LOGGER.debug("LuxMSRestClient.login() is working.");
+        LOGGER.debug("LuxRestClient.login() is working.");
 
         if (this.identity != null && this.authHeader != null) { // check - are we already logged in?
             LOGGER.debug("Already logged in!");
@@ -91,7 +91,7 @@ public class LuxMSRestClient extends RestClient {
         } else {
             LOGGER.info("Authorization successful. ");
             this.authHeader = new MultivaluedHashMap<String, String>() {{
-               add(LUXMS_SESSION_HEADER, LuxMSRestClient.this.identity);
+               add(LUXMS_SESSION_HEADER, LuxRestClient.this.identity);
             }};
         }
     }
@@ -99,7 +99,7 @@ public class LuxMSRestClient extends RestClient {
     /** Lists system datasets (according to provileges). */
     @SuppressWarnings("unchecked")
     public List<LuxDataSet> listDatasets() {
-        LOGGER.debug("LuxMSRestClient.listDatasets() is working.");
+        LOGGER.debug("LuxRestClient.listDatasets() is working.");
 
         this.login();
 
@@ -117,7 +117,7 @@ public class LuxMSRestClient extends RestClient {
     /** Create new dataset. LuxDataSet object with created dataset is returned (in case of success). */
     @SuppressWarnings("unchecked")
     public LuxDataSet createDataset(String datasetTitle, String datasetDesc, boolean isVisible) {
-        LOGGER.debug("LuxMSRestClient.createDataset() is working.");
+        LOGGER.debug("LuxRestClient.createDataset() is working.");
 
         this.login();
 
@@ -138,7 +138,7 @@ public class LuxMSRestClient extends RestClient {
     // todo: catch error if dataset doesn't exit?
     // todo: check if dataset exists before deletion?
     public long removeDataset(long id) {
-        LOGGER.debug(String.format("LuxMSRestClient.removeDataset(long) is working. ID = [%s].", id));
+        LOGGER.debug(String.format("LuxRestClient.removeDataset(long) is working. ID = [%s].", id));
 
         this.login();
 
@@ -151,25 +151,25 @@ public class LuxMSRestClient extends RestClient {
 
     /***/
     public void updateDataset() {
-        LOGGER.debug("LuxMSRestClient.updateDataset() is working.");
+        LOGGER.debug("LuxRestClient.updateDataset() is working.");
         throw new NotImplementedException("Not implemented yet!");
     }
 
     /***/
     public void hideDataset(){
-        LOGGER.debug("LuxMSRestClient.hideDataset() is working.");
+        LOGGER.debug("LuxRestClient.hideDataset() is working.");
         throw new NotImplementedException("Not implemented yet!");
     }
 
     /***/
     public void linkDatasetToGroup() {
-        LOGGER.debug("LuxMSRestClient.linkDatasetToGroup() is working.");
+        LOGGER.debug("LuxRestClient.linkDatasetToGroup() is working.");
         throw new NotImplementedException("Not implemented yet!");
     }
 
     /***/
     public String getDatasetTable(LuxDataType type, long datasetId) {
-        LOGGER.debug("LuxMSRestClient.getDatasetTable() is working.");
+        LOGGER.debug("LuxRestClient.getDatasetTable() is working.");
 
         this.login();
 
@@ -187,7 +187,7 @@ public class LuxMSRestClient extends RestClient {
 
     /***/
     public void addTableEntry(long datasetId, LuxModelInterface model, boolean updateIfExists) {
-        LOGGER.debug("LuxMSRestClient.addTableEntry() is working.");
+        LOGGER.debug("LuxRestClient.addTableEntry() is working.");
 
         this.login();
 
@@ -212,7 +212,7 @@ public class LuxMSRestClient extends RestClient {
 
     /***/
     public void updateTableEntry(long datasetId, LuxModelInterface model) {
-        LOGGER.debug("LuxMSRestClient.updateTableEntry() is working");
+        LOGGER.debug("LuxRestClient.updateTableEntry() is working");
 
         this.login();
 

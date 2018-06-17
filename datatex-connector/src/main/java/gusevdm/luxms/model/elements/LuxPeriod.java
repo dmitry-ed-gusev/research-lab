@@ -3,14 +3,14 @@ package gusevdm.luxms.model.elements;
 import gusevdm.luxms.model.LuxDataType;
 import gusevdm.luxms.model.LuxModelInterface;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.json.simple.JSONObject;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static gusevdm.luxms.LuxDefaults.LUX_DATE_FORMAT;
 
 /**
  * Period for LuxMS system (When?).
@@ -25,8 +25,6 @@ import java.util.Date;
 
 public class LuxPeriod implements LuxModelInterface {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
     // CSV headers
     private static final String CSV_HEADER_ID          = "ID";
     private static final String CSV_HEADER_TITLE       = "TITLE";
@@ -39,13 +37,13 @@ public class LuxPeriod implements LuxModelInterface {
     };
 
     // internal state
-    private final String        id;
+    private final long        id;
     private final String        title;
     private final Date          startDate;
     private final LuxPeriodType periodType;
 
     /***/
-    public LuxPeriod(String id, String title, Date startDate, LuxPeriodType periodType) {
+    public LuxPeriod(long id, String title, Date startDate, LuxPeriodType periodType) {
         this.id = id;
         this.title = title;
         this.startDate = startDate;
@@ -54,9 +52,9 @@ public class LuxPeriod implements LuxModelInterface {
 
     /***/
     public LuxPeriod(CSVRecord record) throws ParseException {
-        this.id         = record.get(CSV_HEADER_ID);
+        this.id         = Long.parseLong(record.get(CSV_HEADER_ID));
         this.title      = record.get(CSV_HEADER_TITLE);
-        this.startDate  = DATE_FORMAT.parse(record.get(CSV_START_TIME));
+        this.startDate  = LUX_DATE_FORMAT.parse(record.get(CSV_START_TIME));
         this.periodType = LuxPeriodType.getTypeByName(record.get(CSV_PERIOD_TYPE));
     }
 
@@ -64,9 +62,9 @@ public class LuxPeriod implements LuxModelInterface {
     @Override
     public JSONObject getAsJSON() {
         JSONObject body = new JSONObject();
-        body.put("id",          StringUtils.isBlank(this.id) ? "" : this.id);
+        body.put("id",          this.id > 0 ? this.id : "");
         body.put("title",       this.title);
-        body.put("start_time",  DATE_FORMAT.format(this.startDate));
+        body.put("start_time",  LUX_DATE_FORMAT.format(this.startDate));
         body.put("period_type", this.periodType.getValue());
         return body;
     }
@@ -76,13 +74,13 @@ public class LuxPeriod implements LuxModelInterface {
         return LuxDataType.PERIODS;
     }
 
-    public String getId() {
+    public long getId() {
         return this.id;
     }
 
     @Override
     public String getStrId() {
-        return this.id;
+        return String.valueOf(this.id);
     }
 
     public String getTitle() {

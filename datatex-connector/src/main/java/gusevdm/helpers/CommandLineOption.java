@@ -17,7 +17,8 @@ public enum CommandLineOption {
     OPTION_LUX_IMPORT_DATASET ("importds",        "Import dataset to LuxMS Server DB"),
 
     // options for DataTex system
-    OPTION_DTEX_LIST_TABLES   ("listtables",      "List all tables in DataTex DBMS in a given schema");
+    OPTION_DTEX_LIST_TABLES   ("listtables",      "List all tables in DataTex DBMS in a given schema"),
+    OPTION_LOAD_DATA_TO_BI    ("loadtobi",        "Load data from DataTex DBMS to LuxMS BI system");
 
     private final String name;
     private final String description;

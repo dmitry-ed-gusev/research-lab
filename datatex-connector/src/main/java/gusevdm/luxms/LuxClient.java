@@ -2,11 +2,11 @@ package gusevdm.luxms;
 
 import gusev.dmitry.jtils.utils.JIOUtils;
 import gusevdm.Environment;
-import gusevdm.luxms.model.LuxDataSet;
 import gusevdm.luxms.model.LuxDataType;
+import gusevdm.luxms.model.LuxModel;
 import gusevdm.luxms.model.LuxModelFactory;
 import gusevdm.luxms.model.LuxModelInterface;
-import gusevdm.luxms.model.elements.LuxUnit;
+import gusevdm.luxms.model.elements.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -15,35 +15,36 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static gusevdm.ConnectorDefaults.DEFAULT_ENCODING;
 
 /***/
 // todo: make this class a singleton???
-public class LuxMSClient {
+public class LuxClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LuxMSClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LuxClient.class);
 
     // some useful defaults
     private static final String DATASET_ID_FILE = "datasetid";
 
     // internal state
     private final String importDir;
-    private final LuxMSRestClient luxMSRestClient;
+    private final LuxRestClient luxRestClient;
 
     /***/
-    public LuxMSClient() {
-        LOGGER.debug("LuxMSClient constructor() is working.");
+    public LuxClient() {
+        LOGGER.debug("LuxClient constructor() is working.");
         Environment environment = Environment.getInstance();
         this.importDir       = environment.getCsvImportDir();
-        this.luxMSRestClient = new LuxMSRestClient();
+        this.luxRestClient = new LuxRestClient();
     }
 
     /** Load one element of LuxMS data model from specified CSV file. */
     private static List<LuxModelInterface> loadElementFromCSV(String filePath, LuxDataType elementType) throws IOException {
-        LOGGER.debug("LuxMSClient.loadElementFromCSV() is working.");
+        LOGGER.debug("LuxClient.loadElementFromCSV() is working.");
 
         // result
         List<LuxModelInterface> elements = new ArrayList<>();
@@ -75,7 +76,7 @@ public class LuxMSClient {
 
     /** Load dataset id from CSV representation of dataset. If there is no id - return [-1]. */
     private static long getDatasetIdForCSV(String datasetPath) throws IOException {
-        LOGGER.debug("LuxMSClient.checkDatasetIdForCSV() is working.");
+        LOGGER.debug("LuxClient.checkDatasetIdForCSV() is working.");
 
         String idFilePath = datasetPath + DATASET_ID_FILE;
         File idFile = new File(idFilePath);
@@ -88,7 +89,7 @@ public class LuxMSClient {
 
     /***/
     public void loadFromCSV(String datasetName) throws IOException {
-        LOGGER.debug("LuxMSClient.loadFromCSV() is working.");
+        LOGGER.debug("LuxClient.loadFromCSV() is working.");
 
         // check directory with dataset (csv import dir)
         String datasetPath = this.importDir + "/" + datasetName + "/";
@@ -99,7 +100,7 @@ public class LuxMSClient {
         }
 
         // check for dataset id file - if present, update existing, if not - create new one
-        long datasetId = LuxMSClient.getDatasetIdForCSV(datasetPath);
+        long datasetId = LuxClient.getDatasetIdForCSV(datasetPath);
         LOGGER.debug(String.format("Loaded dataset ID = [%s].", datasetId));
 
         // todo: probably - bug in REST protocol for LuxMS RESP API. Created (by REST) dataset isn't usable!
@@ -109,7 +110,7 @@ public class LuxMSClient {
         if (datasetId <= 0) {
             LOGGER.warn("Dataset in LuxMS system doesnt exist! Creating.");
             throw new IllegalStateException("Dataset is unknown (can't find [datasetid] file)!");
-            //LuxDataSet dataset = this.luxMSRestClient.
+            //LuxDataSet dataset = this.luxRestClient.
             //        createDataset(datasetName, "Automatically created dataset.", true);
             //datasetId = dataset.getId();
             // write dataset id file
@@ -128,19 +129,19 @@ public class LuxMSClient {
             if (typeFile.exists() && typeFile.isFile()) { // process only if file exists
 
                 // load LuxMS model's element
-                List<LuxModelInterface> elements = LuxMSClient.loadElementFromCSV(dataTypePath, luxDataType);
+                List<LuxModelInterface> elements = LuxClient.loadElementFromCSV(dataTypePath, luxDataType);
                 System.out.println("\n\t" + elements + "\n");
 
                 for (LuxModelInterface element : elements) {
 
-                    this.luxMSRestClient.addTableEntry(datasetId, element, true);
+                    this.luxRestClient.addTableEntry(datasetId, element, true);
 
                     // todo: see mentioned bug above (REST protocol for LuxMS BI)
                     // add/update entry in LuxMS system
                     //if (updateEntries) { // HTTP PUT -> update
                         // todo: implementation
                     //} else { // HTTP POST -> insert
-                        //this.luxMSRestClient.addTableEntry(datasetId, element);
+                        //this.luxRestClient.addTableEntry(datasetId, element);
                     //}
                 } // end of FOR
 
@@ -151,4 +152,37 @@ public class LuxMSClient {
         } // end of FOR
 
     }
+
+    /***/
+    public void loadFromModel(LuxModel model, long datasetId) throws IOException {
+        LOGGER.debug("LuxClient.loadFromModel() is working.");
+
+        // units
+        Map<Long, LuxUnit> units = model.getUnits();
+        for (LuxUnit unit : units.values()) {
+            this.luxRestClient.addTableEntry(datasetId, unit, true);
+        }
+        // metrics
+        Map<Long, LuxMetric> metrics = model.getMetrics();
+        for (LuxMetric metric : metrics.values()) {
+            this.luxRestClient.addTableEntry(datasetId, metric, true);
+        }
+        // locations
+        Map<Long, LuxLocation> locations = model.getLocations();
+        for (LuxLocation location : locations.values()) {
+            this.luxRestClient.addTableEntry(datasetId, location, true);
+        }
+        // periods
+        Map<Long, LuxPeriod> periods = model.getPeriods();
+        for (LuxPeriod period : periods.values()) {
+            this.luxRestClient.addTableEntry(datasetId, period, true);
+        }
+        // data
+        Map<Long, LuxDataPoint> dataPoints = model.getDataPoints();
+        for (LuxDataPoint dataPoint : dataPoints.values()) {
+            this.luxRestClient.addTableEntry(datasetId, dataPoint, true);
+        }
+
+    }
+
 }

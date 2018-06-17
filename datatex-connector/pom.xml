@@ -106,6 +106,7 @@
                                     <fileset dir="${basedir}" includes="logs/**"/>
                                     <fileset dir="${basedir}" includes="csv_import/**"/>
                                     <fileset dir="${basedir}" includes="csv_export/**"/>
+                                    <fileset dir="${basedir}" includes="sql/**"/>
                                 </copy>
                             </tasks>
                         </configuration>
