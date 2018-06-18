@@ -1,3 +1,4 @@
+VPN Entry Point: https://vpn.btcgroup.ru
 BTK VPN: GusevDE / zZgKS3q25114
 ================================================================================
 BTK Virtual PC (dev/test stand):

@@ -123,6 +123,7 @@ public class DataTexDBClient {
 
         // building LuxMS model: when?  -> "По месяцам" (periods)
         // todo: periods generator -> implement
+        /*
         LuxPeriod period1  = new LuxPeriod(1,  "янв 2017", LUX_DATE_FORMAT.parse("2017-01-01"), LuxPeriodType.MONTH);
         LuxPeriod period2  = new LuxPeriod(2,  "фев 2017", LUX_DATE_FORMAT.parse("2017-02-01"), LuxPeriodType.MONTH);
         LuxPeriod period3  = new LuxPeriod(3,  "мар 2017", LUX_DATE_FORMAT.parse("2017-03-01"), LuxPeriodType.MONTH);
@@ -140,7 +141,9 @@ public class DataTexDBClient {
             put(5L, period5); put(6L, period6);   put(7L, period7);   put(8L, period8);
             put(9L, period9); put(10L, period10); put(11L, period11); put(12L, period12);
         }};
-        luxModel.setPeriods(periods);
+        */
+        //luxModel.setPeriods(periods);
+        luxModel.setPeriods(LuxPeriod.generateMonthsPeriods("2014", "2015", "2016", "2017", "2018", "2019"));
 
         // connect to DBMS
         Connection conn = this.connect();
@@ -156,8 +159,6 @@ public class DataTexDBClient {
             LuxLocation  location;
             LuxDataPoint dataPoint;
             do {
-                // todo: check for operation code: 9000-***, others - ignore!
-
                 // building LuxMS model: where? -> "Номенклатура производства" (locations)
                 location = new LuxLocation(baseId, rs.getString("ITEMCODE"), 0, -1,
                         false, new BigDecimal(0), new BigDecimal(0), (int) baseId * 100);
@@ -167,7 +168,12 @@ public class DataTexDBClient {
                 // building LuxMS model:           "Данные по среднему циклу производства"
                 BigDecimal value = rs.getBigDecimal("ORDER_DURATION_DAYS");
                 int startMonth = rs.getInt("ORDER_START_MONTH");
-                dataPoint = new LuxDataPoint(baseId, 1, baseId, startMonth, value);
+                int startYear  = rs.getInt("ORDER_START_YEAR");
+                // generate id for period
+                long periodId = Long.parseLong(String.valueOf(startMonth) + String.valueOf(startYear));
+
+                // create data point itself
+                dataPoint = new LuxDataPoint(baseId, 1, baseId, periodId, value);
                 LOGGER.debug(String.format("Loaded data point: [%s].", dataPoint));
                 dataPoints.put(baseId, dataPoint);
 
@@ -183,7 +189,6 @@ public class DataTexDBClient {
             LOGGER.warn("No data found for this query!");
         } // END if
 
-        // todo: !!! model implementation
         return luxModel;
     }
 

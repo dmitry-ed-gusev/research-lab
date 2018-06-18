@@ -1,6 +1,11 @@
-with source_data as (
-
 select
+    sd.itemcode, round(avg(sd.order_duration_days), 3) as order_duration_days,
+    --min(sd.order_start) as order_start,
+    extract(month from min(sd.order_start)) as order_start_month,
+    extract(year from min(sd.order_start)) as order_start_year
+from
+(with source_data as
+ (select
     -- start and end time
     --min(to_char(progressstartprocessdate, 'DD.MM.YYYY')||' '||to_char(progressstartprocesstime, 'HH24:Mi:SS')) as STARTTIME,
     stprog.START_TIME,
@@ -19,7 +24,7 @@ select
     round(pprog.qty)                            as STEPQUANTITY,
     pprog.uom                                   as UOM,
     tabl.custorder                              as CUSTOMERORDER
-from
+ from
     -- baseline table for query
     productionprogress pprogress
 
@@ -36,7 +41,8 @@ from
     -- alias ENPROG: self join on [productionordercode, groupstepnumber] -> get operation end timestamp
     left join (
         select productionordercode, groupstepnumber,
-            max(to_char(progressenddate, 'DD.MM.YYYY')||' '||to_char(progressendtime, 'HH24:Mi:SS')) as END_TIME
+            --max(to_char(progressenddate, 'DD.MM.YYYY')||' '||to_char(progressendtime, 'HH24:Mi:SS')) as END_TIME
+              to_char(min(progressenddate), 'DD.MM.YYYY')||' '||to_char(min(progressendtime), 'HH24:Mi:SS') as END_TIME
                 from productionprogress
                     where progresstemplatecode = 'E1'
                         group by productionordercode, groupstepnumber
@@ -44,7 +50,6 @@ from
 
     -- alias PPROG: self join on [productionordercode, groupstepnumber] -> for operation total quantity (sum)
     left join (
-        -- gets total quantity (sum) for order and step
         select productionordercode, groupstepnumber, primaryuomcode as uom, sum(primaryqty) as qty
         from productionprogress
         where progresstemplatecode in ('P1', 'E1')
@@ -61,51 +66,54 @@ from
             b.subcode01||'-'||b.subcode02||'-'||b.subcode03||'-'||b.subcode04||'-'||b.subcode05||'-'||b.subcode06
     ) tabl on tabl.productionordercode = pprogress.productionordercode
 
--- get dispatching transactions for concrete year
-where pprogress.progresstemplatecode = 'S1' and to_char(pprogress.creationdatetime, 'YYYY') in ('2017')
+ -- get dispatching transactions for concrete year
+ where pprogress.progresstemplatecode = 'S1' and to_char(pprogress.creationdatetime, 'YYYY') in ('2017', '2018', '2019')
     -- start timestamp always should be filled with reasonable value
     and progressstartprocessdate is not null and progressstartprocesstime is not null
     -- !!!!!! remove line below !!!!!!
     --and  pprogress.productionordercode = '0002749Z0'
-    
-group by stprog.START_TIME, enprog.END_TIME, pprogress.groupstepnumber, pprogress.operationcode, tabl.art,
+
+ group by stprog.START_TIME, enprog.END_TIME, pprogress.groupstepnumber, pprogress.operationcode, tabl.art,
     pprogress.machinecode, pprogress.productionordercode, round(pprog.qty), pprog.uom, tabl.custorder,
     to_char(pprogress.creationdatetime, 'YYYY')
 
-order by start_time desc, customerorder
-)
+ order by start_time desc, customerorder) -- end of WITH
 
--- select from result set "all transactions for specific year"
-select 
+-- select from result set "all transactions for specific year(s)"
+select
     -- what? ordercode/itemcode
-    sd1.prod_ordercode, sd1.itemcode, 
+    sd1.prod_ordercode, sd1.itemcode,
     -- start and end timestamps
     min(to_timestamp(sd1.start_time)) as order_start, max(to_timestamp(sd1.end_time)) as order_end,
-    -- extract month number (starting from 1) from order start date 
+    -- extract month number (starting from 1) from order start date
     EXTRACT(MONTH FROM min(to_timestamp(sd1.start_time))) as order_start_month,
     -- duration of the order (data type -> interval)
     (max(to_timestamp(sd1.end_time)) - min(to_timestamp(sd1.start_time))) as order_duration,
-    
+
     -- calculation for duration - converting interval to (seconds / 86400) = days and then round (3 digits after point)
     ROUND((EXTRACT( DAY    FROM (max(to_timestamp(sd1.end_time)) - min(to_timestamp(sd1.start_time))) ) * 86400 +
      EXTRACT( HOUR   FROM (max(to_timestamp(sd1.end_time)) - min(to_timestamp(sd1.start_time))) ) *  3600 +
      EXTRACT( MINUTE FROM (max(to_timestamp(sd1.end_time)) - min(to_timestamp(sd1.start_time))) ) *    60 +
      EXTRACT( SECOND FROM (max(to_timestamp(sd1.end_time)) - min(to_timestamp(sd1.start_time))) ))/86400, 3) as order_duration_days,
-    
+
     -- last operation for current production order
-    sd2.operation    
+    sd2.operation
 from
     -- self join of source table
     source_data sd1, source_data sd2
-where 
+where
     -- join for sd2
     sd1.prod_ordercode = sd2.prod_ordercode and sd1.itemcode = sd2.itemcode
     -- criteria for getting last operation value
-    and sd2.end_time = 
+    and sd2.end_time =
         -- we can't use function here (max), so we have to do it in separate select)
         (select to_char(max(to_timestamp(end_time)), 'DD.MM.YYYY HH24:Mi:SS') from source_data
             where prod_ordercode = sd1.prod_ordercode and itemcode = sd1.itemcode)
+    and sd2.operation like '9000%'
 group by
     sd1.prod_ordercode, sd1.itemcode, sd2.operation
-                    
-                    
+order by
+    sd1.itemcode, sd1.prod_ordercode) sd
+
+group by sd.itemcode
+order by sd.itemcode

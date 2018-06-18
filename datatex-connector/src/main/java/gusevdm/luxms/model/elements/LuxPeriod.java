@@ -9,6 +9,9 @@ import org.json.simple.JSONObject;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static gusevdm.luxms.LuxDefaults.LUX_DATE_FORMAT;
 
@@ -37,7 +40,7 @@ public class LuxPeriod implements LuxModelInterface {
     };
 
     // internal state
-    private final long        id;
+    private final long          id;
     private final String        title;
     private final Date          startDate;
     private final LuxPeriodType periodType;
@@ -104,4 +107,40 @@ public class LuxPeriod implements LuxModelInterface {
                 .append("periodType", periodType)
                 .toString();
     }
+
+    /** Generates Map with LuxPeriod by months. ID in a map -> [MMYYYY]. */
+    public static Map<Long, LuxPeriod> generateMonthsPeriods(String... years) throws ParseException {
+        String[] monthsNames = {"янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"};
+
+        Map<Long, LuxPeriod> periods = new TreeMap<>();
+
+        // tmp for map
+        int monthCounter;
+        LuxPeriod period;
+        // tmp for one period
+        long   id;
+        String title;
+        Date   startDate;
+        for (String year : years) { // iterate over provided year
+            monthCounter = 1;
+            for (String month : monthsNames) { // iterate over all months names
+                id        = Long.parseLong(monthCounter + year);
+                title     = month + " " + year;
+                startDate = LUX_DATE_FORMAT.parse(year + "-" + (monthCounter > 9 ? monthCounter : "0" + monthCounter) + "-01");
+                // create period object
+                period    = new LuxPeriod(id, title, startDate, LuxPeriodType.MONTH);
+                // add it to resulting map
+                periods.put(id, period);
+                // increment months counter
+                monthCounter++;
+            } // end of FOR cycle for one year
+        } // end of FOR cycle for all years
+
+        return periods;
+    }
+
+    //public static void main(String[] args) throws ParseException {
+    //    System.out.println(LuxPeriod.generateMonthsPeriods("2017", "2018"));
+    //}
+
 }
