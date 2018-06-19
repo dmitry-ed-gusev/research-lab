@@ -1,8 +1,11 @@
+-- noinspection SqlNoDataSourceInspectionForFile
+
 select
     sd.itemcode, round(avg(sd.order_duration_days), 3) as order_duration_days,
     --min(sd.order_start) as order_start,
     extract(month from min(sd.order_start)) as order_start_month,
-    extract(year from min(sd.order_start)) as order_start_year
+    extract(year from min(sd.order_start)) as order_start_year,
+    fi.summarizeddescription as item_description
 from
 (with source_data as
  (select
@@ -115,5 +118,11 @@ group by
 order by
     sd1.itemcode, sd1.prod_ordercode) sd
 
-group by sd.itemcode
+left join
+    (select
+        subcode01||'-'||subcode02||'-'||subcode03||'-'||subcode04||'-'||subcode05||'-'||subcode06 as code, summarizeddescription
+    from fullitemkeydecoder
+    where itemtypecode in ('100', '110', '115', '200')) fi on fi.code = sd.itemcode
+
+group by sd.itemcode, fi.summarizeddescription
 order by sd.itemcode

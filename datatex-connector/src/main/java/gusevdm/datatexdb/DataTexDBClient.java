@@ -88,7 +88,7 @@ public class DataTexDBClient {
 
     /***/
     public LuxModel getLuxModelForReport1() throws IOException, SQLException, ParseException {
-        LOGGER.debug("!!!");
+        LOGGER.debug("DataTexClient.getLuxModelForReport1() is working.");
 
         // resulting model
         LuxModel luxModel = new LuxModel();
@@ -158,9 +158,11 @@ public class DataTexDBClient {
             Map<Long, LuxDataPoint> dataPoints = new HashMap<>();
             LuxLocation  location;
             LuxDataPoint dataPoint;
+            //String titleColumn = "ITEMCODE";
+            String titleColumn = "ITEM_DESCRIPTION";
             do {
                 // building LuxMS model: where? -> "Номенклатура производства" (locations)
-                location = new LuxLocation(baseId, rs.getString("ITEMCODE"), 0, -1,
+                location = new LuxLocation(baseId, rs.getString(titleColumn), 0, -1,
                         false, new BigDecimal(0), new BigDecimal(0), (int) baseId * 100);
                 LOGGER.debug(String.format("Loaded location: [%s].", location));
                 locations.put(baseId, location);
