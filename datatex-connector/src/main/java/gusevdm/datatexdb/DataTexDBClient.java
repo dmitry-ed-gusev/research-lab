@@ -1,6 +1,6 @@
 package gusevdm.datatexdb;
 
-import gusevdm.Environment;
+import gusevdm.config.Environment;
 import gusevdm.luxms.model.LuxModel;
 import gusevdm.luxms.model.elements.*;
 import org.slf4j.Logger;
@@ -16,13 +16,13 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static gusevdm.luxms.LuxDefaults.LUX_DATE_FORMAT;
-
 /** DataTex DB client. */
 public class DataTexDBClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataTexDBClient.class);
 
+    // environment link
+    private final Environment env;
     // internal state
     private final String dbHost;
     private final int    dbPort;
@@ -35,6 +35,7 @@ public class DataTexDBClient {
     public DataTexDBClient() {
         LOGGER.debug("DataTexDBClient constructor() is working.");
         Environment env = Environment.getInstance();
+        this.env      = env;
         this.dbHost   = env.getDataTexHost();
         this.dbPort   = Integer.parseInt(env.getDataTexPort());
         this.dbUser   = env.getDataTexUser();
@@ -87,15 +88,16 @@ public class DataTexDBClient {
     }
 
     /***/
-    public LuxModel getLuxModelForReport1() throws IOException, SQLException, ParseException {
+    public LuxModel getLuxModelForReport(String reportName) throws IOException, SQLException, ParseException {
         LOGGER.debug("DataTexClient.getLuxModelForReport1() is working.");
 
-        // resulting model
-        LuxModel luxModel = new LuxModel();
+        // create LuxModel with periods (by year-quarter-month)
+        LuxModel luxModel = new LuxModel("2014", "2015", "2016", "2017", "2018", "2019");
 
         StringBuilder sqlBuider = new StringBuilder();
         // read sql query from external file
-        try (BufferedReader sqlReader = new BufferedReader(new FileReader(new File("sql/report1.sql")))) {
+        try (BufferedReader sqlReader = new BufferedReader(new FileReader(
+                new File(this.env.getReportsSqlDir() + "/report1.sql")))) {
             String tmpStr;
             while ((tmpStr = sqlReader.readLine()) != null) {
                 sqlBuider.append(tmpStr).append("\n");
@@ -120,30 +122,6 @@ public class DataTexDBClient {
             put(1L, metric);
         }};
         luxModel.setMetrics(metrics);
-
-        // building LuxMS model: when?  -> "По месяцам" (periods)
-        // todo: periods generator -> implement
-        /*
-        LuxPeriod period1  = new LuxPeriod(1,  "янв 2017", LUX_DATE_FORMAT.parse("2017-01-01"), LuxPeriodType.MONTH);
-        LuxPeriod period2  = new LuxPeriod(2,  "фев 2017", LUX_DATE_FORMAT.parse("2017-02-01"), LuxPeriodType.MONTH);
-        LuxPeriod period3  = new LuxPeriod(3,  "мар 2017", LUX_DATE_FORMAT.parse("2017-03-01"), LuxPeriodType.MONTH);
-        LuxPeriod period4  = new LuxPeriod(4,  "апр 2017", LUX_DATE_FORMAT.parse("2017-04-01"), LuxPeriodType.MONTH);
-        LuxPeriod period5  = new LuxPeriod(5,  "май 2017", LUX_DATE_FORMAT.parse("2017-05-01"), LuxPeriodType.MONTH);
-        LuxPeriod period6  = new LuxPeriod(6,  "июн 2017", LUX_DATE_FORMAT.parse("2017-06-01"), LuxPeriodType.MONTH);
-        LuxPeriod period7  = new LuxPeriod(7,  "июл 2017", LUX_DATE_FORMAT.parse("2017-07-01"), LuxPeriodType.MONTH);
-        LuxPeriod period8  = new LuxPeriod(8,  "авг 2017", LUX_DATE_FORMAT.parse("2017-08-01"), LuxPeriodType.MONTH);
-        LuxPeriod period9  = new LuxPeriod(9,  "сен 2017", LUX_DATE_FORMAT.parse("2017-09-01"), LuxPeriodType.MONTH);
-        LuxPeriod period10 = new LuxPeriod(10, "окт 2017", LUX_DATE_FORMAT.parse("2017-10-01"), LuxPeriodType.MONTH);
-        LuxPeriod period11 = new LuxPeriod(11, "ноя 2017", LUX_DATE_FORMAT.parse("2017-11-01"), LuxPeriodType.MONTH);
-        LuxPeriod period12 = new LuxPeriod(12, "дек 2017", LUX_DATE_FORMAT.parse("2017-12-01"), LuxPeriodType.MONTH);
-        Map<Long, LuxPeriod> periods = new HashMap<Long, LuxPeriod>() {{
-            put(1L, period1); put(2L, period2);   put(3L, period3);   put(4L, period4);
-            put(5L, period5); put(6L, period6);   put(7L, period7);   put(8L, period8);
-            put(9L, period9); put(10L, period10); put(11L, period11); put(12L, period12);
-        }};
-        */
-        //luxModel.setPeriods(periods);
-        luxModel.setPeriods(LuxPeriod.generateMonthsPeriods("2014", "2015", "2016", "2017", "2018", "2019"));
 
         // connect to DBMS
         Connection conn = this.connect();

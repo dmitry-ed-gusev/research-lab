@@ -102,7 +102,7 @@ public class ConnectorEngine {
             LOGGER.debug("Loading data from DataTex DB into LuxMS BI system.");
 
             // get data from DataTex DBMS
-            LuxModel model = this.datatexClient.getLuxModelForReport1();
+            LuxModel model = this.datatexClient.getLuxModelForReport("some report name");
             // load data into LuxMS BI system
             this.luxmsClient.loadFromModel(model, 11);
 

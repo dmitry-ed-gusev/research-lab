@@ -1,5 +1,6 @@
 package gusevdm;
 
+import gusevdm.config.Environment;
 import gusevdm.helpers.ExitStatus;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
@@ -130,10 +131,11 @@ public class Main {
             credentialsFile = DEFAULT_CONFIG;
         }
 
-        // todo: loading environment -> move to ConnectorEngine
+        // todo: loading environment -> move to ConnectorEngine?
         // load environment for config
         LOGGER.debug(String.format("Using config file [%s].", credentialsFile));
         Environment.load(credentialsFile, optionSet.valueOf(this.suffix));
+        LOGGER.debug(String.format("Loaded configuration:\n\t%s", Environment.getInstance()));
 
         // execute engine (ConnectorEngine)
         ConnectorEngine engine = new ConnectorEngine(optionSet);

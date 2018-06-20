@@ -22,6 +22,7 @@ datatex_env_local:
   db_host:   127.0.0.1
   db_port:   1521
   db_user:   user
+  # db_pass:   "     "  # <- for blank value test!
   db_pass:   pass
   db_schema: schema
 
@@ -45,17 +46,36 @@ datatex_env_virtual:
 # general options (local, development)
 general_env_local:
   # directory for export CSV files (could be absolute/relative)
-  csv_export_dir: csv_export
-  csv_import_dir: csv_import
+  csv_export_dir:  csv_export
+  csv_import_dir:  csv_import
+  _reports___sql_dir: sql
 
 # general options (virtual, development/test/debug)
 general_env_virtual:
   # directory for export CSV files (could be absolute/relative)
-  csv_export_dir: csv_export
-  csv_import_dir: csv_import
+  csv_export_dir:  csv_export
+  csv_import_dir:  csv_import
+  reports_sql_dir: sql
 
 # general options (production)
 #general_env_prod:
   # directory for export CSV files (could be absolute/relative)
   #csv_directory: csv_export
 
+# reports properties
+reports:
+  report1: # current working report
+    active:                yes
+    sql_file:              report1.sql
+    years:                 2014, 2015, 2016, 2017, 2018, 2019
+    location_title_column: ITEM_DESCRIPTION
+
+  my_report: # next report in a row
+    active:                no
+    sql_file:              zzz.sql
+    years:                 2018
+    location_title_column: SOME_COLUMN
+
+  sample_report: # just a sample report config
+    active:                yes
+    sql_file:              sample.sql

@@ -1,6 +1,6 @@
 package gusevdm.luxms;
 
-import gusevdm.Environment;
+import gusevdm.config.Environment;
 import gusevdm.luxms.model.LuxDataSet;
 import gusevdm.luxms.model.LuxDataType;
 import gusevdm.luxms.model.LuxModelInterface;

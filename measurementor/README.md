@@ -26,7 +26,7 @@ To get the measurementor grails app running inside the vagrant box update the sh
 This will share the source code on your local box with the appropriate directory on the Vagrant box.  Specifically, replace
 [DIRECTORY WHERE YOU DOWNLOADED THE CODE] with the path on your dev machine where you downloaded this code.
 
-Measurementor has a number of configurable settings including the URLs and credentials of the source systems and system defaults.
+Measurementor has a number of configurable settings including the URLs and config of the source systems and system defaults.
 To update these variables you can just run the setup.sh script and it will prompt you to enter all the configurable values.
 
 

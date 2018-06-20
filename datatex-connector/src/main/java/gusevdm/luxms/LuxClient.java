@@ -1,7 +1,7 @@
 package gusevdm.luxms;
 
 import gusev.dmitry.jtils.utils.JIOUtils;
-import gusevdm.Environment;
+import gusevdm.config.Environment;
 import gusevdm.luxms.model.LuxDataType;
 import gusevdm.luxms.model.LuxModel;
 import gusevdm.luxms.model.LuxModelFactory;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

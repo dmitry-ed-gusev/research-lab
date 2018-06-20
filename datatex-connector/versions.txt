@@ -49,3 +49,13 @@ Version 0.4.0 (12.06.2018)
 Version 0.5.0 (20.06.2018)
 Список изменений данной версии:
   - loadtobi
+
+---------------------------------------------------------------------------
+
+Version 1.0.0 beta (25.06.2018)
+Список изменений данной версии:
+  - extended config
+  - ability to configure reports by config
+  - improved LuxMS model
+  - periods auto generation (with hierarhy)
+  - ???
