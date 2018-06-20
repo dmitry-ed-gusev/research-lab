@@ -78,6 +78,9 @@ repositories:
     #  build:  no
     agilestats:
       build:  no
+  ~gusevdmi: # My personal repository
+    automation:
+      build: no
   infapfm:  # Informatica Platform repositories
     infa-bdm:
       build:  no
