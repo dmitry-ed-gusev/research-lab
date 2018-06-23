@@ -93,6 +93,7 @@ DataTex Connector utility, Version 1.0.0 beta, 2018 (C) Larga
         csv_export_dir:  <value> <- каталог для экспорта данных в CSV
         csv_import_dir:  <value> <- каталог для импорта данных в CSV
         reports_sql_dir: <value> <- todo: !!!
+        dataset_id:      <value> <- todo: ?
     [reports]     <- todo: !!!
         todo: <описание параметров будет тут>
     =======================================================

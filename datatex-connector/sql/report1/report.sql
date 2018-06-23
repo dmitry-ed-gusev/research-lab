@@ -3,8 +3,8 @@
 select
     sd.itemcode, round(avg(sd.order_duration_days), 3) as order_duration_days,
     --min(sd.order_start) as order_start,
-    extract(month from min(sd.order_start)) as order_start_month,
-    extract(year from min(sd.order_start)) as order_start_year,
+    extract(month from min(sd.order_start)) as value_month,
+    extract(year from min(sd.order_start)) as value_year,
     fi.summarizeddescription as item_description
 from
 (with source_data as

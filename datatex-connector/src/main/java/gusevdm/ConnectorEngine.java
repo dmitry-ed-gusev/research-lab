@@ -1,5 +1,6 @@
 package gusevdm;
 
+import gusevdm.config.Environment;
 import gusevdm.datatexdb.DataTexDBClient;
 import gusevdm.luxms.LuxClient;
 import gusevdm.luxms.model.LuxDataSet;
@@ -9,13 +10,16 @@ import gusevdm.luxms.model.LuxModel;
 import joptsimple.OptionSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 
 import static gusevdm.helpers.CommandLineOption.*;
+import static gusevdm.luxms.LuxDefaults.REPORT_XMS_FILE;
 
 /** Engine class for DataTex Connector Utility. */
 // todo: move usage of LuxMS Rest client to LuxMS Engine
@@ -24,14 +28,16 @@ public class ConnectorEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEngine.class);
 
     private final OptionSet       options;
-    private final LuxRestClient luxRest;
-    private final LuxClient luxmsClient;
+    private final Environment     environment;
+    private final LuxRestClient   luxRest;
+    private final LuxClient       luxmsClient;
     private final DataTexDBClient datatexClient;
 
     /***/
     public ConnectorEngine(OptionSet options) {
         LOGGER.debug("ConnectorEngine constructor() is working.");
         this.options       = options;
+        this.environment   = Environment.getInstance();
         this.luxRest       = new LuxRestClient();
         this.luxmsClient   = new LuxClient();
         this.datatexClient = new DataTexDBClient();
@@ -39,7 +45,7 @@ public class ConnectorEngine {
 
     /***/
     @SuppressWarnings("unchecked")
-    public void execute() throws IOException, SQLException, ParseException {
+    public void execute() throws IOException, SQLException, ParseException, ParserConfigurationException, SAXException {
         LOGGER.debug("ConnectorEngine.execute() is working.");
 
         if (this.options.has(OPTION_LUX_LIST_DATASETS.getName())) { // list datasets in LuxMS instance
@@ -101,10 +107,18 @@ public class ConnectorEngine {
         if (this.options.has(OPTION_LOAD_DATA_TO_BI.getName())) { // load data from DataTex to LuxMS BI
             LOGGER.debug("Loading data from DataTex DB into LuxMS BI system.");
 
-            // get data from DataTex DBMS
-            LuxModel model = this.datatexClient.getLuxModelForReport("some report name");
-            // load data into LuxMS BI system
-            this.luxmsClient.loadFromModel(model, 11);
+            List<String> reports = this.environment.getReportsList();
+            String reportXmlFile;
+            LuxModel luxModel;
+            for (String report : reports) {
+                reportXmlFile = this.environment.getReportsDir() + "/" + report + "/" + REPORT_XMS_FILE;
+                // load LuxMS model from XML for current report
+                luxModel = this.luxmsClient.loadModelFromXml(reportXmlFile);
+                // populate model with data from DataTex DBMS
+                luxModel = this.datatexClient.loadLuxModelData(luxModel);
+                // load LuxMS model with data into LuxMS BI system
+                this.luxmsClient.loadFromModel(luxModel);
+            }
 
         }
     } // end of execute() method

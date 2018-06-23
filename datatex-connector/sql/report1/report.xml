@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<report>
+    <!-- report.sql -->
+    <sqlFile>report1/report.sql</sqlFile>
+    <!-- dataset ID for current report -->
+    <datasetId>11</datasetId>
+
+    <!-- Units for report(s) -->
+    <units>
+        <unit id="1">
+            <title>цикл/дней</title>
+            <shortTitle>ц/дн</shortTitle>
+            <axisTitle>цикл/дней</axisTitle>
+            <prefix />
+            <suffix />
+        </unit>
+        <unit id="2">
+            <title>metric</title>
+            <shortTitle>m</shortTitle>
+            <axisTitle>metr</axisTitle>
+            <prefix />
+            <suffix />
+        </unit>
+    </units>
+
+    <!-- metrics for report -->
+    <metrics>
+        <metric id="1">
+            <title>Средний цикл производства по номенклатуре</title>
+            <treeLevel>0</treeLevel>
+            <parentId>0</parentId>
+            <unitId>1</unitId>
+            <sortOrder>100</sortOrder>
+        </metric>
+    </metrics>
+
+    <!-- periods for report -->
+    <periods>
+        <years>2014, 2015, 2016, 2017, 2018, 2019</years>
+    </periods>
+
+    <!-- locations for report -->
+    <locations>
+        <titlesColumns>ITEM_DESCRIPTION</titlesColumns>
+    </locations>
+
+    <!-- data points for report -->
+    <dataPoints>
+        <valuesColumns>ORDER_DURATION_DAYS</valuesColumns>
+        <dataMetricsIds>1</dataMetricsIds>
+    </dataPoints>
+
+</report>

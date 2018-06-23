@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,16 +18,23 @@ public class LuxModel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LuxModel.class);
 
-    // internal state
+    // internal state (data model)
     private Map<Long, LuxUnit>      units      = null;
     private Map<Long, LuxMetric>    metrics    = null;
     private Map<Long, LuxPeriod>    periods    = null;
     private Map<Long, LuxLocation>  locations  = null;
     private Map<Long, LuxDataPoint> dataPoints = null;
 
+    // additional parameters (for load from DataTex)
+    private Long     datasetId;
+    private String   sqlFile;
+    private String[] locationsTitlesCols;
+    private String[] dataValuesCols;
+    private int[]    dataValuesMetricsIds;
+
     /***/
     public LuxModel(String... years) throws ParseException {
-        LOGGER.debug("LuxModel constructor(String...) is working.");
+        LOGGER.debug(String.format("LuxModel constructor(String...) is working. Years: %s", Arrays.toString(years)));
 
         if (years != null && years.length > 0) { // autogenerate periods values
             this.periods = LuxModel.generatePeriods(years);
@@ -73,6 +81,46 @@ public class LuxModel {
         this.dataPoints = dataPoints;
     }
 
+    public String getSqlFile() {
+        return sqlFile;
+    }
+
+    public void setSqlFile(String sqlFile) {
+        this.sqlFile = sqlFile;
+    }
+
+    public String[] getLocationsTitlesCols() {
+        return locationsTitlesCols;
+    }
+
+    public void setLocationsTitlesCols(String[] locationsTitlesCols) {
+        this.locationsTitlesCols = locationsTitlesCols;
+    }
+
+    public String[] getDataValuesCols() {
+        return dataValuesCols;
+    }
+
+    public void setDataValuesCols(String[] dataValuesCols) {
+        this.dataValuesCols = dataValuesCols;
+    }
+
+    public Long getDatasetId() {
+        return datasetId;
+    }
+
+    public void setDatasetId(Long datasetId) {
+        this.datasetId = datasetId;
+    }
+
+    public int[] getDataValuesMetricsIds() {
+        return dataValuesMetricsIds;
+    }
+
+    public void setDataValuesMetricsIds(String[] dataValuesMetricsIds) {
+        this.dataValuesMetricsIds = Arrays.stream(dataValuesMetricsIds).mapToInt(Integer::parseInt).toArray();
+    }
+
     /**
      * Generates Map (hierarhical) with LuxPeriods.
      * Identification of objects (all identifiers are positive long numbers):
@@ -82,7 +130,8 @@ public class LuxModel {
      *  - year    -> (len 4)   -> YYYY. Examples: 2001, 2017 (self-explanatory).
      */
     public static Map<Long, LuxPeriod> generatePeriods(String... years) throws ParseException {
-        LOGGER.debug(String.format("LuxPeriod.generatePeriods() is working. Years: [%s]", years));
+        LOGGER.debug(String.format("LuxPeriod.generatePeriods() is working. Years: %s",
+                Arrays.toString(years)));
 
         String[] quartersNames = {"I кв.", "II кв.", "III кв.", "IV кв."};
         String[] monthsNames   = {"янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"};
@@ -92,7 +141,6 @@ public class LuxModel {
 
         // temporary counters
         int quarterCounter;
-        //int monthCounter;
         // temporary identificators
         long yearId;
         long quarterId;

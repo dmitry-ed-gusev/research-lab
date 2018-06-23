@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 public class EnvironmentTest {
 
-    private Environment environment = new Environment();
+    //private Environment environment = new Environment();
 
     @After
     public void tearDown() throws Exception {

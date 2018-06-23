@@ -2,7 +2,8 @@ package gusevdm.datatexdb;
 
 import gusevdm.config.Environment;
 import gusevdm.luxms.model.LuxModel;
-import gusevdm.luxms.model.elements.*;
+import gusevdm.luxms.model.elements.LuxDataPoint;
+import gusevdm.luxms.model.elements.LuxLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +63,7 @@ public class DataTexDBClient {
         LOGGER.debug("DataTexClient.getTablesList() is working.");
 
         String query = String.format("SELECT DISTINCT OWNER, OBJECT_NAME FROM ALL_OBJECTS " +
-                "WHERE OBJECT_TYPE = 'TABLE' AND OWNER = '%s' ORDER BY OBJECT_NAME", this.dbSchema, this.dbSchema);
+                "WHERE OBJECT_TYPE = 'TABLE' AND OWNER = '%s' ORDER BY OBJECT_NAME", this.dbSchema);
         LOGGER.debug(String.format("Generated SQL query [%s].", query));
         // connect to DBMS
         Connection conn = this.connect();
@@ -88,46 +89,33 @@ public class DataTexDBClient {
     }
 
     /***/
-    public LuxModel getLuxModelForReport(String reportName) throws IOException, SQLException, ParseException {
-        LOGGER.debug("DataTexClient.getLuxModelForReport1() is working.");
-
-        // create LuxModel with periods (by year-quarter-month)
-        LuxModel luxModel = new LuxModel("2014", "2015", "2016", "2017", "2018", "2019");
-
+    private static String loadSqlFromFile(String sqlFilePath) throws IOException {
+        LOGGER.debug(String.format("DataTexDBClient.loadSqlFromFile() is working. Sql file: [%s].", sqlFilePath));
         StringBuilder sqlBuider = new StringBuilder();
-        // read sql query from external file
-        try (BufferedReader sqlReader = new BufferedReader(new FileReader(
-                new File(this.env.getReportsSqlDir() + "/report1.sql")))) {
+        // try-with-resources
+        try (BufferedReader sqlReader = new BufferedReader(new FileReader(new File(sqlFilePath)))) {
             String tmpStr;
             while ((tmpStr = sqlReader.readLine()) != null) {
                 sqlBuider.append(tmpStr).append("\n");
             }
         }
+        // return loaded SQL query
+        return sqlBuider.toString();
+    }
 
-        //LOGGER.debug(String.format("Loaded sql query:\n%s", sqlBuider.toString()));
+    /***/
+    public LuxModel loadLuxModelData(LuxModel luxModel) throws IOException, SQLException, ParseException {
+        LOGGER.debug("DataTexClient.loadLuxModelData() is working.");
 
-        long baseId = 1;
-
-        // building LuxMS model:           "Единицы измерения" (units)
-        LuxUnit unit = new LuxUnit(baseId, "цикл/дней", "ц/дн", "цикл/дней", "", "");
-        Map<Long, LuxUnit> units = new HashMap<Long, LuxUnit>() {{
-            put(1L, unit);}
-        };
-        luxModel.setUnits(units);
-
-        // building LuxMS model: what?  -> "Средний цикл производства" (metrics)
-        LuxMetric metric = new LuxMetric(baseId, "Средний цикл производства по номенклатуре",
-                0, 0, false, baseId, 100);
-        Map<Long, LuxMetric> metrics = new HashMap<Long, LuxMetric>() {{
-            put(1L, metric);
-        }};
-        luxModel.setMetrics(metrics);
+        // load sql from file provided
+        String sql = DataTexDBClient.loadSqlFromFile(this.env.getReportsDir() + "/" + luxModel.getSqlFile());
+        //LOGGER.debug(String.format("Loaded sql query:\n%s", sql)); // <- too much output
 
         // connect to DBMS
         Connection conn = this.connect();
         // statement and result set (execute query)
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sqlBuider.toString());
+        ResultSet rs = stmt.executeQuery(sql);
 
         // parse returned result set
         if (rs.next()) { // some data exists
@@ -136,29 +124,40 @@ public class DataTexDBClient {
             Map<Long, LuxDataPoint> dataPoints = new HashMap<>();
             LuxLocation  location;
             LuxDataPoint dataPoint;
-            //String titleColumn = "ITEMCODE";
-            String titleColumn = "ITEM_DESCRIPTION";
-            do {
-                // building LuxMS model: where? -> "Номенклатура производства" (locations)
-                location = new LuxLocation(baseId, rs.getString(titleColumn), 0, -1,
-                        false, new BigDecimal(0), new BigDecimal(0), (int) baseId * 100);
-                LOGGER.debug(String.format("Loaded location: [%s].", location));
-                locations.put(baseId, location);
 
-                // building LuxMS model:           "Данные по среднему циклу производства"
-                BigDecimal value = rs.getBigDecimal("ORDER_DURATION_DAYS");
-                int startMonth = rs.getInt("ORDER_START_MONTH");
-                int startYear  = rs.getInt("ORDER_START_YEAR");
-                // generate id for period
+            String locationTitleColumn   = luxModel.getLocationsTitlesCols()[0];
+            String dataPointValuesColumn = luxModel.getDataValuesCols()[0];
+            int    dataPointMetricId     = luxModel.getDataValuesMetricsIds()[0];
+            long   locationId;
+            long   dataPointId;
+            String locationTitleValue;
+            int sortOrder = 1;
+            do {
+                locationTitleValue = rs.getString(locationTitleColumn);
+                // id -> hash code from title value
+                locationId         = locationTitleValue.hashCode();
+
+                // building LuxMS model: where? -> locations
+                location = new LuxLocation(locationId, locationTitleValue, 0, -1,
+                        false, new BigDecimal(0), new BigDecimal(0), sortOrder);
+                LOGGER.debug(String.format("Loaded location: [%s].", location));
+                locations.put(locationId, location);
+
+                // building LuxMS model: data point
+                BigDecimal value = rs.getBigDecimal(dataPointValuesColumn);
+                // load and generate id for period
+                int startMonth = rs.getInt("VALUE_MONTH");
+                int startYear  = rs.getInt("VALUE_YEAR");
                 long periodId = Long.parseLong(String.valueOf(startMonth) + String.valueOf(startYear));
 
-                // create data point itself
-                dataPoint = new LuxDataPoint(baseId, 1, baseId, periodId, value);
+                // create data point. id -> hash code of all params combination
+                dataPointId = (String.valueOf(dataPointMetricId) + String.valueOf(locationId) +
+                        String.valueOf(periodId) + String.valueOf(value)).hashCode();
+                dataPoint = new LuxDataPoint(dataPointId, dataPointMetricId, locationId, periodId, value);
                 LOGGER.debug(String.format("Loaded data point: [%s].", dataPoint));
-                dataPoints.put(baseId, dataPoint);
+                dataPoints.put(dataPointId, dataPoint);
 
-                // base ID increment
-                baseId++;
+                sortOrder++; // increment sort order value
 
             } while(rs.next());
             LOGGER.debug("Data parsed. All OK.");

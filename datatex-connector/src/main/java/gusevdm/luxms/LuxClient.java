@@ -12,11 +12,18 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.util.*;
 
 import static gusevdm.ConnectorDefaults.DEFAULT_ENCODING;
 
@@ -42,6 +49,7 @@ public class LuxClient {
     }
 
     /** Load one element of LuxMS data model from specified CSV file. */
+    // todo: move to model or to factory
     private static List<LuxModelInterface> loadElementFromCSV(String filePath, LuxDataType elementType) throws IOException {
         LOGGER.debug("LuxClient.loadElementFromCSV() is working.");
 
@@ -87,6 +95,7 @@ public class LuxClient {
     }
 
     /***/
+    // todo: move to model or to factory (load model from CSV -> to factory, load model to system - here (below)
     public void loadFromCSV(String datasetName) throws IOException {
         LOGGER.debug("LuxClient.loadFromCSV() is working.");
 
@@ -153,33 +162,126 @@ public class LuxClient {
     }
 
     /***/
-    public void loadFromModel(LuxModel model, long datasetId) throws IOException {
+    public LuxModel loadModelFromXml(String xmlFilePath) throws ParserConfigurationException, IOException, SAXException, ParseException {
+        LOGGER.debug(String.format("LuxClient.loadModelFromXml() is working. Model file: [%s].", xmlFilePath));
+
+        // LuxMS data model
+        LuxModel luxModel = new LuxModel();
+
+        File xmlFile = new File(xmlFilePath);
+        // XML factory/builder/document
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder        dBuilder  = dbFactory.newDocumentBuilder();
+        Document               doc       = dBuilder.parse(xmlFile);
+
+        // normalize document - optional, but recommended
+        // read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+        doc.getDocumentElement().normalize();
+        String rootName = doc.getDocumentElement().getNodeName();
+        LOGGER.debug(String.format("Found root element: %s", rootName));
+
+        // get sql file name
+        String sqlFileName = doc.getElementsByTagName("sqlFile").item(0).getTextContent();
+        LOGGER.debug(String.format("Sql file name: [%s].", sqlFileName));
+        luxModel.setSqlFile(sqlFileName);
+        // get dataset ID for current model
+        Long datasetId = Long.parseLong(doc.getElementsByTagName("datasetId").item(0).getTextContent());
+        LOGGER.debug(String.format("Dataset ID: [%s].", datasetId));
+        luxModel.setDatasetId(datasetId);
+
+        // get list of units
+        Map<Long, LuxUnit> units = new HashMap<>();
+        NodeList nodesList = doc.getElementsByTagName("unit");
+        for (int temp = 0; temp < nodesList.getLength(); temp++) {
+            Node node = nodesList.item(temp);
+            LOGGER.debug(String.format("Current Element: %s", node.getNodeName()));
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element eElement = (Element) node;
+                long   id         = Long.parseLong(eElement.getAttribute("id"));
+                String title      = eElement.getElementsByTagName("title").item(0).getTextContent();
+                String shortTitle = eElement.getElementsByTagName("shortTitle").item(0).getTextContent();
+                String axisTitle  = eElement.getElementsByTagName("axisTitle").item(0).getTextContent();
+                String prefix     = eElement.getElementsByTagName("prefix").item(0).getTextContent();
+                String suffix     = eElement.getElementsByTagName("suffix").item(0).getTextContent();
+                LuxUnit unit = new LuxUnit(id, title, shortTitle, axisTitle, prefix, suffix);
+                LOGGER.debug(String.format("Loaded unit: %s", unit));
+                units.put(id, unit);
+            }
+        }
+        luxModel.setUnits(units);
+
+        // get list of metrics
+        Map<Long, LuxMetric> metrics = new HashMap<>();
+        nodesList = doc.getElementsByTagName("metric");
+        for (int temp = 0; temp < nodesList.getLength(); temp++) {
+            Node node = nodesList.item(temp);
+            LOGGER.debug(String.format("Current Element: %s", node.getNodeName()));
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element eElement = (Element) node;
+                long   id        = Long.parseLong(eElement.getAttribute("id"));
+                String title     = eElement.getElementsByTagName("title").item(0).getTextContent();
+                int    treeLevel = Integer.parseInt(eElement.getElementsByTagName("treeLevel").item(0).getTextContent());
+                long   parentId  = Long.parseLong(eElement.getElementsByTagName("parentId").item(0).getTextContent());
+                long   unitId    = Long.parseLong(eElement.getElementsByTagName("unitId").item(0).getTextContent());
+                int    sortOrder = Integer.parseInt(eElement.getElementsByTagName("sortOrder").item(0).getTextContent());
+                LuxMetric metric = new LuxMetric(id, title, treeLevel, parentId, false, unitId, sortOrder);
+                LOGGER.debug(String.format("Loaded metric: %s", metric));
+                metrics.put(id, metric);
+            }
+        }
+        luxModel.setMetrics(metrics);
+
+        // load periods config
+        String[] years = doc.getElementsByTagName("years").item(0).getTextContent().trim().split("\\s*,\\s*");
+        LOGGER.debug(String.format("Loaded years: %s", Arrays.toString(years)));
+        Map<Long, LuxPeriod> periods = LuxModel.generatePeriods(years);
+        luxModel.setPeriods(periods);
+
+        // load locations config
+        String[] locationsTitlesCols = doc.getElementsByTagName("titlesColumns").item(0).getTextContent().trim().split("\\s*,\\s*");
+        LOGGER.debug(String.format("Loaded columns for locations titles: %s", Arrays.toString(locationsTitlesCols)));
+        luxModel.setLocationsTitlesCols(locationsTitlesCols);
+
+        // load data points config (columns)
+        String[] dataPointsValCols = doc.getElementsByTagName("valuesColumns").item(0).getTextContent().trim().split("\\s*,\\s*");
+        LOGGER.debug(String.format("Loaded columns for data points values: %s", Arrays.toString(dataPointsValCols)));
+        luxModel.setDataValuesCols(dataPointsValCols);
+        // load data points config (metrics ids)
+        String[] dataPointsMetricsIds = doc.getElementsByTagName("dataMetricsIds").item(0).getTextContent().trim().split("\\s*,\\s*");
+        LOGGER.debug(String.format("Loaded metrics ids for data points values: %s", Arrays.toString(dataPointsMetricsIds)));
+        luxModel.setDataValuesMetricsIds(dataPointsMetricsIds);
+
+        return luxModel;
+    }
+
+    /***/
+    public void loadFromModel(LuxModel model) throws IOException {
         LOGGER.debug("LuxClient.loadFromModel() is working.");
 
         // units
         Map<Long, LuxUnit> units = model.getUnits();
         for (LuxUnit unit : units.values()) {
-            this.luxRestClient.addTableEntry(datasetId, unit, true);
+            this.luxRestClient.addTableEntry(model.getDatasetId(), unit, true);
         }
         // metrics
         Map<Long, LuxMetric> metrics = model.getMetrics();
         for (LuxMetric metric : metrics.values()) {
-            this.luxRestClient.addTableEntry(datasetId, metric, true);
+            this.luxRestClient.addTableEntry(model.getDatasetId(), metric, true);
         }
         // locations
         Map<Long, LuxLocation> locations = model.getLocations();
         for (LuxLocation location : locations.values()) {
-            this.luxRestClient.addTableEntry(datasetId, location, true);
+            this.luxRestClient.addTableEntry(model.getDatasetId(), location, true);
         }
         // periods
         Map<Long, LuxPeriod> periods = model.getPeriods();
         for (LuxPeriod period : periods.values()) {
-            this.luxRestClient.addTableEntry(datasetId, period, true);
+            this.luxRestClient.addTableEntry(model.getDatasetId(), period, true);
         }
         // data
         Map<Long, LuxDataPoint> dataPoints = model.getDataPoints();
         for (LuxDataPoint dataPoint : dataPoints.values()) {
-            this.luxRestClient.addTableEntry(datasetId, dataPoint, true);
+            this.luxRestClient.addTableEntry(model.getDatasetId(), dataPoint, true);
         }
 
     }

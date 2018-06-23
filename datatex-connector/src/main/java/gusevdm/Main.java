@@ -11,7 +11,9 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.SQLException;
@@ -122,7 +124,7 @@ public class Main {
     }
 
     /** Real run() - after all initializations. */
-    void run(OptionSet optionSet) throws IOException, SQLException, ParseException {
+    void run(OptionSet optionSet) throws IOException, SQLException, ParseException, ParserConfigurationException, SAXException {
         LOGGER.debug("Main.run(OptionSet) is working.");
 
         // select config file (default or provided via cmd line option)
