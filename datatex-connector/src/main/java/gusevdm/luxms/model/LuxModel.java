@@ -163,10 +163,11 @@ public class LuxModel {
                 LOGGER.debug(String.format("\tProcessing quarter: %s", quarterCounter));
                 // create quarter period
                 quarterId = Long.parseLong(String.valueOf(quarterCounter) + "00000" + year);
+                title = quarter + " " + year;
                 startDate = LUX_DATE_FORMAT.parse(year + "-" +
                         String.valueOf(1 + 3 * (quarterCounter - 1)) + "-01");
                 // add period to map
-                periods.put(quarterId, new LuxPeriod(quarterId, quarter, yearId, startDate, LuxPeriodType.QUARTER));
+                periods.put(quarterId, new LuxPeriod(quarterId, title, yearId, startDate, LuxPeriodType.QUARTER));
 
                 for (int monthCounter = 3 * (quarterCounter - 1); monthCounter < 3 * quarterCounter; monthCounter++) { // <- MONTHS
                     LOGGER.debug(String.format("\t\tProcessing month: %s", monthCounter + 1));
