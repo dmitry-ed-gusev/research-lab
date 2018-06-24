@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <report>
     <!-- report.sql -->
-    <sqlFile>report1/report.sql</sqlFile>
+    <!--<sqlFile>report1/report.sql</sqlFile>-->
+    <sqlFile>report1/transactions_in_progress.sql</sqlFile>
     <!-- dataset ID for current report -->
     <datasetId>11</datasetId>
 

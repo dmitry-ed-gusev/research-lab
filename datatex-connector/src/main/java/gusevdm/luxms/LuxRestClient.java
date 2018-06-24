@@ -220,8 +220,21 @@ public class LuxRestClient extends RestClient {
         String urlPath = LUXMS_API_ENTRY + "/" + datasetId + "." + model.getDataType().getTableName() +
                 "/" + model.getStrId();
         // update item via REST
-        RestResponse response = this.executePut(urlPath, model.getAsJSON(), null, this.authHeader);
-        System.out.println("===> " + response);
+
+        try {
+
+            RestResponse response = this.executePut(urlPath, model.getAsJSON(), null, this.authHeader);
+            System.out.println("===> " + response);
+
+        } catch (RestException e) { // catch REST exception and process it
+            int status = e.getResponse().getStatus();
+            if (status == 404) { // try to UPDATE
+                LOGGER.error("Got status [404 Not found]!");
+            } else { // if status <> 404
+                throw e;
+            }
+        }
+
     }
 
     /***/

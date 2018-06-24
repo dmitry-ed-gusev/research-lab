@@ -133,9 +133,13 @@ public class DataTexDBClient {
             String locationTitleValue;
             int sortOrder = 1;
             do {
+
                 locationTitleValue = rs.getString(locationTitleColumn);
+                System.out.println("-> " + locationTitleValue);
+
                 // id -> hash code from title value
                 locationId         = locationTitleValue.hashCode();
+                System.out.println("-> " + locationId);
 
                 // building LuxMS model: where? -> locations
                 location = new LuxLocation(locationId, locationTitleValue, 0, -1,
