@@ -67,7 +67,7 @@ public class LuxPeriod implements LuxModelInterface {
     @Override
     public JSONObject getAsJSON() {
         JSONObject body = new JSONObject();
-        body.put("id",          this.id > 0 ? this.id : "");
+        body.put("id",          /*this.id > 0 ? this.id : ""*/ this.id);
         body.put("title",       this.title);
         body.put("parent_id",   this.parentId <= 0 ? null : this.parentId);
         body.put("start_time",  LUX_DATE_FORMAT.format(this.startDate));

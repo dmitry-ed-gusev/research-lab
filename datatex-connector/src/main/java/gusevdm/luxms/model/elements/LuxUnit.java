@@ -69,7 +69,7 @@ public class LuxUnit implements LuxModelInterface {
     @Override
     public JSONObject getAsJSON() {
         JSONObject body = new JSONObject();
-        body.put("id",           this.id > 0 ? this.id : "");
+        body.put("id",           /*this.id > 0 ? this.id : ""*/ this.id);
         body.put("title",        this.title);
         body.put("value_prefix", this.prefix);
         body.put("value_suffix", this.suffix);

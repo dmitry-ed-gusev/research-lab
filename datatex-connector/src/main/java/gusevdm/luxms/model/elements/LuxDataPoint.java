@@ -66,7 +66,7 @@ public class LuxDataPoint implements LuxModelInterface {
     @Override
     public JSONObject getAsJSON() {
         JSONObject body = new JSONObject();
-        body.put("id",        this.id > 0 ? this.id : "");
+        body.put("id",        /*this.id > 0 ? this.id : ""*/ this.id);
         body.put("metric_id", this.metricId);
         body.put("loc_id",    this.locationId);
         body.put("period_id", this.periodId);
