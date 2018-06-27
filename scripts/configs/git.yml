@@ -37,23 +37,23 @@ repositories:
       build: no
   man:  # Mantis
     mantis-bds:
-      build: no
+      build: yes
     mantis-pdc:
       build: no
     mantis-ops:
       build: no
     mantis-systems:
-      build: no
+      build: yes
     mantis-teradata:
       build: no
     mantis-udi:
       build: no
     mantis-analytics:
-      build:  no
+      build:  yes
     mantis-model:
       build: no
     mantis-model-generator:
-      build: no
+      build: yes
     mantis-hadoop-clients:
       build:  yes
     mantis-hive-rest-service:
