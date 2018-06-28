@@ -1,5 +1,3 @@
--- noinspection SqlNoDataSourceInspectionForFile
-
 --alter session set current_schema = now4;
 select
     sd.itemcode, round(avg(sd.order_duration_days), 3) as order_duration_days,

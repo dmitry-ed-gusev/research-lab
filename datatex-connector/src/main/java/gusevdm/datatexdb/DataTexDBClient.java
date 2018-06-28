@@ -135,14 +135,14 @@ public class DataTexDBClient {
             do {
 
                 locationTitleValue = rs.getString(locationTitleColumn);
-                System.out.println("-> " + locationTitleValue);
+                //System.out.println("-> " + locationTitleValue);
 
                 // id -> hash code from title, but we need positive hash so we do: valuex.hashcode() & 0xfffffff
                 // it will turn the sign bit off. [Math.abs] is not used here because it returns negative
                 // if x.hashCode is equal to Integer.MIN_VALUE which will make the  hashtable's array throw
                 // an ArrayOutOfBoundException which is not fun.
                 locationId         = locationTitleValue.hashCode() & 0xfffffff;
-                System.out.println("-> " + locationId);
+                //System.out.println("-> " + locationId);
 
                 // building LuxMS model: where? -> locations
                 location = new LuxLocation(locationId, locationTitleValue, 0, -1,
@@ -178,6 +178,7 @@ public class DataTexDBClient {
 
         } else { // no data
             LOGGER.warn("No data found for this query!");
+            throw new IllegalStateException("No data found in DataTex DB!");
         } // END if
 
         return luxModel;

@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
 <report>
     <!-- report.sql -->
-    <!--<sqlFile>report1/report.sql</sqlFile>-->
     <sqlFile>report1/transactions_in_progress.sql</sqlFile>
     <!-- dataset ID for current report -->
-    <datasetId>11</datasetId>
+    <datasetId>12</datasetId>
 
     <!-- Units for report(s) -->
     <units>
@@ -37,17 +36,17 @@
 
     <!-- periods for report -->
     <periods>
-        <years>2014, 2015, 2016, 2017, 2018, 2019</years>
+        <years>2015, 2016, 2017, 2018, 2019</years>
     </periods>
 
     <!-- locations for report -->
     <locations>
-        <titlesColumns>ITEM_DESCRIPTION</titlesColumns>
+        <titlesColumns>item_description</titlesColumns>
     </locations>
 
     <!-- data points for report -->
     <dataPoints>
-        <valuesColumns>ORDER_DURATION_DAYS</valuesColumns>
+        <valuesColumns>cycles_average</valuesColumns>
         <dataMetricsIds>1</dataMetricsIds>
     </dataPoints>
 

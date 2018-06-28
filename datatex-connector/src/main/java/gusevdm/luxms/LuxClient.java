@@ -270,6 +270,7 @@ public class LuxClient {
         }
         // locations
         Map<Long, LuxLocation> locations = model.getLocations();
+        System.out.println("->" + locations);
         for (LuxLocation location : locations.values()) {
             this.luxRestClient.addTableEntry(model.getDatasetId(), location, true);
         }
