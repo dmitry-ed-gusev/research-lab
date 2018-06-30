@@ -65,6 +65,6 @@ general_env_virtual:
 
 # reports properties
 reports:
-  - report1       # current working report
-  # - my_report     # next report in a row
-  # - sample_report # just a sample report config
+  - report1  # отчет: средний цикл производства по выбранной номенклатуре
+  #- report2  # отчет: todo: ???
+  #- report3  # отчет: todo: средний цикл производства по выбранной номенклатуре (по дате выпуска)
