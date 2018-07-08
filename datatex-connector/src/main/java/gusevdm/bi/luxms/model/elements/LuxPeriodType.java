@@ -1,4 +1,4 @@
-package gusevdm.luxms.model.elements;
+package gusevdm.bi.luxms.model.elements;
 
 import org.apache.commons.lang3.StringUtils;
 

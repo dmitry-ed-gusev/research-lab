@@ -1,9 +1,9 @@
-package gusevdm.datatexdb;
+package gusevdm.db.datatexdb;
 
 import gusevdm.config.Environment;
-import gusevdm.luxms.model.LuxModel;
-import gusevdm.luxms.model.elements.LuxDataPoint;
-import gusevdm.luxms.model.elements.LuxLocation;
+import gusevdm.bi.luxms.model.LuxModel;
+import gusevdm.bi.luxms.model.elements.LuxDataPoint;
+import gusevdm.bi.luxms.model.elements.LuxLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

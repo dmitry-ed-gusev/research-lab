@@ -1,6 +1,6 @@
-package gusevdm.luxms.model;
+package gusevdm.bi.luxms.model;
 
-import gusevdm.luxms.model.elements.*;
+import gusevdm.bi.luxms.model.elements.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static gusevdm.luxms.LuxDefaults.LUX_DATE_FORMAT;
+import static gusevdm.bi.luxms.LuxDefaults.LUX_DATE_FORMAT;
 
 /** The whole model for LuxMS data cube. */
 // todo: immutability???

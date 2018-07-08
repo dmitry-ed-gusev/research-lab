@@ -1,4 +1,4 @@
-package gusevdm.luxms;
+package gusevdm.bi.luxms;
 
 import java.text.SimpleDateFormat;
 

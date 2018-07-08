@@ -1,6 +1,6 @@
-package gusevdm.luxms.model;
+package gusevdm.bi.luxms.model;
 
-import gusevdm.luxms.model.LuxDataType;
+import gusevdm.bi.luxms.model.LuxDataType;
 import org.json.simple.JSONObject;
 
 import java.util.List;

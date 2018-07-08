@@ -1,9 +1,9 @@
-package gusevdm.luxms;
+package gusevdm.bi.luxms;
 
 import gusevdm.config.Environment;
-import gusevdm.luxms.model.LuxDataSet;
-import gusevdm.luxms.model.LuxDataType;
-import gusevdm.luxms.model.LuxModelInterface;
+import gusevdm.bi.luxms.model.LuxDataSet;
+import gusevdm.bi.luxms.model.LuxDataType;
+import gusevdm.bi.luxms.model.LuxModelInterface;
 import gusevdm.rest.RestClient;
 import gusevdm.rest.RestException;
 import gusevdm.rest.RestResponse;

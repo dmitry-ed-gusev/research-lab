@@ -1,6 +1,6 @@
-package gusevdm.luxms.model;
+package gusevdm.bi.luxms.model;
 
-import gusevdm.luxms.model.elements.*;
+import gusevdm.bi.luxms.model.elements.*;
 import org.apache.commons.csv.CSVRecord;
 
 import java.text.ParseException;

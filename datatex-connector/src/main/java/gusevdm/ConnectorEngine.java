@@ -1,12 +1,12 @@
 package gusevdm;
 
 import gusevdm.config.Environment;
-import gusevdm.datatexdb.DataTexDBClient;
-import gusevdm.luxms.LuxClient;
-import gusevdm.luxms.model.LuxDataSet;
-import gusevdm.luxms.LuxRestClient;
-import gusevdm.luxms.model.LuxDataType;
-import gusevdm.luxms.model.LuxModel;
+import gusevdm.db.datatexdb.DataTexDBClient;
+import gusevdm.bi.luxms.LuxClient;
+import gusevdm.bi.luxms.model.LuxDataSet;
+import gusevdm.bi.luxms.LuxRestClient;
+import gusevdm.bi.luxms.model.LuxDataType;
+import gusevdm.bi.luxms.model.LuxModel;
 import joptsimple.OptionSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import static gusevdm.helpers.CommandLineOption.*;
-import static gusevdm.luxms.LuxDefaults.REPORT_XMS_FILE;
+import static gusevdm.bi.luxms.LuxDefaults.REPORT_XMS_FILE;
 
 /** Engine class for DataTex Connector Utility. */
 // todo: move usage of LuxMS Rest client to LuxMS Engine

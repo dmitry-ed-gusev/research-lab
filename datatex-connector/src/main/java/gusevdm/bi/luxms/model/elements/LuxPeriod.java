@@ -1,7 +1,7 @@
-package gusevdm.luxms.model.elements;
+package gusevdm.bi.luxms.model.elements;
 
-import gusevdm.luxms.model.LuxDataType;
-import gusevdm.luxms.model.LuxModelInterface;
+import gusevdm.bi.luxms.model.LuxDataType;
+import gusevdm.bi.luxms.model.LuxModelInterface;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
 import java.text.ParseException;
 import java.util.Date;
 
-import static gusevdm.luxms.LuxDefaults.LUX_DATE_FORMAT;
+import static gusevdm.bi.luxms.LuxDefaults.LUX_DATE_FORMAT;
 
 /**
  * Period for LuxMS system (When?).

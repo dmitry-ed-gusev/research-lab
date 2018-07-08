@@ -1,12 +1,12 @@
-package gusevdm.luxms;
+package gusevdm.bi.luxms;
 
 import gusev.dmitry.jtils.utils.JIOUtils;
 import gusevdm.config.Environment;
-import gusevdm.luxms.model.LuxDataType;
-import gusevdm.luxms.model.LuxModel;
-import gusevdm.luxms.model.LuxModelFactory;
-import gusevdm.luxms.model.LuxModelInterface;
-import gusevdm.luxms.model.elements.*;
+import gusevdm.bi.luxms.model.LuxDataType;
+import gusevdm.bi.luxms.model.LuxModel;
+import gusevdm.bi.luxms.model.LuxModelFactory;
+import gusevdm.bi.luxms.model.LuxModelInterface;
+import gusevdm.bi.luxms.model.elements.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
