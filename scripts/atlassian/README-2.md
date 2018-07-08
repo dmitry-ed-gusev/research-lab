@@ -14,7 +14,7 @@ Initialise the Api:
 
     from confluence import Api
     wiki_url = ""  # your wiki url
-    user, pw = "", ""  # your credentials
+    user, pw = "", ""  # your config
     api = Api(wiki_url, user, pw)
 
 Create a page:

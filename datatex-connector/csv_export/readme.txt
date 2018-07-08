@@ -1,0 +1,1 @@
+This folder is intended for application exported CSV files. This file can be deleted.

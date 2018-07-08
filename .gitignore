@@ -33,7 +33,9 @@ htmlcov
 # -- python virtual environment
 .venv/
 # -- deployable archives
-*.jar
+#*.jar
 *.war
 # -- PAnalyzer app output directory
 panalyzer/
+# -- DataTex connector
+dtex-conn-deploy/

@@ -112,10 +112,10 @@ public abstract class AbstractClient {
     }
 
     /***/
-    //public CloseableHttpResponse sendHttpPost(String uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
-    //    LOG.debug("AbstractClient.sendHttpPost(String) working.");
-    //    return HttpUtils.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri, postParams, cookies);
-    //}
+    public CloseableHttpResponse sendHttpPost(String uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
+        LOG.debug("AbstractClient.sendHttpPost(String) working.");
+        return HttpUtils.sendHttpPost(this.HTTP_CLIENT, this.HTTP_CONTEXT, this.HTTP_REQUEST_CONFIG, uri, postParams, cookies);
+    }
 
     /***/
     //public CloseableHttpResponse sendHttpPost(URI uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
