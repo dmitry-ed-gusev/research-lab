@@ -13962,7 +13962,7 @@ javax.management.*</FONT></TH>
 <A NAME="javax.management.remote.JMXConnector.CREDENTIALS"><!-- --></A><TD ALIGN="right"><FONT SIZE="-1">
 <CODE>public&nbsp;static&nbsp;final&nbsp;<A HREF="java/lang/String.html" title="class in java.lang">String</A></CODE></FONT></TD>
 <TD ALIGN="left"><CODE><A HREF="javax/management/remote/JMXConnector.html#CREDENTIALS">CREDENTIALS</A></CODE></TD>
-<TD ALIGN="right"><CODE>"jmx.remote.credentials"</CODE></TD>
+<TD ALIGN="right"><CODE>"jmx.remote.config"</CODE></TD>
 </TR>
 </FONT></TD>
 </TR>
@@ -14205,7 +14205,7 @@ javax.naming.*</FONT></TH>
 <A NAME="javax.naming.Context.SECURITY_CREDENTIALS"><!-- --></A><TD ALIGN="right"><FONT SIZE="-1">
 <CODE>public&nbsp;static&nbsp;final&nbsp;<A HREF="java/lang/String.html" title="class in java.lang">String</A></CODE></FONT></TD>
 <TD ALIGN="left"><CODE><A HREF="javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</A></CODE></TD>
-<TD ALIGN="right"><CODE>"java.naming.security.credentials"</CODE></TD>
+<TD ALIGN="right"><CODE>"java.naming.security.config"</CODE></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <A NAME="javax.naming.Context.SECURITY_PRINCIPAL"><!-- --></A><TD ALIGN="right"><FONT SIZE="-1">
@@ -15096,7 +15096,7 @@ javax.security.*</FONT></TH>
 <A NAME="javax.security.sasl.Sasl.CREDENTIALS"><!-- --></A><TD ALIGN="right"><FONT SIZE="-1">
 <CODE>public&nbsp;static&nbsp;final&nbsp;<A HREF="java/lang/String.html" title="class in java.lang">String</A></CODE></FONT></TD>
 <TD ALIGN="left"><CODE><A HREF="javax/security/sasl/Sasl.html#CREDENTIALS">CREDENTIALS</A></CODE></TD>
-<TD ALIGN="right"><CODE>"javax.security.sasl.credentials"</CODE></TD>
+<TD ALIGN="right"><CODE>"javax.security.sasl.config"</CODE></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <A NAME="javax.security.sasl.Sasl.MAX_BUFFER"><!-- --></A><TD ALIGN="right"><FONT SIZE="-1">
@@ -15138,7 +15138,7 @@ javax.security.*</FONT></TH>
 <A NAME="javax.security.sasl.Sasl.POLICY_PASS_CREDENTIALS"><!-- --></A><TD ALIGN="right"><FONT SIZE="-1">
 <CODE>public&nbsp;static&nbsp;final&nbsp;<A HREF="java/lang/String.html" title="class in java.lang">String</A></CODE></FONT></TD>
 <TD ALIGN="left"><CODE><A HREF="javax/security/sasl/Sasl.html#POLICY_PASS_CREDENTIALS">POLICY_PASS_CREDENTIALS</A></CODE></TD>
-<TD ALIGN="right"><CODE>"javax.security.sasl.policy.credentials"</CODE></TD>
+<TD ALIGN="right"><CODE>"javax.security.sasl.policy.config"</CODE></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <A NAME="javax.security.sasl.Sasl.QOP"><!-- --></A><TD ALIGN="right"><FONT SIZE="-1">

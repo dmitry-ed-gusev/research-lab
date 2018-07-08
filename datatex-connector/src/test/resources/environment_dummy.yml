@@ -1,0 +1,12 @@
+abstract_credentials:
+  river_url: http://localhost:1080
+  river_api_key: asdfghjkl
+  metabase_url: http://localhost:1090
+  metabase_user: metabaseusr
+  metabase_password: metabasepass
+  abstract_url: https://abs-host:1111
+  abstract_api_key: asdfghjkl
+parsekit_credentials:
+  parsekit_url: http://localhost
+  parsekit_user: user
+  parsekit_password: password

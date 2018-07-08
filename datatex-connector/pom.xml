@@ -1,0 +1,333 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev</groupId>
+        <artifactId>research</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>datatex-connector</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>DataTex :: Connector from DataTex to LuxMS/BFG.</name>
+
+    <!-- datatex-connector assembly properties -->
+    <properties>
+        <app.base.name>dtex-conn-deploy</app.base.name>
+        <app.assembly.dir>${project.basedir}/${app.base.name}</app.assembly.dir>
+        <datatex.main.class>gusevdm.Main</datatex.main.class>
+        <skipCoverageReport>false</skipCoverageReport>
+        <skipIntegrationTests>true</skipIntegrationTests>
+
+        <!-- by default we skip deploy to remote host through SSH, to turn it on use: -Dskip.deploy=false -->
+        <skip.deploy>true</skip.deploy>
+        <!-- remote host properties for deploy through SSH -->
+        <host>10.61.1.51</host>
+        <port>22</port>
+        <user>bi</user>
+        <pass>bi</pass>
+        <path>/home/bi</path>
+    </properties>
+
+    <!-- datatex-connector build properties-->
+    <build>
+        <finalName>${app.base.name}-app</finalName>
+
+        <!-- specify building filters -->
+        <filters>
+            <filter>filters/filter-${env}.properties</filter>
+        </filters>
+
+        <!-- turn on resources filtering on build -->
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- creating JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>${datatex.main.class}</mainClass>
+                            <classpathPrefix>${common.libraries.prefix}/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                    <outputDirectory>${app.assembly.dir}</outputDirectory>
+                </configuration>
+                <version>${maven.plugin.jar}</version>
+            </plugin>
+
+            <!-- copying dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>datatext-conn-dep-copy</id>
+                        <phase>${prod.build.phase}</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${app.assembly.dir}/${common.libraries.prefix}</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- copying other files -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven.plugin.antrun}</version>
+                <executions>
+                    <execution>
+                        <id>copy-files</id>
+                        <phase>${prod.build.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <copy todir="${app.assembly.dir}" flatten="false" overwrite="true"
+                                      verbose="true" failonerror="true">
+                                    <fileset dir="${basedir}" includes="versions.txt"/>
+                                    <fileset dir="${basedir}" includes="readme.txt"/>
+                                    <fileset dir="${basedir}" includes="environment.yml"/>
+                                    <fileset dir="${basedir}" includes="connector.sh"/>
+                                    <fileset dir="${basedir}" includes="logs/**"/>
+                                    <fileset dir="${basedir}" includes="csv_import/**"/>
+                                    <fileset dir="${basedir}" includes="csv_export/**"/>
+                                    <fileset dir="${basedir}" includes="sql/**"/>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+
+                    <!-- deploy app on target server (via ssh/scp) -->
+                    <execution>
+                        <id>project-deploy-app</id>
+                        <phase>${prod.deploy.phase}</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks unless="${skip.deploy}">
+                                <!-- remove previously deployed app -->
+                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                         command="rm -f -r ${path}/${app.base.name}" trust="yes"/>
+                                <!-- create dir for new version of app -->
+                                <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                         command="mkdir -p ${path}/${app.base.name}" trust="yes"/>
+                                <!-- deploy (copy) application -->
+                                <scp todir="${user}:${pass}@${host}:${path}/${app.base.name}" port="${port}" trust="yes" failonerror="false">
+                                    <fileset dir="${basedir}/${app.base.name}" includes="*/**"/>
+                                </scp>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+                <!-- dependencies for ant scp impl, antrun plugin doesn't use os's scp -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>${jsch.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>${ant.jsch.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <!-- todo: remove fixed versions with placeholders from parent (root) POM -->
+    <dependencies>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jopt-simple</groupId>
+            <artifactId>jopt-simple</artifactId>
+            <version>4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.18</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>${dbms.oracle.version}</version>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>dgusev</groupId>
+            <artifactId>utilities</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- mockserver for integration testing -->
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>3.10.4</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.collections</groupId>
+                    <artifactId>google-collections</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+    </dependencies>
+
+    <!-- deploy application through SSH to BTK virtual server -->
+    <profiles>
+        <profile>
+            <id>deploy-to-btk</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>${maven.plugin.antrun}</version>
+                        <executions>
+                            <!-- deploy app on target server (via ssh/scp) -->
+                            <execution>
+                                <id>project-deploy-app</id>
+                                <!--<phase>${prod.deploy.phase}</phase>-->
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                                 command="mkdir -p ${path}/zzz" trust="yes"/>
+                                        <!-- remove previously deployed app -->
+                                        <!--<sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                                 command="rm -f -r ${path}/${app.base.name}" trust="yes"/>-->
+
+                                        <!-- make remote dir(s) (no fail if exists) -->
+                                        <!--<sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                                 command="mkdir -p ${path}/bigdata/${project.artifactId}" trust="yes"/>
+                                        <sshexec host="${host}" port="${port}" username="${user}" password="${pass}"
+                                                 command="mkdir -p ${path}/bigdata/${project.artifactId}/${rawdata.dir}/"
+                                                 trust="yes"/>-->
+                                        <!-- deploy (copy) application -->
+                                        <scp todir="${user}:${pass}@${host}:${path}" port="${port}" trust="yes" failonerror="false">
+                                            <fileset dir="${basedir}" includes="*/**">
+                                                <!--<exclude name="**/${dependencies.output.dir}/**"/>-->
+                                            </fileset>
+                                        </scp>
+                                        <!-- copy rawdata for task/module to cluster -->
+                                        <!--<scp todir="${user}:${pass}@${host}:${path}/bigdata/${project.artifactId}/${rawdata.dir}"
+                                             port="${port}" trust="yes" failonerror="false">
+                                            <fileset dir="${basedir}/${rawdata.dir}"/>
+                                        </scp>-->
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <!-- dependencies for ant scp impl, antrun plugin doesn't use os's scp -->
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.jcraft</groupId>
+                                <artifactId>jsch</artifactId>
+                                <version>${jsch.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant-jsch</artifactId>
+                                <version>${ant.jsch.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

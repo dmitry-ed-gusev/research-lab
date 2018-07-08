@@ -1,0 +1,70 @@
+# LuxMS server environment (local, development)
+luxms_env_local:
+  lux_url:      http://192.168.0.178/api
+  #lux_url:      http://192.168.72.128/api
+  lux_user:     admin
+  lux_password: admin
+
+# LuxMS server environment (virtual, development/test/debug)
+luxms_env_virtual:
+  lux_url:      http://10.61.1.51/api
+  lux_user:     admin
+  lux_password: qweASD
+
+# LuxMS server environment (production)
+#luxms_env_prod:
+#  lux_url:      http://192.168.72.128/api
+#  lux_user:     admin
+#  lux_password: admin
+
+# DataTex environment (local, development)
+datatex_env_local:
+  db_host:   127.0.0.1
+  db_port:   1521
+  db_user:   user
+  # db_pass:   "     "  # <- test for blank value!
+  db_pass:   pass
+  db_schema: schema
+  db_sid:    ORADATA
+
+# DataTex environment (virtual, development/test/debug)
+datatex_env_virtual:
+  db_host:   10.61.60.21
+  db_port:   1521
+  db_user:   nowbfg
+  db_pass:   nowbfg
+  db_schema: NOW4
+  db_sid:    ORADATA
+
+# DataTex environment (production)
+#datatex_env_prod:
+#  db_host:   127.0.0.1
+#  db_port:   1521
+#  db_user:   user
+#  db_pass:   pass
+#  db_schema: schema
+
+# general options (local, development)
+general_env_local:
+  # directory for export CSV files (could be absolute/relative)
+  csv_export_dir: csv_export
+  csv_import_dir: csv_import
+  reports_dir:    sql
+
+# general options (virtual, development/test/debug)
+general_env_virtual:
+  # directory for export CSV files (could be absolute/relative)
+  csv_export_dir: csv_export
+  csv_import_dir: csv_import
+  reports_dir:    sql
+
+# general options (production)
+#general_env_prod:
+  # directory for export CSV files (could be absolute/relative)
+  #csv_directory: csv_export
+
+# reports properties
+reports:
+  - report1  # отчет: средний цикл производства по выбранной номенклатуре
+  #- report2  # отчет: todo: ???
+  #- report3  # отчет: todo: средний цикл производства по выбранной номенклатуре (по дате выпуска)
