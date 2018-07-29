@@ -7,11 +7,11 @@
 location:
   win:    c:/projects
   linux:  /home/gusevdm/projects
-  macos:  /Users/gusevdm/projects
+  macos:  /Users/gusevdmi/projects
 
 # general stash settings
 stash:
-  address:  https://gusevdm:{}@stash.merck.com/scm
+  address:  https://gusevdmi:{}@stash.merck.com/scm
 
 #proxy:
 #  http: 127.0.0.1:3180
@@ -26,18 +26,18 @@ repositories:
     mantis:
       build: no
     mantis11:
-      build: yes
+      build: no
     ingest-script-generator:
-      build:  yes
+      build:  no
     sqoop-msd:
       build:  no
     csv2abstract:
-      build: yes
+      build: no
     csv2hive:
-      build: yes
+      build: no
   man:  # Mantis
     mantis-bds:
-      build: no
+      build: yes
     mantis-pdc:
       build: no
     mantis-ops:
@@ -49,7 +49,7 @@ repositories:
     mantis-udi:
       build: no
     mantis-analytics:
-      build:  no
+      build:  yes
     mantis-model:
       build: no
     mantis-model-generator:
@@ -62,22 +62,25 @@ repositories:
       build:  no
     keytruda-prototype:  # keytruda repository
       build:  no
-  enigma:  # Enigma team space
-    csv2assembly:
-      build: no
+  # enigma:  # Enigma team space
+    # csv2assembly: # I don't have access
+      # build: no
   svt:  # test automation tools
-    dit-core:
-      build:  yes
+    #dit-core:
+    #  build:  yes
     data_integrity:
       build: yes
   mrlitsc:
     jira-utils:
       build: no
   ~kejzlar:  # Tom Kejzlar's repository
-    jiragraphs:
-      build:  no
+    #jiragraphs:  # obsolete repo
+    #  build:  no
     agilestats:
       build:  no
+  ~gusevdmi: # My personal repository
+    automation:
+      build: no
   infapfm:  # Informatica Platform repositories
     infa-bdm:
       build:  no

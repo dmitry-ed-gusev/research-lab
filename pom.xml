@@ -44,7 +44,8 @@
         <mockito.version>1.10.19</mockito.version>
         <hamcrest.version>1.3</hamcrest.version>
         <xmlunit.version>1.4</xmlunit.version>
-        <jacoco.plugin.version>0.7.7.201606060606</jacoco.plugin.version>
+        <!--<jacoco.plugin.version>0.7.7.201606060606</jacoco.plugin.version>-->
+        <jacoco.plugin.version>0.8.1</jacoco.plugin.version>
         <!-- Spring/Hibernate frameworks (parts) versions -->
         <spring.version>4.3.2.RELEASE</spring.version>
         <spring.context.version>4.3.3.RELEASE</spring.context.version>
@@ -64,11 +65,11 @@
         <rawdata.dir>rawdata</rawdata.dir>
     </properties>
 
-    <!-- Additional Maven repositories for artifacts -->
+    <!-- Additional Maven repositories for artifacts (for dependencies) -->
     <repositories>
         <repository>
             <id>alt-repo-1</id>
-            <name>Alternative repository #1</name>
+            <name>Alt repo #1</name>
             <url>http://www.datanucleus.org/downloads/maven2/</url>
         </repository>
         <repository>
@@ -84,9 +85,26 @@
         <repository>
             <id>alt-repo-4</id>
             <name>Alt repo #4</name>
-            <url>https://mvnrepository.com/artifact/org.apache.commons/commons-csv</url>
+            <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
+        </repository>
+        <repository>
+            <id>alt-repo-5</id>
+            <name>Alt repo #5</name>
+            <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
         </repository>
     </repositories>
+
+    <!-- Additional Maven repositories for Maven plugins -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central-msd-repo</id>
+            <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>alt-plugins-repo-1</id>
+            <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <plugins>
