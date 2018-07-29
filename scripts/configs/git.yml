@@ -66,8 +66,8 @@ repositories:
     # csv2assembly: # I don't have access
       # build: no
   svt:  # test automation tools
-    dit-core:
-      build:  yes
+    #dit-core:
+    #  build:  yes
     data_integrity:
       build: yes
   mrlitsc:
