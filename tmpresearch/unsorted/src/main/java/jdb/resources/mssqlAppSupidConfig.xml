@@ -1,0 +1,13 @@
+<?xml version = '1.0'?>
+<db-settings>
+
+ <db>
+  <type>mssql_native</type>
+  <host>app:1433</host>
+  <server>hercules</server>
+  <dbname>supid</dbname>
+  <user>sa</user>
+  <pwd>adminsql245#I</pwd>
+ </db>
+
+</db-settings>

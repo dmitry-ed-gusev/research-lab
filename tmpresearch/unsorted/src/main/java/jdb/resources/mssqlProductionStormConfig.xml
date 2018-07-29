@@ -1,0 +1,12 @@
+<?xml version = '1.0'?>
+<db-settings>
+
+ <db>
+  <type>mssql_jtds</type>
+  <host>sql01.rs-head.spb.ru:1433</host>
+  <dbname>storm</dbname>
+  <user>dba_storm</user>
+  <pwd>HG346dj@#4df</pwd>
+ </db>
+
+</db-settings>
