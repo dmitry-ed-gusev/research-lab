@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+ <!--
+  Скрипт выполняет сборку версии системы массовой почтовой рассылки (MassEmailsSender) с документацией. Создаются
+  необходимые каталоги, копируются необходимые библиотеки. Глобальные свойства проекта берутся из файла
+  global.ant.properties. Перед копированием сборки на сетевой диск проверяется его доступность (сетевого диска).
+  Также возможна автоматизированная отправка почтовых уведомлений о новых сборках системы.
+  Вместе со сборкой системы собирается утилита на ее основе. См. папку с результатом работы скрипта (PRODUCTION).
+
+  Последняя версия скрипта от: 20.05.2011
+ -->
+
+ <project name="MASS EMAILS SENDER (SPAMMER) BUILD SCRIPT" basedir="." default="distribute_net">
+    
+  <!-- Во время выполнения сборки будет показана стандартная картинка анта и прогресс бар -->
+  <splash />
+
+  <!-- Загрузка глобальных свойств из файла (общие свойства для всех скриптов) -->
+  <property file="../../global.ant.properties"/>
+
+  <!-- ГЛОБАЛЬНЫЕ СВОЙСТВА ПРОЕКТА -->
+  <property name="project.name"           value="MassEmailsSender"/>
+  <property name="src.dir"                value="MassEmailsSender_JAVA/src"/>
+  <property name="classes.dir"            value="MassEmailsSender_JAVA/classes"/>
+  <!-- Каталог продакшн-версии (сборки) системы -->
+  <property name="production.dir"         value="${project.name}Production"/>
+  <property name="utility.name"           value="MassEmailsSenderUtility"/>
+  <!-- Каталог продакшн-версии (сборки) утилиты на основе библиотеки MassEmailsSender -->
+  <property name="utility.production.dir" value="${utility.name}Production"/>
+  <property name="doc.dir"                value="${production.dir}/docs/api"/>
+  <property name="developers.dir"         value="${libs.common.dir}/${project.name}"/>
+  <property name="developers.utility.dir" value="${libs.common.dir}/${utility.name}"/>  
+  <property name="batch.dir"              value="batch"/>
+  <property name="javadoc.title"          value="МОДУЛЬ МАССОВОЙ ПОЧТОВОЙ РАССЫЛКИ [MASS EMAILS SENDER]."/>
+
+  <!-- Список библиотек, используемых библиотекой JLIB. Библиотеки необходимы и для запуска утилиты. -->
+  <fileset id="project_libs" dir="${classpath.dir}" casesensitive="false">
+   <include name="**/commons-lang-2.4/commons-lang-2.4.jar"/>
+   <include name="**/commons-cli-1.2/commons-cli-1.2.jar"/>
+   <include name="**/commons-configuration-1.6/commons-configuration-1.6.jar"/>
+   <include name="**/commons-logging-1.1/*.jar"/>
+   <include name="**/commons-collections-3.2/commons-collections-3.2.jar"/> 
+   <include name="**/log4j-1.2.15/log4j-1.2.15.jar"/>
+   <include name="**/javamail-1.4.3/mail.jar"/>
+   <include name="**/jdbc/MSSQL-JTDS/jtds-1.2.5.jar"/>
+   <include name="**/jdbc/dbf/DBF_JDBC30_OK.jar"/>
+   <include name="**/jdb/jdb.jar"/>
+   <include name="**/jlib/jlib.jar"/>
+  </fileset>
+    
+  <!-- Инициализация перед сборкой версии библиотеки - создание необходимых каталогов, очистка каталогов. -->
+  <target name="init">
+   <tstamp prefix="start"/>
+   <!-- Создание необходимых каталогов (если их еще нет) -->
+   <mkdir dir="${classes.dir}"/>
+   <mkdir dir="${production.dir}"/>
+   <mkdir dir="${utility.production.dir}"/>
+   <!-- Очистка необходимых каталогов (от остатков предыдущей сборки) -->
+   <delete includeemptydirs="true" failonerror="false"><fileset dir="${production.dir}" includes="**/*"/></delete>
+   <delete includeemptydirs="true" failonerror="false"><fileset dir="${classes.dir}" includes="**/*"/></delete>
+   <delete includeemptydirs="true" failonerror="false"><fileset dir="${utility.production.dir}" includes="**/*"/></delete>
+   <!-- Копируем sql-скрипт в каталог библиотеки -->
+   <copy todir="${production.dir}" file="MassEmailsSender_MSSQL.sql"/>
+   <!-- Копируем батник(и) в каталог собранной утилиты -->
+   <copy todir="${utility.production.dir}"><fileset dir="${batch.dir}"/></copy>
+   <!-- Копируем конфиг для соединения с СУБД в каталог собранной утилиты -->
+   <copy todir="${utility.production.dir}" file="spammer.xml"/>
+   <!-- Копируем необходимые библиотеки в каталог собранной утилиты - чтобы прямо оттуда ее можно было запустить. -->
+   <copy todir="${utility.production.dir}/lib" flatten="true" failonerror="true"><fileset refid="project_libs"/></copy>
+   <!-- Копируем sql-скрипт в каталог собранной утилиты -->
+   <copy todir="${utility.production.dir}" file="MassEmailsSender_MSSQL.sql"/>
+  </target>
+
+  <!-- Компиляция исходного кода библиотеки. Задача зависит от задачи "init". -->
+  <target name="build" depends="init">
+   <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" source="1.6" target="1.6" includeantruntime="no">
+    <classpath><pathelement path="${classpath.dir}"/><fileset refid="project_libs"/></classpath>
+   </javac>
+   <!-- Делаем файл с номером билда -->
+   <buildnumber file="${project.name}.${buildnumber.file}"/>
+   <!-- Копируем файл с номером билда в продакшн каталог -->
+   <copy file="${project.name}.${buildnumber.file}" todir="${production.dir}"/>
+  </target>
+
+  <!-- Сборка JAR-архива библиотеки. Задача зависит от задачи "build". -->
+  <target name="jar" depends="build">
+   <jar destfile="${production.dir}/${project.name}.jar" basedir="${classes.dir}">
+    <manifest>
+     <attribute name="Built-By"   value="${jar.author}"/>
+    </manifest>
+   </jar>
+  </target>
+
+  <!-- Сборка документации по проекту - данная задача зависит от задачи "distribute". -->
+  <target name="generate_javadoc" depends="jar">
+   <!-- Задача ANT - JAVADOC -->
+   <javadoc destdir="${doc.dir}" author="true" version="true" use="true" windowtitle="API for [${project.name}]."
+    access="public" splitindex="true" overview="${src.dir}/overview.html">
+    <!-- Параметер classpath для всего проекта -->
+    <classpath>
+     <pathelement path="${classpath.dir}"/>
+     <fileset refid="project_libs"/>
+    </classpath>
+    <!-- Пакеты (packages) в папке с исходным кодом для включения в документацию -->
+    <packageset dir="${src.dir}" defaultexcludes="yes">
+     <include name="spammer/**"/>
+    </packageset>
+    <doctitle><![CDATA[<h1>${javadoc.title}</h1>]]></doctitle>
+    <bottom><![CDATA[<i>${javadoc.copyright}</i>]]></bottom>
+   </javadoc>
+  </target>
+
+  <!-- Сборка в JAR-архив утилиты на основе данной библиотеки jlib. -->
+  <target name="makeMassEmailsSenderUtility" depends="generate_javadoc">
+   <!-- Из набора классов подкаталога lib каталога production/client формируем свойство CLASSPATH для манифеста -->
+   <manifestclasspath property="jar_classpath" jarfile="${utility.production.dir}/${utility.name}.jar">
+    <classpath><fileset dir="${utility.production.dir}/lib"/></classpath>
+   </manifestclasspath>
+   <!-- Непосредственно сборка JAR-архива утилиты -->
+   <jar destfile="${utility.production.dir}/${utility.name}.jar" basedir="${classes.dir}">
+    <!-- Создание манифеста для jar-архива утилиты -->
+    <manifest>
+     <attribute name="Built-By"   value="${jar.author}"/>
+     <attribute name="Main-Class" value="spammer.MAIN"/>
+     <attribute name="Class-Path" value="${jar_classpath}"/>
+    </manifest>
+   </jar>
+  </target>
+
+  <!-- Копирование файлов в локальный каталог (локальная инсталляция дистрибутива) -->
+  <target name="distribute_local" depends="makeMassEmailsSenderUtility">
+   <!-- Пытаемся создать локальный каталог для дистрибутива (он будет создан, только если его еще нет) -->
+   <mkdir dir="${classpath.dir}/${project.name}"/>
+   <!-- Очистка локального каталога с дистрибутивом библиотеки -->
+   <delete includeemptydirs="true" failonerror="false">
+    <fileset dir="${classpath.dir}/${project.name}" includes="**/*"/>
+   </delete>
+   <!-- Копирование дистрибутива в локальный каталог с библиотеками -->
+   <copy todir="${classpath.dir}/${project.name}">
+    <fileset dir="${production.dir}"/>
+   </copy>
+  </target>
+
+  <!-- Проверка доступности сетевого ресурса и установка (в зависимотси от доступности) свойства net_available -->
+  <target name="check_net_resources">
+   <available file="${libs.common.dir}" type="dir" property="net_available"/>
+   <echo message="Checking network resources..."/>
+  </target>
+
+  <!--
+   Копирование файлов на сетевой диск \\appserver\developer (сетевая инсталляция дистрибутива). Копирование производится
+   только если установлено свойство net_available - сеть доступна.
+  -->
+  <target name="distribute_net" if="net_available" depends="distribute_local, check_net_resources">
+   <!-- Пытаемся создать общий каталог для дистрибутива (он будет создан, только если его еще нет) -->
+   <mkdir dir="${developers.dir}"/>
+   <!-- Очистка общего каталога с дистрибутивом библиотеки -->
+   <delete includeemptydirs="true" failonerror="false"><fileset dir="${developers.dir}" includes="**/*"/></delete>
+   <!-- Копирование дистрибутива в общий каталог с библиотеками -->
+   <copy todir="${developers.dir}"><fileset dir="${production.dir}"/></copy>
+
+   <!-- Пытаемся создать общий каталог для дистрибутива утилиты (он будет создан, только если его еще нет) -->
+   <!--<mkdir dir="${developers.utility.dir}"/>-->
+   <!-- Очистка общего каталога с дистрибутивом утилиты -->
+   <!--<delete includeemptydirs="true" failonerror="false"><fileset dir="${developers.utility.dir}" includes="**/*"/></delete>-->
+   <!-- Копирование дистрибутива утилиты в общий каталог с библиотеками -->
+   <!--<copy todir="${developers.utility.dir}"><fileset dir="${utility.production.dir}"/></copy>-->
+  </target>
+
+  <!-- Почтовое уведомление о выходе новой версии библиотеки -->
+  <target name="mail_notify" depends="distribute_net">
+   <!-- Отправляем уведомление по списку рассылки -->
+   <mail mailhost="${mail.smtp.host}" mailport="${mail.smtp.port}"
+    subject="Новая версия системы ${project.name}"
+    charset="windows-1251" encoding="plain" messagemimetype="text/html"
+    from="${mail.author.address}" tolist="${mail.libs.sendlist}"
+    messagefile="${src.dir}/overview.html">
+   </mail>
+  </target>
+
+ </project>
