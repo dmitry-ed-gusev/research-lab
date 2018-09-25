@@ -4,7 +4,7 @@
 """
     Common utilities in python. Can be useful in different cases.
     Created: Gusev Dmitrii, 04.04.2017
-    Modified: Gusev Dmitrii, 13.01.2017
+    Modified: Gusev Dmitrii, 25.09.2018
 """
 
 import os

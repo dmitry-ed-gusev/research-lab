@@ -16,7 +16,7 @@ import re
 import random
 import datetime
 import logging.config
-from pyutilities import setup_logging
+from pyutilities.utils import setup_logging
 from urllib2 import urlopen
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
