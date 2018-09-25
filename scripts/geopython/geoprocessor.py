@@ -14,7 +14,7 @@ import os
 import logging
 import xlrd  # most suitable for xls
 from geoutils import get_str_val, get_int_val
-from pylib.pyutilities import setup_logging
+from pyutilities import setup_logging
 from geodb import DB_NAME, db_create, db_add_commission, db_add_address
 
 # common constants

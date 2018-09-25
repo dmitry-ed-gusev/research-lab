@@ -7,8 +7,6 @@
     Modified: Gusev Dmitrii, 23.04.2018
 """
 
-import logging
-from urllib2 import urlopen
 from urllib2 import build_opener
 from urllib2 import install_opener
 from urllib2 import HTTPError

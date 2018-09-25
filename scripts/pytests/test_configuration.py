@@ -5,7 +5,7 @@ import os
 import unittest
 from helpers import init_logger
 from mock import patch
-from pylib.configuration import Configuration, ConfigError
+from pyutilities.pyutilities.configuration import Configuration, ConfigError
 
 
 class ConfigurationTest(unittest.TestCase):

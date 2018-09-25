@@ -11,9 +11,9 @@
 import argparse
 import logging
 import pylib.common_constants as myconst
-from pylib.configuration import Configuration
+from pyutilities.pyutilities.configuration import Configuration
 from pylib.git_utility import GitUtility, REPO_FUNCTION_CLONE, REPO_FUNCTION_UPDATE
-from pylib.pyutilities import setup_logging
+from pyutilities import setup_logging
 
 
 def prepare_arg_parser():

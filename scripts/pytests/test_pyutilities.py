@@ -12,7 +12,7 @@ import unittest
 import logging
 import logging.config
 from mock import patch, mock_open
-from pylib.pyutilities import parse_yaml, list_files, _list_files
+from pyutilities import parse_yaml, list_files, _list_files
 
 
 class ConfigurationTest(unittest.TestCase):
