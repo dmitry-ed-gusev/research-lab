@@ -5,8 +5,8 @@
 #   Create disribution for [pyutilities] library.
 #   See more info here: https://packaging.python.org/tutorials/packaging-projects/#
 #
-#   Created:  Gusev Dmitry, 25.09.2018
-#   Modified:
+#   Created:  Gusev Dmitrii, 25.09.2018
+#   Modified: Gusev Dmitrii, 26.09.2018
 # =======================================================================================
 
 # clean previous versions distributions
@@ -25,3 +25,6 @@ python setup.py sdist bdist_wheel
 
 # upload new library dist to PyPi
 twine upload dist/*
+
+# upgrade version of library from PyPi
+pip install --upgrade pyutilities

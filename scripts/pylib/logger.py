@@ -6,7 +6,7 @@ import logging
 import os
 import sys
 
-from pyutilities.pyutilities.configuration import Configuration
+from pyutilities.config import Configuration
 
 
 class MantisLogger(object):

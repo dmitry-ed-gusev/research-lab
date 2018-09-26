@@ -12,9 +12,9 @@
 import argparse
 import logging
 from pylib.jira_utility_extended import JiraUtilityExtended, JIRA_OPTIONS
-from pyutilities import setup_logging
+from pyutilities.utils import setup_logging
 import pylib.common_constants as myconst
-from pyutilities.pyutilities.configuration import Configuration
+from pyutilities.config import Configuration
 
 
 def prepare_arg_parser():

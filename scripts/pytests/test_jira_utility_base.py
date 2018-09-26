@@ -8,7 +8,7 @@
 import unittest
 from mock import patch
 from jira import JIRA
-from pyutilities.pyutilities.configuration import Configuration
+from pyutilities.config import Configuration
 from pylib.jira_utility_base import JiraUtilityBase, JiraException
 
 # empty values tuple

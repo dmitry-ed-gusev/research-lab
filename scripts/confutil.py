@@ -12,7 +12,7 @@ import logging
 import json
 import requests
 import pylib.common_constants as myconst
-from pyutilities import setup_logging
+from pyutilities.utils import setup_logging
 from bs4 import BeautifulSoup
 
 
