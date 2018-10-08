@@ -18,13 +18,13 @@ dependency-reduced-pom.xml
 socialnet/.crawlerdb/
 socialnet/.db/
 vk_token*
-# -- ignore python compiled files
-*.pyc
+
 # -- ignore gzip archives
 *.gz
 # -- ignore temporary word files
 ~$*.docx
 .DS_Store
+
 # -- python tests coverage
 .coverage
 coverage.xml
@@ -32,6 +32,14 @@ nose2*
 htmlcov
 # -- python virtual environment
 .venv/
+# -- python egg files
+*.egg-info
+# -- ignore python compiled files
+*.pyc
+# -- files/directories related to python
+dist
+build
+
 # -- deployable archives
 #*.jar
 *.war

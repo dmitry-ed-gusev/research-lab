@@ -14,7 +14,7 @@ import prettytable
 import logging
 import common_constants as myconst
 from jira import JIRA
-from configuration import Configuration
+from pyutilities.config import Configuration
 
 
 class JiraUtilityBase(object):

@@ -6,13 +6,13 @@
     Can load configuration from YAML files. See docstring for Configuration class.
 
     Created: Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 27.12.2017
+    Modified: Gusev Dmitrii, 25.09.2018
 """
 
 import os
 import logging
 from string import Template
-from pyutilities import parse_yaml
+from utils import parse_yaml
 
 YAML_EXTENSION_1 = '.yml'
 YAML_EXTENSION_2 = '.yaml'

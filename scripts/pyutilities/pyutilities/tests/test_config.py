@@ -2,19 +2,26 @@
 # coding=utf-8
 
 import os
+import yaml
 import unittest
-from helpers import init_logger
+import logging
+import logging.config
 from mock import patch
-from pylib.configuration import Configuration, ConfigError
+from pyutilities.config import Configuration, ConfigError
+
+CONFIG_PATH = 'configs'
+CONFIG_MODULE_MOCK_YAML = 'pyutilities.config.parse_yaml'
+CONFIG_MODULE_MOCK_OS = 'pyutilities.config.os'
 
 
 class ConfigurationTest(unittest.TestCase):
 
-    CONFIGS_PATH = "pytests/configs"
-
     @classmethod
     def setUpClass(cls):
-        init_logger()
+        cls._log = logging.getLogger(__name__)
+        with open('configs/logging.yml', 'rt') as f:
+            config = yaml.safe_load(f.read())
+        logging.config.dictConfig(config)
 
     def setUp(self):
         # init config before each test, don't merge with environment
@@ -29,13 +36,13 @@ class ConfigurationTest(unittest.TestCase):
                 self.config.load(invalid_path)
 
     def test_merge_config_files(self):
-        self.config.load(ConfigurationTest.CONFIGS_PATH)
+        self.config.load(CONFIG_PATH)
         self.assertEqual(self.config.get("section1.key1"), "value1")
         self.assertEqual(self.config.get("section2.key3"), "value3")
 
     def test_merge_env_variables(self):
         os.environ["simple_key"] = "env_value"
-        self.config.load(ConfigurationTest.CONFIGS_PATH, is_merge_env=False)
+        self.config.load(CONFIG_PATH, is_merge_env=False)
         self.assertEqual(self.config.get("simple_key"), "file_value")
         self.config.merge_env()
         self.assertEqual(self.config.get("simple_key"), "env_value")
@@ -71,8 +78,8 @@ class ConfigurationTest(unittest.TestCase):
         self.config.set('a.b.c', 'e')
         self.assertEqual(self.config.get('a.b.c'), 'e')
 
-    @patch('pylib.configuration.parse_yaml')
-    @patch('pylib.configuration.os')
+    @patch(CONFIG_MODULE_MOCK_YAML)
+    @patch(CONFIG_MODULE_MOCK_OS)
     def test_load_from_single_yaml(self, mock_os, mock_parse_yaml):
         # set returned results for mocks
         mock_os.exists.return_value = True
@@ -89,8 +96,8 @@ class ConfigurationTest(unittest.TestCase):
         # check that now key exists in config
         self.assertEqual(self.config.get("key"), "value")
 
-    @patch('pylib.configuration.parse_yaml')
-    @patch('pylib.configuration.os')
+    @patch(CONFIG_MODULE_MOCK_YAML)
+    @patch(CONFIG_MODULE_MOCK_OS)
     def test_load_from_directory(self, mock_os, mock_parse_yaml):
         # mock for os.path()
         mock_os.exists.return_value = True
@@ -119,8 +126,8 @@ class ConfigurationTest(unittest.TestCase):
         config = Configuration(dict_to_merge={'key': 'value'}, is_override_config=True)
         self.assertEqual(config.get('key'), 'value')
 
-    @patch('pylib.configuration.parse_yaml')
-    @patch('pylib.configuration.os')  # name for patch should be equals to import in real module!
+    @patch(CONFIG_MODULE_MOCK_YAML)
+    @patch(CONFIG_MODULE_MOCK_OS)  # name for patch should be equals to import in real module!
     def test_init_with_dict_dont_override(self, mock_os, mock_parse_yaml):
         # set returned results for mocks
         mock_os.exists.return_value = True

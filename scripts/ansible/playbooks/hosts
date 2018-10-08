@@ -1,6 +1,0 @@
-virt-local ansible_ssh_host=127.0.0.1 ansible_ssh_port=2022 ansible_ssh_user=myuser \
-    ansible_ssh_private_key_file=~/.ssh/id_rsa
-virt-vagrant ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222 ansible_ssh_user=vagrant \
-    ansible_ssh_private_key_file=/home/vinnypuhh/projects/research/scripts/playbooks/.vagrant/machines/default/virtualbox/private_key
-virt-msd ansible_ssh_host=192.168.1.70 ansible_ssh_port=22 ansible_ssh_user=myuser \
-    ansible_ssh_private_key_file=~/.ssh/id_rsa

@@ -1,9 +1,0 @@
-# global options
-
-# host-specific (virtual pc)
-Host virtual
-    User	myuser
-    HostName	localhost
-    Port	2022
-    # IdentitiesOnly yes
-    IdentityFile	~/.ssh/id_rsa
