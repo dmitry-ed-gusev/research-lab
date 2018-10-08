@@ -6,10 +6,9 @@
 # todo: add tests for get_issues_by_jql()
 
 import unittest
-import mock
 from mock import patch
 from jira import JIRA
-from pylib.configuration import Configuration
+from pyutilities.config import Configuration
 from pylib.jira_utility_base import JiraUtilityBase, JiraException
 
 # empty values tuple

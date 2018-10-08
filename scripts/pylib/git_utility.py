@@ -13,7 +13,7 @@ import errno
 import platform
 import pylib.common_constants as myconst
 from subprocess import Popen
-from pylib.pyutilities import git_set_global_proxy, git_clean_global_proxy
+from pyutilities.utils import git_set_global_proxy, git_clean_global_proxy
 
 # some useful constants
 GIT_EXECUTABLE = 'git'

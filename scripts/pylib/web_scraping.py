@@ -7,8 +7,6 @@
     Modified: Gusev Dmitrii, 23.04.2018
 """
 
-import logging
-from urllib2 import urlopen
 from urllib2 import build_opener
 from urllib2 import install_opener
 from urllib2 import HTTPError
@@ -18,7 +16,7 @@ import re
 import random
 import datetime
 import logging.config
-from pyutilities import setup_logging
+from pyutilities.utils import setup_logging
 from urllib2 import urlopen
 
 # configure logger on module level. it isn't a good practice, but it's convenient.

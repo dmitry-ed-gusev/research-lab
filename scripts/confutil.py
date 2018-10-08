@@ -8,12 +8,11 @@ https://github.com/pycontribs/confluence
 https://avleonov.com/2018/01/18/confluence-rest-api-for-reading-and-updating-wiki-pages/
 """
 
-import argparse
 import logging
 import json
 import requests
 import pylib.common_constants as myconst
-from pylib.pyutilities import setup_logging
+from pyutilities.utils import setup_logging
 from bs4 import BeautifulSoup
 
 
