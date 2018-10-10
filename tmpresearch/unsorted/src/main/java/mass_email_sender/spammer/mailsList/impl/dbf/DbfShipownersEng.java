@@ -1,25 +1,25 @@
-package spammer.mailsList.impl.dbf;
+package mass_email_sender.spammer.mailsList.impl.dbf;
 
+import mass_email_sender.spammer.Defaults;
+import mass_email_sender.spammer.mailsList.interfaces.EmailsListInterface;
 import org.apache.log4j.Logger;
-import spammer.Defaults;
-import spammer.mailsList.interfaces.EmailsListInterface;
 
 import java.util.TreeMap;
 
 /**
- * Реализация интерфейса получения списка почтовых адресов. Данный модуль возвращает список мейл-адресов
- * англоязычных (не российских) судовладельцев. Модуль основан движке модуля DbfEmailsListBuilder.
+ * Р РµР°Р»РёР·Р°С†РёСЏ РёРЅС‚РµСЂС„РµР№СЃР° РїРѕР»СѓС‡РµРЅРёСЏ СЃРїРёСЃРєР° РїРѕС‡С‚РѕРІС‹С… Р°РґСЂРµСЃРѕРІ. Р”Р°РЅРЅС‹Р№ РјРѕРґСѓР»СЊ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РјРµР№Р»-Р°РґСЂРµСЃРѕРІ
+ * Р°РЅРіР»РѕСЏР·С‹С‡РЅС‹С… (РЅРµ СЂРѕСЃСЃРёР№СЃРєРёС…) СЃСѓРґРѕРІР»Р°РґРµР»СЊС†РµРІ. РњРѕРґСѓР»СЊ РѕСЃРЅРѕРІР°РЅ РґРІРёР¶РєРµ РјРѕРґСѓР»СЏ DbfEmailsListBuilder.
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 17.12.10)
 */
 
 public class DbfShipownersEng implements EmailsListInterface
  {
-  /** Логгер данного модуля. */
+  /** Р›РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РјРѕРґСѓР»СЏ. */
   private Logger logger      = Logger.getLogger(Defaults.LOGGER_NAME);
-  /** Путь к БД Флот. */
+  /** РџСѓС‚СЊ Рє Р‘Р” Р¤Р»РѕС‚. */
   private String fleetDbPath = null;
-  /** Путь к БД Фирм. */
+  /** РџСѓС‚СЊ Рє Р‘Р” Р¤РёСЂРј. */
   private String firmDbPath  = null;
 
   public DbfShipownersEng(String fleetDbPath, String firmDbPath)

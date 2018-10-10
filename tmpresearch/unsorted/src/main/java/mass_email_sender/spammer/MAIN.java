@@ -1,103 +1,103 @@
-package spammer;
+package mass_email_sender.spammer;
 
 import jdb.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.utils.DBUtils;
 import jlib.logging.InitLogger;
+import mass_email_sender.spammer.config.MailerConfig;
+import mass_email_sender.spammer.mailsProcessor.Mailer;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import spammer.config.MailerConfig;
-import spammer.mailsProcessor.Mailer;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Главный запускаемый модуль данного приложения. Для построения запускаемого jar-ника следует использовать данный
- * класс в качестве MAIN-класса. Класс может обрабатывать параметры командной строки, для описания опций следует
- * запустить данный класс (или запускаемый jar-архив с ключом -help (см. модуль констант Defaults).
+ * Р“Р»Р°РІРЅС‹Р№ Р·Р°РїСѓСЃРєР°РµРјС‹Р№ РјРѕРґСѓР»СЊ РґР°РЅРЅРѕРіРѕ РїСЂРёР»РѕР¶РµРЅРёСЏ. Р”Р»СЏ РїРѕСЃС‚СЂРѕРµРЅРёСЏ Р·Р°РїСѓСЃРєР°РµРјРѕРіРѕ jar-РЅРёРєР° СЃР»РµРґСѓРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РґР°РЅРЅС‹Р№
+ * РєР»Р°СЃСЃ РІ РєР°С‡РµСЃС‚РІРµ MAIN-РєР»Р°СЃСЃР°. РљР»Р°СЃСЃ РјРѕР¶РµС‚ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ РїР°СЂР°РјРµС‚СЂС‹ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё, РґР»СЏ РѕРїРёСЃР°РЅРёСЏ РѕРїС†РёР№ СЃР»РµРґСѓРµС‚
+ * Р·Р°РїСѓСЃС‚РёС‚СЊ РґР°РЅРЅС‹Р№ РєР»Р°СЃСЃ (РёР»Рё Р·Р°РїСѓСЃРєР°РµРјС‹Р№ jar-Р°СЂС…РёРІ СЃ РєР»СЋС‡РѕРј -help (СЃРј. РјРѕРґСѓР»СЊ РєРѕРЅСЃС‚Р°РЅС‚ Defaults).
  *
- * @author Gusev Dmitry (Дмитрий)
+ * @author Gusev Dmitry (Р”РјРёС‚СЂРёР№)
  * @version 2.0 (DATE: 17.12.2010)
 */
 
-// todo: Проблема с кодировкой имени приаттаченного к письму файла - русское имя выводится кракозябрами :)
+// todo: РџСЂРѕР±Р»РµРјР° СЃ РєРѕРґРёСЂРѕРІРєРѕР№ РёРјРµРЅРё РїСЂРёР°С‚С‚Р°С‡РµРЅРЅРѕРіРѕ Рє РїРёСЃСЊРјСѓ С„Р°Р№Р»Р° - СЂСѓСЃСЃРєРѕРµ РёРјСЏ РІС‹РІРѕРґРёС‚СЃСЏ РєСЂР°РєРѕР·СЏР±СЂР°РјРё :)
 
 public class MAIN
  {
 
   public static void main(String[] args)
    {
-    // Инициализируем логгеры для данного приложения
+    // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј Р»РѕРіРіРµСЂС‹ РґР»СЏ РґР°РЅРЅРѕРіРѕ РїСЂРёР»РѕР¶РµРЅРёСЏ
     InitLogger.initLoggers(new String[] {"jdb", "org", "jlib", Defaults.LOGGER_NAME},
      Level.DEBUG, Defaults.LOGGER_FILE, Defaults.LOGGER_PATTERN, true);
 
-    // Берем логгер приложения
+    // Р‘РµСЂРµРј Р»РѕРіРіРµСЂ РїСЂРёР»РѕР¶РµРЅРёСЏ
     Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
-    logger.info("Starting SPAMMER project. Checking DBMS connection. Config [" + Defaults.DBCONFIG_FILE + "].");
+    logger.info("Starting project. Checking DBMS connection. Config [" + Defaults.DBCONFIG_FILE + "].");
 
-    // Получение и разбор параметров командной строки. Инициализация конфига приложения.
+    // РџРѕР»СѓС‡РµРЅРёРµ Рё СЂР°Р·Р±РѕСЂ РїР°СЂР°РјРµС‚СЂРѕРІ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё. РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РєРѕРЅС„РёРіР° РїСЂРёР»РѕР¶РµРЅРёСЏ.
     MailerConfig mailerConfig = new MailerConfig(args);
     logger.info("Mailer module config initialized OK.");
 
-    // Если указана опция показать версию - покажем
+    // Р•СЃР»Рё СѓРєР°Р·Р°РЅР° РѕРїС†РёСЏ РїРѕРєР°Р·Р°С‚СЊ РІРµСЂСЃРёСЋ - РїРѕРєР°Р¶РµРј
     if (mailerConfig.isShowVersion()) {logger.info(Defaults.SYSTEM_VERSION);}
-    // Если же указана опция показать хелп - тоже покажем
+    // Р•СЃР»Рё Р¶Рµ СѓРєР°Р·Р°РЅР° РѕРїС†РёСЏ РїРѕРєР°Р·Р°С‚СЊ С…РµР»Рї - С‚РѕР¶Рµ РїРѕРєР°Р¶РµРј
     else if (mailerConfig.isShowHelp())
      {
       logger.info("Showing help screen...");
       new HelpFormatter().printHelp("java -jar MassEmailsSender.jar", null,
        mailerConfig.getCmdLineOptions(), Defaults.SYSTEM_VERSION, true);
      }
-    // Если не указаны опции показа хелпа или версии - работаем по обычной схеме.
+    // Р•СЃР»Рё РЅРµ СѓРєР°Р·Р°РЅС‹ РѕРїС†РёРё РїРѕРєР°Р·Р° С…РµР»РїР° РёР»Рё РІРµСЂСЃРёРё - СЂР°Р±РѕС‚Р°РµРј РїРѕ РѕР±С‹С‡РЅРѕР№ СЃС…РµРјРµ.
     else
      {
-      // Перед запуском проверим соединение с СУБД. Если оно есть - все ок!
-      // Также необходимо проверить параметры командной строки.
+      // РџРµСЂРµРґ Р·Р°РїСѓСЃРєРѕРј РїСЂРѕРІРµСЂРёРј СЃРѕРµРґРёРЅРµРЅРёРµ СЃ РЎРЈР‘Р”. Р•СЃР»Рё РѕРЅРѕ РµСЃС‚СЊ - РІСЃРµ РѕРє!
+      // РўР°РєР¶Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРѕРІРµСЂРёС‚СЊ РїР°СЂР°РјРµС‚СЂС‹ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё.
       Connection connection = null;
       try
        {
-        // Загрузка конфига из файла
+        // Р—Р°РіСЂСѓР·РєР° РєРѕРЅС„РёРіР° РёР· С„Р°Р№Р»Р°
         DBConfig dbConfig = new DBConfig(Defaults.DBCONFIG_FILE);
-        // Проверка соединения с СУБД
+        // РџСЂРѕРІРµСЂРєР° СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ РЎРЈР‘Р”
         connection = DBUtils.getDBConn(dbConfig);
-        // Если соединение не удалось получить - ошибка. Дальше не работаем.
+        // Р•СЃР»Рё СЃРѕРµРґРёРЅРµРЅРёРµ РЅРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ - РѕС€РёР±РєР°. Р”Р°Р»СЊС€Рµ РЅРµ СЂР°Р±РѕС‚Р°РµРј.
         if (connection == null) {throw new DBConnectionException("Can't connect to DBMS! Config file [" + Defaults.DBCONFIG_FILE + "].");}
-        // Если соединение получено - закрываем его
+        // Р•СЃР»Рё СЃРѕРµРґРёРЅРµРЅРёРµ РїРѕР»СѓС‡РµРЅРѕ - Р·Р°РєСЂС‹РІР°РµРј РµРіРѕ
         else                    {connection.close();}
-        // Соединение получено - продолжаем
+        // РЎРѕРµРґРёРЅРµРЅРёРµ РїРѕР»СѓС‡РµРЅРѕ - РїСЂРѕРґРѕР»Р¶Р°РµРј
         logger.info("DBMS connection OK (dbConfig [" + Defaults.DBCONFIG_FILE + "]). Processing.");
 
-        // После выполнения всех проверок непосредственно выполняем рассылку. Выбор интерфейса для формирования списка
-        // адресов осуществляется уже в модуле почтовика (Mailer).
+        // РџРѕСЃР»Рµ РІС‹РїРѕР»РЅРµРЅРёСЏ РІСЃРµС… РїСЂРѕРІРµСЂРѕРє РЅРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РІС‹РїРѕР»РЅСЏРµРј СЂР°СЃСЃС‹Р»РєСѓ. Р’С‹Р±РѕСЂ РёРЅС‚РµСЂС„РµР№СЃР° РґР»СЏ С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ СЃРїРёСЃРєР°
+        // Р°РґСЂРµСЃРѕРІ РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚СЃСЏ СѓР¶Рµ РІ РјРѕРґСѓР»Рµ РїРѕС‡С‚РѕРІРёРєР° (Mailer).
         Mailer mailer = new Mailer(mailerConfig);
         mailer.startSpam();
        }
-      // Перехват ИС
+      // РџРµСЂРµС…РІР°С‚ РРЎ
       catch (DBModuleConfigException e) {logger.error(e.getMessage());}
       catch (ConfigurationException e)  {logger.error(e.getMessage());}
       catch (IOException e)             {logger.error(e.getMessage());}
       catch (DBConnectionException e)   {logger.error(e.getMessage());}
       catch (SQLException e)            {logger.error(e.getMessage());}
-      // Освобождение ресурсов
+      // РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ
       finally
        {try {if (connection != null) {connection.close();}} catch (SQLException e) {logger.error(e.getMessage());}}
      }
     
     /**
-    // Рассылка - заполняем параметрами
+    // Р Р°СЃСЃС‹Р»РєР° - Р·Р°РїРѕР»РЅСЏРµРј РїР°СЂР°РјРµС‚СЂР°РјРё
     DeliveryDTO delivery = new DeliveryDTO();
-    delivery.setSubject("Тестовая рассылка. Модуль автоматической рассылки.");
-    delivery.setText("Тестовое письмо. Тест почтовой рассылки. Отдел 019, ГУР.");
+    delivery.setSubject("РўРµСЃС‚РѕРІР°СЏ СЂР°СЃСЃС‹Р»РєР°. РњРѕРґСѓР»СЊ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕР№ СЂР°СЃСЃС‹Р»РєРё.");
+    delivery.setText("РўРµСЃС‚РѕРІРѕРµ РїРёСЃСЊРјРѕ. РўРµСЃС‚ РїРѕС‡С‚РѕРІРѕР№ СЂР°СЃСЃС‹Р»РєРё. РћС‚РґРµР» 019, Р“РЈР .");
     delivery.setInitiator("019gus");
     delivery.addFile(new DeliveryFileDTO("2-040202-020_1.pdf"));
     delivery.addFile(new DeliveryFileDTO("2-040202-020_2.pdf"));
     delivery.addFile(new DeliveryFileDTO("2-040202-020_3.pdf"));
-    // Пробиваем в БД данные
+    // РџСЂРѕР±РёРІР°РµРј РІ Р‘Р” РґР°РЅРЅС‹Рµ
     new DeliveriesDAO().change(delivery);
     */
    

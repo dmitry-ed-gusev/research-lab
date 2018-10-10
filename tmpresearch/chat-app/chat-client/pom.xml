@@ -2,13 +2,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>gusev.dmitry.chat</groupId>
+        <groupId>dgusev.chat</groupId>
         <artifactId>chat-app</artifactId>
         <version>1.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>gusev.dmitry.chat.client</groupId>
     <artifactId>chat-client</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
@@ -50,7 +49,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                    <outputDirectory>target/lib</outputDirectory>
                     <excludeArtifactIds>junit</excludeArtifactIds>
                 </configuration>
                 <version>${maven.plugin.dependency}</version>

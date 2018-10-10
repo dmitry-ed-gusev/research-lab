@@ -1,24 +1,22 @@
-package spammer.dataModel.dao;
+package mass_email_sender.spammer.dataModel.dao;
 
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.model.applied.dao.DBConfigCommonDAO;
 import jdb.processing.sql.execution.SqlExecutor;
 import jlib.logging.InitLogger;
+import mass_email_sender.spammer.Defaults;
+import mass_email_sender.spammer.dataModel.dto.DeliveryDTO;
+import mass_email_sender.spammer.dataModel.dto.DeliveryFileDTO;
+import mass_email_sender.spammer.dataModel.dto.RecipientTypeDTO;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import spammer.Defaults;
-import spammer.Defaults.DeliveryStatus;
-import spammer.Defaults.DeliveryType;
-import spammer.dataModel.dto.DeliveryDTO;
-import spammer.dataModel.dto.DeliveryFileDTO;
-import spammer.dataModel.dto.RecipientTypeDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 /**
- * Класс для работы с таблицей рассылок и прикрепленных к ним файлов.
+ * РљР»Р°СЃСЃ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ С‚Р°Р±Р»РёС†РµР№ СЂР°СЃСЃС‹Р»РѕРє Рё РїСЂРёРєСЂРµРїР»РµРЅРЅС‹С… Рє РЅРёРј С„Р°Р№Р»РѕРІ.
  * @author Gusev Dmitry (019gus)
  * @version 4.0 (DATE: 21.12.2010)
 */
@@ -26,29 +24,29 @@ import java.util.ArrayList;
 @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
 public class DeliveriesDAO extends DBConfigCommonDAO
  {
-  /** Логгер класса. */
+  /** Р›РѕРіРіРµСЂ РєР»Р°СЃСЃР°. */
   private Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
 
-  /** Конструктор. Поля инициализируются значениями по умолчанию. */
+  /** РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ. РџРѕР»СЏ РёРЅРёС†РёР°Р»РёР·РёСЂСѓСЋС‚СЃСЏ Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ. */
   public DeliveriesDAO() {super(Defaults.LOGGER_NAME, Defaults.DBCONFIG_FILE);}
 
   /**
-   * Конструктор. Значением по умолчанию инициализируется только наименование логгера, конфиг-файл для соединения
-   * с СУБД указывается в качестве параметра конструктора.
-   * @param dbConfigFileName String конфиг-файл для соединения с СУБД. 
+   * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ. Р—РЅР°С‡РµРЅРёРµРј РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ Р»РѕРіРіРµСЂР°, РєРѕРЅС„РёРі-С„Р°Р№Р» РґР»СЏ СЃРѕРµРґРёРЅРµРЅРёСЏ
+   * СЃ РЎРЈР‘Р” СѓРєР°Р·С‹РІР°РµС‚СЃСЏ РІ РєР°С‡РµСЃС‚РІРµ РїР°СЂР°РјРµС‚СЂР° РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР°.
+   * @param dbConfigFileName String РєРѕРЅС„РёРі-С„Р°Р№Р» РґР»СЏ СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ РЎРЈР‘Р”. 
   */
   public DeliveriesDAO(String dbConfigFileName) {super(Defaults.LOGGER_NAME, dbConfigFileName);}
 
   /**
-   * Метод находит и возвращает записи из таблицы рассылок (dbo.deliveries). Если метод ничего не нашел - метод
-   * возвращает значение NULL. Метод не находит файлы, прикрепленные к рассылкам (из таблицы файлов - dbo.deliveriesFiles),
-   * файлы для рассылки находит только метод поиска одной рассылки. Также метод не возвращает в результирующих объектах-членах
-   * списка ArrayList типы получателей для каждой рассылки (из таблицы типов получателей - dbo.recipientsTypes).
-   * @param type DeliveryType тип рассылок, которые должны быть найдены. Если значение не указано (NULL), то метод вернет
-   * ВСЕ записи таблицы рассылок.
-   * @return ArrayList[DeliveryDTO] список рассылок или NULL.
+   * РњРµС‚РѕРґ РЅР°С…РѕРґРёС‚ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РїРёСЃРё РёР· С‚Р°Р±Р»РёС†С‹ СЂР°СЃСЃС‹Р»РѕРє (dbo.deliveries). Р•СЃР»Рё РјРµС‚РѕРґ РЅРёС‡РµРіРѕ РЅРµ РЅР°С€РµР» - РјРµС‚РѕРґ
+   * РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ NULL. РњРµС‚РѕРґ РЅРµ РЅР°С…РѕРґРёС‚ С„Р°Р№Р»С‹, РїСЂРёРєСЂРµРїР»РµРЅРЅС‹Рµ Рє СЂР°СЃСЃС‹Р»РєР°Рј (РёР· С‚Р°Р±Р»РёС†С‹ С„Р°Р№Р»РѕРІ - dbo.deliveriesFiles),
+   * С„Р°Р№Р»С‹ РґР»СЏ СЂР°СЃСЃС‹Р»РєРё РЅР°С…РѕРґРёС‚ С‚РѕР»СЊРєРѕ РјРµС‚РѕРґ РїРѕРёСЃРєР° РѕРґРЅРѕР№ СЂР°СЃСЃС‹Р»РєРё. РўР°РєР¶Рµ РјРµС‚РѕРґ РЅРµ РІРѕР·РІСЂР°С‰Р°РµС‚ РІ СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РёС… РѕР±СЉРµРєС‚Р°С…-С‡Р»РµРЅР°С…
+   * СЃРїРёСЃРєР° ArrayList С‚РёРїС‹ РїРѕР»СѓС‡Р°С‚РµР»РµР№ РґР»СЏ РєР°Р¶РґРѕР№ СЂР°СЃСЃС‹Р»РєРё (РёР· С‚Р°Р±Р»РёС†С‹ С‚РёРїРѕРІ РїРѕР»СѓС‡Р°С‚РµР»РµР№ - dbo.recipientsTypes).
+   * @param type DeliveryType С‚РёРї СЂР°СЃСЃС‹Р»РѕРє, РєРѕС‚РѕСЂС‹Рµ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РЅР°Р№РґРµРЅС‹. Р•СЃР»Рё Р·РЅР°С‡РµРЅРёРµ РЅРµ СѓРєР°Р·Р°РЅРѕ (NULL), С‚Рѕ РјРµС‚РѕРґ РІРµСЂРЅРµС‚
+   * Р’РЎР• Р·Р°РїРёСЃРё С‚Р°Р±Р»РёС†С‹ СЂР°СЃСЃС‹Р»РѕРє.
+   * @return ArrayList[DeliveryDTO] СЃРїРёСЃРѕРє СЂР°СЃСЃС‹Р»РѕРє РёР»Рё NULL.
   */
-  public ArrayList<DeliveryDTO> findAll(DeliveryType type)
+  public ArrayList<DeliveryDTO> findAll(Defaults.DeliveryType type)
    {
     logger.debug("DeliveriesDAO: findAll()");
     Connection             conn = null;
@@ -56,21 +54,21 @@ public class DeliveriesDAO extends DBConfigCommonDAO
     ArrayList<DeliveryDTO> list = null;
     String                 sql   = "select id, subject, text, status, type, errorText, initiator, timestamp " +
                                    "from dbo.deliveries";
-    // Добавляем тип рассылки к запросу
-    if ((type != null) && (!DeliveryType.DELIVERY_TYPE_UNKNOWN.equals(type)))
+    // Р”РѕР±Р°РІР»СЏРµРј С‚РёРї СЂР°СЃСЃС‹Р»РєРё Рє Р·Р°РїСЂРѕСЃСѓ
+    if ((type != null) && (!Defaults.DeliveryType.DELIVERY_TYPE_UNKNOWN.equals(type)))
      {
       logger.debug("Adding delivery type [" + type + "] to query.");
       sql += " where type = " + type.getIntValue();
      }
-    // Добавляем сортировку рассылок (после возможного добавления типа рассылки)
+    // Р”РѕР±Р°РІР»СЏРµРј СЃРѕСЂС‚РёСЂРѕРІРєСѓ СЂР°СЃСЃС‹Р»РѕРє (РїРѕСЃР»Рµ РІРѕР·РјРѕР¶РЅРѕРіРѕ РґРѕР±Р°РІР»РµРЅРёСЏ С‚РёРїР° СЂР°СЃСЃС‹Р»РєРё)
     sql += " order by timestamp desc";
-    // Отладочное сообщение
+    // РћС‚Р»Р°РґРѕС‡РЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ
     logger.debug("Generated sql: " + sql);
     try
      {
       conn = this.getConnection();
       rs = SqlExecutor.executeSelectQuery(conn, sql);
-      // Что-то нашли
+      // Р§С‚Рѕ-С‚Рѕ РЅР°С€Р»Рё
       if (rs.next())
        {
         logger.debug("Result set is not empty! Processing.");
@@ -81,8 +79,8 @@ public class DeliveriesDAO extends DBConfigCommonDAO
           delivery.setId(rs.getInt("id"));
           delivery.setSubject(rs.getString("subject"));
           delivery.setText(rs.getString("text"));
-          delivery.setStatus(DeliveryStatus.findByIntValue(rs.getInt("status")));
-          delivery.setType(DeliveryType.findByIntValue(rs.getInt("type")));
+          delivery.setStatus(Defaults.DeliveryStatus.findByIntValue(rs.getInt("status")));
+          delivery.setType(Defaults.DeliveryType.findByIntValue(rs.getInt("type")));
           delivery.setErrorText(rs.getString("errorText"));
           delivery.setInitiator(rs.getString("initiator"));
           delivery.setTimestamp(rs.getString("timestamp"));
@@ -90,13 +88,13 @@ public class DeliveriesDAO extends DBConfigCommonDAO
          }
         while (rs.next());
        }
-      // Ничо не нашли
+      // РќРёС‡Рѕ РЅРµ РЅР°С€Р»Рё
       else {logger.warn("Result set is empty! Deliveries not found!");}
      }
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     catch (SQLException e)            {logger.error(e.getMessage());}
     catch (DBConnectionException e)   {logger.error(e.getMessage());}
-    // Освобождаем ресурсы
+    // РћСЃРІРѕР±РѕР¶РґР°РµРј СЂРµСЃСѓСЂСЃС‹
     finally
      {
       try {if(rs != null) {rs.close();} if(conn != null) {conn.close();}}
@@ -106,22 +104,22 @@ public class DeliveriesDAO extends DBConfigCommonDAO
    }
 
   /**
-   * Метод находит и возвращает ВСЕ записи из таблицы рассылок (dbo.deliveries), вне зависимости от типа рассылок. Если метод
-   * ничего не нашел - метод возвращает значение NULL. Метод не находит файлы, прикрепленные к рассылкам (из таблицы файлов -
-   * dbo.deliveriesFiles), файлы для рассылки находит только метод поиска одной рассылки. Также метод не возвращает в результирующих
-   * объектах-членах списка ArrayList типы получателей для каждой рассылки (из таблицы типов получателей - dbo.recipientsTypes),
-   * типы получателей для рассылки находит только метод поиска одной рассылки.
-   * @return ArrayList[DeliveryDTO] список рассылок или NULL.
+   * РњРµС‚РѕРґ РЅР°С…РѕРґРёС‚ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ Р’РЎР• Р·Р°РїРёСЃРё РёР· С‚Р°Р±Р»РёС†С‹ СЂР°СЃСЃС‹Р»РѕРє (dbo.deliveries), РІРЅРµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РёРїР° СЂР°СЃСЃС‹Р»РѕРє. Р•СЃР»Рё РјРµС‚РѕРґ
+   * РЅРёС‡РµРіРѕ РЅРµ РЅР°С€РµР» - РјРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ NULL. РњРµС‚РѕРґ РЅРµ РЅР°С…РѕРґРёС‚ С„Р°Р№Р»С‹, РїСЂРёРєСЂРµРїР»РµРЅРЅС‹Рµ Рє СЂР°СЃСЃС‹Р»РєР°Рј (РёР· С‚Р°Р±Р»РёС†С‹ С„Р°Р№Р»РѕРІ -
+   * dbo.deliveriesFiles), С„Р°Р№Р»С‹ РґР»СЏ СЂР°СЃСЃС‹Р»РєРё РЅР°С…РѕРґРёС‚ С‚РѕР»СЊРєРѕ РјРµС‚РѕРґ РїРѕРёСЃРєР° РѕРґРЅРѕР№ СЂР°СЃСЃС‹Р»РєРё. РўР°РєР¶Рµ РјРµС‚РѕРґ РЅРµ РІРѕР·РІСЂР°С‰Р°РµС‚ РІ СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РёС…
+   * РѕР±СЉРµРєС‚Р°С…-С‡Р»РµРЅР°С… СЃРїРёСЃРєР° ArrayList С‚РёРїС‹ РїРѕР»СѓС‡Р°С‚РµР»РµР№ РґР»СЏ РєР°Р¶РґРѕР№ СЂР°СЃСЃС‹Р»РєРё (РёР· С‚Р°Р±Р»РёС†С‹ С‚РёРїРѕРІ РїРѕР»СѓС‡Р°С‚РµР»РµР№ - dbo.recipientsTypes),
+   * С‚РёРїС‹ РїРѕР»СѓС‡Р°С‚РµР»РµР№ РґР»СЏ СЂР°СЃСЃС‹Р»РєРё РЅР°С…РѕРґРёС‚ С‚РѕР»СЊРєРѕ РјРµС‚РѕРґ РїРѕРёСЃРєР° РѕРґРЅРѕР№ СЂР°СЃСЃС‹Р»РєРё.
+   * @return ArrayList[DeliveryDTO] СЃРїРёСЃРѕРє СЂР°СЃСЃС‹Р»РѕРє РёР»Рё NULL.
   */
   public ArrayList<DeliveryDTO> findAll()
    {return this.findAll(null);}
 
   /**
-   * Поиск рассылки по идентификатору. Если идентифкатор для поиска неверен - меньше 0 или такой рассылки нет - метод
-   * возвращает значение NULL. Метод также находит и добавляет в результат все прикрепленные к рассылке файлы (данные
-   * из таблицы dbo.deliveriesFiles).
-   * @param id int идентификатор искомой рассылки.
-   * @return DeliveryDTO найденная рассылка или значение NULL.
+   * РџРѕРёСЃРє СЂР°СЃСЃС‹Р»РєРё РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ. Р•СЃР»Рё РёРґРµРЅС‚РёС„РєР°С‚РѕСЂ РґР»СЏ РїРѕРёСЃРєР° РЅРµРІРµСЂРµРЅ - РјРµРЅСЊС€Рµ 0 РёР»Рё С‚Р°РєРѕР№ СЂР°СЃСЃС‹Р»РєРё РЅРµС‚ - РјРµС‚РѕРґ
+   * РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ NULL. РњРµС‚РѕРґ С‚Р°РєР¶Рµ РЅР°С…РѕРґРёС‚ Рё РґРѕР±Р°РІР»СЏРµС‚ РІ СЂРµР·СѓР»СЊС‚Р°С‚ РІСЃРµ РїСЂРёРєСЂРµРїР»РµРЅРЅС‹Рµ Рє СЂР°СЃСЃС‹Р»РєРµ С„Р°Р№Р»С‹ (РґР°РЅРЅС‹Рµ
+   * РёР· С‚Р°Р±Р»РёС†С‹ dbo.deliveriesFiles).
+   * @param id int РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РёСЃРєРѕРјРѕР№ СЂР°СЃСЃС‹Р»РєРё.
+   * @return DeliveryDTO РЅР°Р№РґРµРЅРЅР°СЏ СЂР°СЃСЃС‹Р»РєР° РёР»Рё Р·РЅР°С‡РµРЅРёРµ NULL.
   */
   public DeliveryDTO findByID(int id)
    {
@@ -133,7 +131,7 @@ public class DeliveriesDAO extends DBConfigCommonDAO
                            "fileId, fileName, fileDeliveryId, " +
                            "recipientTypeId, recipientTypeDeliveryId, recipientType " +
                            "from dbo.allDeliveriesView where id = ";
-    // Только если указан положительный идентификатор - тогда ищем
+    // РўРѕР»СЊРєРѕ РµСЃР»Рё СѓРєР°Р·Р°РЅ РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ - С‚РѕРіРґР° РёС‰РµРј
     if (id > 0)
      {
       sql += id;
@@ -144,62 +142,62 @@ public class DeliveriesDAO extends DBConfigCommonDAO
         rs   = SqlExecutor.executeSelectQuery(conn, sql);
         if (rs.next())
          {
-          // Если что-то нашли, то берем только первую запись из найденного, хотя запись и должна быть одна.
+          // Р•СЃР»Рё С‡С‚Рѕ-С‚Рѕ РЅР°С€Р»Рё, С‚Рѕ Р±РµСЂРµРј С‚РѕР»СЊРєРѕ РїРµСЂРІСѓСЋ Р·Р°РїРёСЃСЊ РёР· РЅР°Р№РґРµРЅРЅРѕРіРѕ, С…РѕС‚СЏ Р·Р°РїРёСЃСЊ Рё РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РѕРґРЅР°.
           logger.debug("Result set is not empty. Processing.");
-          // Флажок - получены ли данные о рассылке. Если получены - дальше получаем только данные о файлах.
+          // Р¤Р»Р°Р¶РѕРє - РїРѕР»СѓС‡РµРЅС‹ Р»Рё РґР°РЅРЅС‹Рµ Рѕ СЂР°СЃСЃС‹Р»РєРµ. Р•СЃР»Рё РїРѕР»СѓС‡РµРЅС‹ - РґР°Р»СЊС€Рµ РїРѕР»СѓС‡Р°РµРј С‚РѕР»СЊРєРѕ РґР°РЅРЅС‹Рµ Рѕ С„Р°Р№Р»Р°С….
           boolean deliveryDataOK = false;
           delivery = new DeliveryDTO();
-          // Данные об одном файле
+          // Р”Р°РЅРЅС‹Рµ РѕР± РѕРґРЅРѕРј С„Р°Р№Р»Рµ
           int    fileId;
           String fileName;
-          // Данные об одном типе получателей рассылки
+          // Р”Р°РЅРЅС‹Рµ РѕР± РѕРґРЅРѕРј С‚РёРїРµ РїРѕР»СѓС‡Р°С‚РµР»РµР№ СЂР°СЃСЃС‹Р»РєРё
           int    recipientTypeId;
           int    recipientType;
-          // Непосредственно в цикле обработка курсора данных
+          // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РІ С†РёРєР»Рµ РѕР±СЂР°Р±РѕС‚РєР° РєСѓСЂСЃРѕСЂР° РґР°РЅРЅС‹С…
           do
            {
-            // Однократно получаем данные о рассылке из курсора. Дальше получаем только инфу о файлах.
+            // РћРґРЅРѕРєСЂР°С‚РЅРѕ РїРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ Рѕ СЂР°СЃСЃС‹Р»РєРµ РёР· РєСѓСЂСЃРѕСЂР°. Р”Р°Р»СЊС€Рµ РїРѕР»СѓС‡Р°РµРј С‚РѕР»СЊРєРѕ РёРЅС„Сѓ Рѕ С„Р°Р№Р»Р°С….
             if (!deliveryDataOK)
              {
               delivery.setId(rs.getInt("id"));
               delivery.setSubject(rs.getString("subject"));
               delivery.setText(rs.getString("text"));
-              delivery.setStatus(DeliveryStatus.findByIntValue(rs.getInt("status")));
-              delivery.setType(DeliveryType.findByIntValue(rs.getInt("type")));
+              delivery.setStatus(Defaults.DeliveryStatus.findByIntValue(rs.getInt("status")));
+              delivery.setType(Defaults.DeliveryType.findByIntValue(rs.getInt("type")));
               delivery.setErrorText(rs.getString("errorText"));
               delivery.setInitiator(rs.getString("initiator"));
               delivery.setTimestamp(rs.getString("timestamp"));
               deliveryDataOK = true;
              }
 
-            // Получаем и обрабатываем инфу о текущем файле данной рассылки. Инфа может быть пустой - мы получаем данные
-            // из представления с избыточными данными о рассылках.
+            // РџРѕР»СѓС‡Р°РµРј Рё РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј РёРЅС„Сѓ Рѕ С‚РµРєСѓС‰РµРј С„Р°Р№Р»Рµ РґР°РЅРЅРѕР№ СЂР°СЃСЃС‹Р»РєРё. РРЅС„Р° РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚РѕР№ - РјС‹ РїРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ
+            // РёР· РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ СЃ РёР·Р±С‹С‚РѕС‡РЅС‹РјРё РґР°РЅРЅС‹РјРё Рѕ СЂР°СЃСЃС‹Р»РєР°С….
             fileId   = rs.getInt("fileId");
             fileName = rs.getString("fileName");
-            // Сразу проверим идентификатор файла. Имя будет проверено при добавлении файла в рассылку.
+            // РЎСЂР°Р·Сѓ РїСЂРѕРІРµСЂРёРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„Р°Р№Р»Р°. РРјСЏ Р±СѓРґРµС‚ РїСЂРѕРІРµСЂРµРЅРѕ РїСЂРё РґРѕР±Р°РІР»РµРЅРёРё С„Р°Р№Р»Р° РІ СЂР°СЃСЃС‹Р»РєСѓ.
             if (fileId > 0)
              {
               logger.debug("Processing file: [" + fileId + ", " + fileName + "]");
-              // Добавляем файл к рассылке
+              // Р”РѕР±Р°РІР»СЏРµРј С„Р°Р№Р» Рє СЂР°СЃСЃС‹Р»РєРµ
               delivery.addFile(new DeliveryFileDTO(fileId, delivery.getId(), fileName));
              }
-            // Если идентификатор файла отрицателен или ноль - отладочное сообщение (данные мы выбираем из представления с
-            // дублирующимися данными - соотв. у рассылки может не быть файлов, а быть много типов получателей, соотв. записи
-            // о файлах будут пустыми)
+            // Р•СЃР»Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„Р°Р№Р»Р° РѕС‚СЂРёС†Р°С‚РµР»РµРЅ РёР»Рё РЅРѕР»СЊ - РѕС‚Р»Р°РґРѕС‡РЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ (РґР°РЅРЅС‹Рµ РјС‹ РІС‹Р±РёСЂР°РµРј РёР· РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ СЃ
+            // РґСѓР±Р»РёСЂСѓСЋС‰РёРјРёСЃСЏ РґР°РЅРЅС‹РјРё - СЃРѕРѕС‚РІ. Сѓ СЂР°СЃСЃС‹Р»РєРё РјРѕР¶РµС‚ РЅРµ Р±С‹С‚СЊ С„Р°Р№Р»РѕРІ, Р° Р±С‹С‚СЊ РјРЅРѕРіРѕ С‚РёРїРѕРІ РїРѕР»СѓС‡Р°С‚РµР»РµР№, СЃРѕРѕС‚РІ. Р·Р°РїРёСЃРё
+            // Рѕ С„Р°Р№Р»Р°С… Р±СѓРґСѓС‚ РїСѓСЃС‚С‹РјРё)
             else {logger.debug("Negative or 0 file ID! File id = [" + fileId + "]. File name = [" + fileName + "].");}
 
-            // Получаем и обрабатываем инфу о текущем типе получателей данной рассылки
+            // РџРѕР»СѓС‡Р°РµРј Рё РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј РёРЅС„Сѓ Рѕ С‚РµРєСѓС‰РµРј С‚РёРїРµ РїРѕР»СѓС‡Р°С‚РµР»РµР№ РґР°РЅРЅРѕР№ СЂР°СЃСЃС‹Р»РєРё
             recipientTypeId = rs.getInt("recipientTypeId");
             recipientType   = rs.getInt("recipientType");
-            // Сразу проверим идентификатор типа получателей. Тип получателей будет проверен при добавлении типа в рассылку.
+            // РЎСЂР°Р·Сѓ РїСЂРѕРІРµСЂРёРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РёРїР° РїРѕР»СѓС‡Р°С‚РµР»РµР№. РўРёРї РїРѕР»СѓС‡Р°С‚РµР»РµР№ Р±СѓРґРµС‚ РїСЂРѕРІРµСЂРµРЅ РїСЂРё РґРѕР±Р°РІР»РµРЅРёРё С‚РёРїР° РІ СЂР°СЃСЃС‹Р»РєСѓ.
             if (recipientTypeId > 0)
              {
               logger.debug("Processing recipient type: int value = [" + recipientType + "], " +
                            "type value = [" + Defaults.RecipientType.findByIntValue(recipientType) + "].");
-              // Добавляем тип получателя к рассылке
+              // Р”РѕР±Р°РІР»СЏРµРј С‚РёРї РїРѕР»СѓС‡Р°С‚РµР»СЏ Рє СЂР°СЃСЃС‹Р»РєРµ
               delivery.addRecipient(new RecipientTypeDTO(recipientTypeId, delivery.getId(), recipientType));
              }
-            // Если идентификатор типа отрицателен или ноль - сообщение об ошибке (что-то не так работает...)
+            // Р•СЃР»Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РёРїР° РѕС‚СЂРёС†Р°С‚РµР»РµРЅ РёР»Рё РЅРѕР»СЊ - СЃРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС€РёР±РєРµ (С‡С‚Рѕ-С‚Рѕ РЅРµ С‚Р°Рє СЂР°Р±РѕС‚Р°РµС‚...)
             else {logger.error("Negative or 0 recipient type ID! ID = [" + recipientTypeId + "]. Type  = [" +
                                Defaults.RecipientType.findByIntValue(recipientType)+ " (" + recipientType + ")].");}
            }
@@ -217,19 +215,19 @@ public class DeliveriesDAO extends DBConfigCommonDAO
        }
      }
     else {logger.warn("Negative identificator. Can't search!");}
-    // Возвращаем результат
+    // Р’РѕР·РІСЂР°С‰Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚
     return delivery;
    }
 
   /**
-   * Метод создает или изменяет запись в таблице рассылок (dbo.deliveries) и в таблице файлов, прикрепленных к рассылкам
-   * (dbo.deliveriesFiles), на основе данных из указанного параметра - экземпляра класса DeliveryDTO. Если в экземпляре
-   * указан положительный идентификатор метод ваполняет изменение данных (update), если же идентификатор ноль или меньше -
-   * метод выполняет добавление записи (insert). При выполнении добавления данных (insert) метод возвращает идентификатор
-   * вставленной записи в таблицу dbo.deliveries.
-   * @param delivery DeliveryDTO экземпляр класса, на основе данных которого выполняется пробивание данных в БД.
-   * @return int идентификатор вставленной в таблицу dbo.deliveries записи. При обновлении данных (update) метод
-   * возвращает 0.
+   * РњРµС‚РѕРґ СЃРѕР·РґР°РµС‚ РёР»Рё РёР·РјРµРЅСЏРµС‚ Р·Р°РїРёСЃСЊ РІ С‚Р°Р±Р»РёС†Рµ СЂР°СЃСЃС‹Р»РѕРє (dbo.deliveries) Рё РІ С‚Р°Р±Р»РёС†Рµ С„Р°Р№Р»РѕРІ, РїСЂРёРєСЂРµРїР»РµРЅРЅС‹С… Рє СЂР°СЃСЃС‹Р»РєР°Рј
+   * (dbo.deliveriesFiles), РЅР° РѕСЃРЅРѕРІРµ РґР°РЅРЅС‹С… РёР· СѓРєР°Р·Р°РЅРЅРѕРіРѕ РїР°СЂР°РјРµС‚СЂР° - СЌРєР·РµРјРїР»СЏСЂР° РєР»Р°СЃСЃР° DeliveryDTO. Р•СЃР»Рё РІ СЌРєР·РµРјРїР»СЏСЂРµ
+   * СѓРєР°Р·Р°РЅ РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РјРµС‚РѕРґ РІР°РїРѕР»РЅСЏРµС‚ РёР·РјРµРЅРµРЅРёРµ РґР°РЅРЅС‹С… (update), РµСЃР»Рё Р¶Рµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅРѕР»СЊ РёР»Рё РјРµРЅСЊС€Рµ -
+   * РјРµС‚РѕРґ РІС‹РїРѕР»РЅСЏРµС‚ РґРѕР±Р°РІР»РµРЅРёРµ Р·Р°РїРёСЃРё (insert). РџСЂРё РІС‹РїРѕР»РЅРµРЅРёРё РґРѕР±Р°РІР»РµРЅРёСЏ РґР°РЅРЅС‹С… (insert) РјРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ
+   * РІСЃС‚Р°РІР»РµРЅРЅРѕР№ Р·Р°РїРёСЃРё РІ С‚Р°Р±Р»РёС†Сѓ dbo.deliveries.
+   * @param delivery DeliveryDTO СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР°, РЅР° РѕСЃРЅРѕРІРµ РґР°РЅРЅС‹С… РєРѕС‚РѕСЂРѕРіРѕ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РїСЂРѕР±РёРІР°РЅРёРµ РґР°РЅРЅС‹С… РІ Р‘Р”.
+   * @return int РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІСЃС‚Р°РІР»РµРЅРЅРѕР№ РІ С‚Р°Р±Р»РёС†Сѓ dbo.deliveries Р·Р°РїРёСЃРё. РџСЂРё РѕР±РЅРѕРІР»РµРЅРёРё РґР°РЅРЅС‹С… (update) РјРµС‚РѕРґ
+   * РІРѕР·РІСЂР°С‰Р°РµС‚ 0.
   */
   public int change(DeliveryDTO delivery)
    {
@@ -243,136 +241,136 @@ public class DeliveriesDAO extends DBConfigCommonDAO
     int               newDeliveryId          = 0;
     try
      {
-      // Если полученный объект не пуст - создаем/изменяем запись.
+      // Р•СЃР»Рё РїРѕР»СѓС‡РµРЅРЅС‹Р№ РѕР±СЉРµРєС‚ РЅРµ РїСѓСЃС‚ - СЃРѕР·РґР°РµРј/РёР·РјРµРЅСЏРµРј Р·Р°РїРёСЃСЊ.
       if ((delivery != null) && (!delivery.isEmpty()))
        {
         conn = this.getConnection();
-        // Выбираем тип действия. Если есть идентификатор, то обновляем запись
+        // Р’С‹Р±РёСЂР°РµРј С‚РёРї РґРµР№СЃС‚РІРёСЏ. Р•СЃР»Рё РµСЃС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ, С‚Рѕ РѕР±РЅРѕРІР»СЏРµРј Р·Р°РїРёСЃСЊ
         if (delivery.getId() > 0)
          {
           logger.debug("Processing update.");
           stmt = conn.prepareStatement(updateSql);
           stmt.setString(1, delivery.getSubject());
           stmt.setString(2, delivery.getText());
-          // Статус рассылки
+          // РЎС‚Р°С‚СѓСЃ СЂР°СЃСЃС‹Р»РєРё
           if (delivery.getStatus() != null) {stmt.setInt(3, delivery.getStatus().getIntValue());}
-          else                              {stmt.setInt(3, DeliveryStatus.DELIVERY_STATUS_UNKNOWN.getIntValue());}
-          // Тип рассылки
+          else                              {stmt.setInt(3, Defaults.DeliveryStatus.DELIVERY_STATUS_UNKNOWN.getIntValue());}
+          // РўРёРї СЂР°СЃСЃС‹Р»РєРё
           if (delivery.getType() != null)   {stmt.setInt(4, delivery.getType().getIntValue());}
-          else                              {stmt.setInt(4, DeliveryType.DELIVERY_TYPE_UNKNOWN.getIntValue());}
+          else                              {stmt.setInt(4, Defaults.DeliveryType.DELIVERY_TYPE_UNKNOWN.getIntValue());}
           stmt.setString(5, delivery.getErrorText());
           stmt.setString(6, delivery.getInitiator());
           stmt.setInt(7,    delivery.getId());
-          // Выполняем запрос
+          // Р’С‹РїРѕР»РЅСЏРµРј Р·Р°РїСЂРѕСЃ
           stmt.executeUpdate();
          }
-        // Если идентификатора нет - добавляем запись
+        // Р•СЃР»Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° РЅРµС‚ - РґРѕР±Р°РІР»СЏРµРј Р·Р°РїРёСЃСЊ
         else
          {
           logger.debug("Processing create.");
-          // Вызов хранимой процедуры для добавления записи о рассылке (MS SQL 2005)
+          // Р’С‹Р·РѕРІ С…СЂР°РЅРёРјРѕР№ РїСЂРѕС†РµРґСѓСЂС‹ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ Р·Р°РїРёСЃРё Рѕ СЂР°СЃСЃС‹Р»РєРµ (MS SQL 2005)
           CallableStatement cstmt = conn.prepareCall("{call dbo.addDelivery(?, ?, ?, ?, ?)}");
           cstmt.setString(1, delivery.getSubject());
           cstmt.setString(2, delivery.getText());
-          // Тип рассылки. Если указан - добавляем его.
+          // РўРёРї СЂР°СЃСЃС‹Р»РєРё. Р•СЃР»Рё СѓРєР°Р·Р°РЅ - РґРѕР±Р°РІР»СЏРµРј РµРіРѕ.
           if (delivery.getType() != null) {cstmt.setInt(3, delivery.getType().getIntValue());}
-          // Если же тип рассылки не указан (=NULL) - ставим тип UNKNOWN
-          else                            {cstmt.setInt(3, DeliveryType.DELIVERY_TYPE_UNKNOWN.getIntValue());}
+          // Р•СЃР»Рё Р¶Рµ С‚РёРї СЂР°СЃСЃС‹Р»РєРё РЅРµ СѓРєР°Р·Р°РЅ (=NULL) - СЃС‚Р°РІРёРј С‚РёРї UNKNOWN
+          else                            {cstmt.setInt(3, Defaults.DeliveryType.DELIVERY_TYPE_UNKNOWN.getIntValue());}
           cstmt.setString(4, delivery.getInitiator());
           cstmt.registerOutParameter(5, java.sql.Types.INTEGER);
           cstmt.execute();
-          // Идентификатор вставленной записи (возвращается хранимой процедурой)
+          // РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІСЃС‚Р°РІР»РµРЅРЅРѕР№ Р·Р°РїРёСЃРё (РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ С…СЂР°РЅРёРјРѕР№ РїСЂРѕС†РµРґСѓСЂРѕР№)
           newDeliveryId = cstmt.getInt(5);
           logger.debug("New delivery ID: " + newDeliveryId);
 
-          // Если у класса Delivery указаны файлы - добавляем их в таблицу файлов
+          // Р•СЃР»Рё Сѓ РєР»Р°СЃСЃР° Delivery СѓРєР°Р·Р°РЅС‹ С„Р°Р№Р»С‹ - РґРѕР±Р°РІР»СЏРµРј РёС… РІ С‚Р°Р±Р»РёС†Сѓ С„Р°Р№Р»РѕРІ
           if ((delivery.getFiles() != null) && (!delivery.getFiles().isEmpty()))
            {
             logger.debug("There are files for new delivery. Processing.");
             for (DeliveryFileDTO deliveryFile : delivery.getFiles())
              {
-              // Обрабатываем файл, если он не пуст
+              // РћР±СЂР°Р±Р°С‚С‹РІР°РµРј С„Р°Р№Р», РµСЃР»Рё РѕРЅ РЅРµ РїСѓСЃС‚
               if (deliveryFile != null)
                {
                 stmt = conn.prepareStatement(createFileSql);
-                // Каждому добавляемому к данной рассылке файлу добавляем идентификатор рассылки
+                // РљР°Р¶РґРѕРјСѓ РґРѕР±Р°РІР»СЏРµРјРѕРјСѓ Рє РґР°РЅРЅРѕР№ СЂР°СЃСЃС‹Р»РєРµ С„Р°Р№Р»Сѓ РґРѕР±Р°РІР»СЏРµРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂР°СЃСЃС‹Р»РєРё
                 deliveryFile.setDeliveryId(newDeliveryId);
                 logger.debug("Delivery file: " + deliveryFile);
-                // Добавляем запись о файле в БД, если он подходит
+                // Р”РѕР±Р°РІР»СЏРµРј Р·Р°РїРёСЃСЊ Рѕ С„Р°Р№Р»Рµ РІ Р‘Р”, РµСЃР»Рё РѕРЅ РїРѕРґС…РѕРґРёС‚
                 if ((deliveryFile.getDeliveryId() > 0) && (!StringUtils.isBlank(deliveryFile.getFileName())))
                  {
                   stmt.setString(1, deliveryFile.getFileName());
                   stmt.setInt(2,    deliveryFile.getDeliveryId());
                   stmt.executeUpdate();
                  }
-                // Если файл не подошел - варнинг!
+                // Р•СЃР»Рё С„Р°Р№Р» РЅРµ РїРѕРґРѕС€РµР» - РІР°СЂРЅРёРЅРі!
                 else {logger.warn("Can't add delivery file [" + deliveryFile + "] to DB!");}
                }
-              // Если же полученный файл NULL - это ошибка
+              // Р•СЃР»Рё Р¶Рµ РїРѕР»СѓС‡РµРЅРЅС‹Р№ С„Р°Р№Р» NULL - СЌС‚Рѕ РѕС€РёР±РєР°
               else {logger.error("Null-file in delivery's files list!");}
              }
            }
-          // Если файлов нет - просто сделаем отладочное сообщение в лог
+          // Р•СЃР»Рё С„Р°Р№Р»РѕРІ РЅРµС‚ - РїСЂРѕСЃС‚Рѕ СЃРґРµР»Р°РµРј РѕС‚Р»Р°РґРѕС‡РЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ РІ Р»РѕРі
           else {logger.debug("No files for this delivery.");}
 
-          // Если у класса Delivery указаны типы получателей - добавляем их в таблицу типов
+          // Р•СЃР»Рё Сѓ РєР»Р°СЃСЃР° Delivery СѓРєР°Р·Р°РЅС‹ С‚РёРїС‹ РїРѕР»СѓС‡Р°С‚РµР»РµР№ - РґРѕР±Р°РІР»СЏРµРј РёС… РІ С‚Р°Р±Р»РёС†Сѓ С‚РёРїРѕРІ
           if ((delivery.getRecipients() != null) && (!delivery.getRecipients().isEmpty()))
            {
             logger.debug("There are recipients types for this delivery. Processing.");
             for (RecipientTypeDTO type : delivery.getRecipients())
              {
-              // Обрабатываем тип если он не пуст
+              // РћР±СЂР°Р±Р°С‚С‹РІР°РµРј С‚РёРї РµСЃР»Рё РѕРЅ РЅРµ РїСѓСЃС‚
               if (type != null)
                {
                 stmt = conn.prepareStatement(createRecipientTypeSql);
-                // Добавляем идентификатор рассылки
+                // Р”РѕР±Р°РІР»СЏРµРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂР°СЃСЃС‹Р»РєРё
                 type.setDeliveryId(newDeliveryId);
                 logger.debug("Recipient type: " + type.getRecipientType());
-                // Добавляем запись о типе в БД, если тип подходит
+                // Р”РѕР±Р°РІР»СЏРµРј Р·Р°РїРёСЃСЊ Рѕ С‚РёРїРµ РІ Р‘Р”, РµСЃР»Рё С‚РёРї РїРѕРґС…РѕРґРёС‚
                 if ((type.getDeliveryId() > 0) && (type.getRecipientType() != null))
                  {
                   stmt.setInt(1, type.getRecipientType().getIntValue());
                   stmt.setInt(2, type.getDeliveryId());
                   stmt.executeUpdate();
                  }
-                // Если тип не подошел - варнинг!
+                // Р•СЃР»Рё С‚РёРї РЅРµ РїРѕРґРѕС€РµР» - РІР°СЂРЅРёРЅРі!
                 else {logger.warn("Can't add delivery recipient type [" + type + "] to DB!");}
                }
-              // Если тип NULL - это ошибка
+              // Р•СЃР»Рё С‚РёРї NULL - СЌС‚Рѕ РѕС€РёР±РєР°
               else {logger.error("Null-recipient type in delivery's recipients types list!");}
              }
            }
-          // Если типов получателей нет - сообщим в лог
+          // Р•СЃР»Рё С‚РёРїРѕРІ РїРѕР»СѓС‡Р°С‚РµР»РµР№ РЅРµС‚ - СЃРѕРѕР±С‰РёРј РІ Р»РѕРі
           else {logger.debug("No recipients types for this delivery.");}
          }
        }
-      // Если объект пуст - ошибка!
+      // Р•СЃР»Рё РѕР±СЉРµРєС‚ РїСѓСЃС‚ - РѕС€РёР±РєР°!
       else {logger.error("Can't process empty object.");}
      }
-    // Перехват ИС
+    // РџРµСЂРµС…РІР°С‚ РРЎ
     catch (SQLException e)            {logger.error(e.getMessage());}
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     catch (DBConnectionException e)   {logger.error(e.getMessage());}
-    // Освобождение ресурсов
+    // РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ
     finally
      {
       try {if(stmt != null) {stmt.close();} if(conn != null) {conn.close();}}
       catch (SQLException e) {logger.error("Can't free resources! Reason: " + e.getMessage());}
      }
-    // Возвращаем результат
+    // Р’РѕР·РІСЂР°С‰Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚
     return newDeliveryId;
    }
 
   /**
-   * Установка значений статуса(типа DeliveryStatus) и сообщения(текст) о состоянии указанной рассылки. Если
-   * идентификатор рассылки неверен - метод ничего не выполнит. Значения статуса должны быть из диапазона значений
-   * членов класса-перечисления DeliveryStatus, если значение не входит в этот диапазон ничего выполнено не будет (например
-   * при значении NULL).
-   * @param deliveryId int идентифкатор рассылки.
-   * @param status int значение статуса для рассылки.
-   * @param errorText String текст ошибки для рассылки.
+   * РЈСЃС‚Р°РЅРѕРІРєР° Р·РЅР°С‡РµРЅРёР№ СЃС‚Р°С‚СѓСЃР°(С‚РёРїР° DeliveryStatus) Рё СЃРѕРѕР±С‰РµРЅРёСЏ(С‚РµРєСЃС‚) Рѕ СЃРѕСЃС‚РѕСЏРЅРёРё СѓРєР°Р·Р°РЅРЅРѕР№ СЂР°СЃСЃС‹Р»РєРё. Р•СЃР»Рё
+   * РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂР°СЃСЃС‹Р»РєРё РЅРµРІРµСЂРµРЅ - РјРµС‚РѕРґ РЅРёС‡РµРіРѕ РЅРµ РІС‹РїРѕР»РЅРёС‚. Р—РЅР°С‡РµРЅРёСЏ СЃС‚Р°С‚СѓСЃР° РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РёР· РґРёР°РїР°Р·РѕРЅР° Р·РЅР°С‡РµРЅРёР№
+   * С‡Р»РµРЅРѕРІ РєР»Р°СЃСЃР°-РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ DeliveryStatus, РµСЃР»Рё Р·РЅР°С‡РµРЅРёРµ РЅРµ РІС…РѕРґРёС‚ РІ СЌС‚РѕС‚ РґРёР°РїР°Р·РѕРЅ РЅРёС‡РµРіРѕ РІС‹РїРѕР»РЅРµРЅРѕ РЅРµ Р±СѓРґРµС‚ (РЅР°РїСЂРёРјРµСЂ
+   * РїСЂРё Р·РЅР°С‡РµРЅРёРё NULL).
+   * @param deliveryId int РёРґРµРЅС‚РёС„РєР°С‚РѕСЂ СЂР°СЃСЃС‹Р»РєРё.
+   * @param status int Р·РЅР°С‡РµРЅРёРµ СЃС‚Р°С‚СѓСЃР° РґР»СЏ СЂР°СЃСЃС‹Р»РєРё.
+   * @param errorText String С‚РµРєСЃС‚ РѕС€РёР±РєРё РґР»СЏ СЂР°СЃСЃС‹Р»РєРё.
   */
-  public void setStatusAndError(int deliveryId, DeliveryStatus status, String errorText)
+  public void setStatusAndError(int deliveryId, Defaults.DeliveryStatus status, String errorText)
    {
     logger.debug("DeliveriesDAO: setStatusAndError().");
     Connection        conn      = null;
@@ -380,10 +378,10 @@ public class DeliveriesDAO extends DBConfigCommonDAO
     String            updateSql     = "update dbo.deliveries set status = ?, errorText = ? where id = ?";
     try
      {
-      // Если найдем запись по идентификатору и указан не пустой статус - работаем
+      // Р•СЃР»Рё РЅР°Р№РґРµРј Р·Р°РїРёСЃСЊ РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ Рё СѓРєР°Р·Р°РЅ РЅРµ РїСѓСЃС‚РѕР№ СЃС‚Р°С‚СѓСЃ - СЂР°Р±РѕС‚Р°РµРј
       if (this.findByID(deliveryId) != null)
        {
-        // Проверка статуса
+        // РџСЂРѕРІРµСЂРєР° СЃС‚Р°С‚СѓСЃР°
         if (status != null)
          {
           conn = this.getConnection();
@@ -391,20 +389,20 @@ public class DeliveriesDAO extends DBConfigCommonDAO
           stmt.setInt(1,    status.getIntValue());
           stmt.setString(2, errorText);
           stmt.setInt(3,    deliveryId);
-          // Выполняем запрос
+          // Р’С‹РїРѕР»РЅСЏРµРј Р·Р°РїСЂРѕСЃ
           stmt.executeUpdate();
          }
-        // Проверка статуса неудачна
+        // РџСЂРѕРІРµСЂРєР° СЃС‚Р°С‚СѓСЃР° РЅРµСѓРґР°С‡РЅР°
         else {logger.error("Can't set status [" + status + "]!");}
        }
-      // Если объект пуст - ошибка!
+      // Р•СЃР»Рё РѕР±СЉРµРєС‚ РїСѓСЃС‚ - РѕС€РёР±РєР°!
       else {logger.error("Can't find delivery with ID [" + deliveryId + "]!");}
      }
-    // Перехват ИС
+    // РџРµСЂРµС…РІР°С‚ РРЎ
     catch (SQLException e)            {logger.error(e.getMessage());}
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     catch (DBConnectionException e)   {logger.error(e.getMessage());}
-    // Освобождение ресурсов
+    // РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ
     finally
      {
       try {if(stmt != null) {stmt.close();} if(conn != null) {conn.close();}}
@@ -413,29 +411,29 @@ public class DeliveriesDAO extends DBConfigCommonDAO
    }
 
   /**
-   * Метод для тестирования.
-   * @param args String[] параметры метода.
+   * РњРµС‚РѕРґ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ.
+   * @param args String[] РїР°СЂР°РјРµС‚СЂС‹ РјРµС‚РѕРґР°.
   */
   public static void main(String[] args)
    {
     InitLogger.initLoggers(new String[] {"jdb", "org", "jlib", Defaults.LOGGER_NAME});
     Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
 
-    // Добавление доставки
+    // Р”РѕР±Р°РІР»РµРЅРёРµ РґРѕСЃС‚Р°РІРєРё
     //DeliveryDTO delivery = new DeliveryDTO();
-    //delivery.setSubject("тест");
-    //delivery.setText("текст сообщения");
+    //delivery.setSubject("С‚РµСЃС‚");
+    //delivery.setText("С‚РµРєСЃС‚ СЃРѕРѕР±С‰РµРЅРёСЏ");
     //delivery.setInitiator("019gus");
     //delivery.addFile(new DeliveryFileDTO("file1.zip"));
     //delivery.addFile(new DeliveryFileDTO("file2.zip"));
     //delivery.addRecipient(new RecipientTypeDTO(Defaults.RecipientType.RECIPIENT_TYPE_SHIPOWNERS_ENG));
-    // Добавление
+    // Р”РѕР±Р°РІР»РµРЅРёРµ
     //new DeliveriesDAO().change(delivery);
 
     logger.info(new DeliveriesDAO().findAll(Defaults.DeliveryType.DELIVERY_TYPE_TEST));
     //logger.info(new DeliveriesDAO().findByID(6));
 
-    // Смена статуса
+    // РЎРјРµРЅР° СЃС‚Р°С‚СѓСЃР°
     //new DeliveriesDAO().setStatus(3, 100);
    }
 

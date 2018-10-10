@@ -1,13 +1,13 @@
-package spammer.dataModel.dao;
+package mass_email_sender.spammer.dataModel.dao;
 
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.model.applied.dao.DBConfigCommonDAO;
 import jdb.processing.sql.execution.SqlExecutor;
 import jlib.logging.InitLogger;
+import mass_email_sender.spammer.Defaults;
+import mass_email_sender.spammer.dataModel.dto.EmailDTO;
 import org.apache.log4j.Logger;
-import spammer.Defaults;
-import spammer.dataModel.dto.EmailDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,24 +16,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Действия с майл-адресами для данного приложения.
+ * Р”РµР№СЃС‚РІРёСЏ СЃ РјР°Р№Р»-Р°РґСЂРµСЃР°РјРё РґР»СЏ РґР°РЅРЅРѕРіРѕ РїСЂРёР»РѕР¶РµРЅРёСЏ.
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 23.08.2010)
 */
 
 public class EmailsDAO extends DBConfigCommonDAO
  {
-  /** Логгер класса. */
+  /** Р›РѕРіРіРµСЂ РєР»Р°СЃСЃР°. */
   private Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
 
-  /** Конструктор. */
+  /** РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ. */
   public EmailsDAO() {super(Defaults.LOGGER_NAME, Defaults.DBCONFIG_FILE);}
 
   /**
-   * Поиск всех мыл, по которым были разосланы письма в рамках рассылки с идентифкатором ID. Если такой рассылки нет
-   * или не найдено мылов - метод возвращает NULL.
-   * @param id int идентификатор рассылки.
-   * @return ArrayList[EmailDTO] список мыл или NULL.
+   * РџРѕРёСЃРє РІСЃРµС… РјС‹Р», РїРѕ РєРѕС‚РѕСЂС‹Рј Р±С‹Р»Рё СЂР°Р·РѕСЃР»Р°РЅС‹ РїРёСЃСЊРјР° РІ СЂР°РјРєР°С… СЂР°СЃСЃС‹Р»РєРё СЃ РёРґРµРЅС‚РёС„РєР°С‚РѕСЂРѕРј ID. Р•СЃР»Рё С‚Р°РєРѕР№ СЂР°СЃСЃС‹Р»РєРё РЅРµС‚
+   * РёР»Рё РЅРµ РЅР°Р№РґРµРЅРѕ РјС‹Р»РѕРІ - РјРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ NULL.
+   * @param id int РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂР°СЃСЃС‹Р»РєРё.
+   * @return ArrayList[EmailDTO] СЃРїРёСЃРѕРє РјС‹Р» РёР»Рё NULL.
   */
   public ArrayList<EmailDTO> findByDeliveryId(int id)
    {
@@ -43,7 +43,7 @@ public class EmailsDAO extends DBConfigCommonDAO
     ArrayList<EmailDTO> emailsList = null;
     String              sql        = "select id, email, companyId, deliveryId, status, errorText, timestamp from " +
                                      "dbo.emails where deliveryId = ";
-    // Если идентификатор положителен - работаем
+    // Р•СЃР»Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»РѕР¶РёС‚РµР»РµРЅ - СЂР°Р±РѕС‚Р°РµРј
     if (id > 0)
      {
       sql += id;
@@ -52,7 +52,7 @@ public class EmailsDAO extends DBConfigCommonDAO
        {
         conn = this.getConnection();
         rs = SqlExecutor.executeSelectQuery(conn, sql);
-        // Что-то нашли
+        // Р§С‚Рѕ-С‚Рѕ РЅР°С€Р»Рё
         if (rs.next())
          {
           logger.debug("Result set is not empty! Processing.");
@@ -71,29 +71,29 @@ public class EmailsDAO extends DBConfigCommonDAO
            }
           while (rs.next());
          }
-        // Ничо не нашли
+        // РќРёС‡Рѕ РЅРµ РЅР°С€Р»Рё
         else {logger.warn("Result set is empty! Emails for delivery [" + id + "] not found!");}
        }
       catch (DBModuleConfigException e) {logger.error(e.getMessage());}
       catch (SQLException e)            {logger.error(e.getMessage());}
       catch (DBConnectionException e)   {logger.error(e.getMessage());}
-      // Освобождаем ресурсы
+      // РћСЃРІРѕР±РѕР¶РґР°РµРј СЂРµСЃСѓСЂСЃС‹
       finally
        {
         try {if(rs != null) {rs.close();} if(conn != null) {conn.close();}}
         catch (SQLException e) {logger.error("Can't free resources! Reason: " + e.getMessage());}
        }
      }
-    // Если идентификатор не подходит - ошибка
+    // Р•СЃР»Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅРµ РїРѕРґС…РѕРґРёС‚ - РѕС€РёР±РєР°
     else {logger.error("Delivery ID is negative!");}
     return emailsList;
    }
 
   /**
-   * Метод создает или изменяет запись в таблице мылов (dbo.emails) на основе данных из указанного параметра -
-   * экземпляра класса EmailDTO. Если в экземпляре указан положительный идентификатор метод ваполняет изменение
-   * данных (update), если же идентификатор ноли или меньше - метод выполняет добавление записи (insert).
-   * @param email EmailDTO экземпляр класса, на основе данных которого выполняется пробивание данных в БД.
+   * РњРµС‚РѕРґ СЃРѕР·РґР°РµС‚ РёР»Рё РёР·РјРµРЅСЏРµС‚ Р·Р°РїРёСЃСЊ РІ С‚Р°Р±Р»РёС†Рµ РјС‹Р»РѕРІ (dbo.emails) РЅР° РѕСЃРЅРѕРІРµ РґР°РЅРЅС‹С… РёР· СѓРєР°Р·Р°РЅРЅРѕРіРѕ РїР°СЂР°РјРµС‚СЂР° -
+   * СЌРєР·РµРјРїР»СЏСЂР° РєР»Р°СЃСЃР° EmailDTO. Р•СЃР»Рё РІ СЌРєР·РµРјРїР»СЏСЂРµ СѓРєР°Р·Р°РЅ РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РјРµС‚РѕРґ РІР°РїРѕР»РЅСЏРµС‚ РёР·РјРµРЅРµРЅРёРµ
+   * РґР°РЅРЅС‹С… (update), РµСЃР»Рё Р¶Рµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅРѕР»Рё РёР»Рё РјРµРЅСЊС€Рµ - РјРµС‚РѕРґ РІС‹РїРѕР»РЅСЏРµС‚ РґРѕР±Р°РІР»РµРЅРёРµ Р·Р°РїРёСЃРё (insert).
+   * @param email EmailDTO СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР°, РЅР° РѕСЃРЅРѕРІРµ РґР°РЅРЅС‹С… РєРѕС‚РѕСЂРѕРіРѕ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РїСЂРѕР±РёРІР°РЅРёРµ РґР°РЅРЅС‹С… РІ Р‘Р”.
   */
   @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
   public void change(EmailDTO email)
@@ -105,11 +105,11 @@ public class EmailsDAO extends DBConfigCommonDAO
     String            updateSql = "update dbo.emails set email = ?, companyId = ?, deliveryId = ?, status = ?, errorText = ? where id = ?";
     try
      {
-      // Если полученный объект не пуст - создаем/изменяем запись.
+      // Р•СЃР»Рё РїРѕР»СѓС‡РµРЅРЅС‹Р№ РѕР±СЉРµРєС‚ РЅРµ РїСѓСЃС‚ - СЃРѕР·РґР°РµРј/РёР·РјРµРЅСЏРµРј Р·Р°РїРёСЃСЊ.
       if ((email != null) && (!email.isEmpty()))
        {
         conn = this.getConnection();
-        // Выбираем тип действия. Если есть идентификатор, то обновляем запись
+        // Р’С‹Р±РёСЂР°РµРј С‚РёРї РґРµР№СЃС‚РІРёСЏ. Р•СЃР»Рё РµСЃС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ, С‚Рѕ РѕР±РЅРѕРІР»СЏРµРј Р·Р°РїРёСЃСЊ
         if (email.getId() > 0)
          {
           logger.debug("Processing update.");
@@ -121,7 +121,7 @@ public class EmailsDAO extends DBConfigCommonDAO
           stmt.setString(5, email.getErrorText());
           stmt.setInt(6,    email.getId());
          }
-        // Если идентификатора нет - добавляем запись
+        // Р•СЃР»Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° РЅРµС‚ - РґРѕР±Р°РІР»СЏРµРј Р·Р°РїРёСЃСЊ
         else
          {
           logger.debug("Processing create.");
@@ -132,17 +132,17 @@ public class EmailsDAO extends DBConfigCommonDAO
           stmt.setInt(4,    email.getStatus());
           stmt.setString(5, email.getErrorText());
          }
-        // Выполняем запрос
+        // Р’С‹РїРѕР»РЅСЏРµРј Р·Р°РїСЂРѕСЃ
         stmt.executeUpdate();
        }
-      // Если объект пуст - ошибка!
+      // Р•СЃР»Рё РѕР±СЉРµРєС‚ РїСѓСЃС‚ - РѕС€РёР±РєР°!
       else {logger.error("Can't process empty object.");}
      }
-    // Перехват ИС
+    // РџРµСЂРµС…РІР°С‚ РРЎ
     catch (SQLException e) {logger.error(e.getMessage());}
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     catch (DBConnectionException e)   {logger.error(e.getMessage());}
-    // Освобождение ресурсов
+    // РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ
     finally
      {
       try {if(stmt != null) {stmt.close();} if(conn != null) {conn.close();}}
@@ -151,8 +151,8 @@ public class EmailsDAO extends DBConfigCommonDAO
    }
 
   /**
-   * Метод для тестирования.
-   * @param args String[] параметры метода.
+   * РњРµС‚РѕРґ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ.
+   * @param args String[] РїР°СЂР°РјРµС‚СЂС‹ РјРµС‚РѕРґР°.
   */
   public static void main(String[] args)
    {

@@ -1,28 +1,28 @@
-package spammer.mailsList.impl;
+package mass_email_sender.spammer.mailsList.impl;
 
 import jlib.logging.InitLogger;
+import mass_email_sender.spammer.Defaults;
+import mass_email_sender.spammer.dataModel.dto.DeliveryFileDTO;
+import mass_email_sender.spammer.mailsList.interfaces.EmailsListInterface;
 import org.apache.log4j.Logger;
-import spammer.Defaults;
-import spammer.dataModel.dto.DeliveryFileDTO;
-import spammer.mailsList.interfaces.EmailsListInterface;
 
 import java.util.TreeMap;
 
 /**
- * Тестовая реализация интерфейса получения майл-адресов. Генерирует список адресов отдела 019.
+ * РўРµСЃС‚РѕРІР°СЏ СЂРµР°Р»РёР·Р°С†РёСЏ РёРЅС‚РµСЂС„РµР№СЃР° РїРѕР»СѓС‡РµРЅРёСЏ РјР°Р№Р»-Р°РґСЂРµСЃРѕРІ. Р“РµРЅРµСЂРёСЂСѓРµС‚ СЃРїРёСЃРѕРє Р°РґСЂРµСЃРѕРІ РѕС‚РґРµР»Р° 019.
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 24.08.2010)
 */
 
 public class TestEmailsListBuilder implements EmailsListInterface
  {
-  /** Логгер данного модуля. */
+  /** Р›РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РјРѕРґСѓР»СЏ. */
   private Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
 
   /***/
   public TreeMap<String, Integer> getEmailsList()
    {
-    // Результат работы метода
+    // Р РµР·СѓР»СЊС‚Р°С‚ СЂР°Р±РѕС‚С‹ РјРµС‚РѕРґР°
     TreeMap<String, Integer> emailsList = new TreeMap<String, Integer>();
 
     emailsList.put("brusakov@rs-head.spb.ru, 019gus@rs-head.spb.ru", 1);
@@ -61,7 +61,7 @@ public class TestEmailsListBuilder implements EmailsListInterface
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     catch (SQLException e)            {logger.error(e.getMessage());}
     catch (DBConnectionException e)   {logger.error(e.getMessage());}
-    // Освобождение ресурсов
+    // РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ
     finally
      {
       try {if (conn != null) {conn.close();}}
@@ -69,15 +69,15 @@ public class TestEmailsListBuilder implements EmailsListInterface
      }
     */
    
-    // Если в список не было добавлено ни одного мыльца - список должен стать NULL
+    // Р•СЃР»Рё РІ СЃРїРёСЃРѕРє РЅРµ Р±С‹Р»Рѕ РґРѕР±Р°РІР»РµРЅРѕ РЅРё РѕРґРЅРѕРіРѕ РјС‹Р»СЊС†Р° - СЃРїРёСЃРѕРє РґРѕР»Р¶РµРЅ СЃС‚Р°С‚СЊ NULL
     if (emailsList.size() <= 0) {emailsList = null;}
-    // Возвращаем результат
+    // Р’РѕР·РІСЂР°С‰Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚
     return emailsList;
    }
 
   /**
-   * Метод только для тестирования класса!
-   * @param args String[] параметры метода.
+   * РњРµС‚РѕРґ С‚РѕР»СЊРєРѕ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ РєР»Р°СЃСЃР°!
+   * @param args String[] РїР°СЂР°РјРµС‚СЂС‹ РјРµС‚РѕРґР°.
   */
   public static void main(String[] args)
    {

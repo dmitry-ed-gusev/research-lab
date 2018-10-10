@@ -1,23 +1,23 @@
-package spammer.mailsProcessor;
+package mass_email_sender.spammer.mailsProcessor;
 
 import jlib.mail.JMail;
 import jlib.mail.JMailConfig;
 import jlib.utils.FSUtils;
+import mass_email_sender.spammer.Defaults;
+import mass_email_sender.spammer.config.MailerConfig;
+import mass_email_sender.spammer.dataModel.dao.DeliveriesDAO;
+import mass_email_sender.spammer.dataModel.dao.EmailsDAO;
+import mass_email_sender.spammer.dataModel.dao.MandatoryEmailsDAO;
+import mass_email_sender.spammer.dataModel.dto.DeliveryDTO;
+import mass_email_sender.spammer.dataModel.dto.DeliveryFileDTO;
+import mass_email_sender.spammer.dataModel.dto.EmailDTO;
+import mass_email_sender.spammer.dataModel.dto.RecipientTypeDTO;
+import mass_email_sender.spammer.mailsList.impl.TestEmailsListBuilder;
+import mass_email_sender.spammer.mailsList.impl.dbf.DbfShipownersEng;
+import mass_email_sender.spammer.mailsList.impl.dbf.DbfShipownersRus;
+import mass_email_sender.spammer.mailsList.interfaces.EmailsListInterface;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import spammer.Defaults;
-import spammer.config.MailerConfig;
-import spammer.dataModel.dao.DeliveriesDAO;
-import spammer.dataModel.dao.EmailsDAO;
-import spammer.dataModel.dao.MandatoryEmailsDAO;
-import spammer.dataModel.dto.DeliveryDTO;
-import spammer.dataModel.dto.DeliveryFileDTO;
-import spammer.dataModel.dto.EmailDTO;
-import spammer.dataModel.dto.RecipientTypeDTO;
-import spammer.mailsList.impl.TestEmailsListBuilder;
-import spammer.mailsList.impl.dbf.DbfShipownersEng;
-import spammer.mailsList.impl.dbf.DbfShipownersRus;
-import spammer.mailsList.interfaces.EmailsListInterface;
 
 import javax.mail.MessagingException;
 import java.io.File;
@@ -26,21 +26,21 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * Модуль спам-рассылки почты. Конфигурируется экземпляром класса MailerConfig.
- * @author Gusev Dmitry (Дмитрий)
+ * РњРѕРґСѓР»СЊ СЃРїР°Рј-СЂР°СЃСЃС‹Р»РєРё РїРѕС‡С‚С‹. РљРѕРЅС„РёРіСѓСЂРёСЂСѓРµС‚СЃСЏ СЌРєР·РµРјРїР»СЏСЂРѕРј РєР»Р°СЃСЃР° MailerConfig.
+ * @author Gusev Dmitry (Р”РјРёС‚СЂРёР№)
  * @version 5.1 (DATE: 04.04.2010)
 */
 
-// todo: бага: если у рассылки указаны типы получателей, но они неверные (т.е. для них нет списков мылофф), то список
-// todo: майлов для рассылки может оказаться пустым. Это обработается отправщиком - письма не будут отправлены, но потенциально -
-// todo: список может оказаться пустым! (04.04.2011)
+// todo: Р±Р°РіР°: РµСЃР»Рё Сѓ СЂР°СЃСЃС‹Р»РєРё СѓРєР°Р·Р°РЅС‹ С‚РёРїС‹ РїРѕР»СѓС‡Р°С‚РµР»РµР№, РЅРѕ РѕРЅРё РЅРµРІРµСЂРЅС‹Рµ (С‚.Рµ. РґР»СЏ РЅРёС… РЅРµС‚ СЃРїРёСЃРєРѕРІ РјС‹Р»РѕС„С„), С‚Рѕ СЃРїРёСЃРѕРє
+// todo: РјР°Р№Р»РѕРІ РґР»СЏ СЂР°СЃСЃС‹Р»РєРё РјРѕР¶РµС‚ РѕРєР°Р·Р°С‚СЊСЃСЏ РїСѓСЃС‚С‹Рј. Р­С‚Рѕ РѕР±СЂР°Р±РѕС‚Р°РµС‚СЃСЏ РѕС‚РїСЂР°РІС‰РёРєРѕРј - РїРёСЃСЊРјР° РЅРµ Р±СѓРґСѓС‚ РѕС‚РїСЂР°РІР»РµРЅС‹, РЅРѕ РїРѕС‚РµРЅС†РёР°Р»СЊРЅРѕ -
+// todo: СЃРїРёСЃРѕРє РјРѕР¶РµС‚ РѕРєР°Р·Р°С‚СЊСЃСЏ РїСѓСЃС‚С‹Рј! (04.04.2011)
 
 public class Mailer
  {
-  /** Логгер данного модуля. */
+  /** Р›РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РјРѕРґСѓР»СЏ. */
   private static Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
-  /** Конфигурация данного модуля-мейлера. */
-  private MailerConfig  config = null;
+  /** РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ РґР°РЅРЅРѕРіРѕ РјРѕРґСѓР»СЏ-РјРµР№Р»РµСЂР°. */
+  private MailerConfig config = null;
 
   public Mailer(MailerConfig config) {this.config = config;}
 
@@ -48,144 +48,144 @@ public class Mailer
   //public void setConfig(MailerConfig config) {this.config = config;}
 
   /**
-   * Непосредственно метод, осуществляющий массовую рассылку почты. Перед применением ознакомьтесь с инструкцией.
+   * РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РјРµС‚РѕРґ, РѕСЃСѓС‰РµСЃС‚РІР»СЏСЋС‰РёР№ РјР°СЃСЃРѕРІСѓСЋ СЂР°СЃСЃС‹Р»РєСѓ РїРѕС‡С‚С‹. РџРµСЂРµРґ РїСЂРёРјРµРЅРµРЅРёРµРј РѕР·РЅР°РєРѕРјСЊС‚РµСЃСЊ СЃ РёРЅСЃС‚СЂСѓРєС†РёРµР№.
   */
   @SuppressWarnings({"ReuseOfLocalVariable"})
   public void startSpam()
    {
     logger.debug("Mailer: startSpam().");
-    // Проверяем конфиг для работы майлера - если конфиг пуст или содержит ошибки - ничо не делаем! Ошибка!
+    // РџСЂРѕРІРµСЂСЏРµРј РєРѕРЅС„РёРі РґР»СЏ СЂР°Р±РѕС‚С‹ РјР°Р№Р»РµСЂР° - РµСЃР»Рё РєРѕРЅС„РёРі РїСѓСЃС‚ РёР»Рё СЃРѕРґРµСЂР¶РёС‚ РѕС€РёР±РєРё - РЅРёС‡Рѕ РЅРµ РґРµР»Р°РµРј! РћС€РёР±РєР°!
     if ((this.config != null) && (StringUtils.isBlank(this.config.getConfigErrors())))
      {
       logger.info("Mailer config OK. Processing delivery.");
-      // Если включен демо-режим - укажем это
+      // Р•СЃР»Рё РІРєР»СЋС‡РµРЅ РґРµРјРѕ-СЂРµР¶РёРј - СѓРєР°Р¶РµРј СЌС‚Рѕ
       if (this.config.isDemoMode()) {logger.warn("DEMO-MODE IS ACTIVE. NO MESSAGES WILL BE SENT!");}
       
-      // Получаем ссылку на экземпляр класса DeliveriesDAO - она будет использована во многих местах
+      // РџРѕР»СѓС‡Р°РµРј СЃСЃС‹Р»РєСѓ РЅР° СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° DeliveriesDAO - РѕРЅР° Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°РЅР° РІРѕ РјРЅРѕРіРёС… РјРµСЃС‚Р°С…
       DeliveriesDAO deliveriesDAO = new DeliveriesDAO();
-      // Если идентификатор рассылки положителен - работаем. Ищем данные по рассылке в табле
+      // Р•СЃР»Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂР°СЃСЃС‹Р»РєРё РїРѕР»РѕР¶РёС‚РµР»РµРЅ - СЂР°Р±РѕС‚Р°РµРј. РС‰РµРј РґР°РЅРЅС‹Рµ РїРѕ СЂР°СЃСЃС‹Р»РєРµ РІ С‚Р°Р±Р»Рµ
       DeliveryDTO delivery = deliveriesDAO.findByID(config.getDeliveryId());
       if ((delivery != null) && (!delivery.isEmpty()))
        {
         logger.debug("Delivery with ID = " + config.getDeliveryId() + " was found. Processing.");
 
-        // Сразу же устанавливаем статус текущей рассылки - в процессе. Данные пробиваем в БД.
+        // РЎСЂР°Р·Сѓ Р¶Рµ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃС‚Р°С‚СѓСЃ С‚РµРєСѓС‰РµР№ СЂР°СЃСЃС‹Р»РєРё - РІ РїСЂРѕС†РµСЃСЃРµ. Р”Р°РЅРЅС‹Рµ РїСЂРѕР±РёРІР°РµРј РІ Р‘Р”.
         Defaults.DeliveryStatus deliveryStatus = Defaults.DeliveryStatus.DELIVERY_STATUS_IN_PROCESS;
         deliveriesDAO.setStatusAndError(this.config.getDeliveryId(), deliveryStatus, null);
 
-        // Создаем конфиг для почтового модуля (JMail)
+        // РЎРѕР·РґР°РµРј РєРѕРЅС„РёРі РґР»СЏ РїРѕС‡С‚РѕРІРѕРіРѕ РјРѕРґСѓР»СЏ (JMail)
         JMailConfig mailConfig = new JMailConfig();
         mailConfig.setFrom(config.getMailFrom());
         mailConfig.setMailHost(config.getMailHost());
-        // Если указан порт (строго больше нуля) - также укажем его
+        // Р•СЃР»Рё СѓРєР°Р·Р°РЅ РїРѕСЂС‚ (СЃС‚СЂРѕРіРѕ Р±РѕР»СЊС€Рµ РЅСѓР»СЏ) - С‚Р°РєР¶Рµ СѓРєР°Р¶РµРј РµРіРѕ
         if (config.getMailPort() > 0) {mailConfig.setMailPort(config.getMailPort());}
-        // Кодировка письма (только если указана непустая)
+        // РљРѕРґРёСЂРѕРІРєР° РїРёСЃСЊРјР° (С‚РѕР»СЊРєРѕ РµСЃР»Рё СѓРєР°Р·Р°РЅР° РЅРµРїСѓСЃС‚Р°СЏ)
         if (!StringUtils.isBlank(config.getMailEncoding()))
          {
           logger.info("Using mail encoding: " + config.getMailEncoding());
           mailConfig.setEncoding(config.getMailEncoding());
          }
-        // Тема
+        // РўРµРјР°
         mailConfig.setSubject(delivery.getSubject());
-        // Текст
+        // РўРµРєСЃС‚
         mailConfig.setText(delivery.getText());
 
-        // Ошибки рассылки (начальное значение NULL - нет ошибок)
+        // РћС€РёР±РєРё СЂР°СЃСЃС‹Р»РєРё (РЅР°С‡Р°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ NULL - РЅРµС‚ РѕС€РёР±РѕРє)
         String deliveryError = null;
       
-        // Добавляем аттачменты к письму (если они есть в рассылке и если доступен файловый ресурс). Если в рассылке
-        // (в экземпляре класса DeliveryDTO) указаны аттачменты, а физически их нет - рассылка не стартует (будет
-        // выведено сообщение в лог и сделана запись в БД рассылок)
+        // Р”РѕР±Р°РІР»СЏРµРј Р°С‚С‚Р°С‡РјРµРЅС‚С‹ Рє РїРёСЃСЊРјСѓ (РµСЃР»Рё РѕРЅРё РµСЃС‚СЊ РІ СЂР°СЃСЃС‹Р»РєРµ Рё РµСЃР»Рё РґРѕСЃС‚СѓРїРµРЅ С„Р°Р№Р»РѕРІС‹Р№ СЂРµСЃСѓСЂСЃ). Р•СЃР»Рё РІ СЂР°СЃСЃС‹Р»РєРµ
+        // (РІ СЌРєР·РµРјРїР»СЏСЂРµ РєР»Р°СЃСЃР° DeliveryDTO) СѓРєР°Р·Р°РЅС‹ Р°С‚С‚Р°С‡РјРµРЅС‚С‹, Р° С„РёР·РёС‡РµСЃРєРё РёС… РЅРµС‚ - СЂР°СЃСЃС‹Р»РєР° РЅРµ СЃС‚Р°СЂС‚СѓРµС‚ (Р±СѓРґРµС‚
+        // РІС‹РІРµРґРµРЅРѕ СЃРѕРѕР±С‰РµРЅРёРµ РІ Р»РѕРі Рё СЃРґРµР»Р°РЅР° Р·Р°РїРёСЃСЊ РІ Р‘Р” СЂР°СЃСЃС‹Р»РѕРє)
         HashSet<DeliveryFileDTO> deliveryFiles = delivery.getFiles();
         if ((deliveryFiles != null) && (!deliveryFiles.isEmpty()))
          {
           logger.info("There are [" + deliveryFiles.size() + "] file(s) for this emails delivery. Checking.");
-          // Если указанный в качестве параметра путь к файловому репозитарию путь ок - работаем
+          // Р•СЃР»Рё СѓРєР°Р·Р°РЅРЅС‹Р№ РІ РєР°С‡РµСЃС‚РІРµ РїР°СЂР°РјРµС‚СЂР° РїСѓС‚СЊ Рє С„Р°Р№Р»РѕРІРѕРјСѓ СЂРµРїРѕР·РёС‚Р°СЂРёСЋ РїСѓС‚СЊ РѕРє - СЂР°Р±РѕС‚Р°РµРј
           String filesPath = this.config.getDeliveriesFilesPath();
           if ((!StringUtils.isBlank(filesPath)) && (new File(filesPath).exists()))
            {
             logger.debug("Files repository path [" + filesPath + "] is ok.");
-            String path = FSUtils.fixFPath(filesPath, true); // <- коректировка пути к файлам с добавлением конечного слеша
+            String path = FSUtils.fixFPath(filesPath, true); // <- РєРѕСЂРµРєС‚РёСЂРѕРІРєР° РїСѓС‚Рё Рє С„Р°Р№Р»Р°Рј СЃ РґРѕР±Р°РІР»РµРЅРёРµРј РєРѕРЅРµС‡РЅРѕРіРѕ СЃР»РµС€Р°
 
-            // В цикле проходим по всем файлам, указанным в классе рассылки и, если они найдены, добавляем к
-            // конфигурации модуля почтовой рассылки (JMail). Если хоть один из файлов не найден - ошибка, рассылка
-            // осуществлена не будет.
+            // Р’ С†РёРєР»Рµ РїСЂРѕС…РѕРґРёРј РїРѕ РІСЃРµРј С„Р°Р№Р»Р°Рј, СѓРєР°Р·Р°РЅРЅС‹Рј РІ РєР»Р°СЃСЃРµ СЂР°СЃСЃС‹Р»РєРё Рё, РµСЃР»Рё РѕРЅРё РЅР°Р№РґРµРЅС‹, РґРѕР±Р°РІР»СЏРµРј Рє
+            // РєРѕРЅС„РёРіСѓСЂР°С†РёРё РјРѕРґСѓР»СЏ РїРѕС‡С‚РѕРІРѕР№ СЂР°СЃСЃС‹Р»РєРё (JMail). Р•СЃР»Рё С…РѕС‚СЊ РѕРґРёРЅ РёР· С„Р°Р№Р»РѕРІ РЅРµ РЅР°Р№РґРµРЅ - РѕС€РёР±РєР°, СЂР°СЃСЃС‹Р»РєР°
+            // РѕСЃСѓС‰РµСЃС‚РІР»РµРЅР° РЅРµ Р±СѓРґРµС‚.
             for (DeliveryFileDTO deliveryFile : deliveryFiles)
              {
-              // Дополнительная проверка - не пуст ли полученный файл. Если пуст - ошибка!
+              // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° - РЅРµ РїСѓСЃС‚ Р»Рё РїРѕР»СѓС‡РµРЅРЅС‹Р№ С„Р°Р№Р». Р•СЃР»Рё РїСѓСЃС‚ - РѕС€РёР±РєР°!
               if ((deliveryFile != null) && (!deliveryFile.isEmpty()))
                {
                 String oneAttachmentPath = path + delivery.getId() + "/" + deliveryFile.getFileName();
-                // Если файл есть (существует) - добавляем его к конфигу майлера
+                // Р•СЃР»Рё С„Р°Р№Р» РµСЃС‚СЊ (СЃСѓС‰РµСЃС‚РІСѓРµС‚) - РґРѕР±Р°РІР»СЏРµРј РµРіРѕ Рє РєРѕРЅС„РёРіСѓ РјР°Р№Р»РµСЂР°
                 if (new File(oneAttachmentPath).exists() && new File(oneAttachmentPath).isFile())
                  {mailConfig.addFile(oneAttachmentPath);}
-                // Если файла нет - ошибка!
+                // Р•СЃР»Рё С„Р°Р№Р»Р° РЅРµС‚ - РѕС€РёР±РєР°!
                 else
                  {
                   deliveryStatus = Defaults.DeliveryStatus.DELIVERY_STATUS_FAILED;
                   deliveryError  = "Attachment file [" + oneAttachmentPath + "] not found or not a file!";
-                  // Сообщим в лог
+                  // РЎРѕРѕР±С‰РёРј РІ Р»РѕРі
                   logger.error(deliveryError);
-                  // Пробьем в базу рассылок
+                  // РџСЂРѕР±СЊРµРј РІ Р±Р°Р·Сѓ СЂР°СЃСЃС‹Р»РѕРє
                   deliveriesDAO.setStatusAndError(this.config.getDeliveryId(), deliveryStatus, deliveryError);
                  }
                }
-              // Если получен пустой файл из списка - ошибка!
+              // Р•СЃР»Рё РїРѕР»СѓС‡РµРЅ РїСѓСЃС‚РѕР№ С„Р°Р№Р» РёР· СЃРїРёСЃРєР° - РѕС€РёР±РєР°!
               else
                {
                 deliveryStatus = Defaults.DeliveryStatus.DELIVERY_STATUS_FAILED;
                 deliveryError  = "Internal error! Empty files in delivery's attachments list!";
-                // Сообщим в лог
+                // РЎРѕРѕР±С‰РёРј РІ Р»РѕРі
                 logger.error(deliveryError);
-                // Пробьем в базу рассылок
+                // РџСЂРѕР±СЊРµРј РІ Р±Р°Р·Сѓ СЂР°СЃСЃС‹Р»РѕРє
                 deliveriesDAO.setStatusAndError(this.config.getDeliveryId(), deliveryStatus, deliveryError);
                }
              }
 
            }
-          // Если же указанный путь ошибочен (но файлы в рассылке указаны) - рассылка не осуществляется.
+          // Р•СЃР»Рё Р¶Рµ СѓРєР°Р·Р°РЅРЅС‹Р№ РїСѓС‚СЊ РѕС€РёР±РѕС‡РµРЅ (РЅРѕ С„Р°Р№Р»С‹ РІ СЂР°СЃСЃС‹Р»РєРµ СѓРєР°Р·Р°РЅС‹) - СЂР°СЃСЃС‹Р»РєР° РЅРµ РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚СЃСЏ.
           else
            {
             deliveryStatus = Defaults.DeliveryStatus.DELIVERY_STATUS_FAILED;
             deliveryError  = "There are [" + deliveryFiles.size() + "] file(s) for this delivery, " +
                              "but file repository path [" + filesPath + "] doesn't exists!";
-            // Сообщим в лог
+            // РЎРѕРѕР±С‰РёРј РІ Р»РѕРі
             logger.error(deliveryError);
-            // Пробьем в базу рассылок
+            // РџСЂРѕР±СЊРµРј РІ Р±Р°Р·Сѓ СЂР°СЃСЃС‹Р»РѕРє
             deliveriesDAO.setStatusAndError(this.config.getDeliveryId(), deliveryStatus, deliveryError);
            }
          }
-        // Если файлов в рассылке нет - просто сообщим в лог
+        // Р•СЃР»Рё С„Р°Р№Р»РѕРІ РІ СЂР°СЃСЃС‹Р»РєРµ РЅРµС‚ - РїСЂРѕСЃС‚Рѕ СЃРѕРѕР±С‰РёРј РІ Р»РѕРі
         else {logger.info("This emails delivery attachments-free!");}
 
-        // Если проверка файлов (и их добавление в конфиг майлера) завершилась удачно или для данной рассылки
-        // вообще нет аттаченных файлов - продолжаем работу
+        // Р•СЃР»Рё РїСЂРѕРІРµСЂРєР° С„Р°Р№Р»РѕРІ (Рё РёС… РґРѕР±Р°РІР»РµРЅРёРµ РІ РєРѕРЅС„РёРі РјР°Р№Р»РµСЂР°) Р·Р°РІРµСЂС€РёР»Р°СЃСЊ СѓРґР°С‡РЅРѕ РёР»Рё РґР»СЏ РґР°РЅРЅРѕР№ СЂР°СЃСЃС‹Р»РєРё
+        // РІРѕРѕР±С‰Рµ РЅРµС‚ Р°С‚С‚Р°С‡РµРЅРЅС‹С… С„Р°Р№Р»РѕРІ - РїСЂРѕРґРѕР»Р¶Р°РµРј СЂР°Р±РѕС‚Сѓ
         if (deliveryStatus == Defaults.DeliveryStatus.DELIVERY_STATUS_IN_PROCESS)
          {
           logger.debug("Files processing completed. Continue delivery processing.");
 
-          // Получаем список адресов для рассылки. Если указан параметр командной строки -testMailTo, то почта
-          //отправляется только на адрес(а), указанный(-ые) в данном параметре. Значение параметра считается за одну
-          // запись.
+          // РџРѕР»СѓС‡Р°РµРј СЃРїРёСЃРѕРє Р°РґСЂРµСЃРѕРІ РґР»СЏ СЂР°СЃСЃС‹Р»РєРё. Р•СЃР»Рё СѓРєР°Р·Р°РЅ РїР°СЂР°РјРµС‚СЂ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё -testMailTo, С‚Рѕ РїРѕС‡С‚Р°
+          //РѕС‚РїСЂР°РІР»СЏРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РЅР° Р°РґСЂРµСЃ(Р°), СѓРєР°Р·Р°РЅРЅС‹Р№(-С‹Рµ) РІ РґР°РЅРЅРѕРј РїР°СЂР°РјРµС‚СЂРµ. Р—РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° СЃС‡РёС‚Р°РµС‚СЃСЏ Р·Р° РѕРґРЅСѓ
+          // Р·Р°РїРёСЃСЊ.
           TreeMap<String, Integer> emailsList = null;
           if (StringUtils.isBlank(this.config.getTestMailTo()))
            {
             logger.info("Standard delivery. Processing emails list.");
-            // Если у данной рассылки указаны получатели - обработаем их.
+            // Р•СЃР»Рё Сѓ РґР°РЅРЅРѕР№ СЂР°СЃСЃС‹Р»РєРё СѓРєР°Р·Р°РЅС‹ РїРѕР»СѓС‡Р°С‚РµР»Рё - РѕР±СЂР°Р±РѕС‚Р°РµРј РёС….
             if ((delivery.getRecipients() != null) && (!delivery.getRecipients().isEmpty()))
              {
               logger.info("This delivery had [" + delivery.getRecipients().size() + "] recipients types. Processing.");
               EmailsListInterface builder;
-              // Конечный список майл-адресов для рассылки
+              // РљРѕРЅРµС‡РЅС‹Р№ СЃРїРёСЃРѕРє РјР°Р№Р»-Р°РґСЂРµСЃРѕРІ РґР»СЏ СЂР°СЃСЃС‹Р»РєРё
               TreeMap<String, Integer> list;
-              // В цикле формируется сам список мылофф для рассылки
+              // Р’ С†РёРєР»Рµ С„РѕСЂРјРёСЂСѓРµС‚СЃСЏ СЃР°Рј СЃРїРёСЃРѕРє РјС‹Р»РѕС„С„ РґР»СЏ СЂР°СЃСЃС‹Р»РєРё
               for (RecipientTypeDTO type : delivery.getRecipients())
                {
                 if ((type != null) && (type.getRecipientType() != null))
                  {
                   switch (type.getRecipientType())
                    {
-                    // Тестовый список рассылки (отдел 019)
+                    // РўРµСЃС‚РѕРІС‹Р№ СЃРїРёСЃРѕРє СЂР°СЃСЃС‹Р»РєРё (РѕС‚РґРµР» 019)
                     case RECIPIENT_TYPE_TEST:
                      logger.debug("Recipient type: " + Defaults.RecipientType.RECIPIENT_TYPE_TEST);
                      builder = new TestEmailsListBuilder();
@@ -196,7 +196,7 @@ public class Mailer
                        emailsList.putAll(list);
                       }
                      break;
-                    // Русскоязычные судовладельцы
+                    // Р СѓСЃСЃРєРѕСЏР·С‹С‡РЅС‹Рµ СЃСѓРґРѕРІР»Р°РґРµР»СЊС†С‹
                     case RECIPIENT_TYPE_SHIPOWNERS_RUS:
                      logger.debug("Recipient type: " + Defaults.RecipientType.RECIPIENT_TYPE_SHIPOWNERS_RUS);
                      builder = new DbfShipownersRus(this.config.getFleetDBPath(), this.config.getFirmDBPath());
@@ -207,7 +207,7 @@ public class Mailer
                        emailsList.putAll(list);
                       }
                      break;
-                    // Англоязычные судовладельцы
+                    // РђРЅРіР»РѕСЏР·С‹С‡РЅС‹Рµ СЃСѓРґРѕРІР»Р°РґРµР»СЊС†С‹
                     case RECIPIENT_TYPE_SHIPOWNERS_ENG:
                      logger.debug("Recipient type: " + Defaults.RecipientType.RECIPIENT_TYPE_SHIPOWNERS_ENG);
                      builder = new DbfShipownersEng(this.config.getFleetDBPath(), this.config.getFirmDBPath());
@@ -222,8 +222,8 @@ public class Mailer
                  }
                } // END OF FOR
 
-              // Если во время обработки в список мылофф для отправки было что-то добавлено, то добавляем в этот список
-              // майл-адреса из таблицы mandatoryEmails - те адреса, куда должны отправляться письма при ЛЮБОЙ рассылке.
+              // Р•СЃР»Рё РІРѕ РІСЂРµРјСЏ РѕР±СЂР°Р±РѕС‚РєРё РІ СЃРїРёСЃРѕРє РјС‹Р»РѕС„С„ РґР»СЏ РѕС‚РїСЂР°РІРєРё Р±С‹Р»Рѕ С‡С‚Рѕ-С‚Рѕ РґРѕР±Р°РІР»РµРЅРѕ, С‚Рѕ РґРѕР±Р°РІР»СЏРµРј РІ СЌС‚РѕС‚ СЃРїРёСЃРѕРє
+              // РјР°Р№Р»-Р°РґСЂРµСЃР° РёР· С‚Р°Р±Р»РёС†С‹ mandatoryEmails - С‚Рµ Р°РґСЂРµСЃР°, РєСѓРґР° РґРѕР»Р¶РЅС‹ РѕС‚РїСЂР°РІР»СЏС‚СЊСЃСЏ РїРёСЃСЊРјР° РїСЂРё Р›Р®Р‘РћР™ СЂР°СЃСЃС‹Р»РєРµ.
               if ((emailsList != null) && (!emailsList.isEmpty()))
                {
                 TreeMap<String, Integer> mandatoryList = new MandatoryEmailsDAO().getEmailsList();
@@ -235,10 +235,10 @@ public class Mailer
                }
               else {logger.error("Empty emails list! Can't process!");}
              }
-            // Если же получателей нет - ничего не рассылаем, ибо некуда.
+            // Р•СЃР»Рё Р¶Рµ РїРѕР»СѓС‡Р°С‚РµР»РµР№ РЅРµС‚ - РЅРёС‡РµРіРѕ РЅРµ СЂР°СЃСЃС‹Р»Р°РµРј, РёР±Рѕ РЅРµРєСѓРґР°.
             else {logger.error("This delivery had [0] recipients types. Can't process!");}
            }
-          // Тестовая рассылка
+          // РўРµСЃС‚РѕРІР°СЏ СЂР°СЃСЃС‹Р»РєР°
           else
            {
             logger.info("Test delivery. Processing.");
@@ -246,45 +246,45 @@ public class Mailer
             emailsList.put(this.config.getTestMailTo(), 0);
            }
 
-          // Если список мылоф не пуст - работаем
+          // Р•СЃР»Рё СЃРїРёСЃРѕРє РјС‹Р»РѕС„ РЅРµ РїСѓСЃС‚ - СЂР°Р±РѕС‚Р°РµРј
           if ((emailsList != null) && (!emailsList.isEmpty()))
            {
             logger.info("Emails list contains [" + emailsList.size() + "] address(es). Processing.");
 
-            // Экземпляр класса "письмо" - для пробивания в журнал отправки
+            // Р­РєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° "РїРёСЃСЊРјРѕ" - РґР»СЏ РїСЂРѕР±РёРІР°РЅРёСЏ РІ Р¶СѓСЂРЅР°Р» РѕС‚РїСЂР°РІРєРё
             EmailDTO email = new EmailDTO();
             email.setDeliveryId(delivery.getId());
 
-            // Сам почтовик
+            // РЎР°Рј РїРѕС‡С‚РѕРІРёРє
             JMail mailer = new JMail(mailConfig);
-            // Непосредственно цикл отправки спама
+            // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ С†РёРєР» РѕС‚РїСЂР°РІРєРё СЃРїР°РјР°
             Set<String> keys = emailsList.keySet();
             int    companyId;
             String sendResult = null;
-            // Класс для пробития инфы в БД (в таблицу мылов)
+            // РљР»Р°СЃСЃ РґР»СЏ РїСЂРѕР±РёС‚РёСЏ РёРЅС„С‹ РІ Р‘Р” (РІ С‚Р°Р±Р»РёС†Сѓ РјС‹Р»РѕРІ)
             EmailsDAO emailsDAO = new EmailsDAO();
 
             logger.info("Starting emails delivery...");
-            // Счетчик обработанных мылов
+            // РЎС‡РµС‚С‡РёРє РѕР±СЂР°Р±РѕС‚Р°РЅРЅС‹С… РјС‹Р»РѕРІ
             int counter = 0;
             for (String key : keys)
              {
               companyId = emailsList.get(key);
-              // Удаляем неверные разделители (если вдруг в одной строчке несколько мыл). Все неверные разделители,
-              // указанные в строке будут заменены на верные.
+              // РЈРґР°Р»СЏРµРј РЅРµРІРµСЂРЅС‹Рµ СЂР°Р·РґРµР»РёС‚РµР»Рё (РµСЃР»Рё РІРґСЂСѓРі РІ РѕРґРЅРѕР№ СЃС‚СЂРѕС‡РєРµ РЅРµСЃРєРѕР»СЊРєРѕ РјС‹Р»). Р’СЃРµ РЅРµРІРµСЂРЅС‹Рµ СЂР°Р·РґРµР»РёС‚РµР»Рё,
+              // СѓРєР°Р·Р°РЅРЅС‹Рµ РІ СЃС‚СЂРѕРєРµ Р±СѓРґСѓС‚ Р·Р°РјРµРЅРµРЅС‹ РЅР° РІРµСЂРЅС‹Рµ.
               String strEmail = key;
               for (String aWrong : Defaults.EMAILS_DELIMITERS_WRONG)
                {strEmail = strEmail.replaceAll(aWrong, Defaults.EMAILS_DELIMITER_RIGHT);}
-              // Отладочное сообщение
+              // РћС‚Р»Р°РґРѕС‡РЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ
               logger.debug("Email before process: [" + key + "], email after process (for send): [" + strEmail + "]. ");
 
-              // Пробиваем мыло в конфиг почтовика
+              // РџСЂРѕР±РёРІР°РµРј РјС‹Р»Рѕ РІ РєРѕРЅС„РёРі РїРѕС‡С‚РѕРІРёРєР°
               mailConfig.setTo(strEmail);
-              // Пробиваем данные в экземпляр класса "письмо" - для отправки в БД (на MS SQL)
+              // РџСЂРѕР±РёРІР°РµРј РґР°РЅРЅС‹Рµ РІ СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° "РїРёСЃСЊРјРѕ" - РґР»СЏ РѕС‚РїСЂР°РІРєРё РІ Р‘Р” (РЅР° MS SQL)
               email.setCompanyId(companyId);
               email.setEmail(strEmail);
-              // Отправляем письмеццо. Если включен демо-режим, то письмо не отправляется, а просто
-              // сообщается о его отправке. Запись в БД также делается.
+              // РћС‚РїСЂР°РІР»СЏРµРј РїРёСЃСЊРјРµС†С†Рѕ. Р•СЃР»Рё РІРєР»СЋС‡РµРЅ РґРµРјРѕ-СЂРµР¶РёРј, С‚Рѕ РїРёСЃСЊРјРѕ РЅРµ РѕС‚РїСЂР°РІР»СЏРµС‚СЃСЏ, Р° РїСЂРѕСЃС‚Рѕ
+              // СЃРѕРѕР±С‰Р°РµС‚СЃСЏ Рѕ РµРіРѕ РѕС‚РїСЂР°РІРєРµ. Р—Р°РїРёСЃСЊ РІ Р‘Р” С‚Р°РєР¶Рµ РґРµР»Р°РµС‚СЃСЏ.
               try
                {
                 if (!this.config.isDemoMode()) {mailer.send();}
@@ -297,37 +297,37 @@ public class Mailer
               catch (MessagingException e)
                {
                 logger.error("Sending for this [" + strEmail + "] address failed. Message [" + e.getMessage() + "]");
-                // Результат отправки письма по данному адресу (для БД)
+                // Р РµР·СѓР»СЊС‚Р°С‚ РѕС‚РїСЂР°РІРєРё РїРёСЃСЊРјР° РїРѕ РґР°РЅРЅРѕРјСѓ Р°РґСЂРµСЃСѓ (РґР»СЏ Р‘Р”)
                 sendResult = e.getMessage();
                }
-              // Добиваем данные в экземпляр класса "письмо" и пробиваем все в БД (результат отправки письма)
+              // Р”РѕР±РёРІР°РµРј РґР°РЅРЅС‹Рµ РІ СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° "РїРёСЃСЊРјРѕ" Рё РїСЂРѕР±РёРІР°РµРј РІСЃРµ РІ Р‘Р” (СЂРµР·СѓР»СЊС‚Р°С‚ РѕС‚РїСЂР°РІРєРё РїРёСЃСЊРјР°)
               if (!StringUtils.isBlank(sendResult))
                {
                 email.setErrorText(sendResult);
-                // Если есть сообщение и мы не в демо-режиме - ошибка! Пробиваем в базу (таблицу) ё-мыл.
+                // Р•СЃР»Рё РµСЃС‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ Рё РјС‹ РЅРµ РІ РґРµРјРѕ-СЂРµР¶РёРјРµ - РѕС€РёР±РєР°! РџСЂРѕР±РёРІР°РµРј РІ Р±Р°Р·Сѓ (С‚Р°Р±Р»РёС†Сѓ) С‘-РјС‹Р».
                 if (!this.config.isDemoMode()) {email.setStatus(Defaults.DeliveryStatus.DELIVERY_STATUS_FAILED.getIntValue());}
-                // Статус рассылки - с ошибками. Выставляем однократно при возникновении любой ошибки
-                // во время отправки писем по списку. Если же мы в демо-режиме, то статус всей рассылки будет ОК.
+                // РЎС‚Р°С‚СѓСЃ СЂР°СЃСЃС‹Р»РєРё - СЃ РѕС€РёР±РєР°РјРё. Р’С‹СЃС‚Р°РІР»СЏРµРј РѕРґРЅРѕРєСЂР°С‚РЅРѕ РїСЂРё РІРѕР·РЅРёРєРЅРѕРІРµРЅРёРё Р»СЋР±РѕР№ РѕС€РёР±РєРё
+                // РІРѕ РІСЂРµРјСЏ РѕС‚РїСЂР°РІРєРё РїРёСЃРµРј РїРѕ СЃРїРёСЃРєСѓ. Р•СЃР»Рё Р¶Рµ РјС‹ РІ РґРµРјРѕ-СЂРµР¶РёРјРµ, С‚Рѕ СЃС‚Р°С‚СѓСЃ РІСЃРµР№ СЂР°СЃСЃС‹Р»РєРё Р±СѓРґРµС‚ РћРљ.
                 if ((!this.config.isDemoMode()) && (deliveryStatus == Defaults.DeliveryStatus.DELIVERY_STATUS_IN_PROCESS))
                  {
                   deliveryStatus = Defaults.DeliveryStatus.DELIVERY_STATUS_FINISHED_WITH_ERRORS;
                   deliveryError  = "There are delivery errors. See emails log for this delivery.";
                  }
-                // Обнуляем результат
+                // РћР±РЅСѓР»СЏРµРј СЂРµР·СѓР»СЊС‚Р°С‚
                 sendResult = null;
                }
-              // Пробиваем в БД инфу об отправке данных (письма) на адрес
+              // РџСЂРѕР±РёРІР°РµРј РІ Р‘Р” РёРЅС„Сѓ РѕР± РѕС‚РїСЂР°РІРєРµ РґР°РЅРЅС‹С… (РїРёСЃСЊРјР°) РЅР° Р°РґСЂРµСЃ
               emailsDAO.change(email);
-              // Обнуляем поля errorText и Status
+              // РћР±РЅСѓР»СЏРµРј РїРѕР»СЏ errorText Рё Status
               email.setErrorText(null);
               email.setStatus(Defaults.DeliveryStatus.DELIVERY_STATUS_OK.getIntValue());
-              // Увеличиваем счетчик обработанных мыл
+              // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє РѕР±СЂР°Р±РѕС‚Р°РЅРЅС‹С… РјС‹Р»
               counter++;
-             } // Конец цикла отправки писем по списку
+             } // РљРѕРЅРµС† С†РёРєР»Р° РѕС‚РїСЂР°РІРєРё РїРёСЃРµРј РїРѕ СЃРїРёСЃРєСѓ
 
             logger.info("Emails delivery finished. [" + counter + "] email(s) processed. See log or database for results.");
-            // По окончании цикла рассылки - пробиваем в БД статус завершения для рыссылки. Если ошибок нет -
-            // пробиваем статус - "успешно", если же есть ошибки, то пробивается статус "неудача"
+            // РџРѕ РѕРєРѕРЅС‡Р°РЅРёРё С†РёРєР»Р° СЂР°СЃСЃС‹Р»РєРё - РїСЂРѕР±РёРІР°РµРј РІ Р‘Р” СЃС‚Р°С‚СѓСЃ Р·Р°РІРµСЂС€РµРЅРёСЏ РґР»СЏ СЂС‹СЃСЃС‹Р»РєРё. Р•СЃР»Рё РѕС€РёР±РѕРє РЅРµС‚ -
+            // РїСЂРѕР±РёРІР°РµРј СЃС‚Р°С‚СѓСЃ - "СѓСЃРїРµС€РЅРѕ", РµСЃР»Рё Р¶Рµ РµСЃС‚СЊ РѕС€РёР±РєРё, С‚Рѕ РїСЂРѕР±РёРІР°РµС‚СЃСЏ СЃС‚Р°С‚СѓСЃ "РЅРµСѓРґР°С‡Р°"
             if (deliveryStatus == Defaults.DeliveryStatus.DELIVERY_STATUS_IN_PROCESS)
              {
               deliveryStatus = Defaults.DeliveryStatus.DELIVERY_STATUS_OK;
@@ -336,35 +336,35 @@ public class Mailer
             else
              {new DeliveriesDAO().setStatusAndError(this.config.getDeliveryId(), deliveryStatus, deliveryError);}
            }
-          // Если список мылоф пуст - ошибка. Сообщаем в лог. Пробиваем в БД рассылок
+          // Р•СЃР»Рё СЃРїРёСЃРѕРє РјС‹Р»РѕС„ РїСѓСЃС‚ - РѕС€РёР±РєР°. РЎРѕРѕР±С‰Р°РµРј РІ Р»РѕРі. РџСЂРѕР±РёРІР°РµРј РІ Р‘Р” СЂР°СЃСЃС‹Р»РѕРє
           else
            {
             deliveryStatus = Defaults.DeliveryStatus.DELIVERY_STATUS_FAILED;
             deliveryError  = "Emails list is empty! Can't process delivery!";
-            // Сообщим в лог
+            // РЎРѕРѕР±С‰РёРј РІ Р»РѕРі
             logger.error(deliveryError);
-            // Пробьем в базу рассылок
+            // РџСЂРѕР±СЊРµРј РІ Р±Р°Р·Сѓ СЂР°СЃСЃС‹Р»РѕРє
             deliveriesDAO.setStatusAndError(this.config.getDeliveryId(), deliveryStatus, deliveryError);
            }
          }
-        // Если же предыдущие проверки закончились неудачно - рассылка не осуществляется
+        // Р•СЃР»Рё Р¶Рµ РїСЂРµРґС‹РґСѓС‰РёРµ РїСЂРѕРІРµСЂРєРё Р·Р°РєРѕРЅС‡РёР»РёСЃСЊ РЅРµСѓРґР°С‡РЅРѕ - СЂР°СЃСЃС‹Р»РєР° РЅРµ РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚СЃСЏ
         else {logger.error("Can't process emails delivery due previous errors. See log!");}
        }
-      // Если идентификатор рассылки меньше нуля - сразу ошибка
+      // Р•СЃР»Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂР°СЃСЃС‹Р»РєРё РјРµРЅСЊС€Рµ РЅСѓР»СЏ - СЃСЂР°Р·Сѓ РѕС€РёР±РєР°
       else {logger.error("Can't start spam - wrong delivery ID [" + this.config.getDeliveryId() + "].");}
      }
-    // Если же конфиг пуст или содержит ошибки - ничо не делаем и сообщаем в лог
+    // Р•СЃР»Рё Р¶Рµ РєРѕРЅС„РёРі РїСѓСЃС‚ РёР»Рё СЃРѕРґРµСЂР¶РёС‚ РѕС€РёР±РєРё - РЅРёС‡Рѕ РЅРµ РґРµР»Р°РµРј Рё СЃРѕРѕР±С‰Р°РµРј РІ Р»РѕРі
     else
      {
-      // В зависимости от типа ошибочности конфига - сообщение в лог
+      // Р’ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РёРїР° РѕС€РёР±РѕС‡РЅРѕСЃС‚Рё РєРѕРЅС„РёРіР° - СЃРѕРѕР±С‰РµРЅРёРµ РІ Р»РѕРі
       if (this.config == null) {logger.error("Mailer config is NULL!");}
       else                     {logger.error("Mailer config invalid! " + this.config.getConfigErrors());}
      }
    }
 
   /**
-   * Метод для тестирования.
-   * @param args String[] параметры метода.
+   * РњРµС‚РѕРґ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ.
+   * @param args String[] РїР°СЂР°РјРµС‚СЂС‹ РјРµС‚РѕРґР°.
   */
   /**
   public static void main(String[] args)

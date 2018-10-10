@@ -1,4 +1,4 @@
-package spammer.dataModel.dto;
+package mass_email_sender.spammer.dataModel.dto;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -83,8 +83,8 @@ public class EmailDTO
   }
 
   /**
-   * Класс пуст если пусто одно из полей email, deliveryId.
-   * @return boolean ИСТИНА/ЛОЖЬ в зависимости от того, пуст или нет экземпляр данного класса.
+   * РљР»Р°СЃСЃ РїСѓСЃС‚ РµСЃР»Рё РїСѓСЃС‚Рѕ РѕРґРЅРѕ РёР· РїРѕР»РµР№ email, deliveryId.
+   * @return boolean РРЎРўРРќРђ/Р›РћР–Р¬ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ, РїСѓСЃС‚ РёР»Рё РЅРµС‚ СЌРєР·РµРјРїР»СЏСЂ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°.
   */
   public boolean isEmpty() {return (StringUtils.isBlank(email) || (deliveryId <= 0));}
 

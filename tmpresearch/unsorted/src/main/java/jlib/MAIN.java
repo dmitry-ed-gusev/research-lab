@@ -18,55 +18,55 @@ import java.io.IOException;
  */
 public class MAIN
  {
-  /** Компонент-логгер данного класса. */
+  /** РљРѕРјРїРѕРЅРµРЅС‚-Р»РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°. */
   private static Logger logger = Logger.getLogger(MAIN.class.getName());
 
-  /** Стандартное имя для файла пароля. */
+  /** РЎС‚Р°РЅРґР°СЂС‚РЅРѕРµ РёРјСЏ РґР»СЏ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ. */
   private static final String DEFAULT_PASS_FILE_NAME          = "password";
-  /** Стандартное расширение для файла пароля. */
+  /** РЎС‚Р°РЅРґР°СЂС‚РЅРѕРµ СЂР°СЃС€РёСЂРµРЅРёРµ РґР»СЏ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ. */
   private static final String DEFAULT_PASS_FILE_EXTENSION     = "data"; 
 
-  /** Опция командной строки: создать файл с паролем. Пароль - аргумент данной опции. */
+  /** РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё: СЃРѕР·РґР°С‚СЊ С„Р°Р№Р» СЃ РїР°СЂРѕР»РµРј. РџР°СЂРѕР»СЊ - Р°СЂРіСѓРјРµРЅС‚ РґР°РЅРЅРѕР№ РѕРїС†РёРё. */
   private static final String OPTION_CREATE_PASS_FILE = "createPassFile";
-  /** Опция командной строки: прочитать пароль из файла. */
+  /** РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё: РїСЂРѕС‡РёС‚Р°С‚СЊ РїР°СЂРѕР»СЊ РёР· С„Р°Р№Р»Р°. */
   private static final String OPTION_READ_PASS_FILE   = "readPassFile";
-  /** Опция командной строки: каталог, где должен находиться файл пароля (для чтения или создания). */
+  /** РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё: РєР°С‚Р°Р»РѕРі, РіРґРµ РґРѕР»Р¶РµРЅ РЅР°С…РѕРґРёС‚СЊСЃСЏ С„Р°Р№Р» РїР°СЂРѕР»СЏ (РґР»СЏ С‡С‚РµРЅРёСЏ РёР»Рё СЃРѕР·РґР°РЅРёСЏ). */
   private static final String OPTION_PASS_FILE_DIR    = "passFileDir";
-  /** Опция командной строки: имя для файла пароля (для чтения или создания). */
+  /** РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё: РёРјСЏ РґР»СЏ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ (РґР»СЏ С‡С‚РµРЅРёСЏ РёР»Рё СЃРѕР·РґР°РЅРёСЏ). */
   private static final String OPTION_PASS_FILE_NAME   = "passFileName";
-  /** Опция командной строки: показать экран помощи. */
+  /** РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё: РїРѕРєР°Р·Р°С‚СЊ СЌРєСЂР°РЅ РїРѕРјРѕС‰Рё. */
   private static final String OPTION_HELP             = "help";
 
-  /** Глобальный список опций (необходим для генерации хелпа и разбора командной строки). */
+  /** Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ СЃРїРёСЃРѕРє РѕРїС†РёР№ (РЅРµРѕР±С…РѕРґРёРј РґР»СЏ РіРµРЅРµСЂР°С†РёРё С…РµР»РїР° Рё СЂР°Р·Р±РѕСЂР° РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё). */
   private static Options options = null;
 
   /**
-   * Метод генерирует командную строку для последующей обработки.
-   * @param args String[] набор параметров командной строки.
-   * @return CommandLine сгенерированная командная строка со всеми параметрами.
+   * РњРµС‚РѕРґ РіРµРЅРµСЂРёСЂСѓРµС‚ РєРѕРјР°РЅРґРЅСѓСЋ СЃС‚СЂРѕРєСѓ РґР»СЏ РїРѕСЃР»РµРґСѓСЋС‰РµР№ РѕР±СЂР°Р±РѕС‚РєРё.
+   * @param args String[] РЅР°Р±РѕСЂ РїР°СЂР°РјРµС‚СЂРѕРІ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё.
+   * @return CommandLine СЃРіРµРЅРµСЂРёСЂРѕРІР°РЅРЅР°СЏ РєРѕРјР°РЅРґРЅР°СЏ СЃС‚СЂРѕРєР° СЃРѕ РІСЃРµРјРё РїР°СЂР°РјРµС‚СЂР°РјРё.
   */
   @SuppressWarnings({"AccessStaticViaInstance"})
   private static CommandLine buildCmdLine(String[] args)
    {
-    // Создание файла пароля
+    // РЎРѕР·РґР°РЅРёРµ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ
     Option createFile   = OptionBuilder.withArgName("password")
                                        .hasArg()
                                        .withDescription("create the password file with specified password" )
-                                       .create(OPTION_CREATE_PASS_FILE); // <- опция с аргументами
-    // Путь к каталогу с файлом пароля
+                                       .create(OPTION_CREATE_PASS_FILE); // <- РѕРїС†РёСЏ СЃ Р°СЂРіСѓРјРµРЅС‚Р°РјРё
+    // РџСѓС‚СЊ Рє РєР°С‚Р°Р»РѕРіСѓ СЃ С„Р°Р№Р»РѕРј РїР°СЂРѕР»СЏ
     Option passFileDir  = OptionBuilder.withArgName("path")
                                        .hasArg()
                                        .withDescription("catalog with password file")
                                        .create(OPTION_PASS_FILE_DIR);
-    // Имя файла пароля
+    // РРјСЏ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ
     Option passFileName = OptionBuilder.withArgName("filename")
                                        .hasArg()
                                        .withDescription("password file name")
                                        .create(OPTION_PASS_FILE_NAME);
-    // Чтение файла пароля
+    // Р§С‚РµРЅРёРµ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ
     Option readFile     = new Option(OPTION_READ_PASS_FILE, "read the specified password file");
-    // Опция показа экрана помощи
-    Option help         = new Option(OPTION_HELP, "print this help message"); // <- Логическая опция
+    // РћРїС†РёСЏ РїРѕРєР°Р·Р° СЌРєСЂР°РЅР° РїРѕРјРѕС‰Рё
+    Option help         = new Option(OPTION_HELP, "print this help message"); // <- Р›РѕРіРёС‡РµСЃРєР°СЏ РѕРїС†РёСЏ
     
     options = new Options();
 
@@ -76,7 +76,7 @@ public class MAIN
     options.addOption(passFileName);
     options.addOption(help);
 
-    // Разбор командной строки
+    // Р Р°Р·Р±РѕСЂ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё
     CommandLineParser gnuParser = new GnuParser();
     CommandLine cmdLine = null;
     try {cmdLine = gnuParser.parse(options, args);}
@@ -95,52 +95,52 @@ public class MAIN
 
     logger.debug("-> " + SystemUtils.getUserDir().getAbsolutePath());
 
-    // Получим разобранную командную строку
+    // РџРѕР»СѓС‡РёРј СЂР°Р·РѕР±СЂР°РЅРЅСѓСЋ РєРѕРјР°РЅРґРЅСѓСЋ СЃС‚СЂРѕРєСѓ
     CommandLine cmdLine = MAIN.buildCmdLine(args);
 
-    // --- Обработка командной строки ---
-    // Печать экрана помощи
+    // --- РћР±СЂР°Р±РѕС‚РєР° РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё ---
+    // РџРµС‡Р°С‚СЊ СЌРєСЂР°РЅР° РїРѕРјРѕС‰Рё
     if (cmdLine.hasOption(OPTION_HELP))
      {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("java -jar jlib", options, true);
      }
     
-    // Создание файла пароля
+    // РЎРѕР·РґР°РЅРёРµ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ
     else if (cmdLine.hasOption(OPTION_CREATE_PASS_FILE))
      {
-      // Читаем указанный пароль - если его нет, то ничего и не делаем
+      // Р§РёС‚Р°РµРј СѓРєР°Р·Р°РЅРЅС‹Р№ РїР°СЂРѕР»СЊ - РµСЃР»Рё РµРіРѕ РЅРµС‚, С‚Рѕ РЅРёС‡РµРіРѕ Рё РЅРµ РґРµР»Р°РµРј
       String password = cmdLine.getOptionValue(OPTION_CREATE_PASS_FILE);
       if (!StringUtils.isBlank(password))
        {
         String passFileDir;
-        // Читаем каталог, в котором нужно создать файл пароля. Если каталог указан (не пусто значение) - берем его.
+        // Р§РёС‚Р°РµРј РєР°С‚Р°Р»РѕРі, РІ РєРѕС‚РѕСЂРѕРј РЅСѓР¶РЅРѕ СЃРѕР·РґР°С‚СЊ С„Р°Р№Р» РїР°СЂРѕР»СЏ. Р•СЃР»Рё РєР°С‚Р°Р»РѕРі СѓРєР°Р·Р°РЅ (РЅРµ РїСѓСЃС‚Рѕ Р·РЅР°С‡РµРЅРёРµ) - Р±РµСЂРµРј РµРіРѕ.
         if ((cmdLine.hasOption(OPTION_PASS_FILE_DIR)) && (!StringUtils.isBlank(cmdLine.getOptionValue(OPTION_PASS_FILE_DIR))))
          {passFileDir = cmdLine.getOptionValue(OPTION_PASS_FILE_DIR);}
-        // Если же каталог не указан - файл создается в текущем каталоге
+        // Р•СЃР»Рё Р¶Рµ РєР°С‚Р°Р»РѕРі РЅРµ СѓРєР°Р·Р°РЅ - С„Р°Р№Р» СЃРѕР·РґР°РµС‚СЃСЏ РІ С‚РµРєСѓС‰РµРј РєР°С‚Р°Р»РѕРіРµ
         else {passFileDir = SystemUtils.getUserDir().getAbsolutePath();}
         
-        String passFileName; // <- имя файла пароля
-        String passFileExt;  // <- расширение файла пароля
-        // Читаем имя файла пароля. Если имя указано (не пусто значение) - берем его.
+        String passFileName; // <- РёРјСЏ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ
+        String passFileExt;  // <- СЂР°СЃС€РёСЂРµРЅРёРµ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ
+        // Р§РёС‚Р°РµРј РёРјСЏ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ. Р•СЃР»Рё РёРјСЏ СѓРєР°Р·Р°РЅРѕ (РЅРµ РїСѓСЃС‚Рѕ Р·РЅР°С‡РµРЅРёРµ) - Р±РµСЂРµРј РµРіРѕ.
         if ((cmdLine.hasOption(OPTION_PASS_FILE_NAME)) && (!StringUtils.isBlank(cmdLine.getOptionValue(OPTION_PASS_FILE_NAME))))
          {
           String str = cmdLine.getOptionValue(OPTION_PASS_FILE_NAME);
-          // имя файла - то, что находится слева от самого правого знака "."
+          // РёРјСЏ С„Р°Р№Р»Р° - С‚Рѕ, С‡С‚Рѕ РЅР°С…РѕРґРёС‚СЃСЏ СЃР»РµРІР° РѕС‚ СЃР°РјРѕРіРѕ РїСЂР°РІРѕРіРѕ Р·РЅР°РєР° "."
           passFileName = str.substring(0, str.lastIndexOf("."));
-          // Расширение - то, что находится справа от самого правого знака "."
+          // Р Р°СЃС€РёСЂРµРЅРёРµ - С‚Рѕ, С‡С‚Рѕ РЅР°С…РѕРґРёС‚СЃСЏ СЃРїСЂР°РІР° РѕС‚ СЃР°РјРѕРіРѕ РїСЂР°РІРѕРіРѕ Р·РЅР°РєР° "."
           passFileExt = str.substring(str.lastIndexOf(".") + 1);
           logger.debug("full: " + str + "| name: " + passFileName + "| ext: " + passFileExt);
          }
-        // Если же имя не указано - имя файла формируется автоматически (по умолчанию)
+        // Р•СЃР»Рё Р¶Рµ РёРјСЏ РЅРµ СѓРєР°Р·Р°РЅРѕ - РёРјСЏ С„Р°Р№Р»Р° С„РѕСЂРјРёСЂСѓРµС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ)
         else {passFileName = DEFAULT_PASS_FILE_NAME; passFileExt = DEFAULT_PASS_FILE_EXTENSION;}
 
-        // Непосредственно запись файла пароля на диск
+        // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ Р·Р°РїРёСЃСЊ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ РЅР° РґРёСЃРє
         try
          {
-          // Создаем экземпляр класса "пароль"
+          // РЎРѕР·РґР°РµРј СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° "РїР°СЂРѕР»СЊ"
           Password pass = new Password(password);
-          // Записываем созданный экземпляр на диск (сериализуем)
+          // Р—Р°РїРёСЃС‹РІР°РµРј СЃРѕР·РґР°РЅРЅС‹Р№ СЌРєР·РµРјРїР»СЏСЂ РЅР° РґРёСЃРє (СЃРµСЂРёР°Р»РёР·СѓРµРј)
           FSUtils.serializeObject(pass, passFileDir, passFileName, passFileExt);
          }
         catch (EmptyPassException e) {logger.error(e.getMessage());}
@@ -150,22 +150,22 @@ public class MAIN
       else {logger.warn("Password not specified!");}
      }
 
-    // Чтение файла пароля
+    // Р§С‚РµРЅРёРµ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ
     else if (cmdLine.hasOption(OPTION_READ_PASS_FILE))
      {
       String passFileDir;
       String passFileName;
-      // Читаем каталог, в котором нужно искать файл пароля. Если каталог указан (не пусто значение) - берем его.
+      // Р§РёС‚Р°РµРј РєР°С‚Р°Р»РѕРі, РІ РєРѕС‚РѕСЂРѕРј РЅСѓР¶РЅРѕ РёСЃРєР°С‚СЊ С„Р°Р№Р» РїР°СЂРѕР»СЏ. Р•СЃР»Рё РєР°С‚Р°Р»РѕРі СѓРєР°Р·Р°РЅ (РЅРµ РїСѓСЃС‚Рѕ Р·РЅР°С‡РµРЅРёРµ) - Р±РµСЂРµРј РµРіРѕ.
       if ((cmdLine.hasOption(OPTION_PASS_FILE_DIR)) && (!StringUtils.isBlank(cmdLine.getOptionValue(OPTION_PASS_FILE_DIR))))
        {passFileDir = FSUtils.fixFPath(cmdLine.getOptionValue(OPTION_PASS_FILE_DIR), true);}
-      // Если же каталог не указан - файл ищется в текущем каталоге
+      // Р•СЃР»Рё Р¶Рµ РєР°С‚Р°Р»РѕРі РЅРµ СѓРєР°Р·Р°РЅ - С„Р°Р№Р» РёС‰РµС‚СЃСЏ РІ С‚РµРєСѓС‰РµРј РєР°С‚Р°Р»РѕРіРµ
       else {passFileDir = FSUtils.fixFPath(SystemUtils.getUserDir().getAbsolutePath(), true);}
-      // Читаем имя файла пароля. Если имя указано (не пусто значение) - берем его.
+      // Р§РёС‚Р°РµРј РёРјСЏ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ. Р•СЃР»Рё РёРјСЏ СѓРєР°Р·Р°РЅРѕ (РЅРµ РїСѓСЃС‚Рѕ Р·РЅР°С‡РµРЅРёРµ) - Р±РµСЂРµРј РµРіРѕ.
       if ((cmdLine.hasOption(OPTION_PASS_FILE_NAME)) && (!StringUtils.isBlank(cmdLine.getOptionValue(OPTION_PASS_FILE_NAME))))
        {passFileName = FSUtils.fixFPath(cmdLine.getOptionValue(OPTION_PASS_FILE_NAME));}
-      // Если имя файла пароля не указано - ищем файл пароля с именем по умолчанию
+      // Р•СЃР»Рё РёРјСЏ С„Р°Р№Р»Р° РїР°СЂРѕР»СЏ РЅРµ СѓРєР°Р·Р°РЅРѕ - РёС‰РµРј С„Р°Р№Р» РїР°СЂРѕР»СЏ СЃ РёРјРµРЅРµРј РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
       else {passFileName = DEFAULT_PASS_FILE_NAME + "." + DEFAULT_PASS_FILE_EXTENSION;}
-      // Непосредственно читаем файл пароля
+      // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ С‡РёС‚Р°РµРј С„Р°Р№Р» РїР°СЂРѕР»СЏ
       try
        {
         Password password = (Password) FSUtils.deserializeObject(passFileDir + passFileName, false);
@@ -175,7 +175,7 @@ public class MAIN
       catch (IOException e) {logger.error(e.getMessage());}
      }
 
-    // Если не подошел ни один из вариантов - также показываем экран помощи
+    // Р•СЃР»Рё РЅРµ РїРѕРґРѕС€РµР» РЅРё РѕРґРёРЅ РёР· РІР°СЂРёР°РЅС‚РѕРІ - С‚Р°РєР¶Рµ РїРѕРєР°Р·С‹РІР°РµРј СЌРєСЂР°РЅ РїРѕРјРѕС‰Рё
     else
      {
       HelpFormatter formatter = new HelpFormatter();

@@ -1,13 +1,13 @@
-package spammer.dataModel.dto;
+package mass_email_sender.spammer.dataModel.dto;
 
 import jlib.logging.InitLogger;
+import mass_email_sender.spammer.Defaults;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
-import spammer.Defaults;
 
 /**
- * Класс-DTO (Data Transfer Object) для работы с данными об одном типе получателей рассылки.
+ * РљР»Р°СЃСЃ-DTO (Data Transfer Object) РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґР°РЅРЅС‹РјРё РѕР± РѕРґРЅРѕРј С‚РёРїРµ РїРѕР»СѓС‡Р°С‚РµР»РµР№ СЂР°СЃСЃС‹Р»РєРё.
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 17.12.10)
 */
@@ -84,9 +84,9 @@ public class RecipientTypeDTO
    }
 
   /**
-   * Экземпляр класса считается пустым, если поле recipientType пусто или имеет тип RECIPIENT_TYPE_UNKNOWN (см.
-   * модуль констант - Defaults).
-   * @return boolean ИСТИНА/ЛОЖЬ в зависимости от того, пуст или нет данный экземпляр класса.
+   * Р­РєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° СЃС‡РёС‚Р°РµС‚СЃСЏ РїСѓСЃС‚С‹Рј, РµСЃР»Рё РїРѕР»Рµ recipientType РїСѓСЃС‚Рѕ РёР»Рё РёРјРµРµС‚ С‚РёРї RECIPIENT_TYPE_UNKNOWN (СЃРј.
+   * РјРѕРґСѓР»СЊ РєРѕРЅСЃС‚Р°РЅС‚ - Defaults).
+   * @return boolean РРЎРўРРќРђ/Р›РћР–Р¬ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ, РїСѓСЃС‚ РёР»Рё РЅРµС‚ РґР°РЅРЅС‹Р№ СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР°.
   */
   public boolean isEmpty() {return (recipientType == null);}
 
@@ -101,8 +101,8 @@ public class RecipientTypeDTO
    }
 
   /**
-   * Метод только для тестирования класса!
-   * @param args String[] параметры метода.
+   * РњРµС‚РѕРґ С‚РѕР»СЊРєРѕ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ РєР»Р°СЃСЃР°!
+   * @param args String[] РїР°СЂР°РјРµС‚СЂС‹ РјРµС‚РѕРґР°.
   */
   public static void main(String[] args)
    {

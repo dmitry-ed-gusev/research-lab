@@ -1,7 +1,7 @@
-package spammer.config;
+package mass_email_sender.spammer.config;
 
+import mass_email_sender.spammer.Defaults;
 import org.apache.commons.lang.StringUtils;
-import spammer.Defaults;
 
 /**
  * Базовый файл конфигурации системы рассылки. Не использовать отдельно! Для использования в

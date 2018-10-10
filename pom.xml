@@ -242,7 +242,6 @@
                 <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
-                <module>chat-app</module>
                 <module>utilities</module>
                 <module>bigdata</module>
                 <module>socialnet</module>
@@ -266,7 +265,6 @@
                 <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
-                <module>chat-app</module>
                 <module>utilities</module>
                 <module>bigdata</module>
                 <module>socialnet</module>

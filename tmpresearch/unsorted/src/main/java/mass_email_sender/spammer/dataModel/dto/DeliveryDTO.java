@@ -1,15 +1,14 @@
-package spammer.dataModel.dto;
+package mass_email_sender.spammer.dataModel.dto;
 
+import mass_email_sender.spammer.Defaults;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import spammer.Defaults.DeliveryStatus;
-import spammer.Defaults.DeliveryType;
 
 import java.util.HashSet;
 
 /**
- * Класс-DTO (Data Transfer Object) для работы с данными одной рассылки (сущность "почтовая рассылка").
+ * РљР»Р°СЃСЃ-DTO (Data Transfer Object) РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґР°РЅРЅС‹РјРё РѕРґРЅРѕР№ СЂР°СЃСЃС‹Р»РєРё (СЃСѓС‰РЅРѕСЃС‚СЊ "РїРѕС‡С‚РѕРІР°СЏ СЂР°СЃСЃС‹Р»РєР°").
  * @author Gusev Dmitry (019gus)
  * @version 3.0 (DATE: 16.12.2010)
 */
@@ -19,8 +18,8 @@ public class DeliveryDTO
   private int                       id         = -1;
   private String                    subject    = null;
   private String                    text       = null;
-  private DeliveryStatus            status     = DeliveryStatus.DELIVERY_STATUS_OK;
-  private DeliveryType              type       = DeliveryType.DELIVERY_TYPE_STANDARD;
+  private Defaults.DeliveryStatus status     = Defaults.DeliveryStatus.DELIVERY_STATUS_OK;
+  private Defaults.DeliveryType type       = Defaults.DeliveryType.DELIVERY_TYPE_STANDARD;
   private String                    errorText  = null;
   private String                    initiator  = null;
   private String                    timestamp  = null;
@@ -79,13 +78,13 @@ public class DeliveryDTO
    return files;
   }
 
-  /** Экземпляр класса пуст, если пусто одно из полей subject, text, initiator. */
+  /** Р­РєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° РїСѓСЃС‚, РµСЃР»Рё РїСѓСЃС‚Рѕ РѕРґРЅРѕ РёР· РїРѕР»РµР№ subject, text, initiator. */
   public boolean isEmpty()
    {return (StringUtils.isBlank(subject) || StringUtils.isBlank(text) || StringUtils.isBlank(initiator));}
 
   /**
-   * Метод добавляет один файл к списку файлов рассылки.
-   * @param file DeliveryFileDTO файл, добавляемый к списку файлов рассылки.
+   * РњРµС‚РѕРґ РґРѕР±Р°РІР»СЏРµС‚ РѕРґРёРЅ С„Р°Р№Р» Рє СЃРїРёСЃРєСѓ С„Р°Р№Р»РѕРІ СЂР°СЃСЃС‹Р»РєРё.
+   * @param file DeliveryFileDTO С„Р°Р№Р», РґРѕР±Р°РІР»СЏРµРјС‹Р№ Рє СЃРїРёСЃРєСѓ С„Р°Р№Р»РѕРІ СЂР°СЃСЃС‹Р»РєРё.
   */
   public void addFile(DeliveryFileDTO file)
    {
@@ -97,8 +96,8 @@ public class DeliveryDTO
    }
 
   /**
-   * Метод добавляет один тип получателей к данной рассылке.
-   * @param recipient RecipientTypeDTO тип получателей, добавляемый к данной рассылке.
+   * РњРµС‚РѕРґ РґРѕР±Р°РІР»СЏРµС‚ РѕРґРёРЅ С‚РёРї РїРѕР»СѓС‡Р°С‚РµР»РµР№ Рє РґР°РЅРЅРѕР№ СЂР°СЃСЃС‹Р»РєРµ.
+   * @param recipient RecipientTypeDTO С‚РёРї РїРѕР»СѓС‡Р°С‚РµР»РµР№, РґРѕР±Р°РІР»СЏРµРјС‹Р№ Рє РґР°РЅРЅРѕР№ СЂР°СЃСЃС‹Р»РєРµ.
   */
   public void addRecipient(RecipientTypeDTO recipient)
    {
@@ -109,19 +108,19 @@ public class DeliveryDTO
      }
    }
 
-  public DeliveryStatus getStatus() {
+  public Defaults.DeliveryStatus getStatus() {
    return status;
   }
 
-  public void setStatus(DeliveryStatus status) {
+  public void setStatus(Defaults.DeliveryStatus status) {
    this.status = status;
   }
 
-  public DeliveryType getType() {
+  public Defaults.DeliveryType getType() {
    return type;
   }
 
-  public void setType(DeliveryType type) {
+  public void setType(Defaults.DeliveryType type) {
    this.type = type;
   }
 

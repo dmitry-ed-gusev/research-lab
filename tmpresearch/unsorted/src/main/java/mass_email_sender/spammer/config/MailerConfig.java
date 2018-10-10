@@ -1,25 +1,25 @@
-package spammer.config;
+package mass_email_sender.spammer.config;
 
+import mass_email_sender.spammer.Defaults;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import spammer.Defaults;
 
 /**
- * Класс конфигурации модуля-майлера (Mailer). Позволяет инициализировать свои поля значениями из командной строки.
+ * РљР»Р°СЃСЃ РєРѕРЅС„РёРіСѓСЂР°С†РёРё РјРѕРґСѓР»СЏ-РјР°Р№Р»РµСЂР° (Mailer). РџРѕР·РІРѕР»СЏРµС‚ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°С‚СЊ СЃРІРѕРё РїРѕР»СЏ Р·РЅР°С‡РµРЅРёСЏРјРё РёР· РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё.
  * @author Gusev Dmitry (019gus)
  * @version 3.0 (DATE: 14.12.2010)
 */
 @SuppressWarnings({"AccessStaticViaInstance"})
 public class MailerConfig extends BaseMailerConfig
  {
-  /** Поле, расширяющее список полей суперкласса - показывать или нет хелп к приложению. */
+  /** РџРѕР»Рµ, СЂР°СЃС€РёСЂСЏСЋС‰РµРµ СЃРїРёСЃРѕРє РїРѕР»РµР№ СЃСѓРїРµСЂРєР»Р°СЃСЃР° - РїРѕРєР°Р·С‹РІР°С‚СЊ РёР»Рё РЅРµС‚ С…РµР»Рї Рє РїСЂРёР»РѕР¶РµРЅРёСЋ. */
   private boolean showHelp       = false;
-  /** Поле, расширяющее список полей суперкласса - показать версию системы. */
+  /** РџРѕР»Рµ, СЂР°СЃС€РёСЂСЏСЋС‰РµРµ СЃРїРёСЃРѕРє РїРѕР»РµР№ СЃСѓРїРµСЂРєР»Р°СЃСЃР° - РїРѕРєР°Р·Р°С‚СЊ РІРµСЂСЃРёСЋ СЃРёСЃС‚РµРјС‹. */
   private boolean showVersion    = false;
   /**
-   * Поле, расширяющее список полей суперкласса - набор опций командной строки. Поле необходимо для
-   * того, чтобы можно было показать экран хелпа с описанием всех опций.
+   * РџРѕР»Рµ, СЂР°СЃС€РёСЂСЏСЋС‰РµРµ СЃРїРёСЃРѕРє РїРѕР»РµР№ СЃСѓРїРµСЂРєР»Р°СЃСЃР° - РЅР°Р±РѕСЂ РѕРїС†РёР№ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё. РџРѕР»Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РґР»СЏ
+   * С‚РѕРіРѕ, С‡С‚РѕР±С‹ РјРѕР¶РЅРѕ Р±С‹Р»Рѕ РїРѕРєР°Р·Р°С‚СЊ СЌРєСЂР°РЅ С…РµР»РїР° СЃ РѕРїРёСЃР°РЅРёРµРј РІСЃРµС… РѕРїС†РёР№.
   */
   private Options cmdLineOptions = null;
 
@@ -31,58 +31,58 @@ public class MailerConfig extends BaseMailerConfig
   public void    setShowVersion(boolean showVersion)       {this.showVersion = showVersion;}
 
   /**
-   * Вспомогательный метод данного класса - строит и возвращает список опций командной строки данного
-   * приложения. Этот список используется для генерации экрана помощи и для разбора параметров переданной
-   * командной строки.
-   * @return Options построенный набор опций командной строки.
+   * Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Р№ РјРµС‚РѕРґ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР° - СЃС‚СЂРѕРёС‚ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РѕРїС†РёР№ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё РґР°РЅРЅРѕРіРѕ
+   * РїСЂРёР»РѕР¶РµРЅРёСЏ. Р­С‚РѕС‚ СЃРїРёСЃРѕРє РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РіРµРЅРµСЂР°С†РёРё СЌРєСЂР°РЅР° РїРѕРјРѕС‰Рё Рё РґР»СЏ СЂР°Р·Р±РѕСЂР° РїР°СЂР°РјРµС‚СЂРѕРІ РїРµСЂРµРґР°РЅРЅРѕР№
+   * РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё.
+   * @return Options РїРѕСЃС‚СЂРѕРµРЅРЅС‹Р№ РЅР°Р±РѕСЂ РѕРїС†РёР№ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё.
   */
   private Options buildCmdLineOptions()
    {
-    // Опция без аргумента (просто вкл/выкл) - показать экран хелпа
+    // РћРїС†РёСЏ Р±РµР· Р°СЂРіСѓРјРµРЅС‚Р° (РїСЂРѕСЃС‚Рѕ РІРєР»/РІС‹РєР») - РїРѕРєР°Р·Р°С‚СЊ СЌРєСЂР°РЅ С…РµР»РїР°
     Option showHelp     = new Option(Defaults.CMDLINE_SHOW_HELP, "show this help screen.");
-    // Опция без аргумента - вкл/выкл демо-режима приложения
+    // РћРїС†РёСЏ Р±РµР· Р°СЂРіСѓРјРµРЅС‚Р° - РІРєР»/РІС‹РєР» РґРµРјРѕ-СЂРµР¶РёРјР° РїСЂРёР»РѕР¶РµРЅРёСЏ
     Option demoMode     = new Option(Defaults.CMDLINE_DEMO_MODE, "turning on DEMO-MODE (no emails) for emails delivery.");
-    // Опция без аргумента - показать версию системы рассылок
+    // РћРїС†РёСЏ Р±РµР· Р°СЂРіСѓРјРµРЅС‚Р° - РїРѕРєР°Р·Р°С‚СЊ РІРµСЂСЃРёСЋ СЃРёСЃС‚РµРјС‹ СЂР°СЃСЃС‹Р»РѕРє
     Option showVersion  = new Option(Defaults.CMDLINE_SHOW_VERSION, "show system version.");
-    // Опция командной строки - путь к БД флот
+    // РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё - РїСѓС‚СЊ Рє Р‘Р” С„Р»РѕС‚
     Option dbFleetPath  = OptionBuilder.withArgName("fleet_db_path")
                            .hasArg().withDescription("path to Db fleet (DBF format)")
                            .create(Defaults.CMDLINE_DB_FLEET_PATH);
-    // Опция командной строки - путь к БД фирм
+    // РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё - РїСѓС‚СЊ Рє Р‘Р” С„РёСЂРј
     Option dbFirmPath   = OptionBuilder.withArgName("firm_db_path")
                            .hasArg().withDescription("path to Db firm (DBF format)")
                            .create(Defaults.CMDLINE_DB_FIRM_PATH);
-    // Опция командной строки - мыловский хост
+    // РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё - РјС‹Р»РѕРІСЃРєРёР№ С…РѕСЃС‚
     Option mailHost     = OptionBuilder.withArgName("mail_server_host")
                            .hasArg().withDescription("smtp mail server host for sending spam")
                            .create(Defaults.CMDLINE_MAIL_HOST);
-    // Опция командной строки - мыловский порт
+    // РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё - РјС‹Р»РѕРІСЃРєРёР№ РїРѕСЂС‚
     Option mailPort     = OptionBuilder.withArgName("mail_server_port")
                            .hasArg().withDescription("smtp mail server port for sending spam")
                            .create(Defaults.CMDLINE_MAIL_PORT);
-    // Опция командной строки - обратный адрес отправителя рассылки
+    // РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё - РѕР±СЂР°С‚РЅС‹Р№ Р°РґСЂРµСЃ РѕС‚РїСЂР°РІРёС‚РµР»СЏ СЂР°СЃСЃС‹Р»РєРё
     Option mailFrom     = OptionBuilder.withArgName("mail_from")
                            .hasArg().withDescription("return address for spam messages")
                            .create(Defaults.CMDLINE_MAIL_FROM);
-    // Опция командной строки - идентификатор рассылки из БД рассылок
+    // РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂР°СЃСЃС‹Р»РєРё РёР· Р‘Р” СЂР°СЃСЃС‹Р»РѕРє
     Option deliveryId   = OptionBuilder.withArgName("delivery_id")
                            .hasArg().withDescription("delivery identificator for process")
                            .create(Defaults.CMDLINE_DELIVERY_ID);
-    // Опция командной строки - путь к файловому репозиторию рассылок
+    // РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё - РїСѓС‚СЊ Рє С„Р°Р№Р»РѕРІРѕРјСѓ СЂРµРїРѕР·РёС‚РѕСЂРёСЋ СЂР°СЃСЃС‹Р»РѕРє
     Option deliveriesFilesPath = OptionBuilder.withArgName("deliveries_files_path")
                                   .hasArg().withDescription("path to deliveries files repository")
                                   .create(Defaults.CMDLINE_DELIVERIES_FILES_PATH);
-    // Опция командной строки - адрес(а) для тестовой отправки рассылки
+    // РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё - Р°РґСЂРµСЃ(Р°) РґР»СЏ С‚РµСЃС‚РѕРІРѕР№ РѕС‚РїСЂР°РІРєРё СЂР°СЃСЃС‹Р»РєРё
     Option testMailTo   = OptionBuilder.withArgName("mail|mails_list")
                            .hasArg().withDescription("mail(s) for test delivery")
                            .create(Defaults.CMDLINE_TEST_MAIL_TO);
-    // Опция командной строки - кодировка электронного письма
+    // РћРїС†РёСЏ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё - РєРѕРґРёСЂРѕРІРєР° СЌР»РµРєС‚СЂРѕРЅРЅРѕРіРѕ РїРёСЃСЊРјР°
     Option mailEncoding = OptionBuilder.withArgName("email_encoding")
                            .hasArg().withDescription("email subject and text encoding")
                            .create(Defaults.CMDLINE_MAIL_ENCODING);
 
 
-    // Непосредственно формирование списка опций
+    // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ С„РѕСЂРјРёСЂРѕРІР°РЅРёРµ СЃРїРёСЃРєР° РѕРїС†РёР№
     Options cmdLineOptions = new Options();
     cmdLineOptions.addOption(showHelp);
     cmdLineOptions.addOption(demoMode);
@@ -96,40 +96,40 @@ public class MailerConfig extends BaseMailerConfig
     cmdLineOptions.addOption(deliveriesFilesPath);
     cmdLineOptions.addOption(testMailTo);
     cmdLineOptions.addOption(mailEncoding);
-    // Возвращаем результат работы метода
+    // Р’РѕР·РІСЂР°С‰Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚ СЂР°Р±РѕС‚С‹ РјРµС‚РѕРґР°
     return cmdLineOptions;
    }
 
   /**
-   * Конструктор. Разбирает переданную ему командную строку и инициализирует свои поля указанными значениями.
-   * Инициализация происходит только если командная строка успешно разобрана.
-   * @param args String[] командная строка для разбора и инициализации полей класса.
+   * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ. Р Р°Р·Р±РёСЂР°РµС‚ РїРµСЂРµРґР°РЅРЅСѓСЋ РµРјСѓ РєРѕРјР°РЅРґРЅСѓСЋ СЃС‚СЂРѕРєСѓ Рё РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ СЃРІРѕРё РїРѕР»СЏ СѓРєР°Р·Р°РЅРЅС‹РјРё Р·РЅР°С‡РµРЅРёСЏРјРё.
+   * РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїСЂРѕРёСЃС…РѕРґРёС‚ С‚РѕР»СЊРєРѕ РµСЃР»Рё РєРѕРјР°РЅРґРЅР°СЏ СЃС‚СЂРѕРєР° СѓСЃРїРµС€РЅРѕ СЂР°Р·РѕР±СЂР°РЅР°.
+   * @param args String[] РєРѕРјР°РЅРґРЅР°СЏ СЃС‚СЂРѕРєР° РґР»СЏ СЂР°Р·Р±РѕСЂР° Рё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РїРѕР»РµР№ РєР»Р°СЃСЃР°.
   */
   public MailerConfig(String args[])
    {
-    // Логгер данного метода
+    // Р›РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РјРµС‚РѕРґР°
     Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
-    // Если переданная командная строка не пуста - работаем (иначе все
-    // опции остаются со значениями по умолчанию - строка не разбирается)
+    // Р•СЃР»Рё РїРµСЂРµРґР°РЅРЅР°СЏ РєРѕРјР°РЅРґРЅР°СЏ СЃС‚СЂРѕРєР° РЅРµ РїСѓСЃС‚Р° - СЂР°Р±РѕС‚Р°РµРј (РёРЅР°С‡Рµ РІСЃРµ
+    // РѕРїС†РёРё РѕСЃС‚Р°СЋС‚СЃСЏ СЃРѕ Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ - СЃС‚СЂРѕРєР° РЅРµ СЂР°Р·Р±РёСЂР°РµС‚СЃСЏ)
     if ((args != null) && (args.length > 0))
      {
-      // Строим нгабор опций командной строки
+      // РЎС‚СЂРѕРёРј РЅРіР°Р±РѕСЂ РѕРїС†РёР№ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё
       this.cmdLineOptions = this.buildCmdLineOptions();
-      // Разбираем (парсим) командную строку
+      // Р Р°Р·Р±РёСЂР°РµРј (РїР°СЂСЃРёРј) РєРѕРјР°РЅРґРЅСѓСЋ СЃС‚СЂРѕРєСѓ
       CommandLine cmdLine = null;
       try
        {
-        Parser parser = new GnuParser();       // <- первый тип парсера (разборщика) командной строки
-        //Parser parser = new PosixParser();     // <- второй тип парсера (разборщика) командной строки
+        Parser parser = new GnuParser();       // <- РїРµСЂРІС‹Р№ С‚РёРї РїР°СЂСЃРµСЂР° (СЂР°Р·Р±РѕСЂС‰РёРєР°) РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё
+        //Parser parser = new PosixParser();     // <- РІС‚РѕСЂРѕР№ С‚РёРї РїР°СЂСЃРµСЂР° (СЂР°Р·Р±РѕСЂС‰РёРєР°) РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё
         cmdLine = parser.parse(this.cmdLineOptions, args, false);
         logger.debug("Command line parsed. Processing.");
        }
       catch (ParseException e) {logger.error("Can't parse command line! Reason: [" + e.getMessage() + "]");}
 
-      // Если разбор командной строки успешен - инициализируем поля класса
+      // Р•СЃР»Рё СЂР°Р·Р±РѕСЂ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё СѓСЃРїРµС€РµРЅ - РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїРѕР»СЏ РєР»Р°СЃСЃР°
       if ((cmdLine != null) && (cmdLine.getOptions() != null) && (cmdLine.getOptions().length > 0))
        {
-        // На основе разобранной командной строки инициализируем поля класса
+        // РќР° РѕСЃРЅРѕРІРµ СЂР°Р·РѕР±СЂР°РЅРЅРѕР№ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїРѕР»СЏ РєР»Р°СЃСЃР°
         if (cmdLine.hasOption(Defaults.CMDLINE_DEMO_MODE))    {this.setDemoMode(true);}
         if (cmdLine.hasOption(Defaults.CMDLINE_SHOW_HELP))    {this.showHelp = true;}
         if (cmdLine.hasOption(Defaults.CMDLINE_SHOW_VERSION)) {this.showVersion = true;}
@@ -156,8 +156,8 @@ public class MailerConfig extends BaseMailerConfig
         if (!StringUtils.isBlank(cmdLine.getOptionValue(Defaults.CMDLINE_MAIL_FROM)))
          {this.setMailFrom(cmdLine.getOptionValue(Defaults.CMDLINE_MAIL_FROM));}
         
-        // Значение для идентификатора рассылки разбирается. Если разобрать его не удалось -
-        // идентификатор рассылки будет 0.
+        // Р—РЅР°С‡РµРЅРёРµ РґР»СЏ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° СЂР°СЃСЃС‹Р»РєРё СЂР°Р·Р±РёСЂР°РµС‚СЃСЏ. Р•СЃР»Рё СЂР°Р·РѕР±СЂР°С‚СЊ РµРіРѕ РЅРµ СѓРґР°Р»РѕСЃСЊ -
+        // РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂР°СЃСЃС‹Р»РєРё Р±СѓРґРµС‚ 0.
         if (!StringUtils.isBlank(cmdLine.getOptionValue(Defaults.CMDLINE_DELIVERY_ID)))
          {
           int deliveryIdValue = 0;
@@ -172,26 +172,26 @@ public class MailerConfig extends BaseMailerConfig
 
         if (!StringUtils.isBlank(cmdLine.getOptionValue(Defaults.CMDLINE_DELIVERIES_FILES_PATH)))
          {this.setDeliveriesFilesPath(cmdLine.getOptionValue(Defaults.CMDLINE_DELIVERIES_FILES_PATH));}
-        // Тестовое мыло
+        // РўРµСЃС‚РѕРІРѕРµ РјС‹Р»Рѕ
         if (!StringUtils.isBlank(cmdLine.getOptionValue(Defaults.CMDLINE_TEST_MAIL_TO)))
          {this.setTestMailTo(cmdLine.getOptionValue(Defaults.CMDLINE_TEST_MAIL_TO));}
-        // Кодировка письма
+        // РљРѕРґРёСЂРѕРІРєР° РїРёСЃСЊРјР°
         if (!StringUtils.isBlank(cmdLine.getOptionValue(Defaults.CMDLINE_MAIL_ENCODING)))
          {this.setMailEncoding(cmdLine.getOptionValue(Defaults.CMDLINE_MAIL_ENCODING));}
 
-        // Закончили разбор командной строки - сообщаем в лог
+        // Р—Р°РєРѕРЅС‡РёР»Рё СЂР°Р·Р±РѕСЂ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё - СЃРѕРѕР±С‰Р°РµРј РІ Р»РѕРі
         logger.info("Parameters from command line processed OK!");
        }
-      // Если разбор командной строки прошел неудачно и строка после разбора пуста - сообщаем в лог. Все параметры
-      // примут значения по умолчанию.
+      // Р•СЃР»Рё СЂР°Р·Р±РѕСЂ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё РїСЂРѕС€РµР» РЅРµСѓРґР°С‡РЅРѕ Рё СЃС‚СЂРѕРєР° РїРѕСЃР»Рµ СЂР°Р·Р±РѕСЂР° РїСѓСЃС‚Р° - СЃРѕРѕР±С‰Р°РµРј РІ Р»РѕРі. Р’СЃРµ РїР°СЂР°РјРµС‚СЂС‹
+      // РїСЂРёРјСѓС‚ Р·РЅР°С‡РµРЅРёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ.
       else {logger.error("Command line after parametersparsing is empty! All parameters initialized with default values.");}
      }
-    // Если полученная командная строка пуста - просто сообщим в лог и все параметры остаются со
-    // значениями по умолчанию
+    // Р•СЃР»Рё РїРѕР»СѓС‡РµРЅРЅР°СЏ РєРѕРјР°РЅРґРЅР°СЏ СЃС‚СЂРѕРєР° РїСѓСЃС‚Р° - РїСЂРѕСЃС‚Рѕ СЃРѕРѕР±С‰РёРј РІ Р»РѕРі Рё РІСЃРµ РїР°СЂР°РјРµС‚СЂС‹ РѕСЃС‚Р°СЋС‚СЃСЏ СЃРѕ
+    // Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
     else {logger.info("No parameters for this MailerConfig. Processing with default values.");}
    }
 
-  /** Конструктор. Инициализирует поля класса значениями по умолчанию. */
+  /** РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ. РРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РїРѕР»СЏ РєР»Р°СЃСЃР° Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ. */
   public MailerConfig() {}
 
  }

@@ -1,4 +1,4 @@
-package spammer.mailsList.impl.dbf;
+package mass_email_sender.spammer.mailsList.impl.dbf;
 
 import jdb.DBConsts;
 import jdb.config.DBConfig;
@@ -6,19 +6,19 @@ import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.utils.DBUtils;
 import jlib.logging.InitLogger;
+import mass_email_sender.spammer.Defaults;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import spammer.Defaults;
 
 import java.io.File;
 import java.sql.*;
 import java.util.TreeMap;
 
 /**
- * Основной модуль для формирования списков мейл-адресов по данным БД Флот и БД Фирмы Регистра Судоходства.
- * Формат баз - DBF (dBase III или IV). Выбор типа адресов осуществляется с помощью значений типа-перечисления
- * RecipientType (см. модуль Defaults). Данный модуль использует только два значения из типа-перечисления:
- * RECIPIENT_TYPE_SHIPOWNERS_ENG и  RECIPIENT_TYPE_SHIPOWNERS_RUS.
+ * РћСЃРЅРѕРІРЅРѕР№ РјРѕРґСѓР»СЊ РґР»СЏ С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ СЃРїРёСЃРєРѕРІ РјРµР№Р»-Р°РґСЂРµСЃРѕРІ РїРѕ РґР°РЅРЅС‹Рј Р‘Р” Р¤Р»РѕС‚ Рё Р‘Р” Р¤РёСЂРјС‹ Р РµРіРёСЃС‚СЂР° РЎСѓРґРѕС…РѕРґСЃС‚РІР°.
+ * Р¤РѕСЂРјР°С‚ Р±Р°Р· - DBF (dBase III РёР»Рё IV). Р’С‹Р±РѕСЂ С‚РёРїР° Р°РґСЂРµСЃРѕРІ РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚СЃСЏ СЃ РїРѕРјРѕС‰СЊСЋ Р·РЅР°С‡РµРЅРёР№ С‚РёРїР°-РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ
+ * RecipientType (СЃРј. РјРѕРґСѓР»СЊ Defaults). Р”Р°РЅРЅС‹Р№ РјРѕРґСѓР»СЊ РёСЃРїРѕР»СЊР·СѓРµС‚ С‚РѕР»СЊРєРѕ РґРІР° Р·РЅР°С‡РµРЅРёСЏ РёР· С‚РёРїР°-РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ:
+ * RECIPIENT_TYPE_SHIPOWNERS_ENG Рё  RECIPIENT_TYPE_SHIPOWNERS_RUS.
  * @author Gusev Dmitry (019gus)
  * @version 2.0 (DATE: 17.12.2010)
 */
@@ -26,11 +26,11 @@ import java.util.TreeMap;
 @SuppressWarnings({"JpaQueryApiInspection"})
 public class DbfEmailsListBuilder
  {
-  /** Логгер данного модуля. */
+  /** Р›РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РјРѕРґСѓР»СЏ. */
   private Logger logger      = Logger.getLogger(Defaults.LOGGER_NAME);
-  /** Путь к БД Флот. */
+  /** РџСѓС‚СЊ Рє Р‘Р” Р¤Р»РѕС‚. */
   private String fleetDbPath = null;
-  /** Путь к БД Фирм. */
+  /** РџСѓС‚СЊ Рє Р‘Р” Р¤РёСЂРј. */
   private String firmDbPath  = null;
 
   //public DbfEmailsListBuilder() {}
@@ -58,55 +58,55 @@ public class DbfEmailsListBuilder
   }
 
   /**
-   * Метод возвращает список мыло-адресофф из БД Фирмы-Флот. Пути к базам должны быть указаны в конструкторе
-   * модуля или установлены с помощью методов setXXX(). Если пути к базам не будут указаны или произойдут другие
-   * ошибки - метод вернет значение NULL.
-   * @param recipientType RecipientType тип адресатов, для которого должен быть сформирован список адресатов. Данный метод
-   * понимает только два типа адресатов - RECIPIENT_TYPE_SHIPOWNERS_ENG и RECIPIENT_TYPE_SHIPOWNERS_RUS. Если указать
-   * значение NULL, то метод вернет общий список адресатов, соединяющий в себе оба указанных выше типа.
-   * @return TreeMap[String, Integer] возвращаемый список email-адресов. Каждому адресу соответствует идентификатор
-   * компании. Мылы не совпадают - т.е. они уникальны в пределах списка - это обеспечивается реализацией списка. 
+   * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РјС‹Р»Рѕ-Р°РґСЂРµСЃРѕС„С„ РёР· Р‘Р” Р¤РёСЂРјС‹-Р¤Р»РѕС‚. РџСѓС‚Рё Рє Р±Р°Р·Р°Рј РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ СѓРєР°Р·Р°РЅС‹ РІ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ
+   * РјРѕРґСѓР»СЏ РёР»Рё СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹ СЃ РїРѕРјРѕС‰СЊСЋ РјРµС‚РѕРґРѕРІ setXXX(). Р•СЃР»Рё РїСѓС‚Рё Рє Р±Р°Р·Р°Рј РЅРµ Р±СѓРґСѓС‚ СѓРєР°Р·Р°РЅС‹ РёР»Рё РїСЂРѕРёР·РѕР№РґСѓС‚ РґСЂСѓРіРёРµ
+   * РѕС€РёР±РєРё - РјРµС‚РѕРґ РІРµСЂРЅРµС‚ Р·РЅР°С‡РµРЅРёРµ NULL.
+   * @param recipientType RecipientType С‚РёРї Р°РґСЂРµСЃР°С‚РѕРІ, РґР»СЏ РєРѕС‚РѕСЂРѕРіРѕ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ СЃС„РѕСЂРјРёСЂРѕРІР°РЅ СЃРїРёСЃРѕРє Р°РґСЂРµСЃР°С‚РѕРІ. Р”Р°РЅРЅС‹Р№ РјРµС‚РѕРґ
+   * РїРѕРЅРёРјР°РµС‚ С‚РѕР»СЊРєРѕ РґРІР° С‚РёРїР° Р°РґСЂРµСЃР°С‚РѕРІ - RECIPIENT_TYPE_SHIPOWNERS_ENG Рё RECIPIENT_TYPE_SHIPOWNERS_RUS. Р•СЃР»Рё СѓРєР°Р·Р°С‚СЊ
+   * Р·РЅР°С‡РµРЅРёРµ NULL, С‚Рѕ РјРµС‚РѕРґ РІРµСЂРЅРµС‚ РѕР±С‰РёР№ СЃРїРёСЃРѕРє Р°РґСЂРµСЃР°С‚РѕРІ, СЃРѕРµРґРёРЅСЏСЋС‰РёР№ РІ СЃРµР±Рµ РѕР±Р° СѓРєР°Р·Р°РЅРЅС‹С… РІС‹С€Рµ С‚РёРїР°.
+   * @return TreeMap[String, Integer] РІРѕР·РІСЂР°С‰Р°РµРјС‹Р№ СЃРїРёСЃРѕРє email-Р°РґСЂРµСЃРѕРІ. РљР°Р¶РґРѕРјСѓ Р°РґСЂРµСЃСѓ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ
+   * РєРѕРјРїР°РЅРёРё. РњС‹Р»С‹ РЅРµ СЃРѕРІРїР°РґР°СЋС‚ - С‚.Рµ. РѕРЅРё СѓРЅРёРєР°Р»СЊРЅС‹ РІ РїСЂРµРґРµР»Р°С… СЃРїРёСЃРєР° - СЌС‚Рѕ РѕР±РµСЃРїРµС‡РёРІР°РµС‚СЃСЏ СЂРµР°Р»РёР·Р°С†РёРµР№ СЃРїРёСЃРєР°. 
   */
   @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
   public TreeMap<String, Integer> getEmailsList(Defaults.RecipientType recipientType)
    {
-    // Результат работы метода - список мылоф и идентификаторов компаний. Ключ (первый параметр) - мыло, ключ не
-    // допускает пустых и повторяющихся значений. Значение (второй параметр) - идентификатор компании, значение также
-    // не может быть пустым, но может повторяться. Если будет необходимость в уникальности идентификаторов компаний -
-    // необходимо сделать TreeSet<Integer, String>
+    // Р РµР·СѓР»СЊС‚Р°С‚ СЂР°Р±РѕС‚С‹ РјРµС‚РѕРґР° - СЃРїРёСЃРѕРє РјС‹Р»РѕС„ Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ РєРѕРјРїР°РЅРёР№. РљР»СЋС‡ (РїРµСЂРІС‹Р№ РїР°СЂР°РјРµС‚СЂ) - РјС‹Р»Рѕ, РєР»СЋС‡ РЅРµ
+    // РґРѕРїСѓСЃРєР°РµС‚ РїСѓСЃС‚С‹С… Рё РїРѕРІС‚РѕСЂСЏСЋС‰РёС…СЃСЏ Р·РЅР°С‡РµРЅРёР№. Р—РЅР°С‡РµРЅРёРµ (РІС‚РѕСЂРѕР№ РїР°СЂР°РјРµС‚СЂ) - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕРјРїР°РЅРёРё, Р·РЅР°С‡РµРЅРёРµ С‚Р°РєР¶Рµ
+    // РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј, РЅРѕ РјРѕР¶РµС‚ РїРѕРІС‚РѕСЂСЏС‚СЊСЃСЏ. Р•СЃР»Рё Р±СѓРґРµС‚ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚СЊ РІ СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ РєРѕРјРїР°РЅРёР№ -
+    // РЅРµРѕР±С…РѕРґРёРјРѕ СЃРґРµР»Р°С‚СЊ TreeSet<Integer, String>
     TreeMap<String, Integer> emailsList = new TreeMap<String, Integer>();
 
-    // Перед работой с базами проверяем пути к базам флота и фирм - они не должны быть пусты
-    // и должны существовать! Также проверим, являются ли они каталогами.
+    // РџРµСЂРµРґ СЂР°Р±РѕС‚РѕР№ СЃ Р±Р°Р·Р°РјРё РїСЂРѕРІРµСЂСЏРµРј РїСѓС‚Рё Рє Р±Р°Р·Р°Рј С„Р»РѕС‚Р° Рё С„РёСЂРј - РѕРЅРё РЅРµ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РїСѓСЃС‚С‹
+    // Рё РґРѕР»Р¶РЅС‹ СЃСѓС‰РµСЃС‚РІРѕРІР°С‚СЊ! РўР°РєР¶Рµ РїСЂРѕРІРµСЂРёРј, СЏРІР»СЏСЋС‚СЃСЏ Р»Рё РѕРЅРё РєР°С‚Р°Р»РѕРіР°РјРё.
     if (!StringUtils.isBlank(firmDbPath) && !StringUtils.isBlank(fleetDbPath))
      {
       logger.debug("DB FLEET and DB FIRMS databases paths not empty. Processing.");
-      // Проверяем существование каталогов и что это именно каталоги
+      // РџСЂРѕРІРµСЂСЏРµРј СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ РєР°С‚Р°Р»РѕРіРѕРІ Рё С‡С‚Рѕ СЌС‚Рѕ РёРјРµРЅРЅРѕ РєР°С‚Р°Р»РѕРіРё
       File fleetDBFile = new File(fleetDbPath);
       File firmDBFile  = new File(firmDbPath);
       if (fleetDBFile.exists() && fleetDBFile.isDirectory() && firmDBFile.exists() && firmDBFile.isDirectory())
        {
-        // Все в порядке с путями - работаем
+        // Р’СЃРµ РІ РїРѕСЂСЏРґРєРµ СЃ РїСѓС‚СЏРјРё - СЂР°Р±РѕС‚Р°РµРј
         logger.debug("DB FLEET and DB FIRMS databases paths are ok. Processing.");
-        // Конфиг для соединения с ДБФ базой фирм
+        // РљРѕРЅС„РёРі РґР»СЏ СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ Р”Р‘Р¤ Р±Р°Р·РѕР№ С„РёСЂРј
         DBConfig firmConfig = new DBConfig();
         firmConfig.setDbType(DBConsts.DBType.DBF);
         firmConfig.setDbName(firmDbPath);
-        // Конфиг для соединения с ДБФ базой флота
+        // РљРѕРЅС„РёРі РґР»СЏ СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ Р”Р‘Р¤ Р±Р°Р·РѕР№ С„Р»РѕС‚Р°
         DBConfig fleetConfig = new DBConfig();
         fleetConfig.setDbType(DBConsts.DBType.DBF);
         fleetConfig.setDbName(fleetDbPath);
-        // Выборка из БД флот
+        // Р’С‹Р±РѕСЂРєР° РёР· Р‘Р” С„Р»РѕС‚
         String fleetSql = "select firm_id7 as operatorId, firm_id2 as shipownerId, firm_id1 as ownerId from fleet where " +
                           "sreg = 1 or sreg = 2";
-        // Переменные для хранения классов для соединения с СУБД и выборки данных
+        // РџРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РєР»Р°СЃСЃРѕРІ РґР»СЏ СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ РЎРЈР‘Р” Рё РІС‹Р±РѕСЂРєРё РґР°РЅРЅС‹С…
         Connection        fleetConn = null;
         Connection        firmConn  = null;
         Statement         fleetStmt;
         PreparedStatement firmStmt;
         ResultSet         fleetRs;
         ResultSet         firmRs;
-        // Преподготовленный запрос для выборки данных из БД Фирм. Формируем в зависимости от входного параметра.
+        // РџСЂРµРїРѕРґРіРѕС‚РѕРІР»РµРЅРЅС‹Р№ Р·Р°РїСЂРѕСЃ РґР»СЏ РІС‹Р±РѕСЂРєРё РґР°РЅРЅС‹С… РёР· Р‘Р” Р¤РёСЂРј. Р¤РѕСЂРјРёСЂСѓРµРј РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РІС…РѕРґРЅРѕРіРѕ РїР°СЂР°РјРµС‚СЂР°.
         String firmSql = "select email from firm where firm_id = ?";
         if (recipientType != null)
          {
@@ -116,24 +116,24 @@ public class DbfEmailsListBuilder
             case RECIPIENT_TYPE_SHIPOWNERS_RUS: firmSql += " and stran_id = 102"; break;
            }
          }
-        // Отладочный вывод полученного запроса
+        // РћС‚Р»Р°РґРѕС‡РЅС‹Р№ РІС‹РІРѕРґ РїРѕР»СѓС‡РµРЅРЅРѕРіРѕ Р·Р°РїСЂРѕСЃР°
         logger.debug("Generated firm-DB query: [" + firmSql + "].");
         try
          {
           fleetConn = DBUtils.getDBConn(fleetConfig);
           fleetStmt = fleetConn.createStatement();
           fleetRs   = fleetStmt.executeQuery(fleetSql);
-          // Если есть такие суда - работаем
+          // Р•СЃР»Рё РµСЃС‚СЊ С‚Р°РєРёРµ СЃСѓРґР° - СЂР°Р±РѕС‚Р°РµРј
           if (fleetRs.next())
            {
             logger.debug("Ships found. Processing emails search.");
-            // Открываем соединение с базой фирм
+            // РћС‚РєСЂС‹РІР°РµРј СЃРѕРµРґРёРЅРµРЅРёРµ СЃ Р±Р°Р·РѕР№ С„РёСЂРј
             firmConn = DBUtils.getDBConn(firmConfig);
             firmStmt = firmConn.prepareStatement(firmSql);
 
-            // Счетчик для выборки из БД флота
+            // РЎС‡РµС‚С‡РёРє РґР»СЏ РІС‹Р±РѕСЂРєРё РёР· Р‘Р” С„Р»РѕС‚Р°
             int counter = 0;
-            // Переменные для хранения значений идентификаторов и емайлов
+            // РџРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ Р·РЅР°С‡РµРЅРёР№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ Рё РµРјР°Р№Р»РѕРІ
             int operatorId;
             int shipownerId;
             int ownerId;
@@ -141,13 +141,13 @@ public class DbfEmailsListBuilder
             String shipownerEmail;
             String ownerEmail;
 
-            // В цикле обрабатываем данные
+            // Р’ С†РёРєР»Рµ РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј РґР°РЅРЅС‹Рµ
             do
              {
 
-              // Идентификатор оператора
+              // РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕРїРµСЂР°С‚РѕСЂР°
               operatorId     = fleetRs.getInt("operatorId");
-              // Мыло оператора
+              // РњС‹Р»Рѕ РѕРїРµСЂР°С‚РѕСЂР°
               if (operatorId > 0)
                {
                 firmStmt.setInt(1, operatorId);
@@ -157,9 +157,9 @@ public class DbfEmailsListBuilder
                }
               else {operatorEmail = null;}
 
-              // Идентификатор судовладельца
+              // РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃСѓРґРѕРІР»Р°РґРµР»СЊС†Р°
               shipownerId    = fleetRs.getInt("shipownerId");
-              // Мыло судовладельца
+              // РњС‹Р»Рѕ СЃСѓРґРѕРІР»Р°РґРµР»СЊС†Р°
               if (shipownerId > 0)
                {
                 firmStmt.setInt(1, shipownerId);
@@ -169,9 +169,9 @@ public class DbfEmailsListBuilder
                }
               else {shipownerEmail = null;}
 
-              // Идентификатор собственника
+              // РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕР±СЃС‚РІРµРЅРЅРёРєР°
               ownerId        = fleetRs.getInt("ownerId");
-              // Мыло собственника
+              // РњС‹Р»Рѕ СЃРѕР±СЃС‚РІРµРЅРЅРёРєР°
               if (ownerId > 0)
                {
                 firmStmt.setInt(1, ownerId);
@@ -181,53 +181,53 @@ public class DbfEmailsListBuilder
                }
               else {ownerEmail = null;}
 
-              // Непосредственно выбор значений и формирование списка
+              // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РІС‹Р±РѕСЂ Р·РЅР°С‡РµРЅРёР№ Рё С„РѕСЂРјРёСЂРѕРІР°РЅРёРµ СЃРїРёСЃРєР°
               if ((operatorId > 0) && (!StringUtils.isBlank(operatorEmail)))
                {emailsList.put(operatorEmail, operatorId);}
               else if ((shipownerId > 0) && (!StringUtils.isBlank(shipownerEmail)))
                {emailsList.put(shipownerEmail, shipownerId);}
               else if ((ownerId > 0) && (!StringUtils.isBlank(ownerEmail)))
                {emailsList.put(ownerEmail, ownerId);}
-              // Увеличиваем счетчик
+              // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє
               counter++;
              }
             while (fleetRs.next());
-            // Количество выбранных записей
+            // РљРѕР»РёС‡РµСЃС‚РІРѕ РІС‹Р±СЂР°РЅРЅС‹С… Р·Р°РїРёСЃРµР№
             logger.debug("FLEET database result set count (all selected from fleet): " + counter);
             logger.debug("emailsList size:                                           " + emailsList.size());
            }
-          // Если судов воопче не найдено - сообщаем в лог
+          // Р•СЃР»Рё СЃСѓРґРѕРІ РІРѕРѕРїС‡Рµ РЅРµ РЅР°Р№РґРµРЅРѕ - СЃРѕРѕР±С‰Р°РµРј РІ Р»РѕРі
           else {logger.warn("No ships! Can't process.");}
          }
         catch (DBModuleConfigException e) {logger.error(e.getMessage());}
         catch (DBConnectionException e)   {logger.error(e.getMessage());}
         catch (SQLException e)            {logger.error(e.getMessage());}
-        // Освобождение ресурсов
+        // РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ
         finally
          {
           try {if (fleetConn != null) {fleetConn.close();} if (firmConn != null) {firmConn.close();}}
           catch (SQLException e) {logger.error(e.getMessage());}
          }
        }
-      // Если какой-то изи каталогов не существует или не является каталогом - пишем
-      // в лог ошибку и возвращаем NULL
+      // Р•СЃР»Рё РєР°РєРѕР№-С‚Рѕ РёР·Рё РєР°С‚Р°Р»РѕРіРѕРІ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РёР»Рё РЅРµ СЏРІР»СЏРµС‚СЃСЏ РєР°С‚Р°Р»РѕРіРѕРј - РїРёС€РµРј
+      // РІ Р»РѕРі РѕС€РёР±РєСѓ Рё РІРѕР·РІСЂР°С‰Р°РµРј NULL
       else
        {
         logger.error("DB FLEETE path [" + fleetDbPath + "] or DB FIRMS path [" + firmDbPath + "] " +
                      "not exists or not a directory! Can't process!");}
      }
-    // Если пути пусты - сообщаем в лог об ошибке и возвращаем NULL
+    // Р•СЃР»Рё РїСѓС‚Рё РїСѓСЃС‚С‹ - СЃРѕРѕР±С‰Р°РµРј РІ Р»РѕРі РѕР± РѕС€РёР±РєРµ Рё РІРѕР·РІСЂР°С‰Р°РµРј NULL
     else {logger.error("DB FLEET path [" + fleetDbPath + "] or DB FIRMS path [" + firmDbPath + "] is empty! Can't process!");} 
 
-    // Если в список не было добавлено ни одного мыльца - список должен стать NULL
+    // Р•СЃР»Рё РІ СЃРїРёСЃРѕРє РЅРµ Р±С‹Р»Рѕ РґРѕР±Р°РІР»РµРЅРѕ РЅРё РѕРґРЅРѕРіРѕ РјС‹Р»СЊС†Р° - СЃРїРёСЃРѕРє РґРѕР»Р¶РµРЅ СЃС‚Р°С‚СЊ NULL
     if (emailsList.size() <= 0) {emailsList = null;}
-    // Возвращаем результат
+    // Р’РѕР·РІСЂР°С‰Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚
     return emailsList;
    }
 
   /**
-   * Метод только для тестирования класса!
-   * @param args String[] параметры метода.
+   * РњРµС‚РѕРґ С‚РѕР»СЊРєРѕ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ РєР»Р°СЃСЃР°!
+   * @param args String[] РїР°СЂР°РјРµС‚СЂС‹ РјРµС‚РѕРґР°.
   */
   public static void main(String[] args)
    {

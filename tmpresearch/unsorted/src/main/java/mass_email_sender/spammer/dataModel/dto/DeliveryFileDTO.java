@@ -1,4 +1,4 @@
-package spammer.dataModel.dto;
+package mass_email_sender.spammer.dataModel.dto;
 
 import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
@@ -7,7 +7,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 
 /**
- * Класс-DTO (Data Transfer Object) для работы с данными об одном прикрепленном к рассылке файле.
+ * РљР»Р°СЃСЃ-DTO (Data Transfer Object) РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґР°РЅРЅС‹РјРё РѕР± РѕРґРЅРѕРј РїСЂРёРєСЂРµРїР»РµРЅРЅРѕРј Рє СЂР°СЃСЃС‹Р»РєРµ С„Р°Р№Р»Рµ.
  * @author Gusev Dmitry (019gus)
  * @version 2.0 (DATE: 17.12.2010)
 */
@@ -87,14 +87,14 @@ public class DeliveryFileDTO
    }
 
   /**
-   * Экземпляр класса считается пустым, если пусто поле fileName.
-   * @return boolean ИСТИНА/ЛОЖЬ в зависимости от того, пуст или нет данный экземпляр класса.
+   * Р­РєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° СЃС‡РёС‚Р°РµС‚СЃСЏ РїСѓСЃС‚С‹Рј, РµСЃР»Рё РїСѓСЃС‚Рѕ РїРѕР»Рµ fileName.
+   * @return boolean РРЎРўРРќРђ/Р›РћР–Р¬ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ, РїСѓСЃС‚ РёР»Рё РЅРµС‚ РґР°РЅРЅС‹Р№ СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР°.
   */
   public boolean isEmpty() {return (StringUtils.isBlank(fileName));}
 
   /**
-   * Метод только для тестирования класса!
-   * @param args String[] параметры метода.
+   * РњРµС‚РѕРґ С‚РѕР»СЊРєРѕ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ РєР»Р°СЃСЃР°!
+   * @param args String[] РїР°СЂР°РјРµС‚СЂС‹ РјРµС‚РѕРґР°.
   */
   public static void main(String[] args)
    {

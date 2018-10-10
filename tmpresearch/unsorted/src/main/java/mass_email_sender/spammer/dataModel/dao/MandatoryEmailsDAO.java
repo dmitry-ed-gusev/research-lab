@@ -1,13 +1,13 @@
-package spammer.dataModel.dao;
+package mass_email_sender.spammer.dataModel.dao;
 
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.model.applied.dao.DBConfigCommonDAO;
 import jdb.processing.sql.execution.SqlExecutor;
+import mass_email_sender.spammer.Defaults;
+import mass_email_sender.spammer.mailsList.interfaces.EmailsListInterface;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import spammer.Defaults;
-import spammer.mailsList.interfaces.EmailsListInterface;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,17 +15,17 @@ import java.sql.SQLException;
 import java.util.TreeMap;
 
 /**
- * DAO-компонент для работы с таблицей mandatoryEmails (обязательные майл-адреса).
- * @author Gusev Dmitry (Дмитрий)
+ * DAO-РєРѕРјРїРѕРЅРµРЅС‚ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ С‚Р°Р±Р»РёС†РµР№ mandatoryEmails (РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рµ РјР°Р№Р»-Р°РґСЂРµСЃР°).
+ * @author Gusev Dmitry (Р”РјРёС‚СЂРёР№)
  * @version 1.0 (DATE: 02.04.11)
 */
 
 public class MandatoryEmailsDAO extends DBConfigCommonDAO implements EmailsListInterface
  {
-  /** Логгер класса. */
+  /** Р›РѕРіРіРµСЂ РєР»Р°СЃСЃР°. */
   private Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
 
-  /** Конструктор. Поля инициализируются значениями по умолчанию. */
+  /** РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ. РџРѕР»СЏ РёРЅРёС†РёР°Р»РёР·РёСЂСѓСЋС‚СЃСЏ Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ. */
   public MandatoryEmailsDAO() {super(Defaults.LOGGER_NAME, Defaults.DBCONFIG_FILE);}
 
   public TreeMap<String, Integer> getEmailsList()
@@ -39,7 +39,7 @@ public class MandatoryEmailsDAO extends DBConfigCommonDAO implements EmailsListI
      {
       conn = this.getConnection();
       rs = SqlExecutor.executeSelectQuery(conn, sql);
-      // Что-то нашли
+      // Р§С‚Рѕ-С‚Рѕ РЅР°С€Р»Рё
       if (rs.next())
        {
         logger.debug("Result set is not empty! Processing.");
@@ -54,13 +54,13 @@ public class MandatoryEmailsDAO extends DBConfigCommonDAO implements EmailsListI
          }
         while (rs.next());
        }
-      // Ничо не нашли
+      // РќРёС‡Рѕ РЅРµ РЅР°С€Р»Рё
       else {logger.warn("Result set is empty! Deliveries not found!");}
      }
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     catch (SQLException e)            {logger.error(e.getMessage());}
     catch (DBConnectionException e)   {logger.error(e.getMessage());}
-    // Освобождаем ресурсы
+    // РћСЃРІРѕР±РѕР¶РґР°РµРј СЂРµСЃСѓСЂСЃС‹
     finally
      {
       try {if(rs != null) {rs.close();} if(conn != null) {conn.close();}}
