@@ -8,12 +8,12 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
- * Модель таблицы с указанием времени последнего обновления (максимальное значение поля timestamp данной таблицы).
- * Имя таблицы хранится только в верхнем регистре - для обеспечения универсальности поиска по имени таблицы.
+ * РњРѕРґРµР»СЊ С‚Р°Р±Р»РёС†С‹ СЃ СѓРєР°Р·Р°РЅРёРµРј РІСЂРµРјРµРЅРё РїРѕСЃР»РµРґРЅРµРіРѕ РѕР±РЅРѕРІР»РµРЅРёСЏ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РїРѕР»СЏ timestamp РґР°РЅРЅРѕР№ С‚Р°Р±Р»РёС†С‹).
+ * РРјСЏ С‚Р°Р±Р»РёС†С‹ С…СЂР°РЅРёС‚СЃСЏ С‚РѕР»СЊРєРѕ РІ РІРµСЂС…РЅРµРј СЂРµРіРёСЃС‚СЂРµ - РґР»СЏ РѕР±РµСЃРїРµС‡РµРЅРёСЏ СѓРЅРёРІРµСЂСЃР°Р»СЊРЅРѕСЃС‚Рё РїРѕРёСЃРєР° РїРѕ РёРјРµРЅРё С‚Р°Р±Р»РёС†С‹.
  * @author Gusev Dmitry (019gus)
  * @version 3.0 (DATE: 27.07.2010)
  *
- * @deprecated вместо данного класса рекомендуется использовать класс
+ * @deprecated РІРјРµСЃС‚Рѕ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР° СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РєР»Р°СЃСЃ
  * {@link jdb.nextGen.models.SimpleDBIntegrityModel SimpleDBIntegrityModel}
 */
 
@@ -21,14 +21,14 @@ public class TableTimedModel extends TableModel implements Serializable
  {
   static final long serialVersionUID = 3235351342579063883L;
 
-  /** Максимальные дата/время (таймштамп - timestamp) для всех записей таблицы. */
+  /** РњР°РєСЃРёРјР°Р»СЊРЅС‹Рµ РґР°С‚Р°/РІСЂРµРјСЏ (С‚Р°Р№РјС€С‚Р°РјРї - timestamp) РґР»СЏ РІСЃРµС… Р·Р°РїРёСЃРµР№ С‚Р°Р±Р»РёС†С‹. */
   private Timestamp timeStamp;
 
   /**
-   * Конструктор. Обязательно инициализирует наименование таблицы.
-   * @param tableName String имя создаваемой модели таблицы.
-   * @param timeStamp Timestamp таймштамп данной таблицы (время+дата).
-   * @throws DBModelException ИС возникает при инициализации таблицы с пустым именем.
+   * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ. РћР±СЏР·Р°С‚РµР»СЊРЅРѕ РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ С‚Р°Р±Р»РёС†С‹.
+   * @param tableName String РёРјСЏ СЃРѕР·РґР°РІР°РµРјРѕР№ РјРѕРґРµР»Рё С‚Р°Р±Р»РёС†С‹.
+   * @param timeStamp Timestamp С‚Р°Р№РјС€С‚Р°РјРї РґР°РЅРЅРѕР№ С‚Р°Р±Р»РёС†С‹ (РІСЂРµРјСЏ+РґР°С‚Р°).
+   * @throws DBModelException РРЎ РІРѕР·РЅРёРєР°РµС‚ РїСЂРё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё С‚Р°Р±Р»РёС†С‹ СЃ РїСѓСЃС‚С‹Рј РёРјРµРЅРµРј.
   */
   public TableTimedModel(String tableName, Timestamp timeStamp) throws DBModelException
    {super(tableName); this.timeStamp = timeStamp;}
@@ -36,17 +36,17 @@ public class TableTimedModel extends TableModel implements Serializable
   public Timestamp getTimeStamp() {return timeStamp;}
   public void setTimeStamp(Timestamp timeStamp) {this.timeStamp = timeStamp;}
 
-  /** Строковое представление данного объекта (модели таблицы). */
+  /** РЎС‚СЂРѕРєРѕРІРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ РґР°РЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р° (РјРѕРґРµР»Рё С‚Р°Р±Р»РёС†С‹). */
   @Override
   public String toString()
    {
     StringBuilder tableString = new StringBuilder();
     tableString.append(" TABLE: ");
-    // Если есть схема - укажем ее
+    // Р•СЃР»Рё РµСЃС‚СЊ СЃС…РµРјР° - СѓРєР°Р¶РµРј РµРµ
     if (!StringUtils.isBlank(this.getTableSchema())) {tableString.append(this.getTableSchema()).append(".");}
     tableString.append(this.getTableName()).append(" (TYPE: ").append(this.getTableType()).append("); ");
     tableString.append("TIMESTAMP: ").append(this.timeStamp);
-    // Возвращаем результат
+    // Р’РѕР·РІСЂР°С‰Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚
     return tableString.toString();
    }
 

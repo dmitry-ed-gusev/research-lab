@@ -1,7 +1,6 @@
 package jlib.system.exec;
 
 /**
- * Результат запуска внешней команды из JAVA.
  * @author Gusev Dmitry (019gus)
  * @version 2.0 (DATE: 25.02.2009)
 */

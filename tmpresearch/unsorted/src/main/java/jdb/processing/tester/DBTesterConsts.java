@@ -1,7 +1,6 @@
 package jdb.processing.tester;
 
 /**
- * Данный класс содержит константы для класса-тестировщика БД DBTester.
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 02.09.2008)
 */

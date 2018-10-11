@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.zip.CRC32;
 
 /**
- * В данном классе реализована функция вычисления контрольной суммы CRC32 для переданного файла.
+ * Р’ РґР°РЅРЅРѕРј РєР»Р°СЃСЃРµ СЂРµР°Р»РёР·РѕРІР°РЅР° С„СѓРЅРєС†РёСЏ РІС‹С‡РёСЃР»РµРЅРёСЏ РєРѕРЅС‚СЂРѕР»СЊРЅРѕР№ СЃСѓРјРјС‹ CRC32 РґР»СЏ РїРµСЂРµРґР°РЅРЅРѕРіРѕ С„Р°Р№Р»Р°.
  * @author Gusev Dmitry
  * @version 1.2 
 */
@@ -14,10 +14,10 @@ public class CalcCRC
  {
 
   /**
-   * Метод возвращает контрольную сумму CRC32 для файла fileName. Если файла не существует или подсчет не
-   * удался (возникла ИС), метод возвращает значение 0.
-   * @param fileName файл, для которого считаем CRC32.
-   * @return long значение CRC32 или значение 0.
+   * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РєРѕРЅС‚СЂРѕР»СЊРЅСѓСЋ СЃСѓРјРјСѓ CRC32 РґР»СЏ С„Р°Р№Р»Р° fileName. Р•СЃР»Рё С„Р°Р№Р»Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РёР»Рё РїРѕРґСЃС‡РµС‚ РЅРµ
+   * СѓРґР°Р»СЃСЏ (РІРѕР·РЅРёРєР»Р° РРЎ), РјРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ 0.
+   * @param fileName С„Р°Р№Р», РґР»СЏ РєРѕС‚РѕСЂРѕРіРѕ СЃС‡РёС‚Р°РµРј CRC32.
+   * @return long Р·РЅР°С‡РµРЅРёРµ CRC32 РёР»Рё Р·РЅР°С‡РµРЅРёРµ 0.
   */
   @SuppressWarnings({"IOResourceOpenedButNotSafelyClosed"})
   public static long getChecksum(String fileName)
@@ -27,24 +27,24 @@ public class CalcCRC
     BufferedInputStream in = null;
     try
      {
-      // Если полученное имя файла пусто - вообще ничего не делаем
+      // Р•СЃР»Рё РїРѕР»СѓС‡РµРЅРЅРѕРµ РёРјСЏ С„Р°Р№Р»Р° РїСѓСЃС‚Рѕ - РІРѕРѕР±С‰Рµ РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
       if ((fileName != null) && (!fileName.trim().equals("")))
        {
         in = new BufferedInputStream(new FileInputStream(fileName));
         CRC32 crc = new CRC32();
         int iByte;
-        // Непосредственно цикл вычисления контрольной суммы файла
+        // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ С†РёРєР» РІС‹С‡РёСЃР»РµРЅРёСЏ РєРѕРЅС‚СЂРѕР»СЊРЅРѕР№ СЃСѓРјРјС‹ С„Р°Р№Р»Р°
         while ((iByte = in.read()) != -1) {crc.update(iByte);}
         result = crc.getValue();
         logger.debug("CalcCRC: file [" + fileName + "]; result [" + result + "]");
        }
-      // Сообщение о пустом имени файла
+      // РЎРѕРѕР±С‰РµРЅРёРµ Рѕ РїСѓСЃС‚РѕРј РёРјРµРЅРё С„Р°Р№Р»Р°
       else {logger.warn("Received file name is EMPTY!");}
      }
-    // Перехватываем ИС
+    // РџРµСЂРµС…РІР°С‚С‹РІР°РµРј РРЎ
     catch (FileNotFoundException e) {logger.error("ERROR occured while CRC32 calculating: " + e.getMessage());}
     catch (IOException e)           {logger.error("ERROR occured while CRC32 calculating: " + e.getMessage());}
-    // Обязательно необходимо закрыть за собой потоки
+    // РћР±СЏР·Р°С‚РµР»СЊРЅРѕ РЅРµРѕР±С…РѕРґРёРјРѕ Р·Р°РєСЂС‹С‚СЊ Р·Р° СЃРѕР±РѕР№ РїРѕС‚РѕРєРё
     finally
      {
       try{if (in != null) {in.close();}}

@@ -19,29 +19,29 @@ import java.sql.SQLException;
 
 public class DBConfigCommonDAO
  {
-  /** Логгер данного класса. */
+  /** Р›РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°. */
   private        Logger   logger     = null;
-  /** Поле для хранения имени конфиг-файла с параметрами соединения. */
+  /** РџРѕР»Рµ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РёРјРµРЅРё РєРѕРЅС„РёРі-С„Р°Р№Р»Р° СЃ РїР°СЂР°РјРµС‚СЂР°РјРё СЃРѕРµРґРёРЅРµРЅРёСЏ. */
   private static String   configFile = null;
-  /** Поле для хранения класса конфигурации соединения с СУБД. */
+  /** РџРѕР»Рµ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РєР»Р°СЃСЃР° РєРѕРЅС„РёРіСѓСЂР°С†РёРё СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ РЎРЈР‘Р”. */
   private static DBConfig config     = null;
 
   /***/
   public DBConfigCommonDAO(String loggerName, String configFile)
    {
-    // Получаем ссылку на логгер
+    // РџРѕР»СѓС‡Р°РµРј СЃСЃС‹Р»РєСѓ РЅР° Р»РѕРіРіРµСЂ
     if (StringUtils.isBlank(loggerName)) {logger = Logger.getLogger(getClass().getName());}
     else                                 {logger = Logger.getLogger(loggerName);}
-    // Если класс конфига соединения еще не инициализирован - инициализация
+    // Р•СЃР»Рё РєР»Р°СЃСЃ РєРѕРЅС„РёРіР° СЃРѕРµРґРёРЅРµРЅРёСЏ РµС‰Рµ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅ - РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
     if (DBConfigCommonDAO.config == null)
      {
-      // Инициализация конфига соединения, только есди указано не пустое имя файла параметров
+      // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РєРѕРЅС„РёРіР° СЃРѕРµРґРёРЅРµРЅРёСЏ, С‚РѕР»СЊРєРѕ РµСЃРґРё СѓРєР°Р·Р°РЅРѕ РЅРµ РїСѓСЃС‚РѕРµ РёРјСЏ С„Р°Р№Р»Р° РїР°СЂР°РјРµС‚СЂРѕРІ
       if (!StringUtils.isBlank(configFile))
        {
         logger.debug("DBConfig is not initialized from file [" + configFile + "]. Processing.");
-        // На всякий случай сохраним имя конфиг-файла
+        // РќР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№ СЃРѕС…СЂР°РЅРёРј РёРјСЏ РєРѕРЅС„РёРі-С„Р°Р№Р»Р°
         DBConfigCommonDAO.configFile = configFile;
-        // Непосредственно загрузка данный из файла конфигурации
+        // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ Р·Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹Р№ РёР· С„Р°Р№Р»Р° РєРѕРЅС„РёРіСѓСЂР°С†РёРё
         try
          {
           DBConfigCommonDAO.config = new DBConfig(configFile);
@@ -51,51 +51,51 @@ public class DBConfigCommonDAO
         catch (ConfigurationException e)  {logger.error(e.getMessage());}
         catch (IOException e)             {logger.error(e.getMessage());}
        }
-      // Если указано пустое имя файла - нет инициализации, в лог - ошибка!
+      // Р•СЃР»Рё СѓРєР°Р·Р°РЅРѕ РїСѓСЃС‚РѕРµ РёРјСЏ С„Р°Р№Р»Р° - РЅРµС‚ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё, РІ Р»РѕРі - РѕС€РёР±РєР°!
       else {logger.error("Config file name is EMPTY!");}
      }
-    // Если класс конфига уже инициализирован - сообщим об этом
+    // Р•СЃР»Рё РєР»Р°СЃСЃ РєРѕРЅС„РёРіР° СѓР¶Рµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅ - СЃРѕРѕР±С‰РёРј РѕР± СЌС‚РѕРј
     else {logger.debug("DBConfig already initialized!");}
    }
 
   /***/
   public DBConfigCommonDAO(String loggerName, DBConfig dbConfig)
    {
-    // Получаем ссылку на логгер
+    // РџРѕР»СѓС‡Р°РµРј СЃСЃС‹Р»РєСѓ РЅР° Р»РѕРіРіРµСЂ
     if (StringUtils.isBlank(loggerName)) {logger = Logger.getLogger(getClass().getName());}
     else                                 {logger = Logger.getLogger(loggerName);}
-    // Если класс конфига соединения еще не инициализирован - инициализация
+    // Р•СЃР»Рё РєР»Р°СЃСЃ РєРѕРЅС„РёРіР° СЃРѕРµРґРёРЅРµРЅРёСЏ РµС‰Рµ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅ - РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
     if (DBConfigCommonDAO.config == null)
      {
-      // Инициализация конфига соединения, только если конфиг не пуст и не содержит ошибок
+      // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РєРѕРЅС„РёРіР° СЃРѕРµРґРёРЅРµРЅРёСЏ, С‚РѕР»СЊРєРѕ РµСЃР»Рё РєРѕРЅС„РёРі РЅРµ РїСѓСЃС‚ Рё РЅРµ СЃРѕРґРµСЂР¶РёС‚ РѕС€РёР±РѕРє
       if ((dbConfig != null) && StringUtils.isBlank(dbConfig.getConfigErrors()))
        {
         logger.debug("DBConfig is not initialized yet. Processing.");
         DBConfigCommonDAO.config = dbConfig;
         logger.info("DBConfig initialized.");
        }
-      // Если указано пустое имя файла - нет инициализации, в лог - ошибка!
+      // Р•СЃР»Рё СѓРєР°Р·Р°РЅРѕ РїСѓСЃС‚РѕРµ РёРјСЏ С„Р°Р№Р»Р° - РЅРµС‚ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё, РІ Р»РѕРі - РѕС€РёР±РєР°!
       else {logger.error("Received DBConfig is or has errors!");}
      }
-    // Если класс конфига уже инициализирован - сообщим об этом
+    // Р•СЃР»Рё РєР»Р°СЃСЃ РєРѕРЅС„РёРіР° СѓР¶Рµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅ - СЃРѕРѕР±С‰РёРј РѕР± СЌС‚РѕРј
     else {logger.debug("DBConfig already initialized!");}
    }
 
   /***/
   public Connection getConnection() throws SQLException, DBConnectionException, DBModuleConfigException
    {
-    // Если наш конфиг не пуст - получаем от него соединение с СУБД
+    // Р•СЃР»Рё РЅР°С€ РєРѕРЅС„РёРі РЅРµ РїСѓСЃС‚ - РїРѕР»СѓС‡Р°РµРј РѕС‚ РЅРµРіРѕ СЃРѕРµРґРёРЅРµРЅРёРµ СЃ РЎРЈР‘Р”
     if (config != null)
      {
       logger.debug("DBConfig is OK. Getting connection.");
-      // Непосредственно получаем соединение с СУБД
+      // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РїРѕР»СѓС‡Р°РµРј СЃРѕРµРґРёРЅРµРЅРёРµ СЃ РЎРЈР‘Р”
       Connection connection = DBUtils.getDBConn(config);
-      // Если полученное соединение не пусто - возвращаем его
+      // Р•СЃР»Рё РїРѕР»СѓС‡РµРЅРЅРѕРµ СЃРѕРµРґРёРЅРµРЅРёРµ РЅРµ РїСѓСЃС‚Рѕ - РІРѕР·РІСЂР°С‰Р°РµРј РµРіРѕ
       if (connection != null) {return connection;}
-      // Если же соединение пусто - ошибка
+      // Р•СЃР»Рё Р¶Рµ СЃРѕРµРґРёРЅРµРЅРёРµ РїСѓСЃС‚Рѕ - РѕС€РёР±РєР°
       else {throw new SQLException("Connection received from DBConfig is empty! Config file [" + configFile + "].");}
      }
-    // Если же конфиг пуст - ошибка!
+    // Р•СЃР»Рё Р¶Рµ РєРѕРЅС„РёРі РїСѓСЃС‚ - РѕС€РёР±РєР°!
     else {throw new SQLException("DBConfig is null (maybe not initialized)!");}
    }
 

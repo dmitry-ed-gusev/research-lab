@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 /**
- * @author Gusev Dmitry (Ãףסוג Äלטענטי)
  * @version 1.0 (DATE: 03.03.11)
  */ //Factory class
 class ConnectionFactory

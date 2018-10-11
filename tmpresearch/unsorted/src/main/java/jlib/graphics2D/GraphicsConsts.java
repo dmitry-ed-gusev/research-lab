@@ -7,7 +7,6 @@ package jlib.graphics2D;
 
 public interface GraphicsConsts
  {
-  /** Класс-перечисление форматов изображений, с которыми работает модуль изменения размеров изображения. */
   public static enum ImageFormat
    {
     BMP("BMP"),
@@ -16,11 +15,11 @@ public interface GraphicsConsts
     PNG("PNG"),
     GIF("GIF");
 
-    // Поле (хранит значение)
+    // пїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
     private final String sValue;
-    // Конструктор
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     ImageFormat(String sValue) {this.sValue = sValue;}
-    // Доступ к полю
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
     public String strValue() {return this.sValue;}
    }
 

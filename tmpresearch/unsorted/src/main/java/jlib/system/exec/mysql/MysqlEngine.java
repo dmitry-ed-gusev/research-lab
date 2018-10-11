@@ -6,30 +6,30 @@ import jlib.system.exec.WindowsExecResult;
 import org.apache.log4j.Logger;
 
 /**
- * Данный класс предназначен для работы с СУБД MySQL, установленной локально. Работа
- * подразумевает запуск/останов сервиса "mysql", инсталляцию/удаление данного сервиса и
- * т.п. операции. Предполагается работа данного модуля в ОС семейства Windows XP/Vista.
+ * Р”Р°РЅРЅС‹Р№ РєР»Р°СЃСЃ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РЎРЈР‘Р” MySQL, СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕР№ Р»РѕРєР°Р»СЊРЅРѕ. Р Р°Р±РѕС‚Р°
+ * РїРѕРґСЂР°Р·СѓРјРµРІР°РµС‚ Р·Р°РїСѓСЃРє/РѕСЃС‚Р°РЅРѕРІ СЃРµСЂРІРёСЃР° "mysql", РёРЅСЃС‚Р°Р»Р»СЏС†РёСЋ/СѓРґР°Р»РµРЅРёРµ РґР°РЅРЅРѕРіРѕ СЃРµСЂРІРёСЃР° Рё
+ * С‚.Рї. РѕРїРµСЂР°С†РёРё. РџСЂРµРґРїРѕР»Р°РіР°РµС‚СЃСЏ СЂР°Р±РѕС‚Р° РґР°РЅРЅРѕРіРѕ РјРѕРґСѓР»СЏ РІ РћРЎ СЃРµРјРµР№СЃС‚РІР° Windows XP/Vista.
  * @author Gusev Dmitry (019gus)
  * @version 3.0 (DATE: 25.02.2009)
 */
 
 public class MysqlEngine
  {
-  // todo: сделать команду инсталляции сервиса mysql
+  // todo: СЃРґРµР»Р°С‚СЊ РєРѕРјР°РЅРґСѓ РёРЅСЃС‚Р°Р»Р»СЏС†РёРё СЃРµСЂРІРёСЃР° mysql
   
-  /** Разрешен ли в данной ОС запуск внешних команд. */
+  /** Р Р°Р·СЂРµС€РµРЅ Р»Рё РІ РґР°РЅРЅРѕР№ РћРЎ Р·Р°РїСѓСЃРє РІРЅРµС€РЅРёС… РєРѕРјР°РЅРґ. */
   private boolean isOSVersionCorrect = false;
 
   public MysqlEngine() {this.isOSVersionCorrect = new WindowsExec().isOSVersionCorrect();}
 
   /**
-   * Проверка - инсталлирован ли в данной системе сервис СУБД Mysql - сервис называется 'mysql'.
-   * @return boolean ИСТИНА/ЛОЖЬ - результат выполнения команды.
+   * РџСЂРѕРІРµСЂРєР° - РёРЅСЃС‚Р°Р»Р»РёСЂРѕРІР°РЅ Р»Рё РІ РґР°РЅРЅРѕР№ СЃРёСЃС‚РµРјРµ СЃРµСЂРІРёСЃ РЎРЈР‘Р” Mysql - СЃРµСЂРІРёСЃ РЅР°Р·С‹РІР°РµС‚СЃСЏ 'mysql'.
+   * @return boolean РРЎРўРРќРђ/Р›РћР–Р¬ - СЂРµР·СѓР»СЊС‚Р°С‚ РІС‹РїРѕР»РЅРµРЅРёСЏ РєРѕРјР°РЅРґС‹.
   */
   public boolean isMysqlServiceInstalled()
    {
     boolean result = false;
-    // Если версия ОС подходит, то выполняем команду
+    // Р•СЃР»Рё РІРµСЂСЃРёСЏ РћРЎ РїРѕРґС…РѕРґРёС‚, С‚Рѕ РІС‹РїРѕР»РЅСЏРµРј РєРѕРјР°РЅРґСѓ
     if (this.isOSVersionCorrect)
      {
       WindowsExecResult execResult = new WindowsExec().execute(MysqlEngineConsts.MYSQL_QUERY_SERVICE);
@@ -39,13 +39,13 @@ public class MysqlEngine
    }
 
   /**
-   * Проверка - запущен ли сервис mysql в данной системе.
-   * @return boolean ИСТИНА/ЛОЖЬ - результат выполнения команды.
+   * РџСЂРѕРІРµСЂРєР° - Р·Р°РїСѓС‰РµРЅ Р»Рё СЃРµСЂРІРёСЃ mysql РІ РґР°РЅРЅРѕР№ СЃРёСЃС‚РµРјРµ.
+   * @return boolean РРЎРўРРќРђ/Р›РћР–Р¬ - СЂРµР·СѓР»СЊС‚Р°С‚ РІС‹РїРѕР»РЅРµРЅРёСЏ РєРѕРјР°РЅРґС‹.
   */
   public boolean isMysqlServiceRunning()
    {
     boolean result = false;
-    // Если версия ОС подходит, то выполняем команду
+    // Р•СЃР»Рё РІРµСЂСЃРёСЏ РћРЎ РїРѕРґС…РѕРґРёС‚, С‚Рѕ РІС‹РїРѕР»РЅСЏРµРј РєРѕРјР°РЅРґСѓ
     if (this.isOSVersionCorrect)
      {
       WindowsExecResult execResult = new WindowsExec().execute(MysqlEngineConsts.MYSQL_QUERY_SERVICE);
@@ -55,13 +55,13 @@ public class MysqlEngine
    }
 
   /**
-   * Запуск сервиса mysql.
-   * @return boolean ИСТИНА/ЛОЖЬ - результат выполнения команды.
+   * Р—Р°РїСѓСЃРє СЃРµСЂРІРёСЃР° mysql.
+   * @return boolean РРЎРўРРќРђ/Р›РћР–Р¬ - СЂРµР·СѓР»СЊС‚Р°С‚ РІС‹РїРѕР»РЅРµРЅРёСЏ РєРѕРјР°РЅРґС‹.
   */
   public boolean startMysqlService()
    {
     boolean result = false;
-    // Если версия ОС подходит, то выполняем команду
+    // Р•СЃР»Рё РІРµСЂСЃРёСЏ РћРЎ РїРѕРґС…РѕРґРёС‚, С‚Рѕ РІС‹РїРѕР»РЅСЏРµРј РєРѕРјР°РЅРґСѓ
     if (this.isOSVersionCorrect)
      {
       WindowsExecResult execResult = new WindowsExec().execute(MysqlEngineConsts.MYSQL_START_SERVICE);
@@ -71,13 +71,13 @@ public class MysqlEngine
    }
 
   /**
-   * Останов сервиса mysql.
-   * @return boolean ИСТИНА/ЛОЖЬ - результат выполнения команды.
+   * РћСЃС‚Р°РЅРѕРІ СЃРµСЂРІРёСЃР° mysql.
+   * @return boolean РРЎРўРРќРђ/Р›РћР–Р¬ - СЂРµР·СѓР»СЊС‚Р°С‚ РІС‹РїРѕР»РЅРµРЅРёСЏ РєРѕРјР°РЅРґС‹.
   */
   public boolean stopMysqlService()
    {
     boolean result = false;
-    // Если версия ОС подходит, то выполняем команду
+    // Р•СЃР»Рё РІРµСЂСЃРёСЏ РћРЎ РїРѕРґС…РѕРґРёС‚, С‚Рѕ РІС‹РїРѕР»РЅСЏРµРј РєРѕРјР°РЅРґСѓ
     if (this.isOSVersionCorrect)
      {
       WindowsExecResult execResult = new WindowsExec().execute(MysqlEngineConsts.MYSQL_STOP_SERVICE);
@@ -87,8 +87,8 @@ public class MysqlEngine
    }
   
   /**
-   * Метод для тестирования класса.
-   * @param args String[] параметры данного метода.
+   * РњРµС‚РѕРґ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ РєР»Р°СЃСЃР°.
+   * @param args String[] РїР°СЂР°РјРµС‚СЂС‹ РґР°РЅРЅРѕРіРѕ РјРµС‚РѕРґР°.
   */
   public static void main(String[] args)
    {

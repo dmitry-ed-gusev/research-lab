@@ -3,7 +3,6 @@ package jdb.factory;
 import java.sql.Connection;
 
 /**
- * @author Gusev Dmitry (Ãףסוג Äלטענטי)
  * @version 1.0 (DATE: 03.03.11)
  */ // Subclass of the AbstractConnFactory for connecting to an Oracle database.
 class OracleConnFactory extends AbstractConnFactory

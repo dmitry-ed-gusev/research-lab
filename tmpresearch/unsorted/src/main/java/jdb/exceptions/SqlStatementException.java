@@ -2,7 +2,7 @@ package jdb.exceptions;
 
 import java.sql.*;
 
-/** Класс, реализующий ИС для обработки ошибок классов SqlStatement и PSqlStatement. */
+/** РљР»Р°СЃСЃ, СЂРµР°Р»РёР·СѓСЋС‰РёР№ РРЎ РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё РѕС€РёР±РѕРє РєР»Р°СЃСЃРѕРІ SqlStatement Рё PSqlStatement. */
 public class SqlStatementException extends SQLException
  {
   public SqlStatementException()           {super();}

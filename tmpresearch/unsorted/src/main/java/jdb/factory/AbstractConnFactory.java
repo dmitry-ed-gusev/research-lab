@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * @author Gusev Dmitry (Ãףסוג Äלטענטי)
  * @version 1.0 (DATE: 03.03.11)
  */ //Abstract class that defines interface for factory objects
 abstract class AbstractConnFactory

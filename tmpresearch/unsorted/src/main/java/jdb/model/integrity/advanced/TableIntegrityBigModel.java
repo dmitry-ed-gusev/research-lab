@@ -11,13 +11,13 @@ import java.util.TreeMap;
 /**
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 26.10.2009)
- * @deprecated код данного класса еще не реализован!
+ * @deprecated РєРѕРґ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР° РµС‰Рµ РЅРµ СЂРµР°Р»РёР·РѕРІР°РЅ!
 */
 
-// todo: реализация кода модели
+// todo: СЂРµР°Р»РёР·Р°С†РёСЏ РєРѕРґР° РјРѕРґРµР»Рё
 public class TableIntegrityBigModel extends TableModel implements Serializable
  {
-  /** Компонент-логгер данного класса */
+  /** РљРѕРјРїРѕРЅРµРЅС‚-Р»РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР° */
   private transient Logger logger = Logger.getLogger(getClass().getName());
 
   /***/

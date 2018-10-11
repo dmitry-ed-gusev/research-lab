@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * @author Gusev Dmitry (Гусев Дмитрий)
+ * @author Gusev Dmitry (Р“СѓСЃРµРІ Р”РјРёС‚СЂРёР№)
  * @version 1.0 (DATE: 03.03.11)
  */ //Class to demonstrate the enhanced Factory Method
 public class EnhancedFactory

@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 /**
  *
- * @author Gusev Dmitry (Гусев Дмитрий)
+ * @author Gusev Dmitry (Р“СѓСЃРµРІ Р”РјРёС‚СЂРёР№)
  * @version 6.0 (DATE: 19.05.11)
 */
 
@@ -33,34 +33,34 @@ public final class DBasesLoader
   /***/
   private static Logger logger = Logger.getLogger(DBasesLoader.class.getName());
 
-  // Предотвращаем инстанцирование и наследование
+  // РџСЂРµРґРѕС‚РІСЂР°С‰Р°РµРј РёРЅСЃС‚Р°РЅС†РёСЂРѕРІР°РЅРёРµ Рё РЅР°СЃР»РµРґРѕРІР°РЅРёРµ
   public DBasesLoader() {}
 
   /**
    *
    * @param conn
-   * @param path String путь к каталогу для выгрузки БД. Ограничения на значение: если каталог сущесвует, он должен быть
-   * именно каталогом (не файлом) и должен быть пуст, в противном случае возникнет ИС; если каталог не существует, будет
-   * предпринята попытка его создать и, в случае неудачи, возникнет ИС.
+   * @param path String РїСѓС‚СЊ Рє РєР°С‚Р°Р»РѕРіСѓ РґР»СЏ РІС‹РіСЂСѓР·РєРё Р‘Р”. РћРіСЂР°РЅРёС‡РµРЅРёСЏ РЅР° Р·РЅР°С‡РµРЅРёРµ: РµСЃР»Рё РєР°С‚Р°Р»РѕРі СЃСѓС‰РµСЃРІСѓРµС‚, РѕРЅ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ
+   * РёРјРµРЅРЅРѕ РєР°С‚Р°Р»РѕРіРѕРј (РЅРµ С„Р°Р№Р»РѕРј) Рё РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїСѓСЃС‚, РІ РїСЂРѕС‚РёРІРЅРѕРј СЃР»СѓС‡Р°Рµ РІРѕР·РЅРёРєРЅРµС‚ РРЎ; РµСЃР»Рё РєР°С‚Р°Р»РѕРі РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚, Р±СѓРґРµС‚
+   * РїСЂРµРґРїСЂРёРЅСЏС‚Р° РїРѕРїС‹С‚РєР° РµРіРѕ СЃРѕР·РґР°С‚СЊ Рё, РІ СЃР»СѓС‡Р°Рµ РЅРµСѓРґР°С‡Рё, РІРѕР·РЅРёРєРЅРµС‚ РРЎ.
   */
   public static void unloadDB(Connection conn, String path, String dbName, ArrayList<String> tablesList,
    SimpleDBTimedModel timedModel, SimpleDBIntegrityModel integrityModel) throws JdbException
    {
     logger.debug("DBasesLoader.unloadDB().");
-    // Проверка соединения
+    // РџСЂРѕРІРµСЂРєР° СЃРѕРµРґРёРЅРµРЅРёСЏ
     if (conn != null)
      {
-      // Проверка указанного пути для выгрузки (должен быть не пуст!)
+      // РџСЂРѕРІРµСЂРєР° СѓРєР°Р·Р°РЅРЅРѕРіРѕ РїСѓС‚Рё РґР»СЏ РІС‹РіСЂСѓР·РєРё (РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РЅРµ РїСѓСЃС‚!)
       if (!StringUtils.isBlank(path))
        {
-        // Проверка указанного имени БД (должно быть не пустым)
+        // РџСЂРѕРІРµСЂРєР° СѓРєР°Р·Р°РЅРЅРѕРіРѕ РёРјРµРЅРё Р‘Р” (РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РЅРµ РїСѓСЃС‚С‹Рј)
         if (!StringUtils.isBlank(dbName))
          {
-          // Проверяем список таблиц - он должен быть не пуст
+          // РџСЂРѕРІРµСЂСЏРµРј СЃРїРёСЃРѕРє С‚Р°Р±Р»РёС† - РѕРЅ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РЅРµ РїСѓСЃС‚
           if ((tablesList != null) && (!tablesList.isEmpty()))
            {
             boolean isOutputCatalogExists = false;
-            // Обработка каталога назначения - если он существует, надо проверить его пустоту
+            // РћР±СЂР°Р±РѕС‚РєР° РєР°С‚Р°Р»РѕРіР° РЅР°Р·РЅР°С‡РµРЅРёСЏ - РµСЃР»Рё РѕРЅ СЃСѓС‰РµСЃС‚РІСѓРµС‚, РЅР°РґРѕ РїСЂРѕРІРµСЂРёС‚СЊ РµРіРѕ РїСѓСЃС‚РѕС‚Сѓ
             File output = new File(path);
             if (output.exists())
              {
@@ -68,45 +68,45 @@ public final class DBasesLoader
               else if (!FSUtils.isEmptyDir(path)) {throw new JdbException("Catalog [" + path + "] is not empty!");}
               isOutputCatalogExists = true;
              }
-            // Каталог назначения не существует - пробуем создать
+            // РљР°С‚Р°Р»РѕРі РЅР°Р·РЅР°С‡РµРЅРёСЏ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ - РїСЂРѕР±СѓРµРј СЃРѕР·РґР°С‚СЊ
             else
              {if (!output.mkdirs()) {throw new JdbException("Can't create catalog [" + path + "]!");}}
-            // Если во время обработки каталога не возникла ИС - выгружаем данные
+            // Р•СЃР»Рё РІРѕ РІСЂРµРјСЏ РѕР±СЂР°Р±РѕС‚РєРё РєР°С‚Р°Р»РѕРіР° РЅРµ РІРѕР·РЅРёРєР»Р° РРЎ - РІС‹РіСЂСѓР¶Р°РµРј РґР°РЅРЅС‹Рµ
             try
              {
               boolean unloadDBResult = DBasesLoaderCore.unloadDBToDisk(conn, FSUtils.fixFPath(path, true), dbName,
                                         tablesList, timedModel, integrityModel);
-              // Если ничего выгружено не было - просто удалим созданный каталог для выгрузки
+              // Р•СЃР»Рё РЅРёС‡РµРіРѕ РІС‹РіСЂСѓР¶РµРЅРѕ РЅРµ Р±С‹Р»Рѕ - РїСЂРѕСЃС‚Рѕ СѓРґР°Р»РёРј СЃРѕР·РґР°РЅРЅС‹Р№ РєР°С‚Р°Р»РѕРі РґР»СЏ РІС‹РіСЂСѓР·РєРё
               if (!unloadDBResult)
                {
-                // Если каталог существовал на момент выгрузки - его не удаляем, а очищаем,
-                // если же каталог не существовал (мы его создали), то удаляем его.
+                // Р•СЃР»Рё РєР°С‚Р°Р»РѕРі СЃСѓС‰РµСЃС‚РІРѕРІР°Р» РЅР° РјРѕРјРµРЅС‚ РІС‹РіСЂСѓР·РєРё - РµРіРѕ РЅРµ СѓРґР°Р»СЏРµРј, Р° РѕС‡РёС‰Р°РµРј,
+                // РµСЃР»Рё Р¶Рµ РєР°С‚Р°Р»РѕРі РЅРµ СЃСѓС‰РµСЃС‚РІРѕРІР°Р» (РјС‹ РµРіРѕ СЃРѕР·РґР°Р»Рё), С‚Рѕ СѓРґР°Р»СЏРµРј РµРіРѕ.
                 if (isOutputCatalogExists) {FSUtils.clearDir(FSUtils.fixFPath(path, true) + dbName);}
                 else                       {FSUtils.delTree(FSUtils.fixFPath(path, true) + dbName);}
                }
              }
-            // В данном блоке CATCH не происходит обработка возникшей ИС, блок необходим только для
+            // Р’ РґР°РЅРЅРѕРј Р±Р»РѕРєРµ CATCH РЅРµ РїСЂРѕРёСЃС…РѕРґРёС‚ РѕР±СЂР°Р±РѕС‚РєР° РІРѕР·РЅРёРєС€РµР№ РРЎ, Р±Р»РѕРє РЅРµРѕР±С…РѕРґРёРј С‚РѕР»СЊРєРѕ РґР»СЏ
             catch (JdbException e)
              {
-              // При возникновении фатальной ИС во время выгрузки БД необходимо удалить созданный для выгрузки
-              // БД каталог - провести очистку ресурсов. Если каталог существовал на момент выгрузки - его не
-              // удаляем, а очищаем, если же каталог не существовал (мы его создали), то удаляем его.
+              // РџСЂРё РІРѕР·РЅРёРєРЅРѕРІРµРЅРёРё С„Р°С‚Р°Р»СЊРЅРѕР№ РРЎ РІРѕ РІСЂРµРјСЏ РІС‹РіСЂСѓР·РєРё Р‘Р” РЅРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ СЃРѕР·РґР°РЅРЅС‹Р№ РґР»СЏ РІС‹РіСЂСѓР·РєРё
+              // Р‘Р” РєР°С‚Р°Р»РѕРі - РїСЂРѕРІРµСЃС‚Рё РѕС‡РёСЃС‚РєСѓ СЂРµСЃСѓСЂСЃРѕРІ. Р•СЃР»Рё РєР°С‚Р°Р»РѕРі СЃСѓС‰РµСЃС‚РІРѕРІР°Р» РЅР° РјРѕРјРµРЅС‚ РІС‹РіСЂСѓР·РєРё - РµРіРѕ РЅРµ
+              // СѓРґР°Р»СЏРµРј, Р° РѕС‡РёС‰Р°РµРј, РµСЃР»Рё Р¶Рµ РєР°С‚Р°Р»РѕРі РЅРµ СЃСѓС‰РµСЃС‚РІРѕРІР°Р» (РјС‹ РµРіРѕ СЃРѕР·РґР°Р»Рё), С‚Рѕ СѓРґР°Р»СЏРµРј РµРіРѕ.
               if (isOutputCatalogExists) {FSUtils.clearDir(FSUtils.fixFPath(path, true) + dbName);}
               else                       {FSUtils.delTree(FSUtils.fixFPath(path, true) + dbName);}
-              // ИС в данном блоке не обрабатывается - обработка передается выше
+              // РРЎ РІ РґР°РЅРЅРѕРј Р±Р»РѕРєРµ РЅРµ РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚СЃСЏ - РѕР±СЂР°Р±РѕС‚РєР° РїРµСЂРµРґР°РµС‚СЃСЏ РІС‹С€Рµ
               throw new JdbException(e);
              }
            }
-          // Пустой список таблиц для выгрузки
+          // РџСѓСЃС‚РѕР№ СЃРїРёСЃРѕРє С‚Р°Р±Р»РёС† РґР»СЏ РІС‹РіСЂСѓР·РєРё
           else {throw new JdbException("Empty tables list!");}
          }
-        // Пустое имя БД
+        // РџСѓСЃС‚РѕРµ РёРјСЏ Р‘Р”
         else {throw new JdbException("Empty DB name!");}
        }
-      // Пустой путь для выгрузки
+      // РџСѓСЃС‚РѕР№ РїСѓС‚СЊ РґР»СЏ РІС‹РіСЂСѓР·РєРё
       else {throw new JdbException("Path for unloading DB is empty!");}
      }
-    // Пустое соединение с СУБД
+    // РџСѓСЃС‚РѕРµ СЃРѕРµРґРёРЅРµРЅРёРµ СЃ РЎРЈР‘Р”
     else {throw new JdbException("Empty DBMS connection!");}
    }
 
@@ -114,16 +114,16 @@ public final class DBasesLoader
   public static void unloadTable(Connection conn, String path, String dbName, String tableName,
    Timestamp timestamp, ArrayList<Integer> keysList) throws JdbException
    {
-    // Готовим данные для выгрузки (используем метод для выгрузки всей БД)
+    // Р“РѕС‚РѕРІРёРј РґР°РЅРЅС‹Рµ РґР»СЏ РІС‹РіСЂСѓР·РєРё (РёСЃРїРѕР»СЊР·СѓРµРј РјРµС‚РѕРґ РґР»СЏ РІС‹РіСЂСѓР·РєРё РІСЃРµР№ Р‘Р”)
     ArrayList<String>  tablesList = new ArrayList<String>(Arrays.asList(tableName));
-    // Если есть не пустой таймштамп - добавим его в выгрузку
+    // Р•СЃР»Рё РµСЃС‚СЊ РЅРµ РїСѓСЃС‚РѕР№ С‚Р°Р№РјС€С‚Р°РјРї - РґРѕР±Р°РІРёРј РµРіРѕ РІ РІС‹РіСЂСѓР·РєСѓ
     SimpleDBTimedModel timedModel = null;
     if (timestamp != null)
      {
       timedModel = new SimpleDBTimedModel(dbName);
       timedModel.addTable(tableName, timestamp);
      }
-    // Если список ключей не пуст - добавим его в выгрузку
+    // Р•СЃР»Рё СЃРїРёСЃРѕРє РєР»СЋС‡РµР№ РЅРµ РїСѓСЃС‚ - РґРѕР±Р°РІРёРј РµРіРѕ РІ РІС‹РіСЂСѓР·РєСѓ
     SimpleDBIntegrityModel integrityModel = null;
     if ((keysList != null) && (!keysList.isEmpty()))
      {
@@ -139,31 +139,31 @@ public final class DBasesLoader
    throws JdbException
    {
     logger.debug("DBasesLoader.loadDB().");
-    // Проверка соединения с СУБД
+    // РџСЂРѕРІРµСЂРєР° СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ РЎРЈР‘Р”
     if (conn != null)
      {
-      // Проверка каталога, из которого загружаем БД (должен существовать, быть каталогом и быть непустым)
+      // РџСЂРѕРІРµСЂРєР° РєР°С‚Р°Р»РѕРіР°, РёР· РєРѕС‚РѕСЂРѕРіРѕ Р·Р°РіСЂСѓР¶Р°РµРј Р‘Р” (РґРѕР»Р¶РµРЅ СЃСѓС‰РµСЃС‚РІРѕРІР°С‚СЊ, Р±С‹С‚СЊ РєР°С‚Р°Р»РѕРіРѕРј Рё Р±С‹С‚СЊ РЅРµРїСѓСЃС‚С‹Рј)
       if (!StringUtils.isBlank(path) && new File(path).exists() && new File(path).isDirectory() && !FSUtils.isEmptyDir(path))
        {
-        // Проверяем список таблиц (должен быть не пуст)
+        // РџСЂРѕРІРµСЂСЏРµРј СЃРїРёСЃРѕРє С‚Р°Р±Р»РёС† (РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РЅРµ РїСѓСЃС‚)
         if ((tablesList != null) && (!tablesList.isEmpty()))
          {
-          // Непосредственно загрузка данных с диска в БД. Все ошибки загрузки (возникшие ИС) оборачиваются в нашу
-          // собственную ИС (JdbException). Это дает нам возможность менять внутреннюю структуру модулей как угодно -
-          // для внешней части этой системы (загрузки/выгрузки БД) останется только одна ИС - JdbException
+          // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ Р·Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С… СЃ РґРёСЃРєР° РІ Р‘Р”. Р’СЃРµ РѕС€РёР±РєРё Р·Р°РіСЂСѓР·РєРё (РІРѕР·РЅРёРєС€РёРµ РРЎ) РѕР±РѕСЂР°С‡РёРІР°СЋС‚СЃСЏ РІ РЅР°С€Сѓ
+          // СЃРѕР±СЃС‚РІРµРЅРЅСѓСЋ РРЎ (JdbException). Р­С‚Рѕ РґР°РµС‚ РЅР°Рј РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РјРµРЅСЏС‚СЊ РІРЅСѓС‚СЂРµРЅРЅСЋСЋ СЃС‚СЂСѓРєС‚СѓСЂСѓ РјРѕРґСѓР»РµР№ РєР°Рє СѓРіРѕРґРЅРѕ -
+          // РґР»СЏ РІРЅРµС€РЅРµР№ С‡Р°СЃС‚Рё СЌС‚РѕР№ СЃРёСЃС‚РµРјС‹ (Р·Р°РіСЂСѓР·РєРё/РІС‹РіСЂСѓР·РєРё Р‘Р”) РѕСЃС‚Р°РЅРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РѕРґРЅР° РРЎ - JdbException
           try {DBasesLoaderCore.loadDBFromDisk(conn, path, tablesList, monitor, useIdentityInsert);}
-          // Все перехватываемые ИС оборачивабтся в нашу ИС - JdbException
+          // Р’СЃРµ РїРµСЂРµС…РІР°С‚С‹РІР°РµРјС‹Рµ РРЎ РѕР±РѕСЂР°С‡РёРІР°Р±С‚СЃСЏ РІ РЅР°С€Сѓ РРЎ - JdbException
           catch (ClassNotFoundException e) {throw new JdbException(e);}
           catch (SQLException e)           {throw new JdbException(e);}
           catch (IOException e)            {throw new JdbException(e);}
          }
-        // Пустой список таблиц для выгрузки данных
+        // РџСѓСЃС‚РѕР№ СЃРїРёСЃРѕРє С‚Р°Р±Р»РёС† РґР»СЏ РІС‹РіСЂСѓР·РєРё РґР°РЅРЅС‹С…
         else {throw new JdbException("Empty tables list [" + tablesList + "]!");}
        }
-      // Неверный путь к файлам таблицы
+      // РќРµРІРµСЂРЅС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Р°Рј С‚Р°Р±Р»РёС†С‹
       else {throw new JdbException("Path [" + path + "] is empty, or not exists, or not a directory, or is empty directory!");}
      }
-    // Соединение с СУБД пусто
+    // РЎРѕРµРґРёРЅРµРЅРёРµ СЃ РЎРЈР‘Р” РїСѓСЃС‚Рѕ
     else {throw new JdbException("Empty DBMS connection!");}
    }
 
@@ -198,7 +198,7 @@ public final class DBasesLoader
       Connection ifxStormConn       = DBUtils.getDBConn(ifxStormConfig);
       Connection ifxFleetConn       = DBUtils.getDBConn(ifxFleetConfig);
 
-      // Таблицы системы Шторм - для обновления
+      // РўР°Р±Р»РёС†С‹ СЃРёСЃС‚РµРјС‹ РЁС‚РѕСЂРј - РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ
       ArrayList<String> STORM_SYNC_TABLES_LIST = new ArrayList<String>(Arrays.asList
        (
         "SURVEY_ASPECT", "SURVEY_OCCASION", "KEEL_LAYING", "SHIP_LENGTH", "SHIP_DELIVERY", "SHIP_BUILD", "SHIP_DWT",
@@ -206,28 +206,28 @@ public final class DBasesLoader
         "STRAN", "SHIP_TYPE_2_RULESET", "SHIP_TYPE_2_FLEET", "SPECIALIZATION", "ITEMS", "ITEM_2_RULESET", "MISC_2_RULESET",
         "FLEET_2_MISC", "TOPIC", "TOPIC_PARENTS", "VERSION_CLIENT", "VERSION_MODULES", "VERSION_CLIENT_CONTENT"
        ));
-      // Системные таблицы Шторма
+      // РЎРёСЃС‚РµРјРЅС‹Рµ С‚Р°Р±Р»РёС†С‹ РЁС‚РѕСЂРјР°
       ArrayList<String> STORM_SPEC_TABLES = new ArrayList<String>(Arrays.asList
       (
        "survey", "survey_2_type", "survey_2_ship_misc", "survey_2_ship_type", "survey_2_ship_data",
        "survey_upload", "sys_sql_table"));
-      // Все таблицы Шторма вместе
+      // Р’СЃРµ С‚Р°Р±Р»РёС†С‹ РЁС‚РѕСЂРјР° РІРјРµСЃС‚Рµ
       ArrayList<String> ALL_TABLES = new ArrayList<String>();
       ALL_TABLES.addAll(STORM_SYNC_TABLES_LIST);
       ALL_TABLES.addAll(STORM_SPEC_TABLES);
 
-      // Таблицы БД FLEET
+      // РўР°Р±Р»РёС†С‹ Р‘Р” FLEET
       ArrayList<String> FLEET_TABLES = new ArrayList<String>(Arrays.asList
        ("Dvig", "Dvizh", "Gorod", "Insp", "Klcold", "Sost", "Statgr", "Stip", "Stran", "tip"));
 
-      // Выгрузка БД Шторм из Информикса и загрузка в MSSQL
+      // Р’С‹РіСЂСѓР·РєР° Р‘Р” РЁС‚РѕСЂРј РёР· РРЅС„РѕСЂРјРёРєСЃР° Рё Р·Р°РіСЂСѓР·РєР° РІ MSSQL
       FSUtils.delTree("c:\\temp\\storm");
       //FSUtils.delTree("c:\\temp\\fleet");
       // new ArrayList<String>(Arrays.asList("survey"))
-      // Выгрузка/загрузка БД Шторм
+      // Р’С‹РіСЂСѓР·РєР°/Р·Р°РіСЂСѓР·РєР° Р‘Р” РЁС‚РѕСЂРј
       DBasesLoader.unloadDB(ifxStormConn, "c:\\temp\\storm", "storm", new ArrayList<String>(Arrays.asList("check_list1")), null, null);
       DBasesLoader.loadDB(mssqlStormTestConn, "c:\\temp\\storm", new ArrayList<String>(Arrays.asList("check_list1")), null);
-      // Выгрузка/загрузка БД Флот
+      // Р’С‹РіСЂСѓР·РєР°/Р·Р°РіСЂСѓР·РєР° Р‘Р” Р¤Р»РѕС‚
       //DBasesLoader.unloadDB(ifxFleetConn, "c:\\temp\\fleet", "fleet", FLEET_TABLES, null, null);
       //DBasesLoader.loadDB(mssqlFleetTestConn, "c:\\temp\\fleet", FLEET_TABLES);
      }

@@ -19,60 +19,60 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
- * Данный класс предназначен для работы с БД и СУБД. Класс должен выполнять различные манипуляции над БД и СУБД.
+ * Р”Р°РЅРЅС‹Р№ РєР»Р°СЃСЃ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р‘Р” Рё РЎРЈР‘Р”. РљР»Р°СЃСЃ РґРѕР»Р¶РµРЅ РІС‹РїРѕР»РЅСЏС‚СЊ СЂР°Р·Р»РёС‡РЅС‹Рµ РјР°РЅРёРїСѓР»СЏС†РёРё РЅР°Рґ Р‘Р” Рё РЎРЈР‘Р”.
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 02.09.2008)
- * @deprecated методы класса не реализованы. Будет или удален или расширен в следующих версиях библиотеки.
+ * @deprecated РјРµС‚РѕРґС‹ РєР»Р°СЃСЃР° РЅРµ СЂРµР°Р»РёР·РѕРІР°РЅС‹. Р‘СѓРґРµС‚ РёР»Рё СѓРґР°Р»РµРЅ РёР»Рё СЂР°СЃС€РёСЂРµРЅ РІ СЃР»РµРґСѓСЋС‰РёС… РІРµСЂСЃРёСЏС… Р±РёР±Р»РёРѕС‚РµРєРё.
 */
 
 public class DBProcessor extends DBCommonProcessor
  {
-  /** Компонент-логгер данного класса. */
+  /** РљРѕРјРїРѕРЅРµРЅС‚-Р»РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°. */
   private Logger logger = Logger.getLogger(this.getClass().getName());
 
   /**
-   * Конструктор по умолчанию. Инициализирует текущую конфигурацию.
-   * @param config ConnectionConfig конфигурация модуля.
-   * @throws DBModuleConfigException ИС возникает, если конструктору передана пустая конфигурация.
+   * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ. РРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ С‚РµРєСѓС‰СѓСЋ РєРѕРЅС„РёРіСѓСЂР°С†РёСЋ.
+   * @param config ConnectionConfig РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ РјРѕРґСѓР»СЏ.
+   * @throws DBModuleConfigException РРЎ РІРѕР·РЅРёРєР°РµС‚, РµСЃР»Рё РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂСѓ РїРµСЂРµРґР°РЅР° РїСѓСЃС‚Р°СЏ РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ.
   */
   public DBProcessor(DBConfig config) throws DBModuleConfigException {super(config);}
 
   /**
    *
-   * @throws SQLException - ошибка при подключении к СУБД или при выполнении запроса на получение метаданных.
-   * @throws DBModuleConfigException ошибки конфигурирования соединения с СУБД.
-   * @throws DBConnectionException ошибки соединения с СУБД.
+   * @throws SQLException - РѕС€РёР±РєР° РїСЂРё РїРѕРґРєР»СЋС‡РµРЅРёРё Рє РЎРЈР‘Р” РёР»Рё РїСЂРё РІС‹РїРѕР»РЅРµРЅРёРё Р·Р°РїСЂРѕСЃР° РЅР° РїРѕР»СѓС‡РµРЅРёРµ РјРµС‚Р°РґР°РЅРЅС‹С….
+   * @throws DBModuleConfigException РѕС€РёР±РєРё РєРѕРЅС„РёРіСѓСЂРёСЂРѕРІР°РЅРёСЏ СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ РЎРЈР‘Р”.
+   * @throws DBConnectionException РѕС€РёР±РєРё СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ РЎРЈР‘Р”.
   */
   @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
   public boolean createDB(String dbName, DBStructureModel db, DBType targetDBType, boolean usePrimaryKey)
    throws SQLException, DBModuleConfigException, DBConnectionException
    {
     boolean result = false;
-    // Работаем только если указанная модель БД не пуста
+    // Р Р°Р±РѕС‚Р°РµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё СѓРєР°Р·Р°РЅРЅР°СЏ РјРѕРґРµР»СЊ Р‘Р” РЅРµ РїСѓСЃС‚Р°
     if (db != null)
      {
-      // Проверяем существование указанной БД - если существует - ничего не делаем!
+      // РџСЂРѕРІРµСЂСЏРµРј СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ СѓРєР°Р·Р°РЅРЅРѕР№ Р‘Р” - РµСЃР»Рё СЃСѓС‰РµСЃС‚РІСѓРµС‚ - РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј!
       DBSpider spider = new DBSpider(getConfig());
-      // Имя создаваемой БД - выбираем между указанным именем и именем из модели БД
+      // РРјСЏ СЃРѕР·РґР°РІР°РµРјРѕР№ Р‘Р” - РІС‹Р±РёСЂР°РµРј РјРµР¶РґСѓ СѓРєР°Р·Р°РЅРЅС‹Рј РёРјРµРЅРµРј Рё РёРјРµРЅРµРј РёР· РјРѕРґРµР»Рё Р‘Р”
       String localDBName;
       if ((dbName != null) && (!dbName.trim().equals(""))) {localDBName = dbName;}
       else {localDBName = db.getDbName();}
-      // Непосредственное создание БД осуществляется только если конечной БД не существует
+      // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕРµ СЃРѕР·РґР°РЅРёРµ Р‘Р” РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РµСЃР»Рё РєРѕРЅРµС‡РЅРѕР№ Р‘Р” РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
       if (!spider.isDBExists(localDBName))
        {
-        // Получим sql-запрос для создания указанной БД
+        // РџРѕР»СѓС‡РёРј sql-Р·Р°РїСЂРѕСЃ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ СѓРєР°Р·Р°РЅРЅРѕР№ Р‘Р”
         ArrayList<String> sql    = SQLGenerator.getCreateDBSQL(localDBName, db, targetDBType, usePrimaryKey, true, false);
-        // Подготовка к выполнению sql-запроса
+        // РџРѕРґРіРѕС‚РѕРІРєР° Рє РІС‹РїРѕР»РЅРµРЅРёСЋ sql-Р·Р°РїСЂРѕСЃР°
         Connection    connection = null;
         Statement     statement  = null;
-        // Непосредственно выполнение запроса
+        // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РІС‹РїРѕР»РЅРµРЅРёРµ Р·Р°РїСЂРѕСЃР°
         try
          {
-          // Получем содиеис СУБД
+          // РџРѕР»СѓС‡РµРј СЃРѕРґРёРµРёСЃ РЎРЈР‘Р”
           connection = DBUtils.getDBConn(getConfig());
-          // Создаем объект statement
+          // РЎРѕР·РґР°РµРј РѕР±СЉРµРєС‚ statement
           statement  = connection.createStatement();
-          // В цикле выполняем создание БД (выполняем созданный скрипт по одному запросу)
+          // Р’ С†РёРєР»Рµ РІС‹РїРѕР»РЅСЏРµРј СЃРѕР·РґР°РЅРёРµ Р‘Р” (РІС‹РїРѕР»РЅСЏРµРј СЃРѕР·РґР°РЅРЅС‹Р№ СЃРєСЂРёРїС‚ РїРѕ РѕРґРЅРѕРјСѓ Р·Р°РїСЂРѕСЃСѓ)
           if ((sql != null) && (!sql.isEmpty()))
            {
             for (String currentQuery : sql)
@@ -85,7 +85,7 @@ public class DBProcessor extends DBCommonProcessor
            }
           else {logger.fatal("Query [CREATE DATABASE...] is empty!");}
          }
-        // Обязательно освободим ресурсы
+        // РћР±СЏР·Р°С‚РµР»СЊРЅРѕ РѕСЃРІРѕР±РѕРґРёРј СЂРµСЃСѓСЂСЃС‹
         finally {if (statement != null) statement.close(); if (connection != null) connection.close();}
        }
      }
@@ -93,17 +93,17 @@ public class DBProcessor extends DBCommonProcessor
    }
 
   /**
-   * Метод предназначен только для тестирования данного класса.
-   * @param args String[] параметры метода main.
+   * РњРµС‚РѕРґ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅ С‚РѕР»СЊРєРѕ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°.
+   * @param args String[] РїР°СЂР°РјРµС‚СЂС‹ РјРµС‚РѕРґР° main.
   */
   public static void main(String[] args)
    {
     InitLogger.initLogger("jdb");
     Logger logger = Logger.getLogger(DBProcessor.class.getName());
 
-    // Убираем отладочный вывод universalConnector
+    // РЈР±РёСЂР°РµРј РѕС‚Р»Р°РґРѕС‡РЅС‹Р№ РІС‹РІРѕРґ universalConnector
     InitLogger.initLogger("jdb.universalConnector", Level.INFO);
-    // Убираем отладочный вывод universalConfig
+    // РЈР±РёСЂР°РµРј РѕС‚Р»Р°РґРѕС‡РЅС‹Р№ РІС‹РІРѕРґ universalConfig
     InitLogger.initLogger("jdb.universalConfig", Level.INFO);
 
     /**

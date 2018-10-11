@@ -13,27 +13,27 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Класс-описатель для сериализованных данных - таблиц и БД. Класс почти-immutable - он позволяет добавлять элементы во
- * внутренний список, но не позволяет менять имя и тип описываемого объекта.
- * @author Gusev Dmitry (Гусев Дмитрий)
+ * РљР»Р°СЃСЃ-РѕРїРёСЃР°С‚РµР»СЊ РґР»СЏ СЃРµСЂРёР°Р»РёР·РѕРІР°РЅРЅС‹С… РґР°РЅРЅС‹С… - С‚Р°Р±Р»РёС† Рё Р‘Р”. РљР»Р°СЃСЃ РїРѕС‡С‚Рё-immutable - РѕРЅ РїРѕР·РІРѕР»СЏРµС‚ РґРѕР±Р°РІР»СЏС‚СЊ СЌР»РµРјРµРЅС‚С‹ РІРѕ
+ * РІРЅСѓС‚СЂРµРЅРЅРёР№ СЃРїРёСЃРѕРє, РЅРѕ РЅРµ РїРѕР·РІРѕР»СЏРµС‚ РјРµРЅСЏС‚СЊ РёРјСЏ Рё С‚РёРї РѕРїРёСЃС‹РІР°РµРјРѕРіРѕ РѕР±СЉРµРєС‚Р°.
+ * @author Gusev Dmitry (Р“СѓСЃРµРІ Р”РјРёС‚СЂРёР№)
  * @version 4.0 (DATE: 30.05.2011)
 */
 
-// todo: может, сделать класс immutable?
+// todo: РјРѕР¶РµС‚, СЃРґРµР»Р°С‚СЊ РєР»Р°СЃСЃ immutable?
 
 public final class Descriptor implements Serializable
  {
-  /** Поле для совместимости с последующими версиями класса. */
+  /** РџРѕР»Рµ РґР»СЏ СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚Рё СЃ РїРѕСЃР»РµРґСѓСЋС‰РёРјРё РІРµСЂСЃРёСЏРјРё РєР»Р°СЃСЃР°. */
   static final long serialVersionUID = 6653925531273485678L;
-  // Наименование объекта
+  // РќР°РёРјРµРЅРѕРІР°РЅРёРµ РѕР±СЉРµРєС‚Р°
   private final String                      objectName;
-  // ВАЖНО! Всегда инициализируем данное поле - иначе необходимо добавить проверки на значение NULL (в методы).
+  // Р’РђР–РќРћ! Р’СЃРµРіРґР° РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅРѕРµ РїРѕР»Рµ - РёРЅР°С‡Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РґРѕР±Р°РІРёС‚СЊ РїСЂРѕРІРµСЂРєРё РЅР° Р·РЅР°С‡РµРЅРёРµ NULL (РІ РјРµС‚РѕРґС‹).
   private final ArrayList<String>           objectItems = new ArrayList<String>();
-  // Тип объекта
+  // РўРёРї РѕР±СЉРµРєС‚Р°
   private final DBasesLoaderCore.ObjectType objectType;
 
   /**
-   * Конструктор дескриптора.
+   * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РґРµСЃРєСЂРёРїС‚РѕСЂР°.
    * @param objectName String
    * @param objectType ObjectType
    * @throws JdbException
@@ -42,13 +42,13 @@ public final class Descriptor implements Serializable
    {
     if (!StringUtils.isBlank(objectName))
      {
-      // Наименование объекта хранится в ВЕРХНЕМ регистре символов
+      // РќР°РёРјРµРЅРѕРІР°РЅРёРµ РѕР±СЉРµРєС‚Р° С…СЂР°РЅРёС‚СЃСЏ РІ Р’Р•Р РҐРќР•Рњ СЂРµРіРёСЃС‚СЂРµ СЃРёРјРІРѕР»РѕРІ
       this.objectName = objectName.toUpperCase();
-      // Тип объекта
+      // РўРёРї РѕР±СЉРµРєС‚Р°
       if (objectType != null) {this.objectType = objectType;}
       else {throw new JdbException("Object type for descriptor is NULL!");}
      }
-    // Имя объекта пусто - ошибка!
+    // РРјСЏ РѕР±СЉРµРєС‚Р° РїСѓСЃС‚Рѕ - РѕС€РёР±РєР°!
     else {throw new JdbException("Object name for descriptor is empty!");}
    }
 

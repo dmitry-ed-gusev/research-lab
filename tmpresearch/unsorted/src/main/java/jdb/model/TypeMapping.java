@@ -1,25 +1,25 @@
 package jdb.model;
 
 /**
- * Класс реализует модель маппинга одного типа данных из СУБД к типу данных java. 
+ * РљР»Р°СЃСЃ СЂРµР°Р»РёР·СѓРµС‚ РјРѕРґРµР»СЊ РјР°РїРїРёРЅРіР° РѕРґРЅРѕРіРѕ С‚РёРїР° РґР°РЅРЅС‹С… РёР· РЎРЈР‘Р” Рє С‚РёРїСѓ РґР°РЅРЅС‹С… java. 
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 01.04.2008)
 */
 
 public class TypeMapping
  {
-  /** Наименование типа данных СУБД. */
+  /** РќР°РёРјРµРЅРѕРІР°РЅРёРµ С‚РёРїР° РґР°РЅРЅС‹С… РЎРЈР‘Р”. */
   private String dbTypeName;
-  /** Тип данных java. */
+  /** РўРёРї РґР°РЅРЅС‹С… java. */
   private int    javaDataType;
-  /** Размерность типа данных. */
+  /** Р Р°Р·РјРµСЂРЅРѕСЃС‚СЊ С‚РёРїР° РґР°РЅРЅС‹С…. */
   private int    maxPrecision;
 
   /**
-   * Конструктор, инициализирующий все поля класса.
-   * @param dbTypeName String тип данных СУБД.
-   * @param javaDataType int тип данных java.
-   * @param maxPrecision int размерность типа.
+   * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ, РёРЅРёС†РёР°Р»РёР·РёСЂСѓСЋС‰РёР№ РІСЃРµ РїРѕР»СЏ РєР»Р°СЃСЃР°.
+   * @param dbTypeName String С‚РёРї РґР°РЅРЅС‹С… РЎРЈР‘Р”.
+   * @param javaDataType int С‚РёРї РґР°РЅРЅС‹С… java.
+   * @param maxPrecision int СЂР°Р·РјРµСЂРЅРѕСЃС‚СЊ С‚РёРїР°.
   */
   public TypeMapping(String dbTypeName, int javaDataType, int maxPrecision)
    {
@@ -52,7 +52,7 @@ public class TypeMapping
    this.maxPrecision = maxPrecision;
   }
 
-  /** Строковое представление экземпляра данного класса. */
+  /** РЎС‚СЂРѕРєРѕРІРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ СЌРєР·РµРјРїР»СЏСЂР° РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°. */
   public String toString()
    {return ("\n DBMS type: " + this.dbTypeName + "; JAVA SQL type: " + this.javaDataType);}
 

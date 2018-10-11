@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * @author Gusev Dmitry (Гусев Дмитрий)
+ * @author Gusev Dmitry (Р“СѓСЃРµРІ Р”РјРёС‚СЂРёР№)
  * @version 1.0 (DATE: 22.06.11)
 */
 
@@ -28,7 +28,7 @@ public final class JLibUtils
     StringBuilder name_trans = new StringBuilder("");
         char name_char;
         int index_c;
-        String rus = "АаБбВвГгДдЕеЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя";
+        String rus = "РђР°Р‘Р±Р’РІР“РіР”РґР•РµР–Р¶Р—Р·РРёР™Р№РљРєР›Р»РњРјРќРЅРћРѕРџРїР СЂРЎСЃРўС‚РЈСѓР¤С„РҐС…Р¦С†Р§С‡РЁС€Р©С‰РЄСЉР«С‹Р¬СЊР­СЌР®СЋРЇСЏ";
         String[] eng = {"A", "a", "B", "b", "V", "v", "G", "g", "D", "d", "E", "e", "ZH", "zh", "Z", "z", "I", "i", "Y", "y", "K", "k", "L", "l",
                 "M", "m", "N", "n", "O", "o", "P", "p", "R", "r", "S", "s", "T", "t", "U", "u", "F", "f", "KH", "kh", "TS", "ts", "CH", "ch",
                 "SH", "sh", "SHCH", "shch", "Y", "y", "Y", "y", "Y", "y", "E", "e", "YU", "yu", "YA", "ya"};
@@ -49,12 +49,12 @@ public final class JLibUtils
         return name_trans.toString();
     }
 
-  /**Преобразование строковой даты в строку определенного формата
-     * @param date - дата в виде строки
-     * @param inPattern - формат даты dateTime, например: ddMMyy
-     * @param outPattern - шаблон даны для преобразования, например: dd.MM.yyyy
-     * @param defaultValue - возвращаемое значение по умолчанию, если не удастся преобразовать дату
-     * @return - строковая дата отформатированная по шаблону*/
+  /**РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃС‚СЂРѕРєРѕРІРѕР№ РґР°С‚С‹ РІ СЃС‚СЂРѕРєСѓ РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ С„РѕСЂРјР°С‚Р°
+     * @param date - РґР°С‚Р° РІ РІРёРґРµ СЃС‚СЂРѕРєРё
+     * @param inPattern - С„РѕСЂРјР°С‚ РґР°С‚С‹ dateTime, РЅР°РїСЂРёРјРµСЂ: ddMMyy
+     * @param outPattern - С€Р°Р±Р»РѕРЅ РґР°РЅС‹ РґР»СЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ, РЅР°РїСЂРёРјРµСЂ: dd.MM.yyyy
+     * @param defaultValue - РІРѕР·РІСЂР°С‰Р°РµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ, РµСЃР»Рё РЅРµ СѓРґР°СЃС‚СЃСЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°С‚СЊ РґР°С‚Сѓ
+     * @return - СЃС‚СЂРѕРєРѕРІР°СЏ РґР°С‚Р° РѕС‚С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРЅР°СЏ РїРѕ С€Р°Р±Р»РѕРЅСѓ*/
     public static String dateStrToPattern(String date, String inPattern, String outPattern, String defaultValue){
 
         String returnDate = defaultValue;
@@ -73,11 +73,11 @@ public final class JLibUtils
     }
 
 
-   /**Преобразование даты (java.sql.Date) в строку определенного формата
-     * @param date - дата
-     * @param outPattern - шаблон даны для преобразования, например: dd.MM.yyyy
-     * @param defaultValue - возвращаемое значение по умолчанию, если не удастся преобразовать дату
-     * @return - строковая дата отформатированная по шаблону*/
+   /**РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РґР°С‚С‹ (java.sql.Date) РІ СЃС‚СЂРѕРєСѓ РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ С„РѕСЂРјР°С‚Р°
+     * @param date - РґР°С‚Р°
+     * @param outPattern - С€Р°Р±Р»РѕРЅ РґР°РЅС‹ РґР»СЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ, РЅР°РїСЂРёРјРµСЂ: dd.MM.yyyy
+     * @param defaultValue - РІРѕР·РІСЂР°С‰Р°РµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ, РµСЃР»Рё РЅРµ СѓРґР°СЃС‚СЃСЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°С‚СЊ РґР°С‚Сѓ
+     * @return - СЃС‚СЂРѕРєРѕРІР°СЏ РґР°С‚Р° РѕС‚С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРЅР°СЏ РїРѕ С€Р°Р±Р»РѕРЅСѓ*/
     public static String dateToPattern(java.sql.Date date, String outPattern, String defaultValue){
 
         String returnDate = defaultValue;
@@ -95,11 +95,11 @@ public final class JLibUtils
         return returnDate;
     }
 
-    /**Преобразование даты (java.util.Date) в строку определенного формата
-     * @param date - дата
-     * @param outPattern - шаблон даны для преобразования, например: dd.MM.yyyy
-     * @param defaultValue - возвращаемое значение по умолчанию, если не удастся преобразовать дату
-     * @return - строковая дата отформатированная по шаблону*/
+    /**РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РґР°С‚С‹ (java.util.Date) РІ СЃС‚СЂРѕРєСѓ РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ С„РѕСЂРјР°С‚Р°
+     * @param date - РґР°С‚Р°
+     * @param outPattern - С€Р°Р±Р»РѕРЅ РґР°РЅС‹ РґР»СЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ, РЅР°РїСЂРёРјРµСЂ: dd.MM.yyyy
+     * @param defaultValue - РІРѕР·РІСЂР°С‰Р°РµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ, РµСЃР»Рё РЅРµ СѓРґР°СЃС‚СЃСЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°С‚СЊ РґР°С‚Сѓ
+     * @return - СЃС‚СЂРѕРєРѕРІР°СЏ РґР°С‚Р° РѕС‚С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРЅР°СЏ РїРѕ С€Р°Р±Р»РѕРЅСѓ*/
     public static String dateToPattern(java.util.Date date, String outPattern, String defaultValue){
 
         String returnDate = defaultValue;
@@ -117,20 +117,20 @@ public final class JLibUtils
         return returnDate;
     }
 
-   /**Преобразование строковой даты  в дату типа java.util.Date, с возможностью изменения на N-ое количество дней/месяцев/лет
-     * @param date - дата
-     * @param inPattern - формат даты date, например: ddMMyy
-     * @param period - количество дней/месяцев/лет на которые требуется перенести дату
-     * @param typePeriod - тип периода: день/месяц/год
-     * @return -  дата типа java.util.Date*/
+   /**РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃС‚СЂРѕРєРѕРІРѕР№ РґР°С‚С‹  РІ РґР°С‚Сѓ С‚РёРїР° java.util.Date, СЃ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊСЋ РёР·РјРµРЅРµРЅРёСЏ РЅР° N-РѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№/РјРµСЃСЏС†РµРІ/Р»РµС‚
+     * @param date - РґР°С‚Р°
+     * @param inPattern - С„РѕСЂРјР°С‚ РґР°С‚С‹ date, РЅР°РїСЂРёРјРµСЂ: ddMMyy
+     * @param period - РєРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№/РјРµСЃСЏС†РµРІ/Р»РµС‚ РЅР° РєРѕС‚РѕСЂС‹Рµ С‚СЂРµР±СѓРµС‚СЃСЏ РїРµСЂРµРЅРµСЃС‚Рё РґР°С‚Сѓ
+     * @param typePeriod - С‚РёРї РїРµСЂРёРѕРґР°: РґРµРЅСЊ/РјРµСЃСЏС†/РіРѕРґ
+     * @return -  РґР°С‚Р° С‚РёРїР° java.util.Date*/
     public static Date dateToPeriod(String date, String inPattern, int period, DatePeriod typePeriod) throws ParseException
      {return JLibUtils.dateToPeriod(new SimpleDateFormat(inPattern).parse(date), period, typePeriod);}
 
-    /**Изменение на N-ое количество дней/месяцев/лет даты типа java.util.Date
-     * @param date - дата
-     * @param period - количество дней/месяцев/лет на которые требуется перенести дату
-     * @param typePeriod - тип периода: день/месяц/год
-     * @return -  дата типа java.util.Date*/
+    /**РР·РјРµРЅРµРЅРёРµ РЅР° N-РѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№/РјРµСЃСЏС†РµРІ/Р»РµС‚ РґР°С‚С‹ С‚РёРїР° java.util.Date
+     * @param date - РґР°С‚Р°
+     * @param period - РєРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№/РјРµСЃСЏС†РµРІ/Р»РµС‚ РЅР° РєРѕС‚РѕСЂС‹Рµ С‚СЂРµР±СѓРµС‚СЃСЏ РїРµСЂРµРЅРµСЃС‚Рё РґР°С‚Сѓ
+     * @param typePeriod - С‚РёРї РїРµСЂРёРѕРґР°: РґРµРЅСЊ/РјРµСЃСЏС†/РіРѕРґ
+     * @return -  РґР°С‚Р° С‚РёРїР° java.util.Date*/
     public static Date dateToPeriod(Date date, int period, DatePeriod typePeriod){
 
         Date returnDate = null;

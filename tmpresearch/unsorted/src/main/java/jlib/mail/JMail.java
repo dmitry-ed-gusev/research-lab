@@ -14,10 +14,10 @@ import java.util.Date;
 import java.util.Properties;
 
 /**
- * Данный класс реализует отправку сообщения по электронной почте. Если к письму приложены файлы, они также будут
- * отправлены. Данный класс использует библиотеку javamail 1.3.3 для работы с эл. почтой. Для отправки файла исп-ся
- * протокол SMTP без авторизации. Отправка осуществляется по адресу(адресам), указанным в поле to. При этом, если
- * используется список адресов, то адреса в списке разделяются запятыми.
+ * Р”Р°РЅРЅС‹Р№ РєР»Р°СЃСЃ СЂРµР°Р»РёР·СѓРµС‚ РѕС‚РїСЂР°РІРєСѓ СЃРѕРѕР±С‰РµРЅРёСЏ РїРѕ СЌР»РµРєС‚СЂРѕРЅРЅРѕР№ РїРѕС‡С‚Рµ. Р•СЃР»Рё Рє РїРёСЃСЊРјСѓ РїСЂРёР»РѕР¶РµРЅС‹ С„Р°Р№Р»С‹, РѕРЅРё С‚Р°РєР¶Рµ Р±СѓРґСѓС‚
+ * РѕС‚РїСЂР°РІР»РµРЅС‹. Р”Р°РЅРЅС‹Р№ РєР»Р°СЃСЃ РёСЃРїРѕР»СЊР·СѓРµС‚ Р±РёР±Р»РёРѕС‚РµРєСѓ javamail 1.3.3 РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ СЌР». РїРѕС‡С‚РѕР№. Р”Р»СЏ РѕС‚РїСЂР°РІРєРё С„Р°Р№Р»Р° РёСЃРї-СЃСЏ
+ * РїСЂРѕС‚РѕРєРѕР» SMTP Р±РµР· Р°РІС‚РѕСЂРёР·Р°С†РёРё. РћС‚РїСЂР°РІРєР° РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚СЃСЏ РїРѕ Р°РґСЂРµСЃСѓ(Р°РґСЂРµСЃР°Рј), СѓРєР°Р·Р°РЅРЅС‹Рј РІ РїРѕР»Рµ to. РџСЂРё СЌС‚РѕРј, РµСЃР»Рё
+ * РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ СЃРїРёСЃРѕРє Р°РґСЂРµСЃРѕРІ, С‚Рѕ Р°РґСЂРµСЃР° РІ СЃРїРёСЃРєРµ СЂР°Р·РґРµР»СЏСЋС‚СЃСЏ Р·Р°РїСЏС‚С‹РјРё.
  *
  * @author Gusev Dmitry. Copyright (c) 2005, Gusev Dmitry, dept. 019.
  * @version 6.0 (09.12.2010)
@@ -25,14 +25,14 @@ import java.util.Properties;
 
 public class JMail
  {
-  /** Класс ведения журнала. */
+  /** РљР»Р°СЃСЃ РІРµРґРµРЅРёСЏ Р¶СѓСЂРЅР°Р»Р°. */
   private Logger      logger = Logger.getLogger(getClass().getName());
-  /** Конфигурация модуля-почтовика. */
+  /** РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ РјРѕРґСѓР»СЏ-РїРѕС‡С‚РѕРІРёРєР°. */
   private JMailConfig config = null;
 
   /**
-   * Конструктор по умолчанию. Конструктор инициализирует конфигурацию класса.
-   * @param config JMailConfig конфигурация модуля-мейлера. 
+   * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ. РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РєРѕРЅС„РёРіСѓСЂР°С†РёСЋ РєР»Р°СЃСЃР°.
+   * @param config JMailConfig РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ РјРѕРґСѓР»СЏ-РјРµР№Р»РµСЂР°. 
   */
   public JMail(JMailConfig config) {this.config = config;}
 
@@ -45,39 +45,39 @@ public class JMail
   }
 
   /**
-   * Метод для непосредственной отправки письма. Если во время отправки произошла ошибка - возбуждается ИС, которая будет
-   * содержать информацию о возникшей ошибке. Если массив files_list содержит хотя бы одно имя файла, то письмо будет
-   * MultiPart, если же нет ни одного имени файла, то будет отправлено простое письмо.
-   * @throws MessagingException ИС - ошибки при отправке почтового сообщения.
+   * РњРµС‚РѕРґ РґР»СЏ РЅРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕР№ РѕС‚РїСЂР°РІРєРё РїРёСЃСЊРјР°. Р•СЃР»Рё РІРѕ РІСЂРµРјСЏ РѕС‚РїСЂР°РІРєРё РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° - РІРѕР·Р±СѓР¶РґР°РµС‚СЃСЏ РРЎ, РєРѕС‚РѕСЂР°СЏ Р±СѓРґРµС‚
+   * СЃРѕРґРµСЂР¶Р°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РІРѕР·РЅРёРєС€РµР№ РѕС€РёР±РєРµ. Р•СЃР»Рё РјР°СЃСЃРёРІ files_list СЃРѕРґРµСЂР¶РёС‚ С…РѕС‚СЏ Р±С‹ РѕРґРЅРѕ РёРјСЏ С„Р°Р№Р»Р°, С‚Рѕ РїРёСЃСЊРјРѕ Р±СѓРґРµС‚
+   * MultiPart, РµСЃР»Рё Р¶Рµ РЅРµС‚ РЅРё РѕРґРЅРѕРіРѕ РёРјРµРЅРё С„Р°Р№Р»Р°, С‚Рѕ Р±СѓРґРµС‚ РѕС‚РїСЂР°РІР»РµРЅРѕ РїСЂРѕСЃС‚РѕРµ РїРёСЃСЊРјРѕ.
+   * @throws MessagingException РРЎ - РѕС€РёР±РєРё РїСЂРё РѕС‚РїСЂР°РІРєРµ РїРѕС‡С‚РѕРІРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ.
   */
   public void send() throws MessagingException
    {
     logger.debug("WORKING JMail.send().");
-    // Если текущий конфиг не пуст - работаем
+    // Р•СЃР»Рё С‚РµРєСѓС‰РёР№ РєРѕРЅС„РёРі РЅРµ РїСѓСЃС‚ - СЂР°Р±РѕС‚Р°РµРј
     if ((this.config != null) && (!this.config.isEmpty()))
      {
       logger.debug("JMail config ok. Processing.");
-      // Подготовка общих данных для обоих типов почтового сообщения (MultiPart и Plain)
+      // РџРѕРґРіРѕС‚РѕРІРєР° РѕР±С‰РёС… РґР°РЅРЅС‹С… РґР»СЏ РѕР±РѕРёС… С‚РёРїРѕРІ РїРѕС‡С‚РѕРІРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ (MultiPart Рё Plain)
       Properties props = System.getProperties();
       props.put("mail.smtp.host", config.getMailHost());
 
-      // Порт добавляем только если он указан - положителен и не равен 0
+      // РџРѕСЂС‚ РґРѕР±Р°РІР»СЏРµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё РѕРЅ СѓРєР°Р·Р°РЅ - РїРѕР»РѕР¶РёС‚РµР»РµРЅ Рё РЅРµ СЂР°РІРµРЅ 0
       if (config.getMailPort() > 0) {props.put("mail.smtp.port", config.getMailPort());}
       
       Session session = Session.getInstance(props, null);
 
-      // Создаем объект сообщения
+      // РЎРѕР·РґР°РµРј РѕР±СЉРµРєС‚ СЃРѕРѕР±С‰РµРЅРёСЏ
       MimeMessage msg = new MimeMessage(session);
-      msg.setFrom(new InternetAddress(config.getFrom())); // <- от кого
-      msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(config.getTo(), false)); // <- куда/кому
-      msg.setSubject(config.getSubject(), config.getEncoding()); // <- тема письма
-      // Дата отправки письма - всегда текущая дата
+      msg.setFrom(new InternetAddress(config.getFrom())); // <- РѕС‚ РєРѕРіРѕ
+      msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(config.getTo(), false)); // <- РєСѓРґР°/РєРѕРјСѓ
+      msg.setSubject(config.getSubject(), config.getEncoding()); // <- С‚РµРјР° РїРёСЃСЊРјР°
+      // Р”Р°С‚Р° РѕС‚РїСЂР°РІРєРё РїРёСЃСЊРјР° - РІСЃРµРіРґР° С‚РµРєСѓС‰Р°СЏ РґР°С‚Р°
       msg.setSentDate(new Date());
-      // Программа-майлер
+      // РџСЂРѕРіСЂР°РјРјР°-РјР°Р№Р»РµСЂ
       msg.setHeader("X-Mailer", JLibConsts.JMAIL_MAILER);
 
-      // Проверяем существование всех прикрепленных файлов (если они есть) и
-      // выставляем флажок физического наличия файлов
+      // РџСЂРѕРІРµСЂСЏРµРј СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ РІСЃРµС… РїСЂРёРєСЂРµРїР»РµРЅРЅС‹С… С„Р°Р№Р»РѕРІ (РµСЃР»Рё РѕРЅРё РµСЃС‚СЊ) Рё
+      // РІС‹СЃС‚Р°РІР»СЏРµРј С„Р»Р°Р¶РѕРє С„РёР·РёС‡РµСЃРєРѕРіРѕ РЅР°Р»РёС‡РёСЏ С„Р°Р№Р»РѕРІ
       boolean isFilesExists = false;
       if ((config.getFilesList() != null) && (!config.getFilesList().isEmpty()))
        {
@@ -85,17 +85,17 @@ public class JMail
          {if (new File(file).exists()) {isFilesExists = true;}}
        }
 
-      // Если есть файлы для отправки - создаем письмо типа MultiPart
+      // Р•СЃР»Рё РµСЃС‚СЊ С„Р°Р№Р»С‹ РґР»СЏ РѕС‚РїСЂР°РІРєРё - СЃРѕР·РґР°РµРј РїРёСЃСЊРјРѕ С‚РёРїР° MultiPart
       if (isFilesExists)
        {
         logger.debug("There are files for this mail. Using Multipart message.");
-        // Создание объекта MultiPart и добавление к нему частей
+        // РЎРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р° MultiPart Рё РґРѕР±Р°РІР»РµРЅРёРµ Рє РЅРµРјСѓ С‡Р°СЃС‚РµР№
         Multipart mp = new MimeMultipart();
-        // Сначала добавим в почтовое сообщение текст - первая часть письма
+        // РЎРЅР°С‡Р°Р»Р° РґРѕР±Р°РІРёРј РІ РїРѕС‡С‚РѕРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ С‚РµРєСЃС‚ - РїРµСЂРІР°СЏ С‡Р°СЃС‚СЊ РїРёСЃСЊРјР°
         MimeBodyPart mbp = new MimeBodyPart();
         mbp.setText(config.getText(), config.getEncoding());
         mp.addBodyPart(mbp);
-        // Добавим к почтовому сообщению файлы (в цикле) - остальные части письма
+        // Р”РѕР±Р°РІРёРј Рє РїРѕС‡С‚РѕРІРѕРјСѓ СЃРѕРѕР±С‰РµРЅРёСЋ С„Р°Р№Р»С‹ (РІ С†РёРєР»Рµ) - РѕСЃС‚Р°Р»СЊРЅС‹Рµ С‡Р°СЃС‚Рё РїРёСЃСЊРјР°
         FileDataSource fds;
         for (String file : config.getFilesList())
          {
@@ -103,31 +103,31 @@ public class JMail
           fds = new FileDataSource(file);
           mbp.setDataHandler(new DataHandler(fds));
 
-          // todo: доразобраться с кодировкой имени вложенного файла
+          // todo: РґРѕСЂР°Р·РѕР±СЂР°С‚СЊСЃСЏ СЃ РєРѕРґРёСЂРѕРІРєРѕР№ РёРјРµРЅРё РІР»РѕР¶РµРЅРЅРѕРіРѕ С„Р°Р№Р»Р°
           try {mbp.setFileName(MimeUtility.encodeText(fds.getName()));}
           catch (UnsupportedEncodingException e) {logger.error(e.getMessage());}
 
           mp.addBodyPart(mbp);
          }
-       // Добавление объекта Multipart в письмо
+       // Р”РѕР±Р°РІР»РµРЅРёРµ РѕР±СЉРµРєС‚Р° Multipart РІ РїРёСЃСЊРјРѕ
        msg.setContent(mp, "text/plain; charset=\"" + config.getEncoding() + "\"");
       }
-     // Если файлов для отправки нет - простое письмо
+     // Р•СЃР»Рё С„Р°Р№Р»РѕРІ РґР»СЏ РѕС‚РїСЂР°РІРєРё РЅРµС‚ - РїСЂРѕСЃС‚РѕРµ РїРёСЃСЊРјРѕ
      else
       {
        logger.debug("There are no files for this mail.");
        msg.setContent(config.getText(), "text/plain; charset=\"" + config.getEncoding() + "\"");
       }
-     // Непосредственно отправка мыльца
+     // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РѕС‚РїСЂР°РІРєР° РјС‹Р»СЊС†Р°
      Transport.send(msg);
     }
-   // Если же текущий конфиг пуст - ошибка. Сообщаем в лог.
+   // Р•СЃР»Рё Р¶Рµ С‚РµРєСѓС‰РёР№ РєРѕРЅС„РёРі РїСѓСЃС‚ - РѕС€РёР±РєР°. РЎРѕРѕР±С‰Р°РµРј РІ Р»РѕРі.
    else {logger.error("Empty JMail config! Can't process!");}
   }
 
  /**
-  * Метод main - только для тестирования данного класса.
-  * @param args String[] аргументы командной строки для класса main.
+  * РњРµС‚РѕРґ main - С‚РѕР»СЊРєРѕ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°.
+  * @param args String[] Р°СЂРіСѓРјРµРЅС‚С‹ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё РґР»СЏ РєР»Р°СЃСЃР° main.
   */
  public static void main(String[] args)
   {
@@ -137,10 +137,10 @@ public class JMail
    JMailConfig config = new JMailConfig();
    config.setTo("019gus@rs-head.spb.ru");
    config.setFrom("019gus@rs-head.spb.ru");
-   config.setSubject("тест!");
+   config.setSubject("С‚РµСЃС‚!");
    config.setMailHost("10.1.254.70");
-   config.setText("простой тест!!!");
-   config.addFile("D:\\my_docs\\ПРОЕКТЫ\\Java\\j2ee\\updaterService\\production\\client\\updaterClient.zip");
+   config.setText("РїСЂРѕСЃС‚РѕР№ С‚РµСЃС‚!!!");
+   config.addFile("D:\\my_docs\\РџР РћР•РљРўР«\\Java\\j2ee\\updaterService\\production\\client\\updaterClient.zip");
 
    JMail mail = new JMail(config);
    try

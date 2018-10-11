@@ -18,21 +18,21 @@ public class DBMSSysCatalogHelper
     logger.debug("DBMSSysCatalogHelper.isInSysCatalog() working.");
     boolean result = false;
 
-    // Если указанный тип СУБД не пуст - работаем
+    // Р•СЃР»Рё СѓРєР°Р·Р°РЅРЅС‹Р№ С‚РёРї РЎРЈР‘Р” РЅРµ РїСѓСЃС‚ - СЂР°Р±РѕС‚Р°РµРј
     if ((dbType != null) && !StringUtils.isBlank(tableName))
      {
       logger.debug("DBMS type [" + dbType.strValue() + "] and table name [" + tableName + "] is OK! Processing.");
       switch (dbType)
        {
-        // Для СУБД Информикс схемы не используем
+        // Р”Р»СЏ РЎРЈР‘Р” РРЅС„РѕСЂРјРёРєСЃ СЃС…РµРјС‹ РЅРµ РёСЃРїРѕР»СЊР·СѓРµРј
         case INFORMIX: if (DBConsts.SYSCATALOG_INFORMIX.contains(tableName.toUpperCase())) {result = true;} break;
-        // Для СУБД Сиквел сервер схемы используем
+        // Р”Р»СЏ РЎРЈР‘Р” РЎРёРєРІРµР» СЃРµСЂРІРµСЂ СЃС…РµРјС‹ РёСЃРїРѕР»СЊР·СѓРµРј
         case MSSQL_JTDS: case MSSQL_NATIVE:
-         // Если схема указана, ищем в системном каталоге
+         // Р•СЃР»Рё СЃС…РµРјР° СѓРєР°Р·Р°РЅР°, РёС‰РµРј РІ СЃРёСЃС‚РµРјРЅРѕРј РєР°С‚Р°Р»РѕРіРµ
          break;
        }
      }
-    // Если же пуст тип СУБД или имя таблицы - невозможно корректно выполнить проверку!
+    // Р•СЃР»Рё Р¶Рµ РїСѓСЃС‚ С‚РёРї РЎРЈР‘Р” РёР»Рё РёРјСЏ С‚Р°Р±Р»РёС†С‹ - РЅРµРІРѕР·РјРѕР¶РЅРѕ РєРѕСЂСЂРµРєС‚РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ РїСЂРѕРІРµСЂРєСѓ!
     else {logger.warn("DBMS type or table name is empty! Can't check DBMS system catalog correctly!");}
 
     return result;

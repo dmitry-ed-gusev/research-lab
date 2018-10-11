@@ -4,13 +4,13 @@ import jlib.exceptions.JLibException;
 import org.apache.log4j.Logger;
 
 /**
- * @author Gusev Dmitry (Гусев Дмитрий)
+ * @author Gusev Dmitry (Р“СѓСЃРµРІ Р”РјРёС‚СЂРёР№)
  * @version 1.0 (DATE: 03.06.11)
 */
 
 public class Serializer
  {
-  /** Компонент-логгер данного класса. */
+  /** РљРѕРјРїРѕРЅРµРЅС‚-Р»РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°. */
   private static Logger logger = Logger.getLogger(Serializer.class.getName());
 
   /**
@@ -27,40 +27,40 @@ public class Serializer
    throws EmptyObjectException, IOException, JLibException
    {
     logger.debug("WORKING Serializer.writeObject().");
-    // Проверка полученного объекта - не пуст ли он. Если пуст - ошибка!
+    // РџСЂРѕРІРµСЂРєР° РїРѕР»СѓС‡РµРЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р° - РЅРµ РїСѓСЃС‚ Р»Рё РѕРЅ. Р•СЃР»Рё РїСѓСЃС‚ - РѕС€РёР±РєР°!
     if (object == null)                     {throw new JLibException("Object for writing is NULL!");}
-    // Проверка имени файла - оно обязательно должно быть указано!
+    // РџСЂРѕРІРµСЂРєР° РёРјРµРЅРё С„Р°Р№Р»Р° - РѕРЅРѕ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ СѓРєР°Р·Р°РЅРѕ!
     else if (StringUtils.isBlank(fileName)) {throw new JLibException("File name for serialized object is empty!");}
 
-    // Выбираем каталог для сериализации - если пуст указанный путь, запишем объект в текущий рабочий каталог
+    // Р’С‹Р±РёСЂР°РµРј РєР°С‚Р°Р»РѕРі РґР»СЏ СЃРµСЂРёР°Р»РёР·Р°С†РёРё - РµСЃР»Рё РїСѓСЃС‚ СѓРєР°Р·Р°РЅРЅС‹Р№ РїСѓС‚СЊ, Р·Р°РїРёС€РµРј РѕР±СЉРµРєС‚ РІ С‚РµРєСѓС‰РёР№ СЂР°Р±РѕС‡РёР№ РєР°С‚Р°Р»РѕРі
     String localFullPath;
     if (StringUtils.isBlank(fullPath)) {localFullPath = FSUtils.fixFPath(SystemUtils.getUserDir().getAbsolutePath());}
     else                               {localFullPath = FSUtils.fixFPath(fullPath);}
 
-    // Если указанный каталог для сериализации не существует - создаем его
+    // Р•СЃР»Рё СѓРєР°Р·Р°РЅРЅС‹Р№ РєР°С‚Р°Р»РѕРі РґР»СЏ СЃРµСЂРёР°Р»РёР·Р°С†РёРё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ - СЃРѕР·РґР°РµРј РµРіРѕ
     if (!new File(localFullPath).exists())
      {
       logger.debug("Creating catalog [" + localFullPath + "].");
       boolean result = new File(localFullPath).mkdirs();
-      // Если не удалось создать каталог для сериализации - ошибка!
+      // Р•СЃР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РєР°С‚Р°Р»РѕРі РґР»СЏ СЃРµСЂРёР°Р»РёР·Р°С†РёРё - РѕС€РёР±РєР°!
       if (!result) {throw new IOException("Can't create catalog [" + localFullPath + "] for object!");}
      }
-    // Если же каталог существует, но это не каталог (файл например) - ошибка (ИС)!
+    // Р•СЃР»Рё Р¶Рµ РєР°С‚Р°Р»РѕРі СЃСѓС‰РµСЃС‚РІСѓРµС‚, РЅРѕ СЌС‚Рѕ РЅРµ РєР°С‚Р°Р»РѕРі (С„Р°Р№Р» РЅР°РїСЂРёРјРµСЂ) - РѕС€РёР±РєР° (РРЎ)!
     else if (!new File(localFullPath).isDirectory())
      {throw new IOException("Path [" + localFullPath + "] is not directory!");}
 
-    // Полный путь к файлу с сериализованным объектом
+    // РџРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ СЃ СЃРµСЂРёР°Р»РёР·РѕРІР°РЅРЅС‹Рј РѕР±СЉРµРєС‚РѕРј
     StringBuilder fullPathSerialized = new StringBuilder(localFullPath);
-    // Если путь не оканчивается на символ по умолчанию (/) - добавим в конец пути этот символ
+    // Р•СЃР»Рё РїСѓС‚СЊ РЅРµ РѕРєР°РЅС‡РёРІР°РµС‚СЃСЏ РЅР° СЃРёРјРІРѕР» РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ (/) - РґРѕР±Р°РІРёРј РІ РєРѕРЅРµС† РїСѓС‚Рё СЌС‚РѕС‚ СЃРёРјРІРѕР»
     if (!fullPathSerialized.toString().endsWith(String.valueOf(JLibConsts.DEFAULT_DIR_DELIMITER)))
      fullPathSerialized.append(JLibConsts.DEFAULT_DIR_DELIMITER);
 
-    // Получим расширение указанного имени файла
+    // РџРѕР»СѓС‡РёРј СЂР°СЃС€РёСЂРµРЅРёРµ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РёРјРµРЅРё С„Р°Р№Р»Р°
     String fileExtension =
 
-      // Расширение для файла с сериализованным объектом не должно совпадать с указанным нам расширением
-      // для конечного файла, поэтому если расширение нам указано, то надо проверить - не совпадает ли оно
-      // с расширением по умолчанию и выбрать одно из двух расширений, которое не совпадает.
+      // Р Р°СЃС€РёСЂРµРЅРёРµ РґР»СЏ С„Р°Р№Р»Р° СЃ СЃРµСЂРёР°Р»РёР·РѕРІР°РЅРЅС‹Рј РѕР±СЉРµРєС‚РѕРј РЅРµ РґРѕР»Р¶РЅРѕ СЃРѕРІРїР°РґР°С‚СЊ СЃ СѓРєР°Р·Р°РЅРЅС‹Рј РЅР°Рј СЂР°СЃС€РёСЂРµРЅРёРµРј
+      // РґР»СЏ РєРѕРЅРµС‡РЅРѕРіРѕ С„Р°Р№Р»Р°, РїРѕСЌС‚РѕРјСѓ РµСЃР»Рё СЂР°СЃС€РёСЂРµРЅРёРµ РЅР°Рј СѓРєР°Р·Р°РЅРѕ, С‚Рѕ РЅР°РґРѕ РїСЂРѕРІРµСЂРёС‚СЊ - РЅРµ СЃРѕРІРїР°РґР°РµС‚ Р»Рё РѕРЅРѕ
+      // СЃ СЂР°СЃС€РёСЂРµРЅРёРµРј РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ Рё РІС‹Р±СЂР°С‚СЊ РѕРґРЅРѕ РёР· РґРІСѓС… СЂР°СЃС€РёСЂРµРЅРёР№, РєРѕС‚РѕСЂРѕРµ РЅРµ СЃРѕРІРїР°РґР°РµС‚.
       String serializedExt = ".";
       if ((fileExt != null) && (!fileExt.trim().equals("")))
        {
@@ -69,61 +69,61 @@ public class Serializer
         else
          {serializedExt += JLibConsts.SERIALIZED_OBJECT_EXTENSION_1;}
        }
-      // Если расширение не указано - используем первое расширение по умолчанию.
+      // Р•СЃР»Рё СЂР°СЃС€РёСЂРµРЅРёРµ РЅРµ СѓРєР°Р·Р°РЅРѕ - РёСЃРїРѕР»СЊР·СѓРµРј РїРµСЂРІРѕРµ СЂР°СЃС€РёСЂРµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ.
       else {serializedExt += JLibConsts.SERIALIZED_OBJECT_EXTENSION_1;}
-      // Непосредственно добавляем расширение к полному пути к файлу
+      // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РґРѕР±Р°РІР»СЏРµРј СЂР°СЃС€РёСЂРµРЅРёРµ Рє РїРѕР»РЅРѕРјСѓ РїСѓС‚Рё Рє С„Р°Р№Р»Сѓ
       fullPathSerialized.append(localFileName).append(serializedExt);
 
-      // Полный путь к файлу с архивом сериализованного объекта.
+      // РџРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ СЃ Р°СЂС…РёРІРѕРј СЃРµСЂРёР°Р»РёР·РѕРІР°РЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°.
       StringBuilder fullPathZipped = new StringBuilder(localFullPath);
       if (!fullPathZipped.toString().endsWith("/")) {fullPathZipped.append("/");}
       fullPathZipped.append(localFileName);
 
-      // Если нам указали расширение - используем его, если же нет - используем расширение по умолчанию.
+      // Р•СЃР»Рё РЅР°Рј СѓРєР°Р·Р°Р»Рё СЂР°СЃС€РёСЂРµРЅРёРµ - РёСЃРїРѕР»СЊР·СѓРµРј РµРіРѕ, РµСЃР»Рё Р¶Рµ РЅРµС‚ - РёСЃРїРѕР»СЊР·СѓРµРј СЂР°СЃС€РёСЂРµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ.
       if (!StringUtils.isBlank(fileExt))
        {
-        // Если указанное расширение начинается с точки - добавляем его как есть, если же не с точки -
-        // сначала добавим точку перед расширением файла
+        // Р•СЃР»Рё СѓРєР°Р·Р°РЅРЅРѕРµ СЂР°СЃС€РёСЂРµРЅРёРµ РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃ С‚РѕС‡РєРё - РґРѕР±Р°РІР»СЏРµРј РµРіРѕ РєР°Рє РµСЃС‚СЊ, РµСЃР»Рё Р¶Рµ РЅРµ СЃ С‚РѕС‡РєРё -
+        // СЃРЅР°С‡Р°Р»Р° РґРѕР±Р°РІРёРј С‚РѕС‡РєСѓ РїРµСЂРµРґ СЂР°СЃС€РёСЂРµРЅРёРµРј С„Р°Р№Р»Р°
         if (fileExt.startsWith(".")) {fullPathZipped.append(fileExt);}
         else                         {fullPathZipped.append(".").append(fileExt);}
        }
       else {fullPathZipped.append(JLibConsts.ZIPPED_OBJECT_EXTENSION);}
 
-      // Применение такой конструкции гарантирует закрытие потока ObjectOutputStream при возникновении ИС
-      // во время записи объекта в файл (сериализации)
+      // РџСЂРёРјРµРЅРµРЅРёРµ С‚Р°РєРѕР№ РєРѕРЅСЃС‚СЂСѓРєС†РёРё РіР°СЂР°РЅС‚РёСЂСѓРµС‚ Р·Р°РєСЂС‹С‚РёРµ РїРѕС‚РѕРєР° ObjectOutputStream РїСЂРё РІРѕР·РЅРёРєРЅРѕРІРµРЅРёРё РРЎ
+      // РІРѕ РІСЂРµРјСЏ Р·Р°РїРёСЃРё РѕР±СЉРµРєС‚Р° РІ С„Р°Р№Р» (СЃРµСЂРёР°Р»РёР·Р°С†РёРё)
       ObjectOutputStream out = null;
       try
        {
-        // Запись объекта в файл (сериализация)
+        // Р—Р°РїРёСЃСЊ РѕР±СЉРµРєС‚Р° РІ С„Р°Р№Р» (СЃРµСЂРёР°Р»РёР·Р°С†РёСЏ)
         logger.debug("Writing object to disk.");
         out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fullPathSerialized.toString())));
         out.writeObject(object);
        }
-      // ИС - что-то не так с сериализуемым классом
+      // РРЎ - С‡С‚Рѕ-С‚Рѕ РЅРµ С‚Р°Рє СЃ СЃРµСЂРёР°Р»РёР·СѓРµРјС‹Рј РєР»Р°СЃСЃРѕРј
       catch (InvalidClassException e)
        {logger.error("Something is wrong with a class " + object.getClass().getName() + " [" + e.getMessage() + "]");}
-      // ИС - сериализуемый класс не реализует интерфейс Serializable
+      // РРЎ - СЃРµСЂРёР°Р»РёР·СѓРµРјС‹Р№ РєР»Р°СЃСЃ РЅРµ СЂРµР°Р»РёР·СѓРµС‚ РёРЅС‚РµСЂС„РµР№СЃ Serializable
       catch (NotSerializableException e)
        {logger.error("Class " + object.getClass().getName() + " doesn't implement the java.io.Serializable " +
                      "interface! [" + e.getMessage() + "]");}
       catch (IOException e) {logger.error("I/O error! [" + e.getMessage() + "]");}
       finally {logger.debug("Trying to close ObjectOutputStream..."); if (out != null) out.close();}
 
-      // Применение такой конструкции гарантирует закрытие потоков при возникновении ИС во время работы с ними
+      // РџСЂРёРјРµРЅРµРЅРёРµ С‚Р°РєРѕР№ РєРѕРЅСЃС‚СЂСѓРєС†РёРё РіР°СЂР°РЅС‚РёСЂСѓРµС‚ Р·Р°РєСЂС‹С‚РёРµ РїРѕС‚РѕРєРѕРІ РїСЂРё РІРѕР·РЅРёРєРЅРѕРІРµРЅРёРё РРЎ РІРѕ РІСЂРµРјСЏ СЂР°Р±РѕС‚С‹ СЃ РЅРёРјРё
       FileOutputStream fout = null;
       ZipOutputStream zout = null;
       FileInputStream  fin  = null;
       try
        {
-        // Архивация объектного файла
+        // РђСЂС…РёРІР°С†РёСЏ РѕР±СЉРµРєС‚РЅРѕРіРѕ С„Р°Р№Р»Р°
         fout = new FileOutputStream(fullPathZipped.toString());
         zout = new ZipOutputStream(new BufferedOutputStream(fout));
-        // Уровень компрессии файлов в архиве
+        // РЈСЂРѕРІРµРЅСЊ РєРѕРјРїСЂРµСЃСЃРёРё С„Р°Р№Р»РѕРІ РІ Р°СЂС…РёРІРµ
         zout.setLevel(Deflater.BEST_COMPRESSION);
-        // Запись в архив инфы об архивируемом файле
+        // Р—Р°РїРёСЃСЊ РІ Р°СЂС…РёРІ РёРЅС„С‹ РѕР± Р°СЂС…РёРІРёСЂСѓРµРјРѕРј С„Р°Р№Р»Рµ
         ZipEntry ze = new ZipEntry(localFileName + serializedExt);
         zout.putNextEntry(ze);
-        // Непосредственно запись архивируемого файла в архив
+        // РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ Р·Р°РїРёСЃСЊ Р°СЂС…РёРІРёСЂСѓРµРјРѕРіРѕ С„Р°Р№Р»Р° РІ Р°СЂС…РёРІ
         fin = new FileInputStream(fullPathSerialized.toString());
         byte ipBuf[] = new byte[JLibConsts.FILE_BUFFER];
         int lenRead;
@@ -136,7 +136,7 @@ public class Serializer
         if (fin != null) fin.close(); if (zout != null) zout.close(); if (fout != null) fout.close();
        }
 
-      // Удаление исходного файла с данными
+      // РЈРґР°Р»РµРЅРёРµ РёСЃС…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р° СЃ РґР°РЅРЅС‹РјРё
       if (!new File(fullPathSerialized.toString()).delete()) logger.warn("Can't delete source file [" + fullPathSerialized + "]!");
 
       return fullPathZipped.toString();

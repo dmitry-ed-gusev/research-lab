@@ -27,16 +27,16 @@ import java.util.ArrayList;
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 17.03.2009)
  *
- * @deprecated данный класс не рекомендуется к использованию. Большая часть его методов не используется. Класс будет
- * удален в последующих релизах библиотеки. Некоторые употребительные методы данного класса будут находиться в классе
+ * @deprecated РґР°РЅРЅС‹Р№ РєР»Р°СЃСЃ РЅРµ СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ Рє РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЋ. Р‘РѕР»СЊС€Р°СЏ С‡Р°СЃС‚СЊ РµРіРѕ РјРµС‚РѕРґРѕРІ РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ. РљР»Р°СЃСЃ Р±СѓРґРµС‚
+ * СѓРґР°Р»РµРЅ РІ РїРѕСЃР»РµРґСѓСЋС‰РёС… СЂРµР»РёР·Р°С… Р±РёР±Р»РёРѕС‚РµРєРё. РќРµРєРѕС‚РѕСЂС‹Рµ СѓРїРѕС‚СЂРµР±РёС‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР° Р±СѓРґСѓС‚ РЅР°С…РѕРґРёС‚СЊСЃСЏ РІ РєР»Р°СЃСЃРµ
  * {@link jdb.processing.spider.DBSpider DBSpider}.
 */
 
 public class DBEngineer
  {
-  /** Компонент-логгер данного класса. */
+  /** РљРѕРјРїРѕРЅРµРЅС‚-Р»РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°. */
   private Logger             logger           = Logger.getLogger(getClass().getName());
-  /** Текущий конфиг БД-процессора. */
+  /** РўРµРєСѓС‰РёР№ РєРѕРЅС„РёРі Р‘Р”-РїСЂРѕС†РµСЃСЃРѕСЂР°. */
   private DBConfig           config           = null;
   
   /***/
@@ -49,9 +49,9 @@ public class DBEngineer
   private DBSpider           spider           = null;
 
   /**
-   * Конструктор.
-   * @param config JdbcConfig конфиг для соединения класса с СУБД.
-   * @throws jdb.exceptions.DBModuleConfigException ошибка - указан пустой(null) кофиг.
+   * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ.
+   * @param config JdbcConfig РєРѕРЅС„РёРі РґР»СЏ СЃРѕРµРґРёРЅРµРЅРёСЏ РєР»Р°СЃСЃР° СЃ РЎРЈР‘Р”.
+   * @throws jdb.exceptions.DBModuleConfigException РѕС€РёР±РєР° - СѓРєР°Р·Р°РЅ РїСѓСЃС‚РѕР№(null) РєРѕС„РёРі.
   */
   public DBEngineer(DBConfig config) throws DBModuleConfigException
    {
@@ -66,7 +66,7 @@ public class DBEngineer
   public ArrayList<String> makeIntegrity(DBIntegrityModel db, DBProcessingMonitor monitor)
    throws DBConnectionException, SQLException, DBModuleConfigException, DBModelException
    {
-    // Если еще не инициализировано поле DBIntegrityChecker - инициализируем его
+    // Р•СЃР»Рё РµС‰Рµ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРѕ РїРѕР»Рµ DBIntegrityChecker - РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РµРіРѕ
     if (integrityChecker == null) {integrityChecker = new DBIntegrityChecker(config);}
     return integrityChecker.makeIntegrity(db, monitor);
    }
@@ -75,7 +75,7 @@ public class DBEngineer
   public ArrayList<String> makeIntegrity(DBIntegrityModel db)
    throws DBConnectionException, SQLException, DBModuleConfigException, DBModelException
    {
-    // Если еще не инициализировано поле DBIntegrityChecker - инициализируем его
+    // Р•СЃР»Рё РµС‰Рµ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРѕ РїРѕР»Рµ DBIntegrityChecker - РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РµРіРѕ
     if (integrityChecker == null) {integrityChecker = new DBIntegrityChecker(config);}
     return integrityChecker.makeIntegrity(db);
    }
@@ -84,7 +84,7 @@ public class DBEngineer
   public DBStructureModel getDBStructureModel()
    throws DBConnectionException, SQLException, DBModuleConfigException, DBModelException
    {
-    // Если еще не инициализировано поле DBModeler - инициализируем его
+    // Р•СЃР»Рё РµС‰Рµ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРѕ РїРѕР»Рµ DBModeler - РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РµРіРѕ
     if (modeler == null) {modeler = new DBModeler(config);}
     return modeler.getDBStructureModel();
    }
@@ -93,7 +93,7 @@ public class DBEngineer
   public DBIntegrityModel getDBIntegrityModel()
    throws DBConnectionException, SQLException, DBModuleConfigException, DBModelException
    {
-    // Если еще не инициализировано поле DBModeler - инициализируем его
+    // Р•СЃР»Рё РµС‰Рµ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРѕ РїРѕР»Рµ DBModeler - РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РµРіРѕ
     if (modeler == null) {modeler = new DBModeler(config);}
     return modeler.getDBIntegrityModel();
    }
@@ -102,7 +102,7 @@ public class DBEngineer
   public DBTimedModel getDBTimedModel()
    throws DBConnectionException, SQLException, DBModuleConfigException, DBModelException
    {
-    // Если еще не инициализировано поле DBModeler - инициализируем его
+    // Р•СЃР»Рё РµС‰Рµ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРѕ РїРѕР»Рµ DBModeler - РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РµРіРѕ
     if (modeler == null) {modeler = new DBModeler(config);}
     return modeler.getDBTimedModel();
    }
@@ -111,16 +111,16 @@ public class DBEngineer
   public boolean createDB(String dbName, DBStructureModel db, DBType targetDBType, boolean usePrimaryKey)
    throws DBConnectionException, SQLException, DBModuleConfigException
    {
-    // Если еще не инициализировано поле DBProcessor - инициализируем его
+    // Р•СЃР»Рё РµС‰Рµ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРѕ РїРѕР»Рµ DBProcessor - РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РµРіРѕ
     if (processor == null) {processor = new DBProcessor(config);}
     return processor.createDB(dbName, db, targetDBType, usePrimaryKey);
    }
   */
   
   /**
-   * Проверка соединения с БД. Возвращает описание ошибки - если не удалось соединиться с БД, если же удалось -
-   * метод возвращает значение null.
-   * @return String описание ошибки или значение null (если все в порядке).
+   * РџСЂРѕРІРµСЂРєР° СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ Р‘Р”. Р’РѕР·РІСЂР°С‰Р°РµС‚ РѕРїРёСЃР°РЅРёРµ РѕС€РёР±РєРё - РµСЃР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ СЃРѕРµРґРёРЅРёС‚СЊСЃСЏ СЃ Р‘Р”, РµСЃР»Рё Р¶Рµ СѓРґР°Р»РѕСЃСЊ -
+   * РјРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ null.
+   * @return String РѕРїРёСЃР°РЅРёРµ РѕС€РёР±РєРё РёР»Рё Р·РЅР°С‡РµРЅРёРµ null (РµСЃР»Рё РІСЃРµ РІ РїРѕСЂСЏРґРєРµ).
   */
   public String testDBMSConnection()
    {
@@ -129,17 +129,17 @@ public class DBEngineer
     try
      {
       connection = DBUtils.getDBConn(this.config);
-      // Если полученный объект Connection пуст - соединение мы не установили (почему - ХЗ?)
+      // Р•СЃР»Рё РїРѕР»СѓС‡РµРЅРЅС‹Р№ РѕР±СЉРµРєС‚ Connection РїСѓСЃС‚ - СЃРѕРµРґРёРЅРµРЅРёРµ РјС‹ РЅРµ СѓСЃС‚Р°РЅРѕРІРёР»Рё (РїРѕС‡РµРјСѓ - РҐР—?)
       if (connection == null) {throw new SQLException("Can't establish a connection! Unknown reason!");}
      }
-    // Перехват ИС
+    // РџРµСЂРµС…РІР°С‚ РРЎ
     catch (SQLException e)
      {result = String.format(DBTesterConsts.MSG_ERROR_CONNECT, e.getClass().getName(), e.getMessage(), "code: " + e.getErrorCode() +
                              " sqlState: " + e.getSQLState());}
     catch (DBConnectionException e) {result = String.format(DBTesterConsts.MSG_ERROR_CONNECT, e.getClass().getName(), e.getMessage(), "");}
     catch (DBModuleConfigException e)     {result = String.format(DBTesterConsts.MSG_ERROR_CONNECT, e.getClass().getName(), e.getMessage(), "");}
 
-    // Если удалось соединиться нужно закрыть за собой соединение
+    // Р•СЃР»Рё СѓРґР°Р»РѕСЃСЊ СЃРѕРµРґРёРЅРёС‚СЊСЃСЏ РЅСѓР¶РЅРѕ Р·Р°РєСЂС‹С‚СЊ Р·Р° СЃРѕР±РѕР№ СЃРѕРµРґРёРЅРµРЅРёРµ
     if (connection != null)
      {try {connection.close();} catch (SQLException e) {logger.error("Can't close connection! [" + e.getMessage() + "]");}}
 
@@ -150,7 +150,7 @@ public class DBEngineer
   public boolean isTableExists(String tableName, boolean ignoreConstraints)
    throws DBConnectionException, SQLException, DBModuleConfigException
    {
-    // Если еще не инициализировано поле DBSpider - инициализируем его
+    // Р•СЃР»Рё РµС‰Рµ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРѕ РїРѕР»Рµ DBSpider - РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РµРіРѕ
     if (spider == null) {spider = new DBSpider(config);}
     return spider.isTableExists(tableName, ignoreConstraints);
    }
@@ -159,7 +159,7 @@ public class DBEngineer
   public boolean isAbsTableExists(String tableName)
    throws DBConnectionException, SQLException, DBModuleConfigException
    {
-    // Если еще не инициализировано поле DBSpider - инициализируем его
+    // Р•СЃР»Рё РµС‰Рµ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРѕ РїРѕР»Рµ DBSpider - РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РµРіРѕ
     if (spider == null) {spider = new DBSpider(config);}
     return spider.isAbsTableExists(tableName);
    }

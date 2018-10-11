@@ -13,37 +13,37 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Класс для проверки различных параметров как сервера СУБД так и самой БД.
+ * РљР»Р°СЃСЃ РґР»СЏ РїСЂРѕРІРµСЂРєРё СЂР°Р·Р»РёС‡РЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ РєР°Рє СЃРµСЂРІРµСЂР° РЎРЈР‘Р” С‚Р°Рє Рё СЃР°РјРѕР№ Р‘Р”.
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 01.09.2008)
 */
 
 public class DBTester
  {
-  /** Компонент-логгер данного класса. */
+  /** РљРѕРјРїРѕРЅРµРЅС‚-Р»РѕРіРіРµСЂ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°. */
   private Logger           logger = Logger.getLogger(this.getClass().getName());
-  /** Текущая конфигурация данного модуля. */
+  /** РўРµРєСѓС‰Р°СЏ РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ РґР°РЅРЅРѕРіРѕ РјРѕРґСѓР»СЏ. */
   private DBConfig config = null;
 
   /**
-   * Конструктор по умолчанию. Инициализирует текущую конфигурацию.
-   * @param config ConnectionConfig конфигурация модуля.
+   * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ. РРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ С‚РµРєСѓС‰СѓСЋ РєРѕРЅС„РёРіСѓСЂР°С†РёСЋ.
+   * @param config ConnectionConfig РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ РјРѕРґСѓР»СЏ.
   */
   /**
   public DBTester(DBConfig config) throws EmptyConnectionConfigException
    {
     logger.debug("WORKING DBTester constructor().");
-    // Инициализация конфигурации модуля
+    // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РєРѕРЅС„РёРіСѓСЂР°С†РёРё РјРѕРґСѓР»СЏ
     if (config == null) throw new EmptyConnectionConfigException("Empty connection config!");
     else this.config = config;
    }
   */
   
   /**
-   * Проверка соединения с БД. Возвращает описание ошибки - если не удалось соединиться с БД, если же удалось -
-   * метод возвращает значение null.
-   * @return String описание ошибки или значение null (если все в порядке).
-   * @deprecated не рекомендуется использовать данный класс.
+   * РџСЂРѕРІРµСЂРєР° СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ Р‘Р”. Р’РѕР·РІСЂР°С‰Р°РµС‚ РѕРїРёСЃР°РЅРёРµ РѕС€РёР±РєРё - РµСЃР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ СЃРѕРµРґРёРЅРёС‚СЊСЃСЏ СЃ Р‘Р”, РµСЃР»Рё Р¶Рµ СѓРґР°Р»РѕСЃСЊ -
+   * РјРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ null.
+   * @return String РѕРїРёСЃР°РЅРёРµ РѕС€РёР±РєРё РёР»Рё Р·РЅР°С‡РµРЅРёРµ null (РµСЃР»Рё РІСЃРµ РІ РїРѕСЂСЏРґРєРµ).
+   * @deprecated РЅРµ СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РґР°РЅРЅС‹Р№ РєР»Р°СЃСЃ.
   */
   public String testDBMSConnection()
    {
@@ -53,15 +53,15 @@ public class DBTester
     /**
     try
      {
-      // Локальная конфигурация для подключения к СУБД
+      // Р›РѕРєР°Р»СЊРЅР°СЏ РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє РЎРЈР‘Р”
       ConnectionConfig localConfig = new ConnectionConfig(this.config);
-      // Обнуление имени БД необходимо для подключения к серверу в целом, а не к конкретной БД
+      // РћР±РЅСѓР»РµРЅРёРµ РёРјРµРЅРё Р‘Р” РЅРµРѕР±С…РѕРґРёРјРѕ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє СЃРµСЂРІРµСЂСѓ РІ С†РµР»РѕРј, Р° РЅРµ Рє РєРѕРЅРєСЂРµС‚РЅРѕР№ Р‘Р”
       localConfig.setDbName(null);
-      // Подключаемся
+      // РџРѕРґРєР»СЋС‡Р°РµРјСЃСЏ
       JdbcConnector connector = JdbcConnector.getInstance(localConfig);
       conn = connector.getConnection();
      }
-    // Перехват всех возможных ИС и формирование строки с описанием ошибки соединения
+    // РџРµСЂРµС…РІР°С‚ РІСЃРµС… РІРѕР·РјРѕР¶РЅС‹С… РРЎ Рё С„РѕСЂРјРёСЂРѕРІР°РЅРёРµ СЃС‚СЂРѕРєРё СЃ РѕРїРёСЃР°РЅРёРµРј РѕС€РёР±РєРё СЃРѕРµРґРёРЅРµРЅРёСЏ
     catch (SQLException e)
      {
       result = String.format(DBTesterConsts.MSG_ERROR_CONNECT, e.getClass().getName(), e.getMessage(), "code: " + e.getErrorCode() +
@@ -82,7 +82,7 @@ public class DBTester
     catch (IllegalAccessException e)
      {result = String.format(DBTesterConsts.MSG_ERROR_CONNECT, e.getClass().getName(), e.getMessage(), "");}
 
-    // Если удалось соединиться нужно закрыть за собой соединение
+    // Р•СЃР»Рё СѓРґР°Р»РѕСЃСЊ СЃРѕРµРґРёРЅРёС‚СЊСЃСЏ РЅСѓР¶РЅРѕ Р·Р°РєСЂС‹С‚СЊ Р·Р° СЃРѕР±РѕР№ СЃРѕРµРґРёРЅРµРЅРёРµ
     if (conn != null)
      try {conn.close();} catch (SQLException e) {logger.error("Can't close connection! [" + e.getMessage() + "]");}
     */
@@ -91,10 +91,10 @@ public class DBTester
    }
 
   /**
-   * Метод возвращает значение ИСТИНА/ЛОЖЬ в зависимости от того, существует ли на текущем сревере баз данных
-   * база с именем dbName.
-   * @param dbName String имя искомой БД.
-   * @return boolean ИСТИНА/ЛОЖЬ - существует ли указанная БД.
+   * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ РРЎРўРРќРђ/Р›РћР–Р¬ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ, СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё РЅР° С‚РµРєСѓС‰РµРј СЃСЂРµРІРµСЂРµ Р±Р°Р· РґР°РЅРЅС‹С…
+   * Р±Р°Р·Р° СЃ РёРјРµРЅРµРј dbName.
+   * @param dbName String РёРјСЏ РёСЃРєРѕРјРѕР№ Р‘Р”.
+   * @return boolean РРЎРўРРќРђ/Р›РћР–Р¬ - СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё СѓРєР°Р·Р°РЅРЅР°СЏ Р‘Р”.
   */
   public boolean isDBExists(String dbName)
    {
@@ -102,23 +102,23 @@ public class DBTester
     logger.debug("Checking existence DB [" + dbName + "] on current DBMS server.");
     try
      {
-      // Если переданное имя БД пусто - ничего вообще не делаем
+      // Р•СЃР»Рё РїРµСЂРµРґР°РЅРЅРѕРµ РёРјСЏ Р‘Р” РїСѓСЃС‚Рѕ - РЅРёС‡РµРіРѕ РІРѕРѕР±С‰Рµ РЅРµ РґРµР»Р°РµРј
       if ((dbName != null) && (!dbName.trim().equals("")))
        {
-        // Проверяем существование БД только если есть коннект к СУБД
+        // РџСЂРѕРІРµСЂСЏРµРј СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ Р‘Р” С‚РѕР»СЊРєРѕ РµСЃР»Рё РµСЃС‚СЊ РєРѕРЅРЅРµРєС‚ Рє РЎРЈР‘Р”
         String connectResult = this.testDBMSConnection();
         if (connectResult == null)
          {
           logger.debug("Connect to DBMS is OK! Searching DB.");
           DBSpider spider = new DBSpider(this.config);
           ArrayList<String> databases = spider.getDBSList();
-          // если получен непустой список баз данных данного сервера - ищем по нему искомую БД
+          // РµСЃР»Рё РїРѕР»СѓС‡РµРЅ РЅРµРїСѓСЃС‚РѕР№ СЃРїРёСЃРѕРє Р±Р°Р· РґР°РЅРЅС‹С… РґР°РЅРЅРѕРіРѕ СЃРµСЂРІРµСЂР° - РёС‰РµРј РїРѕ РЅРµРјСѓ РёСЃРєРѕРјСѓСЋ Р‘Р”
           if ((databases != null) && (!databases.isEmpty()))
            if (databases.contains(dbName.toUpperCase()))
             result = true;
-         } // конец оператора проверки коннекта к СУБД
+         } // РєРѕРЅРµС† РѕРїРµСЂР°С‚РѕСЂР° РїСЂРѕРІРµСЂРєРё РєРѕРЅРЅРµРєС‚Р° Рє РЎРЈР‘Р”
         else logger.error(String.format(DBTesterConsts.MSG_ERROR_CONNECT, "", connectResult, ""));
-       } // конец оператора проверки имени БД
+       } // РєРѕРЅРµС† РѕРїРµСЂР°С‚РѕСЂР° РїСЂРѕРІРµСЂРєРё РёРјРµРЅРё Р‘Р”
       else logger.error("DB name is empty! Nothing to search!");
      }
     catch (SQLException e)
@@ -132,17 +132,17 @@ public class DBTester
    }
 
   /**
-   * Метод предназначен только для тестирования данного класса.
-   * @param args String[] параметры метода main.
+   * РњРµС‚РѕРґ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅ С‚РѕР»СЊРєРѕ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ РґР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°.
+   * @param args String[] РїР°СЂР°РјРµС‚СЂС‹ РјРµС‚РѕРґР° main.
   */
   public static void main(String[] args)
    {
     InitLogger.initLogger("jlib");
     //Logger logger = Logger.getLogger(DBTester.class.getName());
 
-    // Убираем отладочный вывод universalConnector
+    // РЈР±РёСЂР°РµРј РѕС‚Р»Р°РґРѕС‡РЅС‹Р№ РІС‹РІРѕРґ universalConnector
     InitLogger.initLogger("jlib.db.universalConnector", Level.INFO);
-    // Убираем отладочный вывод universalConfig
+    // РЈР±РёСЂР°РµРј РѕС‚Р»Р°РґРѕС‡РЅС‹Р№ РІС‹РІРѕРґ universalConfig
     InitLogger.initLogger("jlib.db.universalConfig", Level.INFO);
 
     /**

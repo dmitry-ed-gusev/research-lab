@@ -1,7 +1,6 @@
 package jlib.system.exec;
 
 /**
- * Константы модуля запуска внешних приложений ОС.
  * @author Gusev Dmitry (019gus)
  * @version 2.0 (DATE: 25.02.2009)
 */

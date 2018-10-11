@@ -6,97 +6,97 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
- * Êëàññ-ïîìîùíèê äëÿ êëàññà DBUtils - ğåàëèçóåò ñòàòè÷åñêèå ìåòîäû äëÿ ãåíåğàöèè JDBC URL, êîòîğûå
- * èñïîëüçóşòñÿ äëÿ ñîåäèíåíèÿ ñ ğàçëè÷íûìè ÑÓÁÄ.
+ * ĞšĞ»Ğ°ÑÑ-Ğ¿Ğ¾Ğ¼Ğ¾Ñ‰Ğ½Ğ¸Ğº Ğ´Ğ»Ñ ĞºĞ»Ğ°ÑÑĞ° DBUtils - Ñ€ĞµĞ°Ğ»Ğ¸Ğ·ÑƒĞµÑ‚ ÑÑ‚Ğ°Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ¸Ğµ Ğ¼ĞµÑ‚Ğ¾Ğ´Ñ‹ Ğ´Ğ»Ñ Ğ³ĞµĞ½ĞµÑ€Ğ°Ñ†Ğ¸Ğ¸ JDBC URL, ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ğµ
+ * Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒÑÑ‚ÑÑ Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ñ€Ğ°Ğ·Ğ»Ğ¸Ñ‡Ğ½Ñ‹Ğ¼Ğ¸ Ğ¡Ğ£Ğ‘Ğ”.
  * @author Gusev Dmitry (019gus)
  * @version 3.0 (DATE: 15.07.2010)
 */
 
 public final class JdbcUrlHelper
  {
-  /** Êîìïîíåíò-ëîããåğ äàííîãî êëàññà. */
+  /** ĞšĞ¾Ğ¼Ğ¿Ğ¾Ğ½ĞµĞ½Ñ‚-Ğ»Ğ¾Ğ³Ğ³ĞµÑ€ Ğ´Ğ°Ğ½Ğ½Ğ¾Ğ³Ğ¾ ĞºĞ»Ğ°ÑÑĞ°. */
   private static Logger logger = Logger.getLogger(JdbcUrlHelper.class.getName());
 
-  // Ïğåäîòâğàùàåì èíñòàíöèğîâàíèå è íàñëåäîâàíèå
+  // ĞŸÑ€ĞµĞ´Ğ¾Ñ‚Ğ²Ñ€Ğ°Ñ‰Ğ°ĞµĞ¼ Ğ¸Ğ½ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ¸ Ğ½Ğ°ÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ
   private JdbcUrlHelper() {}
 
   /**
-   * Ìåòîä ôîğìèğóåò URL äëÿ ñîåäèíåíèÿ ñ ÑÓÁÄ Informix ÷åğåç JDBC äğàéâåğ.
-   * @param config DBJdbcConfig êîíôèãóğàöèÿ (ïàğàìåòğû) ñîåäèíåíèÿ ñ ÑÓÁÄ.
-   * @return String ñôîğìèğîâàííûé URL äëÿ ñîåäèíåíèÿ.
+   * ĞœĞµÑ‚Ğ¾Ğ´ Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒĞµÑ‚ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ğ¡Ğ£Ğ‘Ğ” Informix Ñ‡ĞµÑ€ĞµĞ· JDBC Ğ´Ñ€Ğ°Ğ¹Ğ²ĞµÑ€.
+   * @param config DBJdbcConfig ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ÑƒÑ€Ğ°Ñ†Ğ¸Ñ (Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹) ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ğ¡Ğ£Ğ‘Ğ”.
+   * @return String ÑÑ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¹ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ.
   */
   public static String getInformixJdbcUrl(BaseDBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
-    // Åñëè óêàçàííûé êîíôèã íå îøèáî÷åí - ğàáîòàåì
+    // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ½Ñ‹Ğ¹ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ½Ğµ Ğ¾ÑˆĞ¸Ğ±Ğ¾Ñ‡ĞµĞ½ - Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµĞ¼
     String configErrors = DBUtils.getConfigErrors(config);
     if (StringUtils.isBlank(configErrors))
      {
-      // Ñîçäàåì URL äëÿ ñîåäèíåíèÿ
+      // Ğ¡Ğ¾Ğ·Ğ´Ğ°ĞµĞ¼ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ
       jdbcUrl = new StringBuilder("jdbc:informix-sqli://").append(config.getHost());
-      // Åñëè åñòü èìÿ ÁÄ - ïîäêëş÷àåìñÿ ê íåé,åñëè æå íåò - ïîäêëş÷àåìñÿ ê ñåğâåğó Èíôîğìèêñ (òîëüêî ñåğâåğó).
+      // Ğ•ÑĞ»Ğ¸ ĞµÑÑ‚ÑŒ Ğ¸Ğ¼Ñ Ğ‘Ğ” - Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ°ĞµĞ¼ÑÑ Ğº Ğ½ĞµĞ¹,ĞµÑĞ»Ğ¸ Ğ¶Ğµ Ğ½ĞµÑ‚ - Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ°ĞµĞ¼ÑÑ Ğº ÑĞµÑ€Ğ²ĞµÑ€Ñƒ Ğ˜Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ¸ĞºÑ (Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ ÑĞµÑ€Ğ²ĞµÑ€Ñƒ).
       if (!StringUtils.isBlank(config.getDbName())) {jdbcUrl.append("/").append(config.getDbName());}
-      // Îñòàâøàÿñÿ ÷àñòü jdbcUrl äëÿ ñîåäèíåíèÿ
+      // ĞÑÑ‚Ğ°Ğ²ÑˆĞ°ÑÑÑ Ñ‡Ğ°ÑÑ‚ÑŒ jdbcUrl Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ
       jdbcUrl.append(":INFORMIXSERVER=").append(config.getServerName()).append(";user=").append(config.getUser());
       jdbcUrl.append(";password=").append(config.getPassword().getPassword());
-      // Åñëè óêàçàíû äîï. ïàğàìåòğû - äîáàâèì èõ ê URL
+      // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ñ‹ Ğ´Ğ¾Ğ¿. Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹ - Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ¸Ğ¼ Ğ¸Ñ… Ğº URL
       if (!StringUtils.isBlank(config.getConnParams()))
        {
         if (config.getConnParams().startsWith(";")) {jdbcUrl.append(config.getConnParams());}
         else {jdbcUrl.append(";").append(config.getConnParams());}
        }
      }
-    // Åñëè êîíôèã ïóñò - ñîîáùèì îá ıòîì
+    // Ğ•ÑĞ»Ğ¸ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ¿ÑƒÑÑ‚ - ÑĞ¾Ğ¾Ğ±Ñ‰Ğ¸Ğ¼ Ğ¾Ğ± ÑÑ‚Ğ¾Ğ¼
     else {logger.error("There are config errors [" + configErrors + "].");}
-    // Ôîğìèğîâàíèå êîíå÷íîãî ğåçóëüòàòà
+    // Ğ¤Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°
     if (jdbcUrl != null) {result = jdbcUrl.toString();} else {result = null;}
     logger.debug("JdbcHelper: generated URL -> [" + result + "]");
     return result;
    }
 
   /**
-   * Ìåòîä ôîğìèğóåò URL äëÿ ñîåäèíåíèÿ ñ ÑÓÁÄ Mysql ÷åğåç JDBC äğàéâåğ.
-   * @param config DBJdbcConfig êîíôèãóğàöèÿ (ïàğàìåòğû) ñîåäèíåíèÿ ñ ÑÓÁÄ.
-   * @return String ñôîğìèğîâàííûé URL äëÿ ñîåäèíåíèÿ.
+   * ĞœĞµÑ‚Ğ¾Ğ´ Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒĞµÑ‚ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ğ¡Ğ£Ğ‘Ğ” Mysql Ñ‡ĞµÑ€ĞµĞ· JDBC Ğ´Ñ€Ğ°Ğ¹Ğ²ĞµÑ€.
+   * @param config DBJdbcConfig ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ÑƒÑ€Ğ°Ñ†Ğ¸Ñ (Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹) ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ğ¡Ğ£Ğ‘Ğ”.
+   * @return String ÑÑ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¹ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ.
   */
   public static String getMysqlJdbcUrl(BaseDBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
-    // Åñëè óêàçàííûé êîíôèã íå îøèáî÷åí - ğàáîòàåì
+    // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ½Ñ‹Ğ¹ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ½Ğµ Ğ¾ÑˆĞ¸Ğ±Ğ¾Ñ‡ĞµĞ½ - Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµĞ¼
     String configErrors = DBUtils.getConfigErrors(config);
     if (StringUtils.isBlank(configErrors))
      {
-      // Ñîçäàåì URL äëÿ ñîåäèíåíèÿ
+      // Ğ¡Ğ¾Ğ·Ğ´Ğ°ĞµĞ¼ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ
       jdbcUrl = new StringBuilder("jdbc:mysql://");
-      // Åñëè óêàçàí ÕÎÑÒ - äîáàâèì åãî ê URL. Õîñò ìîæåò áûòü è íå óêàçàí, òîãäà áóäåò ïîïûòêà ïîäêëş÷åíèÿ ê õîñòó
-      // ñ àäğåñîì 127.0.0.1 Âìåñòå ñ ÕÎÑÒÎÌ ìîæåò áûòü óêàçàí ïîğò (÷åğåç :), åñëè æå ïîğò íå óêàçàí, òî áóäåò
-      // èñïîëüçîâàí ïîğò ïî óìîë÷àíèş - 3306
+      // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½ Ğ¥ĞĞ¡Ğ¢ - Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ¸Ğ¼ ĞµĞ³Ğ¾ Ğº URL. Ğ¥Ğ¾ÑÑ‚ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ±Ñ‹Ñ‚ÑŒ Ğ¸ Ğ½Ğµ ÑƒĞºĞ°Ğ·Ğ°Ğ½, Ñ‚Ğ¾Ğ³Ğ´Ğ° Ğ±ÑƒĞ´ĞµÑ‚ Ğ¿Ğ¾Ğ¿Ñ‹Ñ‚ĞºĞ° Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ Ğº Ñ…Ğ¾ÑÑ‚Ñƒ
+      // Ñ Ğ°Ğ´Ñ€ĞµÑĞ¾Ğ¼ 127.0.0.1 Ğ’Ğ¼ĞµÑÑ‚Ğµ Ñ Ğ¥ĞĞ¡Ğ¢ĞĞœ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ±Ñ‹Ñ‚ÑŒ ÑƒĞºĞ°Ğ·Ğ°Ğ½ Ğ¿Ğ¾Ñ€Ñ‚ (Ñ‡ĞµÑ€ĞµĞ· :), ĞµÑĞ»Ğ¸ Ğ¶Ğµ Ğ¿Ğ¾Ñ€Ñ‚ Ğ½Ğµ ÑƒĞºĞ°Ğ·Ğ°Ğ½, Ñ‚Ğ¾ Ğ±ÑƒĞ´ĞµÑ‚
+      // Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ğ½ Ğ¿Ğ¾Ñ€Ñ‚ Ğ¿Ğ¾ ÑƒĞ¼Ğ¾Ğ»Ñ‡Ğ°Ğ½Ğ¸Ñ - 3306
       if (!StringUtils.isBlank(config.getHost())) {jdbcUrl.append(config.getHost());}
 
-      // Òğåòèé ïî ñ÷åòó çíàê "/" îáÿçàòåëüíî äîëæåí áûòü, âíå çàâèñèìîñòè îò íàëè÷èÿ îñòàëüíûõ ïàğàìåòğîâ
+      // Ğ¢Ñ€ĞµÑ‚Ğ¸Ğ¹ Ğ¿Ğ¾ ÑÑ‡ĞµÑ‚Ñƒ Ğ·Ğ½Ğ°Ğº "/" Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ Ğ´Ğ¾Ğ»Ğ¶ĞµĞ½ Ğ±Ñ‹Ñ‚ÑŒ, Ğ²Ğ½Ğµ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ Ğ¾Ñ‚ Ğ½Ğ°Ğ»Ğ¸Ñ‡Ğ¸Ñ Ğ¾ÑÑ‚Ğ°Ğ»ÑŒĞ½Ñ‹Ñ… Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ğ¾Ğ²
       jdbcUrl.append("/");
       
-      // Åñëè èìÿ ÁÄ óêàçàíî - ïîäêëş÷àåìñÿ ê íåé, åñëè æå íå óêàçàíî - ïîäêëş÷àåìñÿ ê ñåğâåğó â öåëîì
+      // Ğ•ÑĞ»Ğ¸ Ğ¸Ğ¼Ñ Ğ‘Ğ” ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ¾ - Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ°ĞµĞ¼ÑÑ Ğº Ğ½ĞµĞ¹, ĞµÑĞ»Ğ¸ Ğ¶Ğµ Ğ½Ğµ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ¾ - Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ°ĞµĞ¼ÑÑ Ğº ÑĞµÑ€Ğ²ĞµÑ€Ñƒ Ğ² Ñ†ĞµĞ»Ğ¾Ğ¼
       if (!StringUtils.isBlank(config.getDbName())) {jdbcUrl.append(config.getDbName());}
-      // Åñëè ëîãèí/ïàğîëü íå ïóñòû - äîáàâëÿåì èõ ê URL äëÿ ïîäêëş÷åíèÿ
+      // Ğ•ÑĞ»Ğ¸ Ğ»Ğ¾Ğ³Ğ¸Ğ½/Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ Ğ½Ğµ Ğ¿ÑƒÑÑ‚Ñ‹ - Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ÑĞµĞ¼ Ğ¸Ñ… Ğº URL Ğ´Ğ»Ñ Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ
       if (!StringUtils.isBlank(config.getUser()))
        {
         jdbcUrl.append("?user=").append(config.getUser());
-        // Åñëè íå ïóñò ïàğîëü - åãî òîæå äîáàâëÿåì
+        // Ğ•ÑĞ»Ğ¸ Ğ½Ğµ Ğ¿ÑƒÑÑ‚ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ - ĞµĞ³Ğ¾ Ñ‚Ğ¾Ğ¶Ğµ Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ÑĞµĞ¼
         if ((config.getPassword() != null) && !StringUtils.isBlank(config.getPassword().getPassword()))
          {jdbcUrl.append("&password=").append(config.getPassword().getPassword());}
        }
 
-      // todo: ıêñïåğèìåíòàëüíûå ïàğàìåòğû äëÿ MYSQL!
+      // todo: ÑĞºÑĞ¿ĞµÑ€Ğ¸Ğ¼ĞµĞ½Ñ‚Ğ°Ğ»ÑŒĞ½Ñ‹Ğµ Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹ Ğ´Ğ»Ñ MYSQL!
       jdbcUrl.append("&rewriteBatchedStatements=true");
       jdbcUrl.append("&cachePrepStmts=true");
       jdbcUrl.append("&prepStmtCacheSize=2000");
       jdbcUrl.append("&prepStmtCacheSqlLimit=4096");
 
-      // todo: ğåàëèçàöèÿ äîáàâëåíèÿ äîï. ïàğàìåòğîâ ê URL ïîäêëş÷åíèÿ ê Mysql
-      // Åñëè óêàçàíû äîï. ïàğàìåòğû ïîäêëş÷åíèÿ - äîáàâèì èõ ê URL
+      // todo: Ñ€ĞµĞ°Ğ»Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ñ Ğ´Ğ¾Ğ¿. Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ğ¾Ğ² Ğº URL Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ Ğº Mysql
+      // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ñ‹ Ğ´Ğ¾Ğ¿. Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹ Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ - Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ¸Ğ¼ Ğ¸Ñ… Ğº URL
       //if ((this.dbConnectionParameters != null) && (!this.dbConnectionParameters.trim().equals("")))
       // {
       //  if (this.dbConnectionParameters.startsWith(";")) jdbcUrl.append(this.dbConnectionParameters);
@@ -104,159 +104,159 @@ public final class JdbcUrlHelper
       // }
 
      }
-    // Åñëè êîíôèã ïóñò - ñîîáùèì îá ıòîì
+    // Ğ•ÑĞ»Ğ¸ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ¿ÑƒÑÑ‚ - ÑĞ¾Ğ¾Ğ±Ñ‰Ğ¸Ğ¼ Ğ¾Ğ± ÑÑ‚Ğ¾Ğ¼
     else {logger.error("There are config errors [" + configErrors + "].");}
-    // Ôîğìèğîâàíèå êîíå÷íîãî ğåçóëüòàòà
+    // Ğ¤Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°
     if (jdbcUrl != null) {result = jdbcUrl.toString();} else {result = null;}
     logger.debug("JdbcHelper: generated URL -> [" + result + "]");
     return result;
    }
 
   /**
-   * Ìåòîä ôîğìèğóåò URL äëÿ ñîåäèíåíèÿ ñ ODBC-èñòî÷íèêîì ÷åğåç JDBC äğàéâåğ.
-   * @param config DBJdbcConfig êîíôèãóğàöèÿ (ïàğàìåòğû) ñîåäèíåíèÿ ñ ÑÓÁÄ.
-   * @return String ñôîğìèğîâàííûé URL äëÿ ñîåäèíåíèÿ.
+   * ĞœĞµÑ‚Ğ¾Ğ´ Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒĞµÑ‚ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ ODBC-Ğ¸ÑÑ‚Ğ¾Ñ‡Ğ½Ğ¸ĞºĞ¾Ğ¼ Ñ‡ĞµÑ€ĞµĞ· JDBC Ğ´Ñ€Ğ°Ğ¹Ğ²ĞµÑ€.
+   * @param config DBJdbcConfig ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ÑƒÑ€Ğ°Ñ†Ğ¸Ñ (Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹) ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ğ¡Ğ£Ğ‘Ğ”.
+   * @return String ÑÑ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¹ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ.
   */
   public static String getOdbcJdbcUrl(BaseDBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
-    // Åñëè óêàçàííûé êîíôèã íå îøèáî÷åí - ğàáîòàåì
+    // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ½Ñ‹Ğ¹ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ½Ğµ Ğ¾ÑˆĞ¸Ğ±Ğ¾Ñ‡ĞµĞ½ - Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµĞ¼
     String configErrors = DBUtils.getConfigErrors(config);
     if (StringUtils.isBlank(configErrors))
      {
-      // Åñëè âìåñòî èìåíè ODBC-èñòî÷íèêà äàííûõ íàì ïåğåäàëè ïóòü ê ôàéëó ñ ÁÄ (ê ôàéëó *.mdb) - ñôîğìèğóåì
-      // url äëÿ ïîäêëş÷åíèÿ ê íåìó (ñóùåñòâîâàíèå ôàéëà íà äèñêå ÍÅ ÏĞÎÂÅĞßÅÒÑß!). Íà äàííûé ìîìåíò ğàáîòàåò
-      // òîëüêî äëÿ *.mdb - MS Access. (åñëè â èìåíè ÁÄ ïğèñóòñòâóşò ñèìâîëû \ èëè / - ıòî ïóòü ê ÁÄ.)
+      // Ğ•ÑĞ»Ğ¸ Ğ²Ğ¼ĞµÑÑ‚Ğ¾ Ğ¸Ğ¼ĞµĞ½Ğ¸ ODBC-Ğ¸ÑÑ‚Ğ¾Ñ‡Ğ½Ğ¸ĞºĞ° Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ… Ğ½Ğ°Ğ¼ Ğ¿ĞµÑ€ĞµĞ´Ğ°Ğ»Ğ¸ Ğ¿ÑƒÑ‚ÑŒ Ğº Ñ„Ğ°Ğ¹Ğ»Ñƒ Ñ Ğ‘Ğ” (Ğº Ñ„Ğ°Ğ¹Ğ»Ñƒ *.mdb) - ÑÑ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒĞµĞ¼
+      // url Ğ´Ğ»Ñ Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ Ğº Ğ½ĞµĞ¼Ñƒ (ÑÑƒÑ‰ĞµÑÑ‚Ğ²Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ñ„Ğ°Ğ¹Ğ»Ğ° Ğ½Ğ° Ğ´Ğ¸ÑĞºĞµ ĞĞ• ĞŸĞ ĞĞ’Ğ•Ğ Ğ¯Ğ•Ğ¢Ğ¡Ğ¯!). ĞĞ° Ğ´Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ğ¼Ğ¾Ğ¼ĞµĞ½Ñ‚ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚
+      // Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ Ğ´Ğ»Ñ *.mdb - MS Access. (ĞµÑĞ»Ğ¸ Ğ² Ğ¸Ğ¼ĞµĞ½Ğ¸ Ğ‘Ğ” Ğ¿Ñ€Ğ¸ÑÑƒÑ‚ÑÑ‚Ğ²ÑƒÑÑ‚ ÑĞ¸Ğ¼Ğ²Ğ¾Ğ»Ñ‹ \ Ğ¸Ğ»Ğ¸ / - ÑÑ‚Ğ¾ Ğ¿ÑƒÑ‚ÑŒ Ğº Ğ‘Ğ”.)
       if (((config.getDbName().contains("\\")) || (config.getDbName().contains("/"))) &&
           (config.getDbName().toUpperCase().endsWith(".MDB")))
        {jdbcUrl = new StringBuilder("jdbc:odbc:DRIVER={Microsoft Access Driver (*.mdb)};DBQ=").append(config.getDbName());}
       else
        {jdbcUrl = new StringBuilder("jdbc:odbc:").append(config.getDbName());}
-      // Åñëè óêàçàíû äîï. ïàğàìåòğû - äîáàâèì èõ ê URL
+      // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ñ‹ Ğ´Ğ¾Ğ¿. Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹ - Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ¸Ğ¼ Ğ¸Ñ… Ğº URL
       if (!StringUtils.isBlank(config.getConnParams()))
        {
         if (config.getConnParams().startsWith(";")) {jdbcUrl.append(config.getConnParams());}
         else {jdbcUrl.append(";").append(config.getConnParams());}
        }
      }
-    // Åñëè êîíôèã ïóñò - ñîîáùèì îá ıòîì
+    // Ğ•ÑĞ»Ğ¸ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ¿ÑƒÑÑ‚ - ÑĞ¾Ğ¾Ğ±Ñ‰Ğ¸Ğ¼ Ğ¾Ğ± ÑÑ‚Ğ¾Ğ¼
     else {logger.error("There are config errors [" + configErrors + "].");}
-    // Ôîğìèğîâàíèå êîíå÷íîãî ğåçóëüòàòà
+    // Ğ¤Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°
     if (jdbcUrl != null) {result = jdbcUrl.toString();} else {result = null;}
     logger.debug("JdbcHelper: generated URL -> [" + result + "]");
     return result;
    }
 
   /**
-   * Ìåòîä ôîğìèğóåò URL äëÿ ñîåäèíåíèÿ ñ DBF-õğàíèëèùåì ÷åğåç JDBC äğàéâåğ.
-   * @param config DBJdbcConfig êîíôèãóğàöèÿ (ïàğàìåòğû) ñîåäèíåíèÿ ñ ÑÓÁÄ.
-   * @return String ñôîğìèğîâàííûé URL äëÿ ñîåäèíåíèÿ.
+   * ĞœĞµÑ‚Ğ¾Ğ´ Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒĞµÑ‚ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ DBF-Ñ…Ñ€Ğ°Ğ½Ğ¸Ğ»Ğ¸Ñ‰ĞµĞ¼ Ñ‡ĞµÑ€ĞµĞ· JDBC Ğ´Ñ€Ğ°Ğ¹Ğ²ĞµÑ€.
+   * @param config DBJdbcConfig ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ÑƒÑ€Ğ°Ñ†Ğ¸Ñ (Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹) ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ğ¡Ğ£Ğ‘Ğ”.
+   * @return String ÑÑ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¹ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ.
   */
   public static String getDbfJdbcUrl(BaseDBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
-    // Åñëè óêàçàííûé êîíôèã íå îøèáî÷åí - ğàáîòàåì
+    // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ½Ñ‹Ğ¹ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ½Ğµ Ğ¾ÑˆĞ¸Ğ±Ğ¾Ñ‡ĞµĞ½ - Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµĞ¼
     String configErrors = DBUtils.getConfigErrors(config);
     if (StringUtils.isBlank(configErrors))
      {
       jdbcUrl = new StringBuilder("jdbc:DBF:/").append(config.getDbName());
-      // Åñëè óêàçàíû äîï. ïàğàìåòğû - äîáàâèì èõ ê URL
+      // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ñ‹ Ğ´Ğ¾Ğ¿. Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹ - Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ¸Ğ¼ Ğ¸Ñ… Ğº URL
       if (!StringUtils.isBlank(config.getConnParams()))
        {
         if (config.getConnParams().startsWith(";")) {jdbcUrl.append(config.getConnParams());}
         else {jdbcUrl.append(";").append(config.getConnParams());}
        }
      }
-    // Åñëè êîíôèã ïóñò - ñîîáùèì îá ıòîì
+    // Ğ•ÑĞ»Ğ¸ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ¿ÑƒÑÑ‚ - ÑĞ¾Ğ¾Ğ±Ñ‰Ğ¸Ğ¼ Ğ¾Ğ± ÑÑ‚Ğ¾Ğ¼
     else {logger.error("There are config errors [" + configErrors + "].");}
-    // Ôîğìèğîâàíèå êîíå÷íîãî ğåçóëüòàòà
+    // Ğ¤Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°
     if (jdbcUrl != null) {result = jdbcUrl.toString();} else {result = null;}
     logger.debug("JdbcHelper: generated URL -> [" + result + "]");
     return result;
    }
 
   /**
-   * Ìåòîä ôîğìèğóåò URL äëÿ ñîåäèíåíèÿ ñ ÑÓÁÄ MS SQL Server ÷åğåç JDBC äğàéâåğ JTDS (ñâîáîäíî ğàñïğîñòğàíÿåìûé).
-   * @param config DBJdbcConfig êîíôèãóğàöèÿ (ïàğàìåòğû) ñîåäèíåíèÿ ñ ÑÓÁÄ.
-   * @return String ñôîğìèğîâàííûé URL äëÿ ñîåäèíåíèÿ.
+   * ĞœĞµÑ‚Ğ¾Ğ´ Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒĞµÑ‚ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ğ¡Ğ£Ğ‘Ğ” MS SQL Server Ñ‡ĞµÑ€ĞµĞ· JDBC Ğ´Ñ€Ğ°Ğ¹Ğ²ĞµÑ€ JTDS (ÑĞ²Ğ¾Ğ±Ğ¾Ğ´Ğ½Ğ¾ Ñ€Ğ°ÑĞ¿Ñ€Ğ¾ÑÑ‚Ñ€Ğ°Ğ½ÑĞµĞ¼Ñ‹Ğ¹).
+   * @param config DBJdbcConfig ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ÑƒÑ€Ğ°Ñ†Ğ¸Ñ (Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹) ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ğ¡Ğ£Ğ‘Ğ”.
+   * @return String ÑÑ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¹ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ.
   */
   public static String getMssqlJtdsJdbcUrl(BaseDBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
-    // Åñëè óêàçàííûé êîíôèã íå îøèáî÷åí - ğàáîòàåì
+    // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ½Ñ‹Ğ¹ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ½Ğµ Ğ¾ÑˆĞ¸Ğ±Ğ¾Ñ‡ĞµĞ½ - Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµĞ¼
     String configErrors = DBUtils.getConfigErrors(config);
     if (StringUtils.isBlank(configErrors))
      {
-      // Ñîçäàåì URL äëÿ ñîåäèíåíèÿ
+      // Ğ¡Ğ¾Ğ·Ğ´Ğ°ĞµĞ¼ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ
       jdbcUrl = new StringBuilder("jdbc:jtds:sqlserver://").append(config.getHost());
-      // Åñëè èìÿ ÁÄ óêàçàíî - ïîäêëş÷àåìñÿ ê íåé, åñëè æå íå óêàçàíî - ïîäêëş÷àåìñÿ ê ñåğâåğó â öåëîì
+      // Ğ•ÑĞ»Ğ¸ Ğ¸Ğ¼Ñ Ğ‘Ğ” ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ¾ - Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ°ĞµĞ¼ÑÑ Ğº Ğ½ĞµĞ¹, ĞµÑĞ»Ğ¸ Ğ¶Ğµ Ğ½Ğµ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ¾ - Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ°ĞµĞ¼ÑÑ Ğº ÑĞµÑ€Ğ²ĞµÑ€Ñƒ Ğ² Ñ†ĞµĞ»Ğ¾Ğ¼
       if (!StringUtils.isBlank(config.getDbName())) {jdbcUrl.append("/").append(config.getDbName());}
-      // Åñëè ëîãèí/ïàğîëü íå ïóñòû - äîáàâëÿåì èõ ê URL äëÿ ïîäêëş÷åíèÿ
+      // Ğ•ÑĞ»Ğ¸ Ğ»Ğ¾Ğ³Ğ¸Ğ½/Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ Ğ½Ğµ Ğ¿ÑƒÑÑ‚Ñ‹ - Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ÑĞµĞ¼ Ğ¸Ñ… Ğº URL Ğ´Ğ»Ñ Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ
       if (!StringUtils.isBlank(config.getUser()))
        {
         jdbcUrl.append(";user=").append(config.getUser());
-        // Åñëè íå ïóñò ïàğîëü - åãî òîæå äîáàâëÿåì
+        // Ğ•ÑĞ»Ğ¸ Ğ½Ğµ Ğ¿ÑƒÑÑ‚ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ - ĞµĞ³Ğ¾ Ñ‚Ğ¾Ğ¶Ğµ Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ÑĞµĞ¼
         if ((config.getPassword() != null) && !StringUtils.isBlank(config.getPassword().getPassword()))
          {jdbcUrl.append(";password=").append(config.getPassword().getPassword());}
        }
-      // Åñëè óêàçàíû äîï. ïàğàìåòğû - äîáàâèì èõ ê URL
+      // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ñ‹ Ğ´Ğ¾Ğ¿. Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹ - Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ¸Ğ¼ Ğ¸Ñ… Ğº URL
       if (!StringUtils.isBlank(config.getConnParams()))
        {
         if (config.getConnParams().startsWith(";")) {jdbcUrl.append(config.getConnParams());}
         else {jdbcUrl.append(";").append(config.getConnParams());}
        }
      }
-    // Åñëè êîíôèã ïóñò - ñîîáùèì îá ıòîì
+    // Ğ•ÑĞ»Ğ¸ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ¿ÑƒÑÑ‚ - ÑĞ¾Ğ¾Ğ±Ñ‰Ğ¸Ğ¼ Ğ¾Ğ± ÑÑ‚Ğ¾Ğ¼
     else {logger.error("There are config errors [" + configErrors + "].");}
-    // Ôîğìèğîâàíèå êîíå÷íîãî ğåçóëüòàòà
+    // Ğ¤Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°
     if (jdbcUrl != null) {result = jdbcUrl.toString();} else {result = null;}
     logger.debug("JdbcHelper: generated URL -> [" + result + "]");
     return result;
    }
 
   /**
-   * Ìåòîä ôîğìèğóåò URL äëÿ ñîåäèíåíèÿ ñ ÑÓÁÄ MS SQL Server ÷åğåç "ğîäíîé" JDBC äğàéâåğ (îò Microsoft).
-   * @param config DBJdbcConfig êîíôèãóğàöèÿ (ïàğàìåòğû) ñîåäèíåíèÿ ñ ÑÓÁÄ.
-   * @return String ñôîğìèğîâàííûé URL äëÿ ñîåäèíåíèÿ.
+   * ĞœĞµÑ‚Ğ¾Ğ´ Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒĞµÑ‚ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ğ¡Ğ£Ğ‘Ğ” MS SQL Server Ñ‡ĞµÑ€ĞµĞ· "Ñ€Ğ¾Ğ´Ğ½Ğ¾Ğ¹" JDBC Ğ´Ñ€Ğ°Ğ¹Ğ²ĞµÑ€ (Ğ¾Ñ‚ Microsoft).
+   * @param config DBJdbcConfig ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ÑƒÑ€Ğ°Ñ†Ğ¸Ñ (Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹) ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ Ñ Ğ¡Ğ£Ğ‘Ğ”.
+   * @return String ÑÑ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¹ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ.
   */
   public static String getMssqlNativeJdbcUrl(BaseDBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
-    // Åñëè óêàçàííûé êîíôèã íå îøèáî÷åí - ğàáîòàåì
+    // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ½Ñ‹Ğ¹ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ½Ğµ Ğ¾ÑˆĞ¸Ğ±Ğ¾Ñ‡ĞµĞ½ - Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµĞ¼
     String configErrors = DBUtils.getConfigErrors(config);
     if (StringUtils.isBlank(configErrors))
      {
-      // Ñîçäàåì URL äëÿ ñîåäèíåíèÿ
+      // Ğ¡Ğ¾Ğ·Ğ´Ğ°ĞµĞ¼ URL Ğ´Ğ»Ñ ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ
       jdbcUrl = new StringBuilder("jdbc:sqlserver://");
-      // Åñëè èìÿ õîñòà (ñåğâåğà) óêàçàíî - èñïîëüçóåì åãî, åñëè æå èìåíè õîñòà íåò, åãî â ëşáîì ñëó÷àå íåîáõîäèìî
-      // óêàçàòü - íå óêàçàíî çäåñü, íàäî óêàçàòü â êîëëåêöèè ñâîéñòâ ñîåäèíåíèÿ.
+      // Ğ•ÑĞ»Ğ¸ Ğ¸Ğ¼Ñ Ñ…Ğ¾ÑÑ‚Ğ° (ÑĞµÑ€Ğ²ĞµÑ€Ğ°) ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ¾ - Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒĞµĞ¼ ĞµĞ³Ğ¾, ĞµÑĞ»Ğ¸ Ğ¶Ğµ Ğ¸Ğ¼ĞµĞ½Ğ¸ Ñ…Ğ¾ÑÑ‚Ğ° Ğ½ĞµÑ‚, ĞµĞ³Ğ¾ Ğ² Ğ»ÑĞ±Ğ¾Ğ¼ ÑĞ»ÑƒÑ‡Ğ°Ğµ Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ğ¾
+      // ÑƒĞºĞ°Ğ·Ğ°Ñ‚ÑŒ - Ğ½Ğµ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ¾ Ğ·Ğ´ĞµÑÑŒ, Ğ½Ğ°Ğ´Ğ¾ ÑƒĞºĞ°Ğ·Ğ°Ñ‚ÑŒ Ğ² ĞºĞ¾Ğ»Ğ»ĞµĞºÑ†Ğ¸Ğ¸ ÑĞ²Ğ¾Ğ¹ÑÑ‚Ğ² ÑĞ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ñ.
       if (!StringUtils.isBlank(config.getHost())) {jdbcUrl.append(config.getHost());}
 
-      // Åñëè èìÿ ÁÄ óêàçàíî - ïîäêëş÷àåìñÿ ê íåé, åñëè æå íå óêàçàíî - ïîäêëş÷àåìñÿ ê ñåğâåğó â öåëîì
+      // Ğ•ÑĞ»Ğ¸ Ğ¸Ğ¼Ñ Ğ‘Ğ” ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ¾ - Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ°ĞµĞ¼ÑÑ Ğº Ğ½ĞµĞ¹, ĞµÑĞ»Ğ¸ Ğ¶Ğµ Ğ½Ğµ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ¾ - Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ°ĞµĞ¼ÑÑ Ğº ÑĞµÑ€Ğ²ĞµÑ€Ñƒ Ğ² Ñ†ĞµĞ»Ğ¾Ğ¼
       if (!StringUtils.isBlank(config.getDbName())) {jdbcUrl.append(";database=").append(config.getDbName());}
       
-      // Åñëè ëîãèí/ïàğîëü íå ïóñòû - äîáàâëÿåì èõ ê URL äëÿ ïîäêëş÷åíèÿ
+      // Ğ•ÑĞ»Ğ¸ Ğ»Ğ¾Ğ³Ğ¸Ğ½/Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ Ğ½Ğµ Ğ¿ÑƒÑÑ‚Ñ‹ - Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ÑĞµĞ¼ Ğ¸Ñ… Ğº URL Ğ´Ğ»Ñ Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ
       if (!StringUtils.isBlank(config.getUser()))
        {
         jdbcUrl.append(";user=").append(config.getUser());
-        // Åñëè íå ïóñò ïàğîëü - åãî òîæå äîáàâëÿåì
+        // Ğ•ÑĞ»Ğ¸ Ğ½Ğµ Ğ¿ÑƒÑÑ‚ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ - ĞµĞ³Ğ¾ Ñ‚Ğ¾Ğ¶Ğµ Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ÑĞµĞ¼
         if ((config.getPassword() != null) && !StringUtils.isBlank(config.getPassword().getPassword()))
          {jdbcUrl.append(";password=").append(config.getPassword().getPassword());}
        }
-      // Åñëè óêàçàíû äîï. ïàğàìåòğû - äîáàâèì èõ ê URL
+      // Ğ•ÑĞ»Ğ¸ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ñ‹ Ğ´Ğ¾Ğ¿. Ğ¿Ğ°Ñ€Ğ°Ğ¼ĞµÑ‚Ñ€Ñ‹ - Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ¸Ğ¼ Ğ¸Ñ… Ğº URL
       if (!StringUtils.isBlank(config.getConnParams()))
        {
         if (config.getConnParams().startsWith(";")) {jdbcUrl.append(config.getConnParams());}
         else {jdbcUrl.append(";").append(config.getConnParams());}
        }
      }
-    // Åñëè êîíôèã ïóñò - ñîîáùèì îá ıòîì
+    // Ğ•ÑĞ»Ğ¸ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ Ğ¿ÑƒÑÑ‚ - ÑĞ¾Ğ¾Ğ±Ñ‰Ğ¸Ğ¼ Ğ¾Ğ± ÑÑ‚Ğ¾Ğ¼
     else {logger.error("There are config errors [" + configErrors + "].");}
-    // Ôîğìèğîâàíèå êîíå÷íîãî ğåçóëüòàòà
+    // Ğ¤Ğ¾Ñ€Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°
     if (jdbcUrl != null) {result = jdbcUrl.toString();} else {result = null;}
     logger.debug("JdbcHelper: generated URL -> [" + result + "]");
     return result;
