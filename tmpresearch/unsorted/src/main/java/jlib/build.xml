@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+ <!--
+  Скрипт выполняет сборку версии библиотеки jlib с документацией. Создаются необходимые каталоги, копируются
+  необходимые библиотеки. Глобальные свойства проекта берутся из файла global.ant.properties. Перед копированием
+  сборки на сетевой диск проверяется его доступность (сетевого диска). Также возможна автоматизированная отправка
+  почтовых уведомлений о новых сборках библиотеки.
+
+  Основные особенности сборки библиотеки:
+   - файлы тест-кейсов не компилируются вместе с исходным кодом библиотеки, они компиляцца отдельно.
+   - документация javadoc для файлов тест-кейсов не генерируется
+   - каталог с модулем (библиотекой) копируется в сетевой репозиторий (полностью)
+   - предыдущая сборка копируется в сетевой архив сборок
+
+  Последняя версия скрипта от: 22.06.2011
+ -->
+
+ <project name="JLIB BUILD SCRIPT" basedir="." default="javadoc">
+    
+  <!-- Во время выполнения сборки будет показана стандартная картинка анта и прогресс бар -->
+  <splash />
+
+  <!-- Загрузка глобальных свойств из файла (общие свойства для всех скриптов) -->
+  <property file="../global.ant.properties"/>
+
+  <!-- Локальные свойства данного проекта -->
+  <property name="project.name"           value="jlib"/>
+  <property name="javadoc.title"          value="БИБЛИОТЕКА JLIB."/>
+
+  <!-- Список библиотек, используемых библиотекой JLIB. Эти библиотеки находятся в локальном каталоге libs. -->
+  <fileset id="project_libraries" dir="${libs.dir}" casesensitive="false">
+   <include name="log4j-1.2.15.jar"/>
+   <include name="commons-lang-2.4.jar"/>
+   <include name="commons-cli-1.2.jar"/>
+   <include name="activation.jar"/>
+   <include name="mail.jar"/>
+   <include name="commons-io-1.3.2.jar"/>
+   <include name="junit-4.8.2.jar"/>
+  </fileset>
+
+  <!-- Инициализация перед сборкой версии библиотеки - создание необходимых каталогов, очистка каталогов. -->
+  <target name="init">
+   <!-- Создание необходимых каталогов (если их еще нет) -->
+   <mkdir dir="${build.dir}"/>
+   <!-- Очистка необходимых каталогов (от остатков предыдущей сборки) -->
+   <delete includeemptydirs="true" failonerror="false"><fileset dir="${build.dir}" includes="**/*"/></delete>
+  </target>
+
+  <!-- Компиляция исходного кода библиотеки. Задача зависит от задачи "init". -->
+  <target name="build" depends="init">
+   <javac srcdir="${src.main.dir}" destdir="${build.dir}" debug="on" source="1.6"
+    target="1.6" includeantruntime="no">
+    <classpath>
+     <!--<pathelement path="${classpath.dir}"/>-->
+     <fileset refid="project_libraries"/>
+    </classpath>
+   </javac>
+   <!-- Делаем файл с номером билда -->
+   <buildnumber file="${project.name}.${buildnumber.file}"/>
+  </target>
+
+  <!-- Сборка JAR-архива библиотеки. Задача зависит от задачи "build". -->
+  <target name="jar" depends="build">
+   <jar destfile="${project.name}.jar" basedir="${build.dir}">
+    <manifest>
+     <attribute name="Built-By" value="${jar.author.gusev}"/>
+    </manifest>
+   </jar>
+  </target>
+
+  <!-- Сборка документации по проекту - данная задача зависит от задачи "distribute". -->
+  <target name="javadoc" depends="jar">
+   <!-- Задача ANT - JAVADOC -->
+   <javadoc destdir="${docs.dir}" author="true" version="true" use="true" windowtitle="API for [${project.name}]."
+    access="public" splitindex="true" overview="${src.dir}/overview.html">
+    <!-- classpath проекта. Без его указания будет много варнингов по поводу отсутствующих классов. -->
+    <classpath>
+     <!--<pathelement path="${classpath.dir}"/>-->
+     <fileset refid="project_libraries"/>
+    </classpath>
+    <!--
+     Набор файлов (файл-сет) для включения в генерацию javadoc. В генерацию попадают все файлы указанного каталога. Есть
+     возможность отдельно указать включаемые и исключаемые файлы. Рекомендую указывать включение только всех файлов с
+     расширением java (<include name="jlib/**/*.java"/>), в противном случае в генерацию может попасть "мусор" из указанного
+     каталога (вспомогательные или пользовательские файлы) и генерация доки завершится с ошибкой.
+     Также рекомендую принудительно исключать из генерации доки файлы тест-кейсов (<exclude name="**/*Test.java" />),
+     однако, при раздельном хранении файлов исходного кода (в разных каталогах), это делать необязательно.
+     Особенность: в таске <javadoc> может быть только один из элементов: <packageset> или <fileset>.
+    -->
+    <fileset dir="${src.main.dir}" defaultexcludes="yes"><include name="**/*.java"/></fileset>
+    <doctitle><![CDATA[<h1>${javadoc.title}</h1>]]></doctitle>
+    <bottom><![CDATA[<i>${javadoc.copyright.gusev}</i>]]></bottom>
+   </javadoc>
+  </target>
+
+  <!-- Копирование файлов в локальный каталог (локальная инсталляция дистрибутива) -->
+  <target name="distribute_local" depends="javadoc">
+   <!-- Пытаемся создать локальный каталог для дистрибутива (он будет создан, только если его еще нет) -->
+   <mkdir dir="${repository.local}/${project.name}"/>
+   <!-- Очистка локального каталога с дистрибутивом библиотеки -->
+   <delete includeemptydirs="true" failonerror="false">
+    <fileset dir="${repository.local}/${project.name}" includes="**/*"/>
+   </delete>
+   <!-- Копирование дистрибутива в локальный каталог с библиотеками -->
+   <copy todir="${repository.local}/${project.name}" file="${project.name}.jar"/>
+   <copy todir="${repository.local}/${project.name}" file="${project.name}.${buildnumber.file}"/>
+   <copy todir="${repository.local}/${project.name}/${docs.dir}">
+    <fileset dir="${docs.dir}"/>
+   </copy>
+  </target>
+
+  <!-- Проверка доступности сетевого ресурса и установка (в зависимотси от доступности) свойства net_available -->
+  <target name="check_net_resources">
+   <available file="${projects.repository.net}" type="dir" property="net_available"/>
+   <echo message="Checking network resources..."/>
+  </target>
+
+  <!--
+   Копирование файлов на сетевой диск \\appserver\developer (сетевая инсталляция дистрибутива). Копирование производится
+   только если установлено свойство net_available - т.е. сеть доступна.
+  -->
+  <target name="distribute_net" if="net_available" depends="distribute_local, check_net_resources">
+   <!-- Пытаемся создать общий каталог для дистрибутива (он будет создан, только если его еще нет) -->
+   <mkdir dir="${projects.repository.net}/${project.name}"/>
+   <!-- Пытаемся создать общий каталог для архива дистрибутива (он будет создан, только если его еще нет) -->
+   <mkdir dir="${projects.repository.net.archive}/${project.name}"/>
+   <!-- Устанавливаем свойство с текущими датой/временем (оно необходимо для создания архивного каталога) -->
+   <tstamp><format property="CURRENT_DATETIME" pattern="HH-mm-ss_dd-MM-yyyy"/></tstamp>
+   <!-- ZIPуем текущий дистрибутив в файл. Уровень компрессии - атрибут level (от 0 до 9) -->
+   <zip destfile="${projects.repository.net.archive}/${project.name}/${project.name}_${CURRENT_DATETIME}.zip"
+        basedir="${projects.repository.net}/${project.name}" update="false" level="9"/>
+   <!-- Очистка общего каталога с дистрибутивом библиотеки (только после отправки его в архив!) -->
+   <delete includeemptydirs="true" failonerror="false">
+    <fileset dir="${projects.repository.net}/${project.name}" includes="**/*"/>
+   </delete>
+   <!-- Копирование дистрибутива в общий каталог с библиотеками -->
+   <copy todir="${projects.repository.net}/${project.name}" file="${project.name}.jar"/>
+   <copy todir="${projects.repository.net}/${project.name}" file="${project.name}.${buildnumber.file}"/>
+   <!-- Доки -->
+   <copy todir="${projects.repository.net}/${project.name}/${docs.dir}">
+    <fileset dir="${docs.dir}"/>
+   </copy>
+   <!-- Сырцы -->
+   <copy todir="${projects.repository.net}/${project.name}/${src.dir}">
+    <fileset dir="${src.dir}"/>
+   </copy>
+   <!-- Либы -->
+   <copy todir="${projects.repository.net}/${project.name}/${libs.dir}">
+    <fileset dir="${libs.dir}"/>
+   </copy>
+   <!-- Копирование сборочного скрипта в общий каталог с библиотеками -->
+   <copy todir="${projects.repository.net}/${project.name}" file="${build.file}"/>
+  </target>
+
+  <!-- Почтовое уведомление о выходе новой версии библиотеки -->
+  <target name="mail_notify" depends="distribute_net">
+   <!-- Отправляем уведомление по списку рассылки -->
+   <mail mailhost="${mail.smtp.host}" mailport="${mail.smtp.port}"
+    subject="Новая версия библиотеки ${project.name}"
+    charset="windows-1251" encoding="plain" messagemimetype="text/html"
+    from="${mail.author.gusev.address}" tolist="${mail.libs.sendlist}"
+    messagefile="${src.dir}/overview.html">
+   </mail>
+  </target>
+    
+ </project>

@@ -242,14 +242,12 @@
                 <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
-                <module>chat-app</module>
                 <module>utilities</module>
                 <module>bigdata</module>
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
                 <module>measurementor</module>
-                <module>datatex-connector</module>
             </modules>
         </profile>
 
@@ -266,14 +264,12 @@
                 <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
-                <module>chat-app</module>
                 <module>utilities</module>
                 <module>bigdata</module>
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
                 <module>measurementor</module>
-                <module>datatex-connector</module>
             </modules>
         </profile>
 
@@ -295,7 +291,6 @@
                 <!--<module>socialnet</module>-->
                 <!--<module>j2ee</module>-->
                 <module>measurementor</module>
-                <module>datatex-connector</module>
             </modules>
         </profile>
 
@@ -317,7 +312,6 @@
                 <!--<module>j2ee</module>-->
                 <!--<module>nlp</module>-->
                 <!--<module>measurementor</module>-->
-                <module>datatex-connector</module>
             </modules>
         </profile>
 

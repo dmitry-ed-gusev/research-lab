@@ -1,0 +1,12 @@
+<?xml version = '1.0'?>
+<db-settings>
+
+ <db>
+  <type>mssql_jtds</type>
+  <host>2003-virtual:1433</host>
+  <dbname>storm_test</dbname>
+  <user>sa</user>
+  <pwd>sa</pwd>
+ </db>
+
+</db-settings>

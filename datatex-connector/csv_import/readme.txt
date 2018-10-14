@@ -1,1 +1,0 @@
-This folder is intended for CSV files for import. This file can be deleted.

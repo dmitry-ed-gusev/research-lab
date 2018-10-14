@@ -18,6 +18,7 @@
 		<module>hibernate</module>
 		<module>jsf2-example</module>
 		<module>unsorted</module>
+        <module>chat-app</module>
 	</modules>
 	
 </project>

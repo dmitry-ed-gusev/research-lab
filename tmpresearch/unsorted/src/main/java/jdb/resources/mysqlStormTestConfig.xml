@@ -1,0 +1,12 @@
+<?xml version = '1.0'?>
+<db-settings>
+
+ <db>
+  <type>mysql</type>
+  <host>localhost:3306</host>
+  <dbname>storm_test</dbname>
+  <user>root</user>
+  <pwd>mysql</pwd>
+ </db>
+
+</db-settings>
