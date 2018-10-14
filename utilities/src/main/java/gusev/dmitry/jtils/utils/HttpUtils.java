@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
+
 /**
  * Some useful HTTP-related utilities.
  * Created by gusevdm on 12/9/2016.
@@ -34,9 +36,6 @@ import java.util.Map;
 public final class HttpUtils {
 
     private static final Log LOG = LogFactory.getLog(HttpUtils.class); // module logger
-
-    /** Default encoding for content. */
-    public static final String DEFAULT_ENCODING = "UTF-8";
 
     /** Default http headers for http client. */
     public static final Header[] HTTP_DEFAULT_HEADERS = {

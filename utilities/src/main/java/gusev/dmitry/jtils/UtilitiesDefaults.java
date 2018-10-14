@@ -6,6 +6,9 @@ package gusev.dmitry.jtils;
  * @version 1.0 (DATE: 29.08.2014)
 */
 
-public interface UtilitiesDefaults {
+public final class UtilitiesDefaults {
 
+    private UtilitiesDefaults() {}
+
+    public static final String DEFAULT_ENCODING = "UTF-8";
 }
