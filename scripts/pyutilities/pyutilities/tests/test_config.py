@@ -10,6 +10,7 @@ from mock import patch
 from pyutilities.config import Configuration, ConfigError
 
 CONFIG_PATH = 'configs'
+LOGGING_FILE = 'configs/test_logging.yml'
 CONFIG_MODULE_MOCK_YAML = 'pyutilities.config.parse_yaml'
 CONFIG_MODULE_MOCK_OS = 'pyutilities.config.os'
 
@@ -19,7 +20,7 @@ class ConfigurationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._log = logging.getLogger(__name__)
-        with open('configs/logging.yml', 'rt') as f:
+        with open(LOGGING_FILE, 'rt') as f:
             config = yaml.safe_load(f.read())
         logging.config.dictConfig(config)
 

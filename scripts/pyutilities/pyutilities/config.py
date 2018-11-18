@@ -5,12 +5,16 @@
     Utility class for holding configuration. Can merge configuration with environment variables.
     Can load configuration from YAML files. See docstring for Configuration class.
 
+    18.11.2018
+    Added child config class that is able to load config (as dictionary) from xls file (from specified sheet).
+
     Created: Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 25.09.2018
+    Modified: Gusev Dmitrii, 18.11.2018
 """
 
 import os
 import logging
+import xlrd, xlwt  # reading/writing excel files
 from string import Template
 from utils import parse_yaml
 
@@ -32,8 +36,8 @@ class Configuration(object):
         # init logger
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
-        self.log.debug("Initializing Configuration instance:" +
-                       "\n\tpath -> [{}]\n\tdict -> [{}]\n\toverride config -> [{}]\n\tmerge env -> [{}]"
+        self.log.info("Initializing Configuration() instance...")
+        self.log.debug("Load configuration:\n\tpath -> {}\n\tdict -> {}\n\toverride config -> {}\n\tmerge env -> {}"
                        .format(path_to_config, dict_to_merge, is_override_config, is_merge_env))
 
         # init internal dictionary
@@ -92,7 +96,7 @@ class Configuration(object):
 
         # merge environment variables to internal dictionary
         if is_merge_env:
-            print "Merging environment variables is switched ON."
+            self.log.info("Merging environment variables is switched ON.")
             self.merge_env()
 
     def merge_dict(self, new_dict):
@@ -200,3 +204,56 @@ class Configuration(object):
 
 class ConfigError(Exception):
     """Invalid configuration error"""
+
+
+# numbers of name/value columns in excel config sheet
+XLS_NAMES_COLUMN = 0
+XLS_VALUES_COLUMN = 1
+
+
+class ConfigurationXls(Configuration):
+    """"""
+
+    def __init__(self, path_to_xls, config_sheet_name, is_merge_env=False):
+        # init class instance logger
+        self.log = logging.getLogger(__name__)
+        self.log.addHandler(logging.NullHandler())
+        self.log.info("Initializing ConfigurationXls() instance...")
+        # load config (dictionary) from xls file
+        xls_dict = self.load_dict_from_xls(path_to_xls, config_sheet_name)
+        super(ConfigurationXls, self).__init__(dict_to_merge=xls_dict, is_merge_env=is_merge_env)
+
+    def load_dict_from_xls(self, path_to_xls, config_sheet_name):
+        self.log.debug("load_dict_from_xls() is working.")
+        self.log.debug("Excel file [{}], config sheet [{}].".format(path_to_xls, config_sheet_name))
+
+        # some preliminary checks (fast-fail)
+        if not path_to_xls or not path_to_xls.strip():
+            raise ConfigError('Provided empty path to xls file!')
+        if not os.path.exists(path_to_xls):
+            raise ConfigError('Provided path [%s] doesn\'t exist!' % path_to_xls)
+
+        # loading xls workbook
+        excel_book = xlrd.open_workbook(path_to_xls, encoding_override='UTF8')
+        # loading config sheet
+        excel_sheet = excel_book.sheet_by_name(config_sheet_name)
+        self.log.debug("Loaded xls config. Found [{}] row(s). Loading.".format(excel_sheet.nrows))
+        # loading disctionary from xls file
+        dictionary = {}
+        for rownumber in range(excel_sheet.nrows):
+            name = excel_sheet.cell_value(rownumber, XLS_NAMES_COLUMN)
+            value = excel_sheet.cell_value(rownumber, XLS_VALUES_COLUMN)
+            self.log.debug("Loaded config parameter: {} = {}".format(name, value))
+            dictionary[name] = value
+        self.log.info("Loaded dictionary from xls config:\n\t{}".format(dictionary))
+        return dictionary
+
+
+# just for debug purpose
+# if __name__ == '__main__':
+#     import yaml
+#     import logging.config
+#     with open('tests/configs/test_logging.yml', 'rt') as f:
+#         config = yaml.safe_load(f.read())
+#     logging.config.dictConfig(config)
+#     config = ConfigurationXls('tests/configs/xls_config.xlsx', 'config_sheet')
