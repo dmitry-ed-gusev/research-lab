@@ -18,7 +18,7 @@ rm -rf build
 rm -rf pyutilities.egg-info
 
 # upgrade versions of setuptools/wheel/twine
-pip install --user --upgrade setuptools wheel twine "$1" "$2"
+pip install --user --upgrade setuptools wheel twine $1 $2
 
 # create distribution for library in /dist catalog
 python setup.py sdist bdist_wheel
