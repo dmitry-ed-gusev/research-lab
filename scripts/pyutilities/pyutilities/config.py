@@ -214,14 +214,15 @@ XLS_VALUES_COLUMN = 1
 class ConfigurationXls(Configuration):
     """"""
 
-    def __init__(self, path_to_xls, config_sheet_name, is_merge_env=False):
+    def __init__(self, path_to_xls, config_sheet_name, path_to_yaml=None, is_override_config=True, is_merge_env=True):
         # init class instance logger
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
         self.log.info("Initializing ConfigurationXls() instance...")
         # load config (dictionary) from xls file
         xls_dict = self.load_dict_from_xls(path_to_xls, config_sheet_name)
-        super(ConfigurationXls, self).__init__(dict_to_merge=xls_dict, is_merge_env=is_merge_env)
+        super(ConfigurationXls, self).__init__(path_to_config=path_to_yaml, dict_to_merge=xls_dict,
+                                               is_override_config=is_override_config, is_merge_env=is_merge_env)
 
     def load_dict_from_xls(self, path_to_xls, config_sheet_name):
         self.log.debug("load_dict_from_xls() is working.")
@@ -256,4 +257,6 @@ class ConfigurationXls(Configuration):
 #     with open('tests/configs/test_logging.yml', 'rt') as f:
 #         config = yaml.safe_load(f.read())
 #     logging.config.dictConfig(config)
-#     config = ConfigurationXls('tests/configs/xls_config.xlsx', 'config_sheet')
+#     config = ConfigurationXls('tests/configs/xls_config.xlsx', 'config_sheet',
+#                               path_to_yaml='tests/configs', is_merge_env=False)
+#     print "loaded config ->", config

@@ -15,3 +15,6 @@ Added ConfigurationXls class. It extends (inherites) Configuration class with ab
 loading configuration from XLS files, from specified sheet, as name=value pairs. Added some
 unit tests for new class.  
 Added dependencies list: requirements.txt file.
+
+0.3.1
+Minor fixes in ConfigurationXls: added support for parent class parameters.
