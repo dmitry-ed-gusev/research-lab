@@ -18,3 +18,7 @@ Added dependencies list: requirements.txt file.
 
 0.3.1
 Minor fixes in ConfigurationXls: added support for parent class parameters.
+
+0.4.0
+Added ability for Configuration class to merge list of dictionaries on init. Minor improvements,
+added several unit test cases. Minor refactoring.

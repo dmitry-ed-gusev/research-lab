@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+"""
+    Unit tests for Configuration class.
+
+    Created:  Gusev Dmitrii, XX.08.2017
+    Modified: Gusev Dmitrii, 05.01.2019
+"""
+
 import os
 import yaml
 import unittest
@@ -25,10 +32,11 @@ class ConfigurationTest(unittest.TestCase):
         logging.config.dictConfig(config)
 
     def setUp(self):
-        # init config before each test, don't merge with environment
+        # init config instance before each test, don't merge with environment
         self.config = Configuration(is_merge_env=False)
 
     def tearDown(self):
+        # dereference config instance after each test
         self.config = None
 
     def test_load_invalid_path(self):
@@ -37,7 +45,7 @@ class ConfigurationTest(unittest.TestCase):
                 self.config.load(invalid_path)
 
     def test_merge_config_files(self):
-        self.config.load(CONFIG_PATH)
+        self.config.load(CONFIG_PATH)  # <- load all yaml configs from specified location
         self.assertEqual(self.config.get("section1.key1"), "value1")
         self.assertEqual(self.config.get("section2.key3"), "value3")
 
@@ -47,6 +55,32 @@ class ConfigurationTest(unittest.TestCase):
         self.assertEqual(self.config.get("simple_key"), "file_value")
         self.config.merge_env()
         self.assertEqual(self.config.get("simple_key"), "env_value")
+
+    # todo: add more test cases here
+    def test_merge_dict_single_on_init(self):
+        dict_to_merge = {'a': 'b', 'c': 'd', 'aa.bb': 'eee'}
+        config = Configuration(path_to_config=CONFIG_PATH, dict_to_merge=dict_to_merge,
+                               is_merge_env=True)
+        self.assertEquals(config.get("section1.key1"), "value1")
+        self.assertEquals(config.get("section2.key3"), "value3")
+        self.assertEquals(config.get('a'), 'b')
+        self.assertEquals(config.get('c'), 'd')
+        self.assertEquals(config.get('aa.bb'), 'eee')
+
+    # todo: add more test cases here
+    def test_merge_dict_list_on_init(self):
+        dict_list_to_merge = [{'a': 'b'}, {'c': 'd'}, {'aa.bb': 'eee'}]
+        config = Configuration(path_to_config=CONFIG_PATH, dict_to_merge=dict_list_to_merge,
+                               is_merge_env=True)
+        self.assertEquals(config.get("section1.key1"), "value1")
+        self.assertEquals(config.get("section2.key3"), "value3")
+        self.assertEquals(config.get('a'), 'b')
+        self.assertEquals(config.get('c'), 'd')
+        self.assertEquals(config.get('aa.bb'), 'eee')
+
+    # todo: implement test case
+    def test_append_dict(self):
+        pass
 
     def test_get_not_existing_property(self):
         with self.assertRaises(ConfigError):
@@ -140,3 +174,14 @@ class ConfigurationTest(unittest.TestCase):
                                dict_to_merge={'key': 'new_value', 'aaa': 'bbb'}, is_override_config=False)
         # assertions
         self.assertEqual(config.get('key'), 'initial_value')
+
+    # todo: possible wrong behaviour: can't get multi-level key (a.b.c) after merge_dict()
+    def test_merge_dict_multi_level_key_issue(self):
+        new_dict = {'name.subname3': 'subvalue3'}
+
+        self.config.set('name', {'subname1': 'subvalue1', 'subname2': 'subvalue2'})
+        self.config.merge_dict(new_dict)
+
+        # line that generates issue
+        with self.assertRaises(ConfigError):
+            print self.config.get('name.subname3')

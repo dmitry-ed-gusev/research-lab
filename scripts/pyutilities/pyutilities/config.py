@@ -8,8 +8,8 @@
     18.11.2018
     Added child config class that is able to load config (as dictionary) from xls file (from specified sheet).
 
-    Created: Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 18.11.2018
+    Created:  Gusev Dmitrii, XX.08.2017
+    Modified: Gusev Dmitrii, 05.01.2019
 """
 
 import os
@@ -36,7 +36,7 @@ class Configuration(object):
         # init logger
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
-        self.log.info("Initializing Configuration() instance...")
+        self.log.debug("Initializing Configuration() instance...")
         self.log.debug("Load configuration:\n\tpath -> {}\n\tdict -> {}\n\toverride config -> {}\n\tmerge env -> {}"
                        .format(path_to_config, dict_to_merge, is_override_config, is_merge_env))
 
@@ -47,13 +47,30 @@ class Configuration(object):
             self.log.debug("Loading config from [{}].".format(path_to_config))
             self.load(path_to_config, is_merge_env)
 
-        if dict_to_merge:  # merge config from file(s) with dictionary, if any
-            self.log.debug("Merging with provided dictionary. Override: [{}].".format(is_override_config))
-            for key, value in dict_to_merge.items():
-                if is_override_config or key not in self.config_dict.keys():
-                    # override key only with non-empty value
-                    if value:
-                        self.set(key, value)
+        if dict_to_merge:  # merge config from file(s) (if any) with dictionary, if any
+            self.log.debug("Dictionary for merge isn't empty: {}".format(dict_to_merge))
+            if isinstance(dict_to_merge, dict):  # provided single dictionary
+                self.log.debug("Merging with provided single dictionary. Override: [{}].".format(is_override_config))
+                self.append_dict(dict_to_merge, is_override_config)
+            elif isinstance(dict_to_merge, list):  # provided list of dictionaries
+                self.log.debug("Merging with provided list of dictionaries. Override: [{}].".format(is_override_config))
+                for dictionary in dict_to_merge:
+                    self.append_dict(dictionary, is_override_config)
+            else:
+                raise ConfigError('Provided unknown type [{}] of dictionary for merge!'.format(type(dict_to_merge)))
+        self.log.info("Configuration loaded successfully.")
+
+    def append_dict(self, dictionary, is_override):
+        """Appends specified dictionary to internal dictionary of current class.
+            :param dictionary
+            :param is_override
+        """
+        self.log.debug("append_dict() is working.")
+        for key, value in dictionary.items():
+            if is_override or key not in self.config_dict.keys():
+                # override key only with non-empty value
+                if value:
+                    self.set(key, value)
 
     def load(self, path, is_merge_env=True):
         """Parses YAML file(s) from the given directory/file to add content into this configuration instance
@@ -99,6 +116,7 @@ class Configuration(object):
             self.log.info("Merging environment variables is switched ON.")
             self.merge_env()
 
+    # todo: possible bug: if merge dict with multi-level keys (a.b.c), these keys can't be accessed by get() method!
     def merge_dict(self, new_dict):
         """Adds another dictionary (respecting nested sub-dictionaries) to config.
         If there are same keys in both dictionaries, raise ConfigError (no overwrites!)
@@ -117,7 +135,7 @@ class Configuration(object):
     def __add_entity__(self, dict1, dict2, current_key=''):
         """Adds second dictionary to the first (processing nested dicts recursively)
         No overwriting is accepted.
-        :param dict1: target dictionary
+        :param dict1: target dictionary (exception raising if it is not dict)
         :type dict1: dict
         :param dict2: source dictionary (exception raising if it is not dict)
         :type dict2: dict
