@@ -8,4 +8,6 @@
 #   Modified:
 # =======================================================================================
 
+# todo: add tests execution after installation
+
 pip install .

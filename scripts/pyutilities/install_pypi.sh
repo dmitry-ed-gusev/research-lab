@@ -10,7 +10,7 @@
 # =======================================================================================
 
 # todo: install locally before
-# todo: test locally before install to PyPi
+# todo: test locally before install to PyPi (include test run after local install?)
 
 # clean previous versions distributions
 rm -rf dist

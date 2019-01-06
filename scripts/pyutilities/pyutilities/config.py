@@ -9,7 +9,7 @@
     Added child config class that is able to load config (as dictionary) from xls file (from specified sheet).
 
     Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 05.01.2019
+    Modified: Gusev Dmitrii, 06.01.2019
 """
 
 import os
@@ -20,6 +20,7 @@ from utils import parse_yaml
 
 YAML_EXTENSION_1 = '.yml'
 YAML_EXTENSION_2 = '.yaml'
+DEFAULT_ENCODING = 'UTF8'
 
 
 class Configuration(object):
@@ -232,14 +233,31 @@ XLS_VALUES_COLUMN = 1
 class ConfigurationXls(Configuration):
     """"""
 
-    def __init__(self, path_to_xls, config_sheet_name, path_to_yaml=None, is_override_config=True, is_merge_env=True):
+    def __init__(self, path_to_xls, config_sheet_name, dict_to_merge=None, path_to_yaml=None,
+                 is_override_config=True, is_merge_env=True):
         # init class instance logger
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
-        self.log.info("Initializing ConfigurationXls() instance...")
+        self.log.debug("Initializing ConfigurationXls() instance...")  # <- INFO level changed to DEBUG
+
         # load config (dictionary) from xls file
         xls_dict = self.load_dict_from_xls(path_to_xls, config_sheet_name)
-        super(ConfigurationXls, self).__init__(path_to_config=path_to_yaml, dict_to_merge=xls_dict,
+
+        # calculate dictionaries for merge
+        dictionary = []
+        if dict_to_merge is None:  # dictionary for merge doesn't provided
+            dictionary = xls_dict
+        elif isinstance(dict_to_merge, dict):  # provided dictionary for merge is dictionary
+            dictionary.append(dict_to_merge)
+            dictionary.append(xls_dict)
+        elif isinstance(dict_to_merge, list):  # provided dictionary for merge is a list of dictionaries
+            dictionary = dict_to_merge
+            dictionary.append(xls_dict)
+        else:  # provided invalid type of dictionary for merge
+            raise ConfigError("Invalid dictionary to merge type: {}!".format(type(dict_to_merge)))
+
+        # init instance with superclass constructor
+        super(ConfigurationXls, self).__init__(path_to_config=path_to_yaml, dict_to_merge=dictionary,
                                                is_override_config=is_override_config, is_merge_env=is_merge_env)
 
     def load_dict_from_xls(self, path_to_xls, config_sheet_name):
@@ -253,7 +271,7 @@ class ConfigurationXls(Configuration):
             raise ConfigError('Provided path [%s] doesn\'t exist!' % path_to_xls)
 
         # loading xls workbook
-        excel_book = xlrd.open_workbook(path_to_xls, encoding_override='UTF8')
+        excel_book = xlrd.open_workbook(path_to_xls, encoding_override=DEFAULT_ENCODING)
         # loading config sheet
         excel_sheet = excel_book.sheet_by_name(config_sheet_name)
         self.log.debug("Loaded xls config. Found [{}] row(s). Loading.".format(excel_sheet.nrows))
