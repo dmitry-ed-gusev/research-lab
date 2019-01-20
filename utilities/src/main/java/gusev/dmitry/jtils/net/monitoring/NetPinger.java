@@ -1,4 +1,4 @@
-package gusev.dmitry.jtils.monitoring;
+package gusev.dmitry.jtils.net.monitoring;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;

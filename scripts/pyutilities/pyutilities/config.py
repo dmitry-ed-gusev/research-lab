@@ -5,17 +5,22 @@
     Utility class for holding configuration. Can merge configuration with environment variables.
     Can load configuration from YAML files. See docstring for Configuration class.
 
-    Created: Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 25.09.2018
+    18.11.2018
+    Added child config class that is able to load config (as dictionary) from xls file (from specified sheet).
+
+    Created:  Gusev Dmitrii, XX.08.2017
+    Modified: Gusev Dmitrii, 06.01.2019
 """
 
 import os
 import logging
+import xlrd, xlwt  # reading/writing excel files
 from string import Template
 from utils import parse_yaml
 
 YAML_EXTENSION_1 = '.yml'
 YAML_EXTENSION_2 = '.yaml'
+DEFAULT_ENCODING = 'UTF8'
 
 
 class Configuration(object):
@@ -32,8 +37,8 @@ class Configuration(object):
         # init logger
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
-        self.log.debug("Initializing Configuration instance:" +
-                       "\n\tpath -> [{}]\n\tdict -> [{}]\n\toverride config -> [{}]\n\tmerge env -> [{}]"
+        self.log.debug("Initializing Configuration() instance...")
+        self.log.debug("Load configuration:\n\tpath -> {}\n\tdict -> {}\n\toverride config -> {}\n\tmerge env -> {}"
                        .format(path_to_config, dict_to_merge, is_override_config, is_merge_env))
 
         # init internal dictionary
@@ -43,13 +48,30 @@ class Configuration(object):
             self.log.debug("Loading config from [{}].".format(path_to_config))
             self.load(path_to_config, is_merge_env)
 
-        if dict_to_merge:  # merge config from file(s) with dictionary, if any
-            self.log.debug("Merging with provided dictionary. Override: [{}].".format(is_override_config))
-            for key, value in dict_to_merge.items():
-                if is_override_config or key not in self.config_dict.keys():
-                    # override key only with non-empty value
-                    if value:
-                        self.set(key, value)
+        if dict_to_merge:  # merge config from file(s) (if any) with dictionary, if any
+            self.log.debug("Dictionary for merge isn't empty: {}".format(dict_to_merge))
+            if isinstance(dict_to_merge, dict):  # provided single dictionary
+                self.log.debug("Merging with provided single dictionary. Override: [{}].".format(is_override_config))
+                self.append_dict(dict_to_merge, is_override_config)
+            elif isinstance(dict_to_merge, list):  # provided list of dictionaries
+                self.log.debug("Merging with provided list of dictionaries. Override: [{}].".format(is_override_config))
+                for dictionary in dict_to_merge:
+                    self.append_dict(dictionary, is_override_config)
+            else:
+                raise ConfigError('Provided unknown type [{}] of dictionary for merge!'.format(type(dict_to_merge)))
+        self.log.info("Configuration loaded successfully.")
+
+    def append_dict(self, dictionary, is_override):
+        """Appends specified dictionary to internal dictionary of current class.
+            :param dictionary
+            :param is_override
+        """
+        self.log.debug("append_dict() is working.")
+        for key, value in dictionary.items():
+            if is_override or key not in self.config_dict.keys():
+                # override key only with non-empty value
+                if value:
+                    self.set(key, value)
 
     def load(self, path, is_merge_env=True):
         """Parses YAML file(s) from the given directory/file to add content into this configuration instance
@@ -92,9 +114,10 @@ class Configuration(object):
 
         # merge environment variables to internal dictionary
         if is_merge_env:
-            print "Merging environment variables is switched ON."
+            self.log.info("Merging environment variables is switched ON.")
             self.merge_env()
 
+    # todo: possible bug: if merge dict with multi-level keys (a.b.c), these keys can't be accessed by get() method!
     def merge_dict(self, new_dict):
         """Adds another dictionary (respecting nested sub-dictionaries) to config.
         If there are same keys in both dictionaries, raise ConfigError (no overwrites!)
@@ -113,7 +136,7 @@ class Configuration(object):
     def __add_entity__(self, dict1, dict2, current_key=''):
         """Adds second dictionary to the first (processing nested dicts recursively)
         No overwriting is accepted.
-        :param dict1: target dictionary
+        :param dict1: target dictionary (exception raising if it is not dict)
         :type dict1: dict
         :param dict2: source dictionary (exception raising if it is not dict)
         :type dict2: dict
@@ -200,3 +223,76 @@ class Configuration(object):
 
 class ConfigError(Exception):
     """Invalid configuration error"""
+
+
+# numbers of name/value columns in excel config sheet
+XLS_NAMES_COLUMN = 0
+XLS_VALUES_COLUMN = 1
+
+
+class ConfigurationXls(Configuration):
+    """"""
+
+    def __init__(self, path_to_xls, config_sheet_name, dict_to_merge=None, path_to_yaml=None,
+                 is_override_config=True, is_merge_env=True):
+        # init class instance logger
+        self.log = logging.getLogger(__name__)
+        self.log.addHandler(logging.NullHandler())
+        self.log.debug("Initializing ConfigurationXls() instance...")  # <- INFO level changed to DEBUG
+
+        # load config (dictionary) from xls file
+        xls_dict = self.load_dict_from_xls(path_to_xls, config_sheet_name)
+
+        # calculate dictionaries for merge
+        dictionary = []
+        if dict_to_merge is None:  # dictionary for merge doesn't provided
+            dictionary = xls_dict
+        elif isinstance(dict_to_merge, dict):  # provided dictionary for merge is dictionary
+            dictionary.append(dict_to_merge)
+            dictionary.append(xls_dict)
+        elif isinstance(dict_to_merge, list):  # provided dictionary for merge is a list of dictionaries
+            dictionary = dict_to_merge
+            dictionary.append(xls_dict)
+        else:  # provided invalid type of dictionary for merge
+            raise ConfigError("Invalid dictionary to merge type: {}!".format(type(dict_to_merge)))
+
+        # init instance with superclass constructor
+        super(ConfigurationXls, self).__init__(path_to_config=path_to_yaml, dict_to_merge=dictionary,
+                                               is_override_config=is_override_config, is_merge_env=is_merge_env)
+
+    def load_dict_from_xls(self, path_to_xls, config_sheet_name):
+        self.log.debug("load_dict_from_xls() is working.")
+        self.log.debug("Excel file [{}], config sheet [{}].".format(path_to_xls, config_sheet_name))
+
+        # some preliminary checks (fast-fail)
+        if not path_to_xls or not path_to_xls.strip():
+            raise ConfigError('Provided empty path to xls file!')
+        if not os.path.exists(path_to_xls):
+            raise ConfigError('Provided path [%s] doesn\'t exist!' % path_to_xls)
+
+        # loading xls workbook
+        excel_book = xlrd.open_workbook(path_to_xls, encoding_override=DEFAULT_ENCODING)
+        # loading config sheet
+        excel_sheet = excel_book.sheet_by_name(config_sheet_name)
+        self.log.debug("Loaded xls config. Found [{}] row(s). Loading.".format(excel_sheet.nrows))
+        # loading disctionary from xls file
+        dictionary = {}
+        for rownumber in range(excel_sheet.nrows):
+            name = excel_sheet.cell_value(rownumber, XLS_NAMES_COLUMN)
+            value = excel_sheet.cell_value(rownumber, XLS_VALUES_COLUMN)
+            self.log.debug("Loaded config parameter: {} = {}".format(name, value))
+            dictionary[name] = value
+        self.log.info("Loaded dictionary from xls config:\n\t{}".format(dictionary))
+        return dictionary
+
+
+# just for debug purpose
+# if __name__ == '__main__':
+#     import yaml
+#     import logging.config
+#     with open('tests/configs/test_logging.yml', 'rt') as f:
+#         config = yaml.safe_load(f.read())
+#     logging.config.dictConfig(config)
+#     config = ConfigurationXls('tests/configs/xls_config.xlsx', 'config_sheet',
+#                               path_to_yaml='tests/configs', is_merge_env=False)
+#     print "loaded config ->", config

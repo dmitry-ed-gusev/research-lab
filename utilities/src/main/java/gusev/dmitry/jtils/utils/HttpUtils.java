@@ -25,6 +25,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
 
@@ -64,6 +65,8 @@ public final class HttpUtils {
     private static final String HTTP_FORM_INPUT_KEY_ATTR   = "name";
     /***/
     private static final String HTTP_FORM_INPUT_VALUE_ATTR = "value";
+    /** Regex pattern for checking invalid chars in URL. */
+    private static final Pattern URL_INVALID_CHARS = Pattern.compile("[\\x00-\\x1F]");
 
     private HttpUtils() {} // utility class, can't instantiate
 
@@ -288,5 +291,11 @@ public final class HttpUtils {
         return paramsList;
     }
 
+    /** Check URL for invalid chars. */
+    public static void checkUrl(String url) {
+        if (URL_INVALID_CHARS.matcher(url).find()) {
+            throw new IllegalArgumentException(String.format("URL [%s] contains invalid characters!", url));
+        }
+    }
 
 }
