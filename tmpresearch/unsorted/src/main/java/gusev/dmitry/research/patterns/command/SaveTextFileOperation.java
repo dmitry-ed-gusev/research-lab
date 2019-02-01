@@ -1,4 +1,4 @@
-package gusev.dmitry.research.patterns.command.oop;
+package gusev.dmitry.research.patterns.command;
 
 public class SaveTextFileOperation implements TextFileOperation {
 

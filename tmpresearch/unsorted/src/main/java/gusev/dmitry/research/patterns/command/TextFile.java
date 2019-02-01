@@ -1,4 +1,4 @@
-package gusev.dmitry.research.patterns.command.oop;
+package gusev.dmitry.research.patterns.command;
 
 public class TextFile {
 
@@ -11,10 +11,12 @@ public class TextFile {
     // constructor
 
     public String open() {
+        System.out.println("Opening file " + name);
         return "Opening file " + name;
     }
 
     public String save() {
+        System.out.println("Saving file " + name);
         return "Saving file " + name;
     }
 
