@@ -4,7 +4,7 @@
 """
     Common utilities in python. Can be useful in different cases.
     Created: Gusev Dmitrii, 04.04.2017
-    Modified: Gusev Dmitrii, 26.09.2018
+    Modified: Gusev Dmitrii, 11.02.2019
 """
 
 import os
@@ -13,6 +13,7 @@ import sys
 import csv
 import yaml
 import xlrd
+import codecs
 import logging
 import logging.config
 from os import walk
@@ -24,8 +25,9 @@ log = logging.getLogger(__name__)
 # to avoid errors like 'no handlers' for libraries it's necessary to add NullHandler.
 log.addHandler(logging.NullHandler())
 
-# some useful constants
+# some useful common constants
 GIT_EXECUTABLE = 'git'
+DEFAULT_ENCODING = "utf-8"
 
 
 def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO, env_key='LOG_CFG'):
@@ -206,7 +208,7 @@ def counter(func):
     return wrapper
 
 
-def filter_str(string):
+def filter_str(string):  # todo: fix filtering for non-cyrillic symbols too (add them)
     """
     Filter out all symbols from string except letters, numbers, spaces, commas.
     By default, decode input string in unicode (utf-8).
@@ -220,7 +222,13 @@ def filter_str(string):
                    char in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ.,/-№')
 
 
-def get_str_val(value, value_type, encoding):
+def get_str_val(value, value_type, encoding):  # todo: make filtering optional
+    """Convert excel cell value into string with filtering out all unnecessary symbols.
+    :param value:
+    :param value_type:
+    :param encoding:
+    :return:
+    """
     if xlrd.XL_CELL_EMPTY == value_type or xlrd.XL_CELL_BLANK == value_type:
         return ''
     elif xlrd.XL_CELL_NUMBER == value_type:
@@ -232,12 +240,35 @@ def get_str_val(value, value_type, encoding):
 
 
 def get_int_val(value, value_type, encoding):
+    """Convert excel cell value into integer.
+    :param value:
+    :param value_type:
+    :param encoding:
+    :return:
+    """
     if xlrd.XL_CELL_EMPTY == value_type or xlrd.XL_CELL_BLANK == value_type:
         return 0
     elif xlrd.XL_CELL_NUMBER == value_type:
         return int(value)
     else:
         raise StandardError("Can't convert value [{}] to integer!".format(value.encode(encoding)))
+
+
+def write_report_to_file(txt_report, out_file):
+    """Write txt report to specified file. If file isn't specified - error is raised. If file doesn't exist -
+    it will be created. If it exists - it will be overriden.
+    :return:
+    """
+    log.debug("write_report_to_file() is working. Output file [{}].".format(out_file))
+    if not out_file or not out_file.strip():  # fail fast check
+        raise PyUtilitiesError("Output file wasn't specified!")
+    # writing data to specified file
+    with codecs.open(out_file, 'w', DEFAULT_ENCODING) as out:
+        out.write(txt_report)
+
+
+class PyUtilitiesError(Exception):
+    """Something went wrong in utilities module..."""
 
 
 if __name__ == '__main__':

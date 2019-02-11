@@ -1,7 +1,7 @@
 # [pyutilities] package
 
 **Useful Python 2.7 utilities.**  
-*Last update 06.01.2019*
+*Last update 11.02.2019*
 
 For content here I use 
 [Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/).
@@ -35,3 +35,6 @@ Minor typo fixes in README.
 
 0.5.2  
 README format fixes :)
+
+0.5.3  
+Added one utility method - write_report_to_file(). Minor fixes, comments improvements.
