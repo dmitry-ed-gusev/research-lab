@@ -217,8 +217,17 @@ class Configuration(object):
         else:
             return self.__get_value(keys[1], values[keys[0]])
 
+    def __contains_key(self, key, values):
+        if not values:
+            return False
+        keys = key.split(".", 1)
+        if len(keys) < 2:
+            return keys[0] in values
+        else:
+            return self.__contains_key(keys[1], values[keys[0]])
+
     def contains_key(self, key):
-        return key in self.config_dict
+        return self.__contains_key(key, self.config_dict)
 
     def __str__(self):
         return str(self.config_dict)
