@@ -14,7 +14,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='pyutilities',
-      version='0.5.3',
+      version='0.5.4',
       description='Useful python 2.x utilities library.',
       url='https://pypi.org/project/pyutilities',
       author='Dmitrii Gusev',

@@ -217,6 +217,9 @@ class Configuration(object):
         else:
             return self.__get_value(keys[1], values[keys[0]])
 
+    def contains_key(self, key):
+        return key in self.config_dict
+
     def __str__(self):
         return str(self.config_dict)
 

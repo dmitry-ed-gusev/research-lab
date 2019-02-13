@@ -38,3 +38,6 @@ README format fixes :)
 
 0.5.3  
 Added one utility method - write_report_to_file(). Minor fixes, comments improvements.
+
+0.5.4  
+Added method contains_key() to Configuration class.
