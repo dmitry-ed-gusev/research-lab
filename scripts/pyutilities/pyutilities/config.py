@@ -9,14 +9,15 @@
     Added child config class that is able to load config (as dictionary) from xls file (from specified sheet).
 
     Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 06.01.2019
+    Modified: Gusev Dmitrii, 04.03.2019
 """
 
 import os
 import logging
-import xlrd, xlwt  # reading/writing excel files
+import xlrd  # reading excel files
+# import xlwt  # writing excel files
 from string import Template
-from utils import parse_yaml
+from pyutilities.utils import parse_yaml
 
 YAML_EXTENSION_1 = '.yml'
 YAML_EXTENSION_2 = '.yaml'

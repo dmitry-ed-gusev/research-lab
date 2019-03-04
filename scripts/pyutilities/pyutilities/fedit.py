@@ -3,8 +3,9 @@
 
 """
     Inplace/inline file editing utility.
-    Created: Gusev Dmitrii, 13.04.2017
-    Modified: Gusev Dmitrii, 16.04.2017
+
+    Created:  Gusev Dmitrii, 13.04.2017
+    Modified: Gusev Dmitrii, 04.03.2019
 """
 
 # todo: implement: add line mode (if not found needed line)
@@ -59,6 +60,6 @@ for line in fileinput.input(files=[args.infile], inplace=True, backup='.original
     # if we found string - we will replace it
     if check_str(args.edit_type, line, args.sourceStr):
         sys.stderr.write("Found: {}\n".format(args.sourceStr))
-        print args.destStr
+        print(args.destStr)
     else:
-        print line,
+        print(line,)

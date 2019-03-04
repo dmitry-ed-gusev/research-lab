@@ -3,8 +3,9 @@
 
 """
     Common utilities in python. Can be useful in different cases.
-    Created: Gusev Dmitrii, 04.04.2017
-    Modified: Gusev Dmitrii, 11.02.2019
+
+    Created:  Gusev Dmitrii, 04.04.2017
+    Modified: Gusev Dmitrii, 04.03.2019
 """
 
 import os
@@ -68,7 +69,7 @@ def count_lines(filename):
             # print row  # <- just a debug output
             counter += 1
     # debug - print count to console
-    print "Lines count: {}".format(counter)
+    print("Lines count: {}".format(counter))
     return counter
 
 
@@ -81,14 +82,15 @@ def _list_files(path, files_buffer, out_to_console=False):
     :param out_to_console: out to console processing file
     """
     # print "STDOUT encoding ->", sys.stdout.encoding  # <- just a debug output
-    for (dirpath, dirnames, filenames) in walk(unicode(path)):
+    # todo: line for python 2 -> for (dirpath, dirnames, filenames) in walk(unicode(path)):
+    for (dirpath, dirnames, filenames) in walk(path):
         for filename in filenames:
             abs_path = dirpath + '/' + filename
             if out_to_console:  # debug output
                 if sys.stdout.encoding is not None:  # sometimes encoding may be null!
-                    print abs_path.encode(sys.stdout.encoding, errors='replace')
+                    print(abs_path.encode(sys.stdout.encoding, errors='replace'))
                 else:
-                    print abs_path
+                    print(abs_path)
             files_buffer.append(abs_path)
 
 
@@ -177,7 +179,7 @@ def benchmark(func):
     def wrapper(*args, **kwargs):
         t = time.clock()
         res = func(*args, **kwargs)
-        print func.__name__, time.clock() - t
+        print(func.__name__, time.clock() - t)
         return res
     return wrapper
 
@@ -189,7 +191,7 @@ def logger(func):
     """
     def wrapper(*args, **kwargs):
         res = func(*args, **kwargs)
-        print func.__name__, args, kwargs
+        print(func.__name__, args, kwargs)
         return res
     return wrapper
 
@@ -202,7 +204,7 @@ def counter(func):
     def wrapper(*args, **kwargs):
         wrapper.count += 1
         res = func(*args, **kwargs)
-        print "{0} была вызвана: {1}x".format(func.__name__, wrapper.count)
+        print("{0} была вызвана: {1}x".format(func.__name__, wrapper.count))
         return res
     wrapper.count = 0
     return wrapper
@@ -251,7 +253,7 @@ def get_int_val(value, value_type, encoding):
     elif xlrd.XL_CELL_NUMBER == value_type:
         return int(value)
     else:
-        raise StandardError("Can't convert value [{}] to integer!".format(value.encode(encoding)))
+        raise ValueError("Can't convert value [{}] to integer!".format(value.encode(encoding)))
 
 
 def write_report_to_file(txt_report, out_file):
@@ -272,7 +274,7 @@ class PyUtilitiesError(Exception):
 
 
 if __name__ == '__main__':
-    print "pyutilities: Don't try to execute library as standalone app!"
+    print("pyutilities: Don't try to execute library as standalone app!")
     # list_files('/media/vinnypuhh/MyData/Cloud/YandexDisk/DOCS AND BOOKS')
     # list = list_files('/media/vinnypuhh/MyData', True)
     # print len(list)

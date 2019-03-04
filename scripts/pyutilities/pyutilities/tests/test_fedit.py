@@ -3,8 +3,9 @@
 
 """
     Unit tests for fedit utility.
+
     Created:  Gusev Dmitrii, 26.09.2018
-    Modified:
+    Modified: Dmitrii Gusev, 04.03.2019
 """
 
 import yaml
@@ -17,22 +18,22 @@ import unittest
 class FEditTest(unittest.TestCase):
 
     def setUp(self):
-        print "FEditTest.setUp()"
+        print("FEditTest.setUp()")
 
     def tearDown(self):
-        print "FEditTest.tearDown()"
+        print("FEditTest.tearDown()")
 
     @classmethod
     def setUpClass(cls):
         cls._log = logging.getLogger(__name__)
-        with open('configs/logging.yml', 'rt') as f:
+        with open('configs/test_logging.yml', 'rt') as f:
             config = yaml.safe_load(f.read())
         logging.config.dictConfig(config)
-        print "FEditTest.setUpClass()"
+        print("FEditTest.setUpClass()")
 
     @classmethod
     def tearDownClass(cls):
-        print "FEditTest.tearDownClass()"
+        print("FEditTest.tearDownClass()")
 
     def test(self):
         pass

@@ -6,11 +6,14 @@
 #   See more info here: https://packaging.python.org/tutorials/packaging-projects/#
 #
 #   Created:  Gusev Dmitrii, 25.09.2018
-#   Modified: Gusev Dmitrii, 18.11.2018
+#   Modified: Gusev Dmitrii, 04.03.2019
 # =======================================================================================
 
 # todo: install locally before
 # todo: test locally before install to PyPi (include test run after local install?)
+
+# setup proxy for twine (comment/uncomment - if necessary)
+export ALL_PROXY=webproxy.merck.com:8080
 
 # clean previous versions distributions
 rm -rf dist

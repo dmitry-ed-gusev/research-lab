@@ -41,3 +41,6 @@ Added one utility method - write_report_to_file(). Minor fixes, comments improve
 
 0.5.4  
 Added method contains_key() to Configuration class.
+
+0.5.5  
+Added compatability with Python 3.7. Should also still work on Python 2.7.

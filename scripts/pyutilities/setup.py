@@ -3,8 +3,9 @@
 
 """
     Setup script for [pyutilities] library.
+
     Created:  Gusev Dmitrii, 25.09.2018
-    Modified: Gusev Dmitrii, 18.11.2018
+    Modified: Gusev Dmitrii, 04.03.2019
 """
 
 from setuptools import setup, find_packages
@@ -14,8 +15,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='pyutilities',
-      version='0.5.4',
-      description='Useful python 2.x utilities library.',
+      version='0.5.5',
+      description='Useful python 2.x/3.x utilities library.',
       url='https://pypi.org/project/pyutilities',
       author='Dmitrii Gusev',
       author_email='dmitry.ed.gusev@gmail.com',
@@ -28,6 +29,7 @@ setup(name='pyutilities',
       # todo: list of all classifiers: https://pypi.org/classifiers/
       classifiers=[
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent"
       ])

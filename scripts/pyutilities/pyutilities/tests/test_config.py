@@ -5,7 +5,7 @@
     Unit tests for Configuration class.
 
     Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 05.01.2019
+    Modified: Gusev Dmitrii, 04.03.2019
 """
 
 import os
@@ -184,4 +184,4 @@ class ConfigurationTest(unittest.TestCase):
 
         # line that generates issue
         with self.assertRaises(ConfigError):
-            print self.config.get('name.subname3')
+            print(self.config.get('name.subname3'))
