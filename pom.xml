@@ -178,32 +178,31 @@
         </plugins>
     </reporting>
 
-    <!-- Here are just common test dependencies. All other
-     dependencies are located/mentioned in child modules. -->
+    <!-- Here are common (testing) dependencies. All other dependencies should be put in child modules. -->
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
             <version>${hamcrest.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>${mockito.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>
             <version>${xmlunit.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -247,7 +246,6 @@
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
-                <module>measurementor</module>
             </modules>
         </profile>
 
@@ -269,7 +267,6 @@
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
-                <module>measurementor</module>
             </modules>
         </profile>
 
@@ -290,7 +287,6 @@
                 <!--<module>bigdata</module>-->
                 <!--<module>socialnet</module>-->
                 <!--<module>j2ee</module>-->
-                <module>measurementor</module>
             </modules>
         </profile>
 
@@ -311,7 +307,6 @@
                 <!--<module>bigdata</module>-->
                 <!--<module>j2ee</module>-->
                 <!--<module>nlp</module>-->
-                <!--<module>measurementor</module>-->
             </modules>
         </profile>
 
