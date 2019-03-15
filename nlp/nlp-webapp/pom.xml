@@ -21,7 +21,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${maven.war.plugin}</version>
+                <version>${maven.plugin.war}</version>
                 <configuration>
                     <!--<warName>[the name you want for your war file]</warName>-->
                     <outputDirectory>${app.assembly.dir}</outputDirectory>

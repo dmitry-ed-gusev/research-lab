@@ -9,11 +9,12 @@
     <name>Research project :: research and self-education.</name>
 
     <properties>
+        <!-- General properties -->
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- java-related settings/properties -->
         <java.sources.encoding>UTF-8</java.sources.encoding>
         <java.version>1.8</java.version>
-        <!-- maven plugins settings/versions -->
+
+        <!-- Maven plugins settings/versions -->
         <maven.plugin.compiler>2.3.2</maven.plugin.compiler>
         <maven.plugin.jar>2.4</maven.plugin.jar>
         <maven.plugin.resources>2.5</maven.plugin.resources>
@@ -21,16 +22,19 @@
         <maven.plugin.antrun>1.8</maven.plugin.antrun>
         <maven.plugin.shade>2.4.3</maven.plugin.shade>
         <maven.plugin.exec>1.6.0</maven.plugin.exec>
-        <maven.war.plugin>3.2.0</maven.war.plugin>
+        <maven.plugin.war>3.2.0</maven.plugin.war>
+
         <!-- Apache libraries (Lang3/Logging/IO/Log4J/etc...) -->
         <commons.lang3.version>3.6</commons.lang3.version>
         <commons.logging.version>1.1.3</commons.logging.version>
         <commons.io.version>2.5</commons.io.version>
         <apache.httpclient.version>4.5.2</apache.httpclient.version>
         <apache.dbcp.version>1.4</apache.dbcp.version>
+
         <!-- Logging libraries -->
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.7.21</slf4j.version>
+
         <!-- BigData libraries versions -->
         <hadoop.version>2.7.1</hadoop.version>
         <!-- J2EE libraries versions -->
@@ -39,17 +43,23 @@
         <!-- 3rd party libraries versions -->
         <jsch.version>0.1.54</jsch.version>
         <ant.jsch.version>1.10.1</ant.jsch.version>
+
         <!-- Test frameworks versions (JUnit/Hamcrest/Mockito) -->
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <hamcrest.version>1.3</hamcrest.version>
         <xmlunit.version>1.4</xmlunit.version>
-        <!--<jacoco.plugin.version>0.7.7.201606060606</jacoco.plugin.version>-->
         <jacoco.plugin.version>0.8.1</jacoco.plugin.version>
-        <!-- Spring/Hibernate frameworks (parts) versions -->
+
+        <!-- Spring framework components versions -->
         <spring.version>4.3.2.RELEASE</spring.version>
         <spring.context.version>4.3.3.RELEASE</spring.context.version>
+        <spring.boot.version>2.1.3.RELEASE</spring.boot.version>
+
+        <!-- Hibernate framework components version -->
         <hibernate.version>5.0.6.Final</hibernate.version>
+        <hibernate.validate.version>6.0.15.Final</hibernate.validate.version>
+
         <!-- DBMS drivers versions -->
         <dbms.derby.version>10.13.1.1</dbms.derby.version>
         <dbms.oracle.version>12.2.0.1.0</dbms.oracle.version>
@@ -88,21 +98,29 @@
             <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
         </repository>
         <repository>
-            <id>alt-repo-5</id>
+            <id>central-msd-repo</id>
             <name>Alt repo #5</name>
             <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
+        </repository>
+        <repository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
         </repository>
     </repositories>
 
     <!-- Additional Maven repositories for Maven plugins -->
     <pluginRepositories>
         <pluginRepository>
-            <id>central-msd-repo</id>
+            <id>central-msd-plugins-repo</id>
             <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
         </pluginRepository>
         <pluginRepository>
             <id>alt-plugins-repo-1</id>
             <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -152,7 +170,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>${maven.war.plugin}</version>
+                    <version>${maven.plugin.war}</version>
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>
@@ -246,6 +264,7 @@
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
+                <module>rest-docker</module>
             </modules>
         </profile>
 
@@ -267,6 +286,7 @@
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
+                <module>rest-docker</module>
             </modules>
         </profile>
 
@@ -280,13 +300,14 @@
             </properties>
             <!-- Some of modules to build -->
             <modules>
-                <module>scripts</module>
-                <module>utilities</module>
-                <module>tmpresearch</module>
-                <module>nlp</module>
+                <!--<module>scripts</module>-->
+                <!--<module>utilities</module>-->
+                <!--<module>tmpresearch</module>-->
+                <!--<module>nlp</module>-->
                 <!--<module>bigdata</module>-->
                 <!--<module>socialnet</module>-->
                 <!--<module>j2ee</module>-->
+                <module>rest-docker</module>
             </modules>
         </profile>
 
