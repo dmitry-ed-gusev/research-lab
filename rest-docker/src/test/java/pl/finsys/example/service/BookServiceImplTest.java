@@ -1,19 +1,20 @@
 package pl.finsys.example.service;
 
+import org.junit.runner.RunWith;
+import org.springframework.data.domain.Example;
 import pl.finsys.example.domain.Book;
 import pl.finsys.example.repository.BookRepository;
 import pl.finsys.example.service.exception.BookAlreadyExistsException;
 import pl.finsys.example.util.UserUtil;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -58,7 +59,7 @@ public class BookServiceImplTest {
 
     private void stubRepositoryToReturnExistingUser() {
         final Book book = UserUtil.createBook();
-        when(bookRepository.findOne(book.getId())).thenReturn(book);
+        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
     }
 
     @Test

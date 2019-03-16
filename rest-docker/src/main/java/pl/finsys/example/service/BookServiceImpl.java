@@ -33,10 +33,10 @@ public class BookServiceImpl implements BookService {
     public Book saveBook(@NotNull @Valid final Book book) {
         LOGGER.debug("Creating {}", book);
 
-        // create example from book - for query by example
-        Example<Book> bookExample = Example.of(new Book(book.getId(), null, null));
         // find book by 'query by example'
-        Optional<Book> bookOptional = repository.findOne(bookExample);
+        //Optional<Book> bookOptional = repository.findOne(Example.of(book));
+        // classic way - find by id
+        Optional<Book> bookOptional = repository.findById(book.getId());
 
         if (bookOptional.isPresent()) {
             throw new BookAlreadyExistsException(
@@ -55,14 +55,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getBook(Long bookId) {
-        return repository.findOne(bookId);
+        Example<Book> bookExample = Example.of(new Book(bookId, null, null));
+        return repository.findOne(bookExample).orElse(null);
     }
 
     @Override
     @Transactional
     public void deleteBook(final Long bookId) {
         LOGGER.debug("deleting {}", bookId);
-        repository.delete(bookId);
+        repository.delete(new Book(bookId, null, null));
     }
 
 }
