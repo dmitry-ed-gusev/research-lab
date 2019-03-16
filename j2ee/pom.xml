@@ -14,41 +14,6 @@
     <name>J2EE :: some research with j2ee tech.</name>
 
     <properties>
-        <!--<version.java>1.7</version.java>-->
-        <!-- Java EE -->
-        <version.glassfish>4.1.1.162</version.glassfish>
-        <version.javaee>7.0</version.javaee>
-        <version.weld>2.4.4.Final</version.weld>
-        <version.jersey>2.22.2</version.jersey>
-        <version.eclipselink>2.6.4</version.eclipselink>
-        <version.hibernate.validator>5.1.2.Final</version.hibernate.validator>
-        <version.el>3.0.1-b03</version.el>
-        <version.json>1.0.4</version.json>
-        <!-- Databases -->
-        <!--<version.derby>10.10.1.1</version.derby>-->
-        <!--<version.mysql>5.1.21</version.mysql>-->
-        <!-- Test -->
-        <!--<skipTests>false</skipTests>-->
-        <!--<skipITs>${skipTests}</skipITs>-->
-        <!--<skipUTs>${skipTests}</skipUTs>-->
-        <!--<version.junit>4.11</version.junit>-->
-        <!--<version.xmlunit>1.4</version.xmlunit>-->
-        <!--<version.mockito>1.9.5</version.mockito>-->
-        <!-- Maven Plugins -->
-        <!--<version.maven.jar.plugin>2.4</version.maven.jar.plugin>-->
-        <!--<version.maven.war.plugin>2.4</version.maven.war.plugin>-->
-        <!--<version.maven.processor.plugin>2.2.4</version.maven.processor.plugin>-->
-        <!--<version.maven.compiler.plugin>3.1</version.maven.compiler.plugin>-->
-        <!--<version.maven.dependency.plugin>2.8</version.maven.dependency.plugin>-->
-        <version.maven.help.plugin>2.2</version.maven.help.plugin>
-        <version.maven.exec.plugin>1.2.1</version.maven.exec.plugin>
-        <version.maven.jaxws.plugin>2.2</version.maven.jaxws.plugin>
-        <version.maven.surefire.plugin>2.16</version.maven.surefire.plugin>
-        <version.maven.failsafe.plugin>2.16</version.maven.failsafe.plugin>
-        <!--<version.maven.javadoc.plugin>2.9.1</version.maven.javadoc.plugin>-->
-        <!-- Project -->
-        <!--<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
-        <!--<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
     </properties>
 
     <modules>
@@ -85,7 +50,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>${version.hibernate.validator}</version>
+                <version>${hibernate.validate.version}</version>
             </dependency>
             <!-- EL -->
             <dependency>
@@ -97,12 +62,12 @@
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.jpa</artifactId>
-                <version>${version.eclipselink}</version>
+                <version>${eclipse.persistance.eclipselink.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-                <version>${version.eclipselink}</version>
+                <version>${eclipse.persistance.eclipselink.version}</version>
             </dependency>
             <!-- JSOn-P -->
             <dependency>
@@ -149,7 +114,7 @@
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.moxy</artifactId>
-                <version>2.4.1</version>
+                <version>${eclipse.persistence.moxy.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -160,7 +125,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${version.maven.surefire.plugin}</version>
+                <version>${maven.plugin.surefire}</version>
                 <configuration>
                     <skipTests>false</skipTests>
                     <argLine>-Duser.language=en -Duser.country=EN</argLine>
@@ -169,7 +134,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${version.maven.failsafe.plugin}</version>
+                <version>${maven.plugin.failsafe}</version>
                 <configuration>
                     <skipTests>false</skipTests>
                     <skipITs>false</skipITs>
@@ -194,7 +159,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-help-plugin</artifactId>
-                    <version>${version.maven.help.plugin}</version>
+                    <version>${maven.plugin.help}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -211,7 +176,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>${version.maven.exec.plugin}</version>
+                    <version>${maven.plugin.exec}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -225,7 +190,7 @@
                 <plugin>
                     <groupId>org.jvnet.jax-ws-commons</groupId>
                     <artifactId>jaxws-maven-plugin</artifactId>
-                    <version>${version.maven.jaxws.plugin}</version>
+                    <version>${maven.plugin.jaxws}</version>
                 </plugin>
 
                 <plugin>

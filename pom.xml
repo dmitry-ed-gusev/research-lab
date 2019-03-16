@@ -20,10 +20,13 @@
         <maven.plugin.resources>2.5</maven.plugin.resources>
         <maven.plugin.dependency>2.1</maven.plugin.dependency>
         <maven.plugin.antrun>1.8</maven.plugin.antrun>
-        <!--<maven.plugin.shade>2.4.3</maven.plugin.shade>-->
         <maven.plugin.shade>3.2.1</maven.plugin.shade>
         <maven.plugin.exec>1.6.0</maven.plugin.exec>
         <maven.plugin.war>3.2.0</maven.plugin.war>
+        <maven.plugin.help>2.2</maven.plugin.help>
+        <maven.plugin.jaxws>2.2</maven.plugin.jaxws>
+        <maven.plugin.surefire>2.16</maven.plugin.surefire>
+        <maven.plugin.failsafe>2.16</maven.plugin.failsafe>
 
         <!-- Apache libraries (Lang3/Logging/IO/Log4J/etc...) -->
         <commons.lang3.version>3.6</commons.lang3.version>
@@ -31,6 +34,7 @@
         <commons.io.version>2.5</commons.io.version>
         <apache.httpclient.version>4.5.2</apache.httpclient.version>
         <apache.dbcp.version>1.4</apache.dbcp.version>
+        <apache.commons.csv>1.5</apache.commons.csv>
 
         <!-- Logging libraries -->
         <log4j.version>1.2.17</log4j.version>
@@ -44,10 +48,25 @@
         <java.mail.version>1.4.5</java.mail.version>
         <marklogic.java.api.version>3.0.4</marklogic.java.api.version>
         <activemq.version>5.13.2</activemq.version>
+        <version.glassfish>4.1.1.162</version.glassfish>
+        <version.javaee>7.0</version.javaee>
+        <version.weld>2.4.4.Final</version.weld>
+        <version.jersey>2.22.2</version.jersey>
+        <eclipse.persistance.eclipselink.version>2.6.4</eclipse.persistance.eclipselink.version>
+        <eclipse.persistence.moxy.version>2.4.1</eclipse.persistence.moxy.version>
+        <version.el>3.0.1-b03</version.el>
+        <version.json>1.0.4</version.json>
+        <google.json-simple.version>1.1</google.json-simple.version>
+        <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
+        <primefaces.version>3.1.1</primefaces.version>
+        <primefaces.themes.version>1.0.4</primefaces.themes.version>
+        <javax.faces.version>2.0</javax.faces.version>
 
         <!-- 3rd party libraries versions -->
         <jsch.version>0.1.54</jsch.version>
         <ant.jsch.version>1.10.1</ant.jsch.version>
+        <org.jsoup.version>1.10.1</org.jsoup.version>
+        <cglib.version>2.2.2</cglib.version>
 
         <!-- Test frameworks versions (JUnit/Hamcrest/Mockito/etc) -->
         <junit.version>4.12</junit.version>
@@ -65,9 +84,12 @@
         <hibernate.version>5.0.6.Final</hibernate.version>
         <hibernate.validate.version>6.0.15.Final</hibernate.validate.version>
 
-        <!-- DBMS drivers versions -->
+        <!-- DBMS drivers/connection pools versions -->
         <dbms.derby.version>10.13.1.1</dbms.derby.version>
         <dbms.oracle.version>12.2.0.1.0</dbms.oracle.version>
+        <dbms.mysql.version>5.1.42</dbms.mysql.version>
+        <dbms.c3p0.version>0.9.1.2</dbms.c3p0.version>
+
         <!-- my own (local) utilities library useful version -->
         <dgusev.utilities.version>1.0</dgusev.utilities.version>
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
@@ -110,6 +132,18 @@
         <repository>
             <id>spring-releases</id>
             <url>https://repo.spring.io/libs-release</url>
+        </repository>
+        <!-- Nexus repository -->
+        <repository>
+            <id>jvnet-nexus-releases</id>
+            <name>jvnet-nexus-releases</name>
+            <url>https://maven.java.net/content/repositories/releases/</url>
+        </repository>
+        <!-- Primefaces repository -->
+        <repository>
+            <id>primefaces-themes</id>
+            <name>primefaces-themes</name>
+            <url>http://repository.primefaces.org/</url>
         </repository>
     </repositories>
 
