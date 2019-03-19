@@ -21,7 +21,7 @@
     <artifactId>rest-springboot-docker</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
-    <name>Rest Docker :: REST app example with Spring Boot and Docker.</name>
+    <name>Spring Rest :: REST app example (Spring Boot + Docker).</name>
 
     <properties>
     </properties>
@@ -77,7 +77,7 @@
 
     <dependencies>
 
-        <!-- general dependencies -->
+        <!-- Spring Boot dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -86,6 +86,8 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
+        <!-- Hibernate Validator + DBMS -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -94,8 +96,10 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <scope>runtime</scope>
+            <!--<scope>runtime</scope>-->
         </dependency>
+
+        <!-- Swagger UI -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -107,7 +111,7 @@
             <version>2.5.0</version>
         </dependency>
 
-        <!-- spring test dependencies -->
+        <!-- Spring Boot test dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
