@@ -303,7 +303,7 @@
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
-                <module>rest-docker</module>
+                <module>rest-springboot-docker</module>
             </modules>
         </profile>
 
@@ -325,7 +325,7 @@
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
-                <module>rest-docker</module>
+                <module>rest-springboot-docker</module>
             </modules>
         </profile>
 
@@ -346,7 +346,7 @@
                 <!--<module>bigdata</module>-->
                 <!--<module>socialnet</module>-->
                 <!--<module>j2ee</module>-->
-                <module>rest-docker</module>
+                <module>rest-springboot-docker</module>
             </modules>
         </profile>
 

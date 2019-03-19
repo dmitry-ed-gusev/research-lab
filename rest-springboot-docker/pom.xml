@@ -18,7 +18,7 @@
     -->
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>rest-docker</artifactId>
+    <artifactId>rest-springboot-docker</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
     <name>Rest Docker :: REST app example with Spring Boot and Docker.</name>
