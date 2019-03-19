@@ -304,6 +304,7 @@
                 <module>j2ee</module>
                 <module>nlp</module>
                 <module>rest-springboot-docker</module>
+                <module>rest-j2ee-docker</module>
             </modules>
         </profile>
 
@@ -326,6 +327,7 @@
                 <module>j2ee</module>
                 <module>nlp</module>
                 <module>rest-springboot-docker</module>
+                <module>rest-j2ee-docker</module>
             </modules>
         </profile>
 
@@ -347,6 +349,7 @@
                 <!--<module>socialnet</module>-->
                 <!--<module>j2ee</module>-->
                 <module>rest-springboot-docker</module>
+                <module>rest-j2ee-docker</module>
             </modules>
         </profile>
 
