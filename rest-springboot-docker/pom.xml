@@ -21,12 +21,14 @@
     <artifactId>rest-springboot-docker</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
-    <name>Spring Rest :: REST app example (Spring Boot + Docker).</name>
+    <name>Spring Rest :: REST example (Spring Boot + Docker).</name>
 
     <properties>
+        <mainClass>pl.finsys.example.BookstoreApplication</mainClass>
     </properties>
 
     <dependencyManagement>
+        <!-- Spring Boot version provided here is enough for other dependencies -->
         <dependencies>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -43,7 +45,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version>
+                <configuration>
+                    <mainClass>${mainClass}</mainClass>
+                    <layout>JAR</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -96,7 +108,7 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <!--<scope>runtime</scope>-->
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Swagger UI -->
