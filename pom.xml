@@ -164,6 +164,7 @@
     </pluginRepositories>
 
     <build>
+
         <plugins>
 
             <plugin>
@@ -371,6 +372,17 @@
                 <!--<module>j2ee</module>-->
                 <!--<module>nlp</module>-->
             </modules>
+        </profile>
+
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Optional URL to server. Default value is http://localhost:9000 -->
+                <!--<sonar.host.url>http://myserver:9000</sonar.host.url>-->
+            </properties>
         </profile>
 
     </profiles>

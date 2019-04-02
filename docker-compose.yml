@@ -1,0 +1,44 @@
+###############################################################################
+#
+#     Docker Composer file for SonarQube quality farm (Sonar+Mysql).
+#
+#     Created:  Dmitrii Gusev, 30.03.2019
+#     Modified:
+#
+###############################################################################
+
+version: '3'
+
+# docker services configuration
+services:
+  # mysql service
+  mysql:
+    image: mysql:5.7
+    container_name: mysql.5.7
+    networks:
+      - mynetwork
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=sonar
+      - MYSQL_USER=sonar
+      - MYSQL_PASSWORD=sonar
+
+  # sonar service
+  sonar:
+    image: sonarqube:latest
+    container_name: sonar
+    networks:
+      - mynetwork
+    environment:
+      - sonar.jdbc.username=sonar
+      - sonar.jdbc.password=sonar
+      - sonar.jdbc.url=jdbc:mysql://mysql.5.7:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance&useSSL=false
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mysql
+
+# docker networks configuration
+networks:
+  mynetwork:
+    driver: bridge
