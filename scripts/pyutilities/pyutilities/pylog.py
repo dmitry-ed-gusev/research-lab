@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+# coding=utf-8
+
+"""
+    Logging utilities for some convenience.
+
+    Created:  Dmitrii Gusev, 15.04.2019
+    Modified:
+
+"""
+
+import os
+import yaml
+import logging
+
+# init module logger. See more info in utils.py
+log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
+
+
+def init_logger(logger_name):
+    """
+    Init logger without any configuration. Also adds dummy handler in order to avoid errors like 'no handlers'.
+    :return: logger, initialized by name.
+    """
+    if logger_name is not None and logger_name and logger_name.strip
+
+
+def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO, env_key='LOG_CFG', logger_name=None):
+    """
+        Setup logging configuration - load it from YAML file. Default level is INFO. Configuration file name can be
+        provided by multiple ways:
+          * via function parameter <default_path> - direct value
+          * via environment variable <LOG_ENV> - overrides value from <default_path>
+        Default value for config file is <configs/logging.yml> - path relative to current working dir.
+        :param default_path path to logging config YAML file
+        :param default_level default logging level - INFO
+        :param env_key environment variable key to override settings from cmd line,
+               like LOG_CFG=my_logging_config.yml
+        :param logger_name name of the logger, that should be initialized and returned (by this method)
+    """
+    path = default_path
+    value = os.getenv(env_key, None)
+    if value:
+        path = value
+
+    if os.path.exists(path):  # load config from file/use basic config
+        with open(path, 'rt') as f:
+            config = yaml.safe_load(f.read())
+        logging.config.dictConfig(config)
+        log.info('Loaded logging config from [{}].'.format(path))
+    else:
+        logging.basicConfig(level=default_level)
+        log.info('Using basic logging config. Can\'t load config from [{}].'.format(path))
+
+    if logger_name:  # init and return logger
+        log.info('Initializing logger [{}].'.format(logger_name))
+        logger = logging.getLogger(logger_name)
+        logger.addHandler(logging.NullHandler())  # added dummy handler in order to avoid errors like 'no handlers'
+        return logger
+
+
+if __name__ == '__main__':
+    print("pyutilities.pylog: Don't try to execute library as a standalone app!")

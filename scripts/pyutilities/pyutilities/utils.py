@@ -15,7 +15,7 @@ import csv
 import yaml
 import xlrd
 import codecs
-import logging
+# import logging
 import logging.config
 from os import walk
 from subprocess import Popen
@@ -23,34 +23,12 @@ from subprocess import Popen
 # configure logger on module level. it isn't a good practice, but it's convenient.
 # don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
 log = logging.getLogger(__name__)
-# to avoid errors like 'no handlers' for libraries it's necessary to add NullHandler.
+# to avoid errors like 'no handlers' for libraries it's necessary/convenient to add NullHandler.
 log.addHandler(logging.NullHandler())
 
 # some useful common constants
 GIT_EXECUTABLE = 'git'
 DEFAULT_ENCODING = "utf-8"
-
-
-def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO, env_key='LOG_CFG'):
-    """
-        Setup logging configuration - load it from YAML file.
-        :param default_path path to logging config YAML file
-        :param default_level default logging level - INFO
-        :param env_key environment variable key to override settings from cmd line,
-               like LOG_CFG=my_logging_config.yml
-    """
-    path = default_path
-    value = os.getenv(env_key, None)
-    if value:
-        path = value
-    if os.path.exists(path):
-        with open(path, 'rt') as f:
-            config = yaml.safe_load(f.read())
-        logging.config.dictConfig(config)
-        log.info('Loaded logging config from [{}].'.format(path))
-    else:
-        logging.basicConfig(level=default_level)
-        log.info('Using basic logging config. Can"t load config from [{}].'.format(path))
 
 
 def count_lines(filename):
@@ -196,7 +174,7 @@ def logger(func):
     return wrapper
 
 
-def counter(func):
+def call_counter(func):
     """
     Декоратор, считающий и выводящий количество вызовов
     декорируемой функции.
@@ -274,7 +252,4 @@ class PyUtilitiesError(Exception):
 
 
 if __name__ == '__main__':
-    print("pyutilities: Don't try to execute library as standalone app!")
-    # list_files('/media/vinnypuhh/MyData/Cloud/YandexDisk/DOCS AND BOOKS')
-    # list = list_files('/media/vinnypuhh/MyData', True)
-    # print len(list)
+    print("pyutilities.utils: Don't try to execute library as a standalone app!")

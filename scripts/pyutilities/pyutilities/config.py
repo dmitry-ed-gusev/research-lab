@@ -299,13 +299,5 @@ class ConfigurationXls(Configuration):
         return dictionary
 
 
-# just for debug purpose
-# if __name__ == '__main__':
-#     import yaml
-#     import logging.config
-#     with open('tests/configs/test_logging.yml', 'rt') as f:
-#         config = yaml.safe_load(f.read())
-#     logging.config.dictConfig(config)
-#     config = ConfigurationXls('tests/configs/xls_config.xlsx', 'config_sheet',
-#                               path_to_yaml='tests/configs', is_merge_env=False)
-#     print "loaded config ->", config
+if __name__ == '__main__':
+    print("pyutilities.config: Don't try to execute library as a standalone app!")
