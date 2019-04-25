@@ -7,7 +7,7 @@
     to module String in java library Apache Commons).
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified:
+    Modified: Dmitrii Gusev, 18.04.2019
 """
 
 

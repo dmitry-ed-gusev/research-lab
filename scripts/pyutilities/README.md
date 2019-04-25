@@ -1,7 +1,7 @@
 # [pyutilities] package
 
 **Useful Python 2.7/3.7 utilities.**  
-*Last update 15.04.2019*
+*Last update 25.04.2019*
 
 For content here 
 [Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
@@ -46,11 +46,14 @@ Added method contains_key() to Configuration class.
 0.5.5  
 Added compatability with Python 3.7. Should also still work on Python 2.7. Let me know if it's not the case :)
 
-0.6.0  
-Several changes were done:
+0.7.0  
+Significant update for library. Many changes were done and sometimes tested :).
+Changes that were done:
  * added pylog.py module, for logging purposes (convenience mostly). Method setup_logging() was moved here (from utils.py).
  * method setup_logging() now is able to initialize logger by name and provide it
  * added deprecation of direct execution to utils.py
  * added module strings.py for various convenient methods for strings
  * added unit tests modules for strings.py and pylog.py
+ * added pysftp.py module for working with SFTP protocol
+ * added pyssh.py module for working with SSH protocol
  * ???
