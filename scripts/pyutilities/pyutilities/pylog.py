@@ -5,25 +5,31 @@
     Logging utilities for some convenience.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified:
+    Modified: Dmitrii Gusev, 26.04.2019
 
 """
 
 import os
 import yaml
 import logging
+import logging.config
+import pyutilities.strings as strings
 
 # init module logger. See more info in utils.py
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
-def init_logger(logger_name):
+def init_logger(logger_name, add_null_handler=True):
     """
     Init logger without any configuration. Also adds dummy handler in order to avoid errors like 'no handlers'.
     :return: logger, initialized by name.
     """
-    if logger_name is not None and logger_name and logger_name.strip
+    if not strings.is_str_empty(logger_name):  # init logger if name isn't empty
+        tmp_log = logging.getLogger(logger_name)
+        if add_null_handler:
+            tmp_log.addHandler(logging.NullHandler)
+        return tmp_log
 
 
 def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO, env_key='LOG_CFG', logger_name=None):
@@ -44,15 +50,16 @@ def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO
     if value:
         path = value
 
-    if os.path.exists(path):  # load config from file/use basic config
+    if os.path.exists(path):  # load config from specified file
         with open(path, 'rt') as f:
             config = yaml.safe_load(f.read())
         logging.config.dictConfig(config)
         log.info('Loaded logging config from [{}].'.format(path))
-    else:
+    else:  # use basic (default) config
         logging.basicConfig(level=default_level)
         log.info('Using basic logging config. Can\'t load config from [{}].'.format(path))
 
+    # todo: init logger before loading configuration?
     if logger_name:  # init and return logger
         log.info('Initializing logger [{}].'.format(logger_name))
         logger = logging.getLogger(logger_name)

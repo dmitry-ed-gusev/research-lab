@@ -6,7 +6,7 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 18.04.2019
+    Modified: Dmitrii Gusev, 26.04.2019
 
 """
 
@@ -15,7 +15,10 @@ import pyutilities.strings as pystr
 
 # common constants for testing
 EMPTY_STRINGS = ['', '     ', None, "", "  "]
-NON_EMPTY_STRINGS = []  # todo: maybe use a dict? 'aaa': '   aaa' etc...
+NON_EMPTY_STRINGS = {'str1': '   str1',
+                     'str2': 'str2    ',
+                     'str3': '   str3     ',
+                     'str4': 'str4'}
 
 
 class StringsTest(unittest.TestCase):
@@ -34,21 +37,28 @@ class StringsTest(unittest.TestCase):
     def tearDownClass(cls):
         print("StringsTest.tearDownClass()")
 
-    def test_is_str_empty(self):
+    def test_is_str_empty_with_empty_strings(self):
         for s in EMPTY_STRINGS:
-            self.assertTrue(pystr.is_str_empty(s))
+            self.assertTrue(pystr.is_str_empty(s), "Must be True!")
+
+    def test_is_str_empty_with_non_empty_strings(self):
+        for k, v in NON_EMPTY_STRINGS.items():
+            self.assertFalse(pystr.is_str_empty(k), "Must be False!")
+            self.assertFalse(pystr.is_str_empty(v), "Must be False!")
 
     def test_trim_to_none_with_empty_strings(self):
         for s in EMPTY_STRINGS:
             self.assertIsNone(pystr.trim_to_none(s), "Must be NoNe!")
 
     def test_trim_to_none_with_non_empty_strings(self):
-        pass
+        for k, v in NON_EMPTY_STRINGS.items():
+            self.assertEqual(k, pystr.trim_to_none(v), "Must be equals!")
 
     def test_trim_to_empty_with_empty_strings(self):
         for s in EMPTY_STRINGS:
-            self.assertEquals('', pystr.trim_to_empty(s), "Must be equals ('')!")
-            self.assertEquals("", pystr.trim_to_empty(s), "Must be equals (\"\")!")
+            self.assertEqual('', pystr.trim_to_empty(s), "Must be an empty string!")
+            self.assertEqual("", pystr.trim_to_empty(s), "Must be an empty string!")
 
     def test_trim_to_empty_with_non_empty_strings(self):
-        pass
+        for k, v in NON_EMPTY_STRINGS.items():
+            self.assertEqual(k, pystr.trim_to_empty(v), "Must be equals!")

@@ -52,7 +52,7 @@ Changes that were done:
  * added pylog.py module, for logging purposes (convenience mostly). Method setup_logging() was moved here (from utils.py).
  * method setup_logging() now is able to initialize logger by name and provide it
  * added deprecation of direct execution to utils.py
- * added module strings.py for various convenient methods for strings
+ * added module strings.py for various convenient methods for strings (with unit tests)
  * added unit tests modules for strings.py and pylog.py
  * added pysftp.py module for working with SFTP protocol
  * added pyssh.py module for working with SSH protocol
