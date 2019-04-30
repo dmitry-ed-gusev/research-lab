@@ -296,6 +296,7 @@
             </properties>
             <!-- All modules to build -->
             <modules>
+                <module>pyutilities</module>
                 <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
@@ -320,6 +321,7 @@
             </properties>
             <!-- All modules to build -->
             <modules>
+                <module>pyutilities</module>
                 <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
@@ -344,6 +346,7 @@
             </properties>
             <!-- Some of modules to build -->
             <modules>
+                <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
                 <!--<module>utilities</module>-->
                 <!--<module>tmpresearch</module>-->
@@ -368,6 +371,7 @@
             </properties>
             <!-- modules to build -->
             <modules>
+                <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
                 <!--<module>tmpresearch</module>-->
                 <module>utilities</module>
