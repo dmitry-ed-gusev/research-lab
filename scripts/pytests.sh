@@ -1,4 +1,13 @@
-#!/usr/bin/env bash
+#!/bin/bash
+#
+# =======================================================================================
+#
+#   Shell script for building [autoscripts] module with python scripts.
+#   Script executes unit tests.
+#
+#   Created:  Gusev Dmitry, 14.01.2019
+#   Modified:
+# =======================================================================================
 
 virtualenv .venv
 virtualenv --relocatable .venv

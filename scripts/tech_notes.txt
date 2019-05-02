@@ -1,0 +1,39 @@
+===================================================================================================
+
+    Useful tech notes.
+
+    Created:  Gusev Dmitrii, 22.06.2018
+    Modified: Gusev Dmitrii, 22.06.2018
+
+===================================================================================================
+
+General things
+---------------------------------------------------------------------------------------------------
+1. JSON Beautifier: https://codebeautify.org/jsonviewer
+
+
+Python requirements
+---------------------------------------------------------------------------------------------------
+1. Create requirements file: [pip freeze > requirements.txt]
+
+2. Install according to (previously created) requirements file: [pip install -r <path_to_reuqirements_file>]
+
+3. Requirements file format:
+     SomePackage          # latest version
+     SomePackage==1.0.4   # specific version
+     SomePackage>=1.0.4   # minimum version
+
+
+Jira properties/info
+---------------------------------------------------------------------------------------------------
+
+Issues types: Epic, Story, Task, Sub-task
+Statuses: "New"(1), "To Do"(10002), "In Progress"(3), "Blocked"(10300), "In Review"(10001), "Done"(10000), "Closed"(6)
+
+
+Jira useful links
+---------------------------------------------------------------------------------------------------
+https://issues.merck.com/rest/api/2/project/KDM/statuses
+
+status transitions:
+https://community.atlassian.com/t5/Jira-questions/JIRA-How-to-change-issue-status-via-rest/qaq-p/528133
