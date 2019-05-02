@@ -28,7 +28,7 @@ def init_logger(logger_name, add_null_handler=True):
     if not strings.is_str_empty(logger_name):  # init logger if name isn't empty
         tmp_log = logging.getLogger(logger_name)
         if add_null_handler:
-            tmp_log.addHandler(logging.NullHandler)
+            tmp_log.addHandler(logging.NullHandler)  # added dummy handler in order to avoid errors like 'no handlers'
         return tmp_log
 
 
@@ -62,9 +62,7 @@ def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO
     # todo: init logger before loading configuration?
     if logger_name:  # init and return logger
         log.info('Initializing logger [{}].'.format(logger_name))
-        logger = logging.getLogger(logger_name)
-        logger.addHandler(logging.NullHandler())  # added dummy handler in order to avoid errors like 'no handlers'
-        return logger
+        return init_logger(logger_name)
 
 
 if __name__ == '__main__':

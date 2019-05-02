@@ -9,3 +9,9 @@
     Modified:
 """
 
+import pyutilities.maven as mvn
+
+print(444)
+print(mvn.__MVN_EXEC)
+mvn.mvn_build_repo()
+print(mvn.__MVN_EXEC)

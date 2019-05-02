@@ -94,18 +94,6 @@ class GitUtility(object):
         self.log.info('Repositories location: [{}].'.format(location))
         return location
 
-    def __select_mvn_executable(self):
-        """
-        Select Maven executable, depending on OS (windows-family or not). Internal method.
-        :return:
-        """
-        if 'windows' in platform.system().lower():
-            mvn_exec = 'mvn.cmd'
-        else:
-            mvn_exec = 'mvn'
-        self.log.info('MAVEN executable: [{}].'.format(mvn_exec))
-        return mvn_exec
-
     def __generate_repo_url(self, repo_name):
         """Generates repository URL for clone. Internal method.
         :param repo_name:
