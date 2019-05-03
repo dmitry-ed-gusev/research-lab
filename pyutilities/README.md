@@ -46,7 +46,7 @@ Added method contains_key() to Configuration class.
 0.5.5  
 Added compatability with Python 3.7. Should also still work on Python 2.7. Let me know if it's not the case :)
 
-0.7.0  
+0.8.0  
 Significant update for library. Many changes were done and sometimes tested :).
 Changes that were done:
  * added pylog.py module, for logging purposes (convenience mostly). Method setup_logging() was moved here (from utils.py).
@@ -56,4 +56,6 @@ Changes that were done:
  * added unit tests modules for strings.py and pylog.py
  * added pysftp.py module for working with SFTP protocol
  * added pyssh.py module for working with SSH protocol
- * ???
+ * added pymaven.py module for representing Maven functionality
+ * added pygit.py module for representing Git functionality
+ * methods git_clean_global_proxy/git_set_global_proxy moved to pygit module

@@ -27,7 +27,6 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 # some useful common constants
-GIT_EXECUTABLE = 'git'
 DEFAULT_ENCODING = "utf-8"
 
 
@@ -103,34 +102,6 @@ def parse_yaml(file_path):
         if "\t" in cfg_file_content:  # no tabs allowed in file content
             raise IOError("Config file [{}] contains 'tab' character!".format(file_path))
         return yaml.load(cfg_file_content)
-
-
-def git_set_global_proxy(http=None, https=None):  # todo: unit tests! make it decorator.
-    """
-    Set specified proxies (both http/https) for local git globally.
-    :param http:
-    :param https:
-    """
-    log.debug("git_set_global_proxy() is working. Setting proxies: http -> [{}], https -> [{}]".format(http, https))
-    if http:
-        log.debug("Setting HTTP proxy: {}".format(http))
-        process = Popen([GIT_EXECUTABLE, 'config', '--global', 'http.proxy', http])
-        process.wait()
-    if https:
-        log.debug("Setting HTTPS proxy: {}".format(http))
-        process = Popen([GIT_EXECUTABLE, 'config', '--global', 'https.proxy', https])
-        process.wait()
-
-
-def git_clean_global_proxy():  # todo: unit tests! make it decorator.
-    """
-    Clear git global proxies (both http/https).
-    """
-    log.debug("git_clean_global_proxy() is working.")
-    process = Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'http.proxy'])
-    process.wait()
-    process = Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'https.proxy'])
-    process.wait()
 
 
 def save_file_with_path(file_path, content):  # todo: move it to utilities module

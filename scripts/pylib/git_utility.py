@@ -155,31 +155,7 @@ class GitUtility(object):
         """
         repo_path = self.location + '/' + repo_name
         self.log.info('Building repository [{}].'.format(repo_path))
-        try:
-            # build repository
-            cmd = [self.mvn_exec, 'clean', 'install']
-            if self.mvn_settings:
-                cmd.extend(['-s', self.mvn_settings])
-            process = Popen(cmd, cwd=repo_path)
-            process.wait()
-            # download javadoc packages for dependencies
-            if self.config.get(CONFIG_KEY_MVN_JAVADOC, default=False):
-                self.log.info('Downloading javadoc for repository [{}].'.format(repo_path))
-                cmd = [self.mvn_exec, 'dependency:resolve', '-Dclassifier=javadoc']
-                if self.mvn_settings:
-                    cmd.extend(['-s', self.mvn_settings])
-                process = Popen(cmd, cwd=repo_path)
-                process.wait()
-            # download source packages for dependencies
-            if self.config.get(CONFIG_KEY_MVN_SOURCES, default=False):
-                self.log.info('Downloading sources for repository [{}].'.format(repo_path))
-                cmd = [self.mvn_exec, 'dependency:resolve', '-Dclassifier=sources']
-                if self.mvn_settings:
-                    cmd.extend(['-s', self.mvn_settings])
-                process = Popen(cmd, cwd=repo_path)
-                process.wait()
-        except AttributeError as se:
-            self.log.error('Error building repo [{}]! {}'.format(repo_path, se))
+        # todo: build code was here...
 
     def __is_repo_exists(self, repo_name):
         repo_path = self.location + '/' + repo_name
