@@ -9,3 +9,5 @@
     Modified:
 """
 
+# todo: https://habr.com/ru/company/jetinfosystems/blog/336608/
+# todo: https://github.com/ktbyers/netmiko

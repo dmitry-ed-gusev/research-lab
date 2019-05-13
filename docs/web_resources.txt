@@ -1,0 +1,2 @@
+https://www.pythonanywhere.com/
+https://www.shellhacks.com/ru/linux-proxy-server-settings-set-proxy-command-line/
