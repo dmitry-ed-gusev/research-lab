@@ -5,13 +5,9 @@
 
     Some useful/convenient functions related to SSH working.
 
+    13.05.2019 Module is in DRAFT state (empty)!
+
     Created:  Dmitrii Gusev, 25.04.2019
-    Modified:
+    Modified: Dmitrii Gusev, 13.05.2019
+
 """
-
-import pyutilities.maven as mvn
-
-print(444)
-print(mvn.__MVN_EXEC)
-mvn.mvn_build_repo()
-print(mvn.__MVN_EXEC)

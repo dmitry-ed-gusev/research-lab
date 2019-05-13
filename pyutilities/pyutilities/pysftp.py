@@ -6,8 +6,6 @@
     Some useful/convenient functions related to SFTP working.
 
     Created:  Dmitrii Gusev, 25.04.2019
-    Modified:
-"""
+    Modified: Dmitrii Gusev, 13.05.2019
 
-# todo: https://habr.com/ru/company/jetinfosystems/blog/336608/
-# todo: https://github.com/ktbyers/netmiko
+"""

@@ -5,8 +5,10 @@
 
     Some useful/convenient functions related to GIT.
 
+    13.05.2019 Module is in DRAFT state.
+
     Created:  Dmitrii Gusev, 03.05.2019
-    Modified:
+    Modified: Dmitrii Gusev, 13.05.2019
 
 """
 
