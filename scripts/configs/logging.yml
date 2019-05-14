@@ -50,6 +50,8 @@ loggers:
         level: DEBUG
     urllib3:
         level: INFO
+#    pysftp:
+#        level: DEBUG
 
 # root logger (for all modules/scripts)
 root:

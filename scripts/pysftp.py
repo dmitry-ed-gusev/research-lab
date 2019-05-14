@@ -46,21 +46,19 @@ def ftp_upload(ftp_obj, path, ftype='TXT'):
             ftp.storbinary('STOR ' + path, fobj, 1024)
 
 
+# https://mail.python.org/pipermail/python-list/2004-October/249389.html
+# http://code.activestate.com/recipes/577643-transparent-http-tunnel-for-python-sockets-to-be-u/
 if __name__ == '__main__':
-    print("!!!")
-    log = setup_logging(logger_name='sftp_client')
+    log = setup_logging(logger_name='pysftp')
     log.info("Starting FTP client...")
 
-    # ftp = FTP(host="92.53.96.211")
-    # ftp.connect(host="92.53.96.211", port=21)
-    # ftp_login_response = ftp.login(user="92.53.96.211", passwd="vEbmw7mT")
-    # log.info('FTP server response:\n{}'.format(ftp_login_response))
-    # ftp.quit()
-
-    ftp = FTP_TLS("92.53.96.211")
+    ftp = FTP()
     ftp.set_debuglevel(2)
-    print(ftp.sendcmd('USER myusername'))  # '331 Please specify the password.'
-    ftp.sendcmd('PASS mypassword')
+    ftp.connect(host="webproxy.merck.com", port=21)
+    #ftp_login_response = ftp.login(user="ftp://cp23965_pult@92.53.96.211/", passwd="vEbmw7mT")
+    #log.info('FTP server response:\n{}'.format(ftp_login_response))
+    #ftp.quit()
+
 
     #ftp.set_debuglevel(2)
     #ftp.connect("92.53.96.211", 21)
