@@ -32,6 +32,7 @@ def init_logger(logger_name, add_null_handler=True):
         return tmp_log
 
 
+# todo: add init by provided dictionary structure
 def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO, env_key='LOG_CFG', logger_name=None):
     """
         Setup logging configuration - load it from YAML file. Default level is INFO. Configuration file name can be
