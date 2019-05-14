@@ -60,9 +60,10 @@ def setup_logging(default_path='configs/logging.yml', default_level=logging.INFO
         log.info('Using basic logging config. Can\'t load config from [{}].'.format(path))
 
     # todo: init logger before loading configuration?
+    # todo: should we add NullHandler if we initialize logger?ß
     if logger_name:  # init and return logger
         log.info('Initializing logger [{}].'.format(logger_name))
-        return init_logger(logger_name)
+        return init_logger(logger_name, add_null_handler=False)
 
 
 if __name__ == '__main__':
