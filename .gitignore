@@ -1,5 +1,5 @@
 # -- ignore maven output directory
-target/
+target
 # -- ignore IntelliJ IDEA files
 *.iml
 *.ipr

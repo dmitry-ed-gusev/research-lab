@@ -1,2 +1,3 @@
 https://www.pythonanywhere.com/
 https://www.shellhacks.com/ru/linux-proxy-server-settings-set-proxy-command-line/
+https://datawhatnow.com/things-you-are-probably-not-using-in-python-3-but-should/
