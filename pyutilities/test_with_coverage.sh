@@ -1,11 +1,23 @@
 #!/usr/bin/env bash
+
+###############################################################################
+#
+#   Execute unit tests for pyutilities module with generating coverage report.
+#
+#   Created: Dmitrii GUsev, 17.05.2019
+#   Modified:
+#
+###############################################################################
+
+# create virtual environment and make it relocatable
 virtualenv .venv
 virtualenv --relocatable .venv
 
+
 source .venv/bin/activate
 
-pip install nose2 cov-core coverage pyyaml mock
-pip install jira prettytable bs4
+#pip install nose2 cov-core coverage pyyaml mock
+#pip install jira prettytable bs4
 
 #PYTHONPATH=${WORKSPACE}/target/dependency:$PYTHONPATH
 #PYTHONPATH=${WORKSPACE}/pymocks:$PYTHONPATH

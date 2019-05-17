@@ -14,13 +14,14 @@ import yaml
 import logging
 import logging.config
 import pyutilities.strings as strings
+from pyutilities.pyexception import PyUtilsException
 
 # init module logger. See more info in utils.py
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
-def init_logger(logger_name, add_null_handler=True):
+def init_logger(logger_name: str, add_null_handler: bool = True) -> logging.Logger:
     """
     Init logger without any configuration. Also adds dummy handler in order to avoid errors like 'no handlers'.
     :return: logger, initialized by name.
@@ -30,6 +31,8 @@ def init_logger(logger_name, add_null_handler=True):
         if add_null_handler:
             tmp_log.addHandler(logging.NullHandler)  # added dummy handler in order to avoid errors like 'no handlers'
         return tmp_log
+
+    raise PyUtilsException("Empty logger name provided!")
 
 
 # todo: add init by provided dictionary structure
