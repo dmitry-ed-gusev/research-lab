@@ -15,9 +15,10 @@ import logging
 import logging.config
 from mock import patch
 from pyutilities.config import ConfigurationXls, ConfigError
+from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
 
-LOGGING_FILE = 'configs/test_logging.yml'
-XLS_CONFIG_FILE = 'configs/xls_config.xlsx'
+
+XLS_CONFIG_FILE = 'pyutilities/tests/configs/xls_config.xlsx'
 XLS_CONFIG_SHEET = 'config_sheet'
 
 
@@ -27,7 +28,7 @@ class ConfigurationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._log = logging.getLogger(__name__)
-        with open(LOGGING_FILE, 'rt') as f:
+        with open(TEST_LOGGING_CONFIG, 'rt') as f:
             config = yaml.safe_load(f.read())
         logging.config.dictConfig(config)
 

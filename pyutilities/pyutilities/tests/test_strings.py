@@ -12,6 +12,7 @@
 
 import unittest
 import pyutilities.strings as pystr
+from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
 
 # common constants for testing
 EMPTY_STRINGS = ['', '     ', None, "", "  "]

@@ -6,16 +6,17 @@
 #   See more info here: https://packaging.python.org/tutorials/packaging-projects/#
 #
 #   Created:  Gusev Dmitrii, 25.09.2018
-#   Modified: Gusev Dmitrii, 04.03.2019
+#   Modified: Dmitrii Gusev, 19.05.2019
+#
 # =======================================================================================
 
-# todo: install locally before
-# todo: test locally before install to PyPi (include test run after local install?)
+# execute unit tests with coverage
+./test_with_coverage.sh
 
 # setup proxy for twine (comment/uncomment - if necessary)
 export ALL_PROXY=webproxy.merck.com:8080
 
-# clean previous versions distributions
+# clean previous version(s) distributions
 rm -rf dist
 rm -rf build
 rm -rf pyutilities.egg-info

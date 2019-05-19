@@ -15,9 +15,9 @@ import logging
 import logging.config
 from mock import patch
 from pyutilities.config import Configuration, ConfigError
+from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
 
-CONFIG_PATH = 'configs'
-LOGGING_FILE = 'configs/test_logging.yml'
+CONFIG_PATH = 'pyutilities/tests/configs'
 CONFIG_MODULE_MOCK_YAML = 'pyutilities.config.parse_yaml'
 CONFIG_MODULE_MOCK_OS = 'pyutilities.config.os'
 
@@ -27,7 +27,7 @@ class ConfigurationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._log = logging.getLogger(__name__)
-        with open(LOGGING_FILE, 'rt') as f:
+        with open(TEST_LOGGING_CONFIG, 'rt') as f:
             config = yaml.safe_load(f.read())
         logging.config.dictConfig(config)
 

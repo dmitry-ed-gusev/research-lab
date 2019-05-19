@@ -4,10 +4,13 @@
 #
 #   Install library [pyutilities] locally.
 #
-#   Created:  Gusev Dmitry, 25.09.2018
-#   Modified:
+#   Created:  Dmitrii Gusev, 25.09.2018
+#   Modified: Dmitrii Gusev, 19.05.2019
+#
 # =======================================================================================
 
-# todo: add tests execution after installation
+# execute unit tests with coverage
+./test_with_coverage.sh
 
+# install library locally
 pip install .

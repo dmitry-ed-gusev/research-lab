@@ -12,6 +12,7 @@ import yaml
 import logging
 import logging.config
 import unittest
+from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
 
 
 # todo: implement unit tests for fedit utility
@@ -26,7 +27,7 @@ class FEditTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._log = logging.getLogger(__name__)
-        with open('configs/test_logging.yml', 'rt') as f:
+        with open(TEST_LOGGING_CONFIG, 'rt') as f:
             config = yaml.safe_load(f.read())
         logging.config.dictConfig(config)
         print("FEditTest.setUpClass()")

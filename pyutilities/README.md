@@ -1,7 +1,7 @@
 # [pyutilities] package
 
 **Useful Python 2.7/3.7 utilities.**  
-*Last update 17.05.2019*
+*Last update 19.05.2019*
 
 For content here 
 [Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
@@ -61,3 +61,4 @@ Changes that were done:
  * methods git_clean_global_proxy/git_set_global_proxy moved to pygit module
  * added internal exception class PyUtilsException (module pyexception.py)
  * added type hints for some classes methods/functions
+ * added shell script for executing unit tests with creating coverage report

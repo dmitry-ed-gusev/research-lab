@@ -13,6 +13,8 @@ import logging
 import logging.config
 from mock import patch, mock_open
 from pyutilities.utils import parse_yaml, filter_str, list_files, _list_files
+from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
+
 
 MOCK_OPEN_METHOD = 'pyutilities.utils.open'
 MOCK_WALK_METHOD = 'pyutilities.utils.walk'
@@ -23,7 +25,7 @@ class ConfigurationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._log = logging.getLogger(__name__)
-        with open('configs/logging.yml', 'rt') as f:
+        with open(TEST_LOGGING_CONFIG, 'rt') as f:
             config = yaml.safe_load(f.read())
         logging.config.dictConfig(config)
 

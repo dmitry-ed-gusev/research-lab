@@ -13,6 +13,7 @@ import unittest
 from logging import Logger, NullHandler
 from pyutilities.pylog import init_logger, setup_logging
 from pyutilities.pyexception import PyUtilsException
+from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
 
 
 class PylogTest(unittest.TestCase):
