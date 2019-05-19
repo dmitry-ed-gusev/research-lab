@@ -5,7 +5,7 @@
 #     exports all variables from it.
 #
 #     Created:  Dmitrii Gusev, 30.03.2019
-#     Modified: Dmitrii Gusev, 07.04.2019
+#     Modified: Dmitrii Gusev, 19.05.2019
 #
 ###############################################################################
 
@@ -13,7 +13,7 @@ version: '3.5'
 
 # docker services configuration
 services:
-  # mysql service description
+  # mysql service description (used by following docker)
   mysql:
     image: mysql:5.7
     container_name: ${MYSQL_NAME}
