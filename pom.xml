@@ -27,6 +27,7 @@
         <maven.plugin.jaxws>2.2</maven.plugin.jaxws>
         <maven.plugin.surefire>2.16</maven.plugin.surefire>
         <maven.plugin.failsafe>2.16</maven.plugin.failsafe>
+        <maven.plugin.buildnumber>1.4</maven.plugin.buildnumber>
 
         <!-- Apache libraries (Lang3/Logging/IO/Log4J/etc...) -->
         <commons.lang3.version>3.6</commons.lang3.version>
@@ -163,6 +164,14 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <!-- dummy SCM for proper work of maven buildnumber plugin (it requires SCM to be set up) -->
+    <scm>
+        <connection>scm:git:http://127.0.0.1/dummy</connection>
+        <developerConnection>scm:git:https://127.0.0.1/dummy</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/dummy</url>
+    </scm>
+
     <build>
 
         <plugins>
@@ -201,6 +210,49 @@
                     </execution>
                 </executions>
                 <version>${jacoco.plugin.version}</version>
+            </plugin>
+
+            <!-- build number plugin (build number + timestamp) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>${maven.plugin.buildnumber}</version>
+                <!-- turn off generation of buildNumber file for submodules -->
+                <inherited>false</inherited>
+                <executions>
+                    <!-- execution for generating sequential build number -->
+                    <execution>
+                        <id>generate-buildnumber</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <format>{0,number}</format>
+                            <items>
+                                <item>buildNumber</item>
+                            </items>
+                            <!-- use this property like: ${buildNumberSeq} -->
+                            <buildNumberPropertyName>buildNumberSeq</buildNumberPropertyName>
+                        </configuration>
+                    </execution>
+                    <!-- execution for generating current build timestamp -->
+                    <execution>
+                        <id>generate-timestamp</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <format>{0,date,dd-MMM-yyyy HH:mm:ss}</format>
+                            <items>
+                                <item>timestamp</item>
+                            </items>
+                            <!-- use this property like: ${buildDate} -->
+                            <buildNumberPropertyName>buildDate</buildNumberPropertyName>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
