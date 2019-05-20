@@ -13,24 +13,25 @@ import unittest
 from logging import Logger, NullHandler
 from pyutilities.pylog import init_logger, setup_logging
 from pyutilities.pyexception import PyUtilsException
-from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
+from pyutilities.tests.pyutils_test_helper import get_test_logger
 
 
 class PylogTest(unittest.TestCase):
 
     def setUp(self):
-        print("PylogTest.setUp()")
+        self.log.debug('setUp() is working.')
 
     def tearDown(self):
-        print("PylogTest.tearDown()")
+        self.log.debug('tearDown() is working.')
 
     @classmethod
     def setUpClass(cls):
-        print("PylogTest.setUpClass()")
+        cls.log = get_test_logger(__name__)
+        cls.log.debug('setUpClass() is working.')
 
     @classmethod
     def tearDownClass(cls):
-        print("PylogTest.tearDownClass()")
+        cls.log.debug('tearDownClass() is working.')
 
     def test_init_logger_empty_name(self):
         with self.assertRaises(PyUtilsException):

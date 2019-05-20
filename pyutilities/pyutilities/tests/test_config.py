@@ -9,13 +9,10 @@
 """
 
 import os
-import yaml
 import unittest
-import logging
-import logging.config
 from mock import patch
 from pyutilities.config import Configuration, ConfigError
-from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
+from pyutilities.tests.pyutils_test_helper import get_test_logger
 
 CONFIG_PATH = 'pyutilities/tests/configs'
 CONFIG_MODULE_MOCK_YAML = 'pyutilities.config.parse_yaml'
@@ -26,10 +23,7 @@ class ConfigurationTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._log = logging.getLogger(__name__)
-        with open(TEST_LOGGING_CONFIG, 'rt') as f:
-            config = yaml.safe_load(f.read())
-        logging.config.dictConfig(config)
+        cls.log = get_test_logger(__name__)
 
     def setUp(self):
         # init config instance before each test, don't merge with environment

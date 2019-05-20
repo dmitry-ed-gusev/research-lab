@@ -2,18 +2,18 @@
 # coding=utf-8
 
 """
+
     Unit tests for utils module from [pyutilities] library. Covers most of methods in a module.
+
     Created:  Gusev Dmitrii, 2017
     Modified: Gusev Dmitrii, 26.09.2018
+
 """
 
-import yaml
 import unittest
-import logging
-import logging.config
 from mock import patch, mock_open
 from pyutilities.utils import parse_yaml, filter_str, list_files, _list_files
-from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
+from pyutilities.tests.pyutils_test_helper import get_test_logger
 
 
 MOCK_OPEN_METHOD = 'pyutilities.utils.open'
@@ -24,10 +24,7 @@ class ConfigurationTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._log = logging.getLogger(__name__)
-        with open(TEST_LOGGING_CONFIG, 'rt') as f:
-            config = yaml.safe_load(f.read())
-        logging.config.dictConfig(config)
+        cls.log = get_test_logger(__name__)
 
     @classmethod
     def tearDownClass(cls):

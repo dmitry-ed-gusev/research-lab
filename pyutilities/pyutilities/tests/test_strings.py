@@ -12,7 +12,7 @@
 
 import unittest
 import pyutilities.strings as pystr
-from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
+from pyutilities.tests.pyutils_test_helper import get_test_logger
 
 # common constants for testing
 EMPTY_STRINGS = ['', '     ', None, "", "  "]
@@ -32,11 +32,12 @@ class StringsTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        print("StringsTest.setUpClass()")
+        cls.log = get_test_logger(__name__)
+        cls.log.debug('setUpClass() is working.')
 
     @classmethod
     def tearDownClass(cls):
-        print("StringsTest.tearDownClass()")
+        cls.log.debug('tearDownClass() is working.')
 
     def test_is_str_empty_with_empty_strings(self):
         for s in EMPTY_STRINGS:

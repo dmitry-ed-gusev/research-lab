@@ -2,17 +2,16 @@
 # coding=utf-8
 
 """
+
     Unit tests for fedit utility.
 
     Created:  Gusev Dmitrii, 26.09.2018
     Modified: Dmitrii Gusev, 04.03.2019
+
 """
 
-import yaml
-import logging
-import logging.config
 import unittest
-from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
+from pyutilities.tests.pyutils_test_helper import get_test_logger
 
 
 # todo: implement unit tests for fedit utility
@@ -26,15 +25,12 @@ class FEditTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._log = logging.getLogger(__name__)
-        with open(TEST_LOGGING_CONFIG, 'rt') as f:
-            config = yaml.safe_load(f.read())
-        logging.config.dictConfig(config)
-        print("FEditTest.setUpClass()")
+        cls.log = get_test_logger(__name__)
+        cls.log.debug('setUpClass() is working.')
 
     @classmethod
     def tearDownClass(cls):
-        print("FEditTest.tearDownClass()")
+        cls.log.debug('tearDownClass() is working.')
 
     def test(self):
         pass
