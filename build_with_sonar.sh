@@ -16,7 +16,10 @@
 mvn clean install -s settings_empty.xml -Penv-prod-all
 
 # using docker composer start up sonar environment
-docker-compose up
+docker-compose up -d
+
+# wait 60 seconds for mysql/sonar to start
+sleep 60
 
 # execute sonar check for the project
 mvn sonar:sonar -s settings_empty.xml -Penv-prod-all
