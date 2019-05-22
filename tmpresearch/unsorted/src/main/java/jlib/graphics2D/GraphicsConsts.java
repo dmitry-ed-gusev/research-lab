@@ -15,11 +15,8 @@ public interface GraphicsConsts
     PNG("PNG"),
     GIF("GIF");
 
-    // ���� (������ ��������)
     private final String sValue;
-    // �����������
     ImageFormat(String sValue) {this.sValue = sValue;}
-    // ������ � ����
     public String strValue() {return this.sValue;}
    }
 
