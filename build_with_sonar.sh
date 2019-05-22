@@ -22,5 +22,5 @@ docker-compose up -d
 sleep 60
 
 # execute sonar check for the project
-#mvn clean install sonar:sonar -s settings_empty.xml -Penv-prod-all,sonar
-mvn sonar:sonar -s settings_empty.xml -Penv-prod-all,sonar
+mvn clean install sonar:sonar -s settings_empty.xml -Penv-prod-all,sonar
+#mvn sonar:sonar -s settings_empty.xml -Penv-prod-all,sonar
