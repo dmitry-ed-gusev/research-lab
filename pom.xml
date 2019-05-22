@@ -256,33 +256,6 @@
                 </executions>
             </plugin>
 
-            <!-- Copy test dependencies for sonar -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven.plugin.dependency}</version>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>junit</groupId>
-                                    <artifactId>junit</artifactId>
-                                    <version>${junit.version}</version>
-                                    <type>jar</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/test-jars</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
 
         <pluginManagement>
@@ -482,13 +455,8 @@
                 <!-- Optional URL to server. Default value is http://localhost:9000 -->
                 <!--<sonar.host.url>http://myserver:9000</sonar.host.url>-->
 
-                <!-- Project properties -->
+                <!-- Project properties (see sonar docs) -->
                 <sonar.python.coverage.reportPaths>coverage.xml</sonar.python.coverage.reportPaths>
-                <!--<sonar.projectName>My Project</sonar.projectName>-->
-                <!--<sonar.projectKey>myProject:key</sonar.projectKey>-->
-                <!--<sonar.projectVersion>2.0</sonar.projectVersion>-->
-                <!--<sonar.language>py</sonar.language>-->
-                <!--<sonar.sources>src/main/java,src/main/python,src,examples,include,testsuite</sonar.sources>-->
             </properties>
         </profile>
 
