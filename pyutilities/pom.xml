@@ -16,6 +16,10 @@
     </properties>
 
     <build>
+
+        <!-- define source directory - used by sonar analyzer -->
+        <sourceDirectory>pyutilities</sourceDirectory>
+
         <plugins>
         </plugins>
     </build>

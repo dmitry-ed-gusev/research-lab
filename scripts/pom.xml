@@ -20,6 +20,9 @@
     </properties>
 
     <build>
+
+        <sourceDirectory>scripts</sourceDirectory>
+
         <plugins>
             <!-- run python unit tests -->
             <plugin>

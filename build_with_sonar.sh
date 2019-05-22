@@ -8,12 +8,12 @@
 #         * execute sonar analysis with maven (mvn sonar:sonar)
 #
 #       Created:  Dmitrii Gusev, 19.05.2019
-#       Modified:
+#       Modified: Dmitrii Gusev, 21.05.2019
 #
 ###############################################################################
 
 # build project with maven
-mvn clean install -s settings_empty.xml -Penv-prod-all
+# mvn clean install -s settings_empty.xml -Penv-prod-all,sonar
 
 # using docker composer start up sonar environment
 docker-compose up -d
@@ -22,4 +22,5 @@ docker-compose up -d
 sleep 60
 
 # execute sonar check for the project
-mvn sonar:sonar -s settings_empty.xml -Penv-prod-all
+#mvn clean install sonar:sonar -s settings_empty.xml -Penv-prod-all,sonar
+mvn sonar:sonar -s settings_empty.xml -Penv-prod-all,sonar
