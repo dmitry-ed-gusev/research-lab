@@ -3,7 +3,7 @@
 #   Logging config for tests with one console appender.
 #
 #   Created:  Dmitrii Gusev, 20.05.2019
-#   Modified:
+#   Modified: Dmitrii Gusev, 24.05.2019
 #
 ###############################################################################
 
@@ -21,7 +21,7 @@ handlers:
         stream: ext://sys.stdout
 
 loggers:
-    pygit:
+    gitupdate:
         level: DEBUG
         #handlers: [console]
 

@@ -1,0 +1,38 @@
+###############################################################################
+#
+#   Configuration file for python GIT utility for updating my own
+#   repositories (located in ButBucket).
+#
+#   Created:  Gusev Dmitrii, 24.05.2019
+#   Modified:
+#
+###############################################################################
+
+# repositories storage for different systems
+location:
+  win:    c:/projects
+  linux:  /home/gusevdm/projects
+  macos:  /Users/gusevdmi/projects
+
+# general stash settings
+stash:
+  address:  https://dmitry-ed-gusev:{}@bitbucket.org
+
+#proxy:
+#  http: 127.0.0.1:3180
+#  https: 127.0.0.1:3180
+
+# special settings for projects
+mvn_settings: settings_empty.xml
+
+# list of repositories
+repositories:
+  dmitry-ed-gusev:
+    research:
+      build: yes
+    mts_billing:
+      build: yes
+    census:
+      build: yes
+    vgraphics:
+      build: yes

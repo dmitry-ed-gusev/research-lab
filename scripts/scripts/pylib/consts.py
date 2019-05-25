@@ -8,14 +8,14 @@
 """
 
 # keys for proxy (common)
-CONFIG_KEY_PROXY_HTTP = 'proxy.http'
-CONFIG_KEY_PROXY_HTTPS = 'proxy.https'
+# CONFIG_KEY_PROXY_HTTP = 'proxy.http'
+# CONFIG_KEY_PROXY_HTTPS = 'proxy.https'
 
 # general common keys
 CONST_COMMON_ENCODING = "utf-8"
 CONST_PROGRESS_STEP_COUNTER = 5
 CONST_PROCESSING_STEP_COUNTER = 30
-CONFIG_KEY_CFG_FILE = "config.file"
+# CONFIG_KEY_CFG_FILE = "config.file"
 
 # default config for JIRA utility
 DEFAULT_JIRA_CONFIG = "configs/jira.yml"

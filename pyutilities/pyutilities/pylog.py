@@ -5,13 +5,14 @@
     Logging utilities for some convenience.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 26.04.2019
+    Modified: Dmitrii Gusev, 24.05.2019
 
 """
 
 import os
 import yaml
 import logging
+import inspect
 import logging.config
 import pyutilities.strings as strings
 from pyutilities.pyexception import PyUtilsException
@@ -19,6 +20,12 @@ from pyutilities.pyexception import PyUtilsException
 # init module logger. See more info in utils.py
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
+
+
+# handy utility function/lambda for getting name of executing function from inside the function
+# myself = lambda: inspect.stack()[1][3]
+def myself():
+    return inspect.stack()[1][3]
 
 
 def init_logger(logger_name: str, add_null_handler: bool = True) -> logging.Logger:
