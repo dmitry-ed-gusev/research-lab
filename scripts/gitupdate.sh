@@ -8,8 +8,9 @@
 #
 ###############################################################################
 
+
 # update MSD-based projects
-python3 scripts/atlassian/gitupdate.py --pass $1 --javadoc --sources
+python3 -m scripts.atlassian.gitupdate
 
 # update my own projects
 # python scripts/atlassian/gitupdate.py --pass $1 --javadoc --sources

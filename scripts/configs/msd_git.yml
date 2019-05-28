@@ -6,7 +6,7 @@
 #
 #
 #  Created:  Gusev Dmitrii, 2017
-#  Modified: Gusev Dmitrii, 13.02.2019
+#  Modified: Gusev Dmitrii, 27.05.2019
 #
 #########################################################################################
 
@@ -18,14 +18,11 @@ location:
 
 # general stash settings
 stash:
-  address:  https://gusevdmi:{}@stash.merck.com/scm
+  address:  https://stash.merck.com/scm
 
 #proxy:
 #  http: 127.0.0.1:3180
 #  https: 127.0.0.1:3180
-
-# special settings for projects
-#mvn_settings: configs/msd-settings.xml
 
 # list of repositories
 repositories:
@@ -86,9 +83,9 @@ repositories:
     jwso-process:
     jwso-spotfire:
     jwso-teradata:
-  iaas: # Ingest as a Service repo
-    iaas-tools:
-    csv-to-teradata-ingest:
-    ingest-statistics:
-    source-comparator:
-    models-copy-to-test-lfs:
+#  iaas: # Ingest as a Service repo
+    #iaas-tools:
+    #csv-to-teradata-ingest:
+    #ingest-statistics:
+    #source-comparator:
+    #models-copy-to-test-lfs:

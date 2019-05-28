@@ -4,7 +4,7 @@
 #   repositories (located in ButBucket).
 #
 #   Created:  Gusev Dmitrii, 24.05.2019
-#   Modified:
+#   Modified: Dmitrii Gusev, 27.05.2019
 #
 ###############################################################################
 
@@ -16,7 +16,7 @@ location:
 
 # general stash settings
 stash:
-  address:  https://dmitry-ed-gusev:{}@bitbucket.org
+  address:  https://bitbucket.org
 
 #proxy:
 #  http: 127.0.0.1:3180

@@ -40,8 +40,10 @@ handlers:
 loggers:
     pylib:
         level: DEBUG
-        #handlers: [console]
-        #propagate: yes
+    pygit:
+        level: DEBUG
+    gitupdate:
+        level: DEBUG
     jirautil:
         level: DEBUG
     gitutil:
