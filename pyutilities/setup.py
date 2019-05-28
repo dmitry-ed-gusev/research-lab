@@ -5,7 +5,7 @@
     Setup script for [pyutilities] library.
 
     Created:  Gusev Dmitrii, 25.09.2018
-    Modified: Gusev Dmitrii, 15.04.2019
+    Modified: Gusev Dmitrii, 28.05.2019
 """
 
 from setuptools import setup, find_packages
@@ -15,7 +15,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='pyutilities',
-      version='0.10.0',
+      version='0.12.0',
       description='Useful python 2.x/3.x utilities library.',
       url='https://pypi.org/project/pyutilities',
       author='Dmitrii Gusev',

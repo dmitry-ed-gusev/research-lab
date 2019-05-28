@@ -1,7 +1,7 @@
 # [pyutilities] package
 
 **Useful Python 2.7/3.7 utilities.**  
-*Last update 19.05.2019*
+*Last update 28.05.2019*
 
 For content here 
 [Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
@@ -46,7 +46,7 @@ Added method contains_key() to Configuration class.
 0.5.5  
 Added compatability with Python 3.7. Should also still work on Python 2.7. Let me know if it's not the case :)
 
-0.10.0  
+0.12.0  
 Significant update for library. Many changes were done and sometimes tested :).
 Changes that were done:
  * added pylog.py module, for logging purposes (convenience mostly). Method setup_logging() was moved here (from utils.py).
@@ -57,8 +57,8 @@ Changes that were done:
  * added pysftp.py module for working with SFTP protocol (currently - empty DRAFT!)
  * added pyssh.py module for working with SSH protocol (currently - DRAFT!)
  * added pymaven.py module for representing Maven functionalitys (not tested yet!)
- * added pygit.py module for representing Git functionality (currently - DRAFT!)
- * methods git_clean_global_proxy/git_set_global_proxy moved to pygit module
+ * added pygit.py module for representing Git functionality (PyGit class)
+ * methods git_clean_global_proxy()/git_set_global_proxy() moved to pygit module
  * added internal exception class PyUtilsException (module pyexception.py)
  * added type hints for some classes methods/functions
  * added shell script for executing unit tests with creating coverage report

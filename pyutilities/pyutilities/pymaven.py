@@ -20,9 +20,17 @@ class PyMaven:
     """ Class represents maven functionality. """
 
     def __init__(self):
-        self.log = init_logger(__name__)
+        self.log = init_logger(__name__, add_null_handler=False)
         self.log.info("Initializing Maven class.")
         self.__mvn_exec = self.__select_mvn_executable()
+
+        # # init special maven settings - calculate path
+        # mvn_settings = self.config.get(CONFIG_KEY_MVN_SETTINGS, default='')
+        # if mvn_settings:
+        #     self.mvn_settings = os.path.abspath(mvn_settings)
+        # else:
+        #     self.mvn_settings = None
+        # self.log.info('Loaded special maven settings [{}].'.format(self.mvn_settings))
 
     def __select_mvn_executable(self):
         """ Select Maven executable, depending on OS (windows-family or not). Internal method.

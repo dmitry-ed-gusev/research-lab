@@ -24,6 +24,8 @@ loggers:
     pygit:
         level: DEBUG
         #handlers: [console]
+    pymaven:
+        level: DEBUG
 
 # root logger
 root:

@@ -3,23 +3,23 @@
 
 """
 
-    Unit tests for pygit module/PyGit class.
+    Unit tests for pygit module/PyMaven class.
 
-    Created:  Dmitrii Gusev, 24.04.2019
-    Modified: Dmitrii Gusev, 25.05.2019
+    Created:  Dmitrii Gusev, 28.05.2019
+    Modified:
 
 """
 
 import unittest
 from pyutilities.tests.pyutils_test_helper import get_test_logger
-from pyutilities.pygit import PyGit
+from pyutilities.pymaven import PyMaven
 
 
-class PyGitTest(unittest.TestCase):
+class PyMavenTest(unittest.TestCase):
 
     def setUp(self):
         self.log.debug('setUp() is working.')
-        self.pygit = PyGit('http://stash.server.com/scm')
+        self.pymaven = PyMaven()
 
     def tearDown(self):
         self.log.debug('tearDown() is working.')
