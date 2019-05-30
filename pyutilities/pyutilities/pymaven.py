@@ -7,71 +7,87 @@
     Functions are incapsulated in PyMaven class.
 
     Created:  Dmitrii Gusev, 02.05.2019
-    Modified: Dmitrii Gusev, 03.05.2019
+    Modified: Dmitrii Gusev, 30.05.2019
 
 """
 
+import os
 import platform
+import pyutilities.strings as strings
 from subprocess import Popen
-from pyutilities.pylog import init_logger
+from pyutilities.pylog import init_logger, myself
+from pyutilities.pyexception import PyUtilsException
 
 
 class PyMaven:
     """ Class represents maven functionality. """
 
-    def __init__(self):
+    def __init__(self, mvn_settings: str = None):
         self.log = init_logger(__name__, add_null_handler=False)
         self.log.info("Initializing Maven class.")
-        self.__mvn_exec = self.__select_mvn_executable()
+        # select maven executable
+        self.__mvn_exec = self.get_mvn_executable()
+        self.log.info(f"Selected maven executable [{self.__mvn_exec}].")
 
-        # # init special maven settings - calculate path
-        # mvn_settings = self.config.get(CONFIG_KEY_MVN_SETTINGS, default='')
-        # if mvn_settings:
-        #     self.mvn_settings = os.path.abspath(mvn_settings)
-        # else:
-        #     self.mvn_settings = None
-        # self.log.info('Loaded special maven settings [{}].'.format(self.mvn_settings))
-
-    def __select_mvn_executable(self):
-        """ Select Maven executable, depending on OS (windows-family or not). Internal method.
-        :return:
-        """
-        if 'windows' in platform.system().lower():
-            mvn_exec = 'mvn.cmd'
+        # init special maven settings - calculate path
+        if not strings.is_str_empty(mvn_settings):
+            abs_settings_path = os.path.abspath(mvn_settings)
+            if not os.path.exists(abs_settings_path):  # fail-fast for non-existent settings
+                raise FileNotFoundError
+            self.__mvn_settings = abs_settings_path
         else:
-            mvn_exec = 'mvn'
-        self.log.info('MAVEN executable selected: [{}].'.format(mvn_exec))
-        return mvn_exec
+            self.__mvn_settings = None
+        self.log.info(f"Loaded special maven settings [{self.__mvn_settings}].")
 
-    def mvn_build_repo(self, repo_path, mvn_settings=None):
-        self.log.info('Building repo [{}].'.format(repo_path))
+    def get_mvn_executable(self):
+        """ Return Maven executable, depending on OS (windows-family or not). """
+        self.log.debug(f"{myself()}() is working.")
+        if 'windows' in platform.system().lower():
+            return 'mvn.cmd'
+        else:
+            return 'mvn'
+
+    def append_mvn_settings(self, cmd: list):
+        self.log.debug(f"{myself()}() is working.")
+        if self.__mvn_settings is not None:
+            cmd.extend(['-s', self.__mvn_settings])
+        return cmd
+
+    def build(self, location: str):
+        self.log.debug(f"{myself()}() is working.")
+        self.log.info(f'Building repo in location [{location}].')
         try:
-            cmd = [self.__mvn_exec, 'clean', 'install']
-            if mvn_settings is not None:
-                cmd.extend(['-s', mvn_settings])
-            process = Popen(cmd, cwd=repo_path)
+            cmd = self.append_mvn_settings([self.__mvn_exec, 'clean', 'install'])
+            process = Popen(cmd, cwd=location)
             process.wait()
+            # check exit code
+            if process.returncode != 0:
+                raise PyUtilsException(f"Process returned non zero exit code [{process.returncode}]!")
         except AttributeError as se:
-            self.log.error('Error building repo [{}]! {}'.format(repo_path, se))
+            self.log.error(f'Error building repo in location [{location}]! {se}')
 
-    def mvn_javadoc_repo(self, repo_path, mvn_settings=None):
-        self.log.info('Downloading javadoc for repo [{}].'.format(repo_path))
+    def javadoc(self, location: str):
+        self.log.debug(f"{myself()}() is working.")
+        self.log.info(f'Downloading javadoc for repo [{location}].')
         try:
-            cmd = [self.__mvn_exec, 'dependency:resolve', '-Dclassifier=javadoc']
-            if mvn_settings is not None:
-                cmd.extend(['-s', mvn_settings])
-                process = Popen(cmd, cwd=repo_path)
-                process.wait()
+            cmd = self.append_mvn_settings([self.__mvn_exec, 'dependency:resolve', '-Dclassifier=javadoc'])
+            process = Popen(cmd, cwd=location)
+            process.wait()
+            # check exit code
+            if process.returncode != 0:
+                raise PyUtilsException(f"Process returned non zero exit code [{process.returncode}]!")
         except AttributeError as se:
-            self.log.error('Error downloading javadoc for repo [{}]! {}'.format(repo_path, se))
+            self.log.error(f'Error downloading javadoc for repo [{location}]! {se}')
 
-    def mvn_sources_repo(self, repo_path, mvn_settings=None):
-        self.log.info('Downloading sources for repo [{}].'.format(repo_path))
+    def sources(self, location):
+        self.log.debug(f"{myself()}() is working.")
+        self.log.info(f'Downloading sources for repo [{location}].')
         try:
-            cmd = [self.__mvn_exec, 'dependency:resolve', '-Dclassifier=sources']
-            if mvn_settings:
-                cmd.extend(['-s', mvn_settings])
-                process = Popen(cmd, cwd=repo_path)
-                process.wait()
+            cmd = self.append_mvn_settings([self.__mvn_exec, 'dependency:resolve', '-Dclassifier=sources'])
+            process = Popen(cmd, cwd=location)
+            process.wait()
+            # check exit code
+            if process.returncode != 0:
+                raise PyUtilsException(f"Process returned non zero exit code [{process.returncode}]!")
         except AttributeError as se:
-            self.log.error('Error downloading sources for repo [{}]! {}'.format(repo_path, se))
+            self.log.error(f'Error downloading sources for repo [{location}]! {se}')
