@@ -1,7 +1,25 @@
-https://www.pythonanywhere.com/
+===============================================================================
+        Some useful resources
+===============================================================================
 https://www.shellhacks.com/ru/linux-proxy-server-settings-set-proxy-command-line/
 https://datawhatnow.com/things-you-are-probably-not-using-in-python-3-but-should/
 
-python relative imports:
-https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time
 
+===============================================================================
+        Python resources
+===============================================================================
+
+    Python relative imports:
+    ---------------------------------------
+    https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time
+
+    Python examples/tutorials site
+    ---------------------------------------
+    https://realpython.com/python-json/
+    https://realpython.com/intermediate-python-project-ideas/
+    https://realpython.com/intro-to-python-threading/
+
+
+    Python various sources
+    ---------------------------------------
+    https://www.pythonanywhere.com/
