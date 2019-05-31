@@ -1,0 +1,91 @@
+#########################################################################################
+#
+#  Configuration file for python GIT utility. If we need to build repo with maven,
+#  it should be stated explicitly for repo by adding a line:
+#   build: yes
+#
+#
+#  Created:  Gusev Dmitrii, 2017
+#  Modified: Gusev Dmitrii, 27.05.2019
+#
+#########################################################################################
+
+# repositories storage for different systems
+location:
+  win:    c:/projects
+  linux:  /home/gusevdm/projects
+  macos:  /Users/gusevdmi/projects
+
+# general stash settings
+stash:
+  address:  https://stash.merck.com/scm
+
+#proxy:
+#  http: 127.0.0.1:3180
+#  https: 127.0.0.1:3180
+
+# list of repositories
+repositories:
+  bdp:  # BigData platform
+    mantis:
+    mantis11:
+    ingest-script-generator:
+    sqoop-msd:
+    csv2abstract:
+    csv2hive:
+  man:  # Mantis
+    mantis-bds:
+      build: yes
+    mantis-pdc:
+    mantis-ops:
+    mantis-systems:
+      build: yes
+    mantis-teradata:
+    mantis-udi:
+    mantis-analytics:
+      build:  yes
+    mantis-model:
+    mantis-model-generator:
+      build: yes
+    mantis-hadoop-clients:
+      build:  yes
+    mantis-hive-rest-service:
+      build:  yes
+    mantis-test:
+    keytruda-prototype:  # keytruda repository
+  svt:  # testing and tests automation tools
+    data_integrity:
+      build: yes
+    ditool:  # new Data Integrity tool by Raman
+      build: yes
+  mrlitsc:
+    jira-utils:
+  ~kejzlar:  # Tom Kejzlar's repository
+    agilestats:
+  ~gusevdmi: # My personal repository
+    automation:
+  infapfm:  # Informatica Platform repositories
+    infa-bdm:
+    informatica-monitoring:
+    mantis:
+    mantis-delivery:
+    mantis-misc:
+    mx_radar:
+  tcc:
+    jira-xls-sources:
+  scim:
+    scimimport:
+      build: yes
+  jwso: # Japan Wholesales Office (JWSO/Crecon/IQVIA project)
+    jwso-api:
+    jwso-frontend:
+    jwso-pipeline:
+    jwso-process:
+    jwso-spotfire:
+    jwso-teradata:
+#  iaas: # Ingest as a Service repo
+    #iaas-tools:
+    #csv-to-teradata-ingest:
+    #ingest-statistics:
+    #source-comparator:
+    #models-copy-to-test-lfs:

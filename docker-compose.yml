@@ -1,0 +1,49 @@
+###############################################################################
+#
+#     Docker Composer file for SonarQube quality farm (Sonar+Mysql).
+#     On start up automatically reads docker-compose.env file and
+#     exports all variables from it.
+#
+#     Created:  Dmitrii Gusev, 30.03.2019
+#     Modified: Dmitrii Gusev, 21.05.2019
+#
+###############################################################################
+
+version: '3.5'
+
+# docker services configuration
+services:
+  # mysql service description (used by following docker)
+  mysql:
+    image: mysql:5.7
+    command: --max_allowed_packet=256M
+    container_name: ${MYSQL_NAME}
+    networks:
+      - mynetwork
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=${MYSQL_DBNAME}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASS}
+
+  # sonar service description
+  sonar:
+    image: sonarqube:7.7-community
+    container_name: sonar.7.7
+    networks:
+      - mynetwork
+    environment:
+      - sonar.jdbc.username=${MYSQL_USER}
+      - sonar.jdbc.password=${MYSQL_PASS}
+      - sonar.jdbc.url=jdbc:mysql://${MYSQL_NAME}:${MYSQL_PORT}/${MYSQL_DBNAME}?${MYSQL_SETTINGS}
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mysql
+
+# docker networks configuration
+networks:
+  mynetwork:
+    driver: bridge
+    name: quality_network
+

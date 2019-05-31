@@ -1,0 +1,62 @@
+# Common JIRA settings. You can't/mustn't put password here!
+jira:
+  address:          https://issues.merck.com
+  rest_path:        api
+  rest_api_version: 2
+  user:             gusevdmi
+
+#proxy:
+#  http: 127.0.0.1:3180
+#  https: 127.0.0.1:3180
+
+# default output file (for reports)
+output:
+  file: jira_report.out
+
+# Specific issue settings (relate jira usage model)
+issue:
+  # label for unlinked issue (exclude such issues from search)
+  unlinked:  unlinked
+
+# epics list
+epics:
+  mantis: []
+
+# teams lists (all and current)
+teams:
+  ada_all:
+    members:      [gogolev, hapii, lipkovic, kaplia, zhukv, andreevi, barzilov, kudriash, iushin, gorkoven, gusevdm, sokolose, ermolaeo]
+    project:      Mantis
+    project_abbr: BMA
+    label:        mantis-capability
+    component:    mantis-capability
+  ada:
+    members:      [andreevi, barzilov, kudriash, iushin, gorkoven, ermolaeo, sokolose, gusevdm]
+    project:      Mantis
+    project_abbr: BMA
+    label:        mantis-capability
+    component:    mantis-capability
+  nova_all:
+    members:      [kobiakov, listvin, sokolose, garadagl, kuchin, lukin]
+    project:      Big Data Platform
+    project_abbr: BDPH
+    label:        mantis-capability-nova
+    component:    mantis-capability-nova
+  nova:
+    members:      [kobiakov, listvin, garadagl, kuchin, lukin]
+    project:      Big Data Platform
+    project_abbr: BDPH
+    label:        mantis-capability-nova
+    component:    mantis-capability-nova
+  bmtef_all:
+    members:      [iablokov, sitnikod, trukhano, gorodilo, koberd]
+    project:      Better Molecules Target Execution Faster - Solutions
+    project_abbr: BMTEF
+    label:        [none]
+    component:    [none]
+  bmtef:
+    members:      [iablokov, sitnikod, trukhano, gorodilo, koberd]
+    project:      Better Molecules Target Execution Faster - Solutions
+    project_abbr: BMTEF
+    label:        [none]
+    component:    [none]

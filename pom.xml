@@ -5,54 +5,93 @@
     <groupId>dgusev</groupId>
     <artifactId>research</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>3.0</version>
     <name>Research project :: research and self-education.</name>
 
     <properties>
+        <!-- General properties -->
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- java-related settings/properties -->
         <java.sources.encoding>UTF-8</java.sources.encoding>
         <java.version>1.8</java.version>
-        <!-- maven plugins settings/versions -->
+
+        <!-- Maven plugins settings/versions -->
         <maven.plugin.compiler>2.3.2</maven.plugin.compiler>
         <maven.plugin.jar>2.4</maven.plugin.jar>
         <maven.plugin.resources>2.5</maven.plugin.resources>
         <maven.plugin.dependency>2.1</maven.plugin.dependency>
         <maven.plugin.antrun>1.8</maven.plugin.antrun>
-        <maven.plugin.shade>2.4.3</maven.plugin.shade>
+        <maven.plugin.shade>3.2.1</maven.plugin.shade>
         <maven.plugin.exec>1.6.0</maven.plugin.exec>
-        <maven.war.plugin>3.2.0</maven.war.plugin>
+        <maven.plugin.war>3.2.0</maven.plugin.war>
+        <maven.plugin.help>2.2</maven.plugin.help>
+        <maven.plugin.jaxws>2.2</maven.plugin.jaxws>
+        <maven.plugin.surefire>2.16</maven.plugin.surefire>
+        <maven.plugin.failsafe>2.16</maven.plugin.failsafe>
+        <maven.plugin.buildnumber>1.4</maven.plugin.buildnumber>
+        <maven.plugin.sonar>3.6.0.1398</maven.plugin.sonar>
+
         <!-- Apache libraries (Lang3/Logging/IO/Log4J/etc...) -->
         <commons.lang3.version>3.6</commons.lang3.version>
         <commons.logging.version>1.1.3</commons.logging.version>
         <commons.io.version>2.5</commons.io.version>
         <apache.httpclient.version>4.5.2</apache.httpclient.version>
         <apache.dbcp.version>1.4</apache.dbcp.version>
+        <apache.commons.csv>1.5</apache.commons.csv>
+
         <!-- Logging libraries -->
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.7.21</slf4j.version>
+
         <!-- BigData libraries versions -->
         <hadoop.version>2.7.1</hadoop.version>
+
         <!-- J2EE libraries versions -->
         <javaee.api.version>7.0</javaee.api.version>
         <java.mail.version>1.4.5</java.mail.version>
+        <marklogic.java.api.version>3.0.4</marklogic.java.api.version>
+        <activemq.version>5.13.2</activemq.version>
+        <version.glassfish>4.1.1.162</version.glassfish>
+        <version.javaee>7.0</version.javaee>
+        <version.weld>2.4.4.Final</version.weld>
+        <version.jersey>2.22.2</version.jersey>
+        <eclipse.persistance.eclipselink.version>2.6.4</eclipse.persistance.eclipselink.version>
+        <eclipse.persistence.moxy.version>2.4.1</eclipse.persistence.moxy.version>
+        <version.el>3.0.1-b03</version.el>
+        <version.json>1.0.4</version.json>
+        <google.json-simple.version>1.1</google.json-simple.version>
+        <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
+        <primefaces.version>3.1.1</primefaces.version>
+        <primefaces.themes.version>1.0.4</primefaces.themes.version>
+        <javax.faces.version>2.0</javax.faces.version>
+
         <!-- 3rd party libraries versions -->
         <jsch.version>0.1.54</jsch.version>
         <ant.jsch.version>1.10.1</ant.jsch.version>
-        <!-- Test frameworks versions (JUnit/Hamcrest/Mockito) -->
+        <org.jsoup.version>1.10.1</org.jsoup.version>
+        <cglib.version>2.2.2</cglib.version>
+
+        <!-- Test frameworks versions (JUnit/Hamcrest/Mockito/etc) -->
         <junit.version>4.12</junit.version>
-        <mockito.version>1.10.19</mockito.version>
+        <mockito.version>2.25.0</mockito.version>
         <hamcrest.version>1.3</hamcrest.version>
         <xmlunit.version>1.4</xmlunit.version>
-        <!--<jacoco.plugin.version>0.7.7.201606060606</jacoco.plugin.version>-->
         <jacoco.plugin.version>0.8.1</jacoco.plugin.version>
-        <!-- Spring/Hibernate frameworks (parts) versions -->
+
+        <!-- Spring framework components versions -->
         <spring.version>4.3.2.RELEASE</spring.version>
         <spring.context.version>4.3.3.RELEASE</spring.context.version>
+        <spring.boot.version>2.1.3.RELEASE</spring.boot.version>
+
+        <!-- Hibernate framework components version -->
         <hibernate.version>5.0.6.Final</hibernate.version>
-        <!-- DBMS drivers versions -->
+        <hibernate.validate.version>6.0.15.Final</hibernate.validate.version>
+
+        <!-- DBMS drivers/connection pools versions -->
         <dbms.derby.version>10.13.1.1</dbms.derby.version>
         <dbms.oracle.version>12.2.0.1.0</dbms.oracle.version>
+        <dbms.mysql.version>5.1.42</dbms.mysql.version>
+        <dbms.c3p0.version>0.9.1.2</dbms.c3p0.version>
+
         <!-- my own (local) utilities library useful version -->
         <dgusev.utilities.version>1.0</dgusev.utilities.version>
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
@@ -88,25 +127,54 @@
             <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
         </repository>
         <repository>
-            <id>alt-repo-5</id>
+            <id>central-msd-repo</id>
             <name>Alt repo #5</name>
             <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
+        </repository>
+        <repository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
+        </repository>
+        <!-- Nexus repository -->
+        <repository>
+            <id>jvnet-nexus-releases</id>
+            <name>jvnet-nexus-releases</name>
+            <url>https://maven.java.net/content/repositories/releases/</url>
+        </repository>
+        <!-- Primefaces repository -->
+        <repository>
+            <id>primefaces-themes</id>
+            <name>primefaces-themes</name>
+            <url>http://repository.primefaces.org/</url>
         </repository>
     </repositories>
 
     <!-- Additional Maven repositories for Maven plugins -->
     <pluginRepositories>
         <pluginRepository>
-            <id>central-msd-repo</id>
+            <id>central-msd-plugins-repo</id>
             <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
         </pluginRepository>
         <pluginRepository>
             <id>alt-plugins-repo-1</id>
             <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
+        </pluginRepository>
     </pluginRepositories>
 
+    <!-- dummy SCM for proper work of maven buildnumber plugin (it requires SCM to be set up) -->
+    <scm>
+        <connection>scm:git:http://127.0.0.1/dummy</connection>
+        <developerConnection>scm:git:https://127.0.0.1/dummy</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/dummy</url>
+    </scm>
+
     <build>
+
         <plugins>
 
             <plugin>
@@ -145,6 +213,49 @@
                 <version>${jacoco.plugin.version}</version>
             </plugin>
 
+            <!-- build number plugin (build number + timestamp) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>${maven.plugin.buildnumber}</version>
+                <!-- turn off generation of buildNumber file for submodules -->
+                <inherited>false</inherited>
+                <executions>
+                    <!-- execution for generating sequential build number -->
+                    <execution>
+                        <id>generate-buildnumber</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <format>{0,number}</format>
+                            <items>
+                                <item>buildNumber</item>
+                            </items>
+                            <!-- use this property like: ${buildNumberSeq} -->
+                            <buildNumberPropertyName>buildNumberSeq</buildNumberPropertyName>
+                        </configuration>
+                    </execution>
+                    <!-- execution for generating current build timestamp -->
+                    <execution>
+                        <id>generate-timestamp</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <format>{0,date,dd-MMM-yyyy HH:mm:ss}</format>
+                            <items>
+                                <item>timestamp</item>
+                            </items>
+                            <!-- use this property like: ${buildDate} -->
+                            <buildNumberPropertyName>buildDate</buildNumberPropertyName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
 
         <pluginManagement>
@@ -152,10 +263,16 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>${maven.war.plugin}</version>
+                    <version>${maven.plugin.war}</version>
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${maven.plugin.sonar}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -178,32 +295,31 @@
         </plugins>
     </reporting>
 
-    <!-- Here are just common test dependencies. All other
-     dependencies are located/mentioned in child modules. -->
+    <!-- Here are common (testing) dependencies. All other dependencies should be put in child modules. -->
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
             <version>${hamcrest.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>
             <version>${xmlunit.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -239,6 +355,7 @@
             </properties>
             <!-- All modules to build -->
             <modules>
+                <module>pyutilities</module>
                 <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
@@ -247,7 +364,9 @@
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
-                <module>measurementor</module>
+                <module>rest-springboot-docker</module>
+                <module>rest-j2ee-docker</module>
+                <module>elastic</module>
             </modules>
         </profile>
 
@@ -261,6 +380,7 @@
             </properties>
             <!-- All modules to build -->
             <modules>
+                <module>pyutilities</module>
                 <module>scripts</module>
                 <module>marklogic</module>
                 <module>tmpresearch</module>
@@ -269,7 +389,9 @@
                 <module>socialnet</module>
                 <module>j2ee</module>
                 <module>nlp</module>
-                <module>measurementor</module>
+                <module>rest-springboot-docker</module>
+                <module>rest-j2ee-docker</module>
+                <module>elastic</module>
             </modules>
         </profile>
 
@@ -283,14 +405,17 @@
             </properties>
             <!-- Some of modules to build -->
             <modules>
-                <module>scripts</module>
-                <module>utilities</module>
-                <module>tmpresearch</module>
-                <module>nlp</module>
+                <module>pyutilities</module>
+                <!--<module>scripts</module>-->
+                <!--<module>utilities</module>-->
+                <!--<module>tmpresearch</module>-->
+                <!--<module>nlp</module>-->
                 <!--<module>bigdata</module>-->
                 <!--<module>socialnet</module>-->
                 <!--<module>j2ee</module>-->
-                <module>measurementor</module>
+                <!--<module>rest-springboot-docker</module>-->
+                <!--<module>rest-j2ee-docker</module>-->
+                <!--<module>elastic</module>-->
             </modules>
         </profile>
 
@@ -305,14 +430,34 @@
             </properties>
             <!-- modules to build -->
             <modules>
+                <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
                 <!--<module>tmpresearch</module>-->
                 <module>utilities</module>
                 <!--<module>bigdata</module>-->
                 <!--<module>j2ee</module>-->
                 <!--<module>nlp</module>-->
-                <!--<module>measurementor</module>-->
+                <!--<module>elastic</module>-->
             </modules>
+        </profile>
+
+        <!--
+            Sonar profile (for analysis). Active by default.
+            IMPORTANT: if explicitly specified another profile (-P<profile>) this profile won't
+                        be used, need to specify it too (-P<profile>,sonar).
+        -->
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Optional URL to server. Default value is http://localhost:9000 -->
+                <!--<sonar.host.url>http://myserver:9000</sonar.host.url>-->
+
+                <!-- Project properties (see sonar docs) -->
+                <sonar.python.coverage.reportPaths>coverage.xml</sonar.python.coverage.reportPaths>
+            </properties>
         </profile>
 
     </profiles>

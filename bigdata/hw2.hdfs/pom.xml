@@ -69,20 +69,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven.plugin.dependency}</version>
                 <!-- execution configuration for this plugin (when this module should be executed - phase, goal) -->
                 <executions>
+                    <!-- copy module dependencies -->
                     <execution>
                         <phase>${prod.build.phase}</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${assembly.dir}/${dependencies.output.dir}</outputDirectory>
+                            <excludeArtifactIds>junit</excludeArtifactIds>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <outputDirectory>${assembly.dir}/${dependencies.output.dir}</outputDirectory>
-                    <excludeArtifactIds>junit</excludeArtifactIds>
-                </configuration>
-                <version>${maven.plugin.dependency}</version>
             </plugin>
 
         </plugins>

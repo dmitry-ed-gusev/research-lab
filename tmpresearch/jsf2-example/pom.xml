@@ -14,70 +14,42 @@
     <name>Java Server Faces 2 :: JSF2 example (PrimeFaces)</name>
 
     <dependencies>
-		
-	 <dependency>
+
+        <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>${commons.logging.version}</version>
             <scope>compile</scope>
         </dependency>
-		
-	 <dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons.lang3.version}</version>
-        </dependency>   
-	
-	<!--
+        </dependency>
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>3.0.S1</version>
+            <version>${primefaces.version}</version>
         </dependency>
-	-->
-	
-	<dependency>
-	  <groupId>org.primefaces</groupId>
-	  <artifactId>primefaces</artifactId>
-	  <version>3.1.1</version>
-	</dependency>
-
         <dependency>
             <groupId>org.primefaces.themes</groupId>
             <artifactId>blitzer</artifactId>
-            <version>1.0.4</version>
+            <version>${primefaces.themes.version}</version>
         </dependency>
-
         <dependency>
             <groupId>javax.faces</groupId>
             <artifactId>jsf-api</artifactId>
-            <version>2.0</version>
+            <version>${javax.faces.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>6.0</version>
+            <!--<version>6.0</version>-->
+            <version>${javaee.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
     </dependencies>
 
-
-    <repositories>
-        <repository>
-            <id>jvnet-nexus-releases</id>
-            <name>jvnet-nexus-releases</name>
-            <url>https://maven.java.net/content/repositories/releases/</url>
-        </repository>
-
-        <repository>
-            <id>primefaces-themes</id>
-            <name>primefaces-themes</name>
-            <url>http://repository.primefaces.org/</url>
-        </repository>
-
-
-    </repositories>
 </project>

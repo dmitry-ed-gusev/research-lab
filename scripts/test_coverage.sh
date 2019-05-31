@@ -12,7 +12,7 @@ pip install jira prettytable bs4
 #export PYTHONPATH
 
 python -m nose2 -v -s pytests --plugin nose2.plugins.junitxml -X --with-coverage --coverage pylib \
-    --coverage-report xml --coverage-report html
+    --coverage-report xml --coverage-report html xml
 
 #python -m nose2 -v -s tests --plugin nose2.plugins.junitxml -X --with-coverage --coverage pipeline --coverage-report xml
 
