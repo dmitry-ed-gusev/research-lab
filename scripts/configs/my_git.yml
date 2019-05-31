@@ -23,7 +23,7 @@ stash:
 #  https: 127.0.0.1:3180
 
 # special settings for projects
-mvn_settings: settings_empty.xml
+mvn_settings: ../settings_empty.xml
 
 # list of repositories
 repositories:
@@ -31,8 +31,9 @@ repositories:
     research:
       build: yes
     mts_billing:
-      build: yes
     census:
       build: yes
     vgraphics:
+      build: yes
+    datatex-connector:
       build: yes

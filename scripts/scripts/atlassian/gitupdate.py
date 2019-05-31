@@ -6,7 +6,7 @@
     specified in config file. Has some config parameters for fine tuning.
 
     Created:  Gusev Dmitrii, 03.04.2017
-    Modified: Gusev Dmitrii, 27.05.2019
+    Modified: Gusev Dmitrii, 30.05.2019
 
 """
 
@@ -19,12 +19,18 @@ import scripts.credentials as creds
 from pyutilities.config import Configuration
 from pyutilities.pylog import init_logger, setup_logging, myself
 from pyutilities.pygit import PyGit
+from pyutilities.pymaven import PyMaven
 from scripts.atlassian.atlassian_exception import AtlassianException
 
-# config keys for switching off build/javadoc/sources
+# dry run key - no real actions will be done
+CONFIG_KEY_DRY_RUN = 'dry-run'
+
+# config keys for maven - switching off build/javadoc/sources, special settings
+# todo: implement these settings!
 CONFIG_KEY_MVN_BUILD_OFF = 'no-build'
 CONFIG_KEY_MVN_JAVADOC_OFF = 'no-javadoc'
 CONFIG_KEY_MVN_SOURCES_OFF = 'no-sources'
+CONFIG_KEY_MVN_SETTINGS = 'mvn_settings'
 
 # config key - utility configuration file
 CONFIG_KEY_CFG_FILE = "config.file"
@@ -40,7 +46,9 @@ CONFIG_KEY_GIT_CREDENTIALS = 'stash.creds'
 
 # config file key - repositories list, local location
 CONFIG_KEY_REPOS = 'repositories'
+CONFIG_KEY_REPOS_BUILD = 'repositories.{}.build'
 CONFIG_KEY_LOCATION = 'location'
+
 
 # init module logger
 log = init_logger('gitupdate')
@@ -117,11 +125,12 @@ def get_project_folder(repo_name: str):
     return ''
 
 
-def get_initialized_config(arg_parser: argparse.ArgumentParser, ):
+def get_initialized_config(arg_parser: argparse.ArgumentParser):
     """ Return initialized (by cmd line, cfg file, creds file) Configuration instance.  """
-    # todo: implement!
+    log.debug(f'{myself()}() is working.')
+
     # parse cmd line arguments and create Configuration
-    cmd_line_args = prepare_arg_parser().parse_args()
+    cmd_line_args = arg_parser.parse_args()
     cmd_line_dict = vars(cmd_line_args)
 
     # get credentials from [credentials.py] module (if specified)
@@ -135,14 +144,13 @@ def get_initialized_config(arg_parser: argparse.ArgumentParser, ):
     # init configuration class instance
     config = Configuration(path_to_config=getattr(cmd_line_args, CONFIG_KEY_CFG_FILE), is_override_config=True,
                            is_merge_env=False, dict_to_merge=[vars(cmd_line_args), creds_dict])
-    log.debug(f"Loaded Configuration:\n\t{config.config_dict}")
-
+    log.info(f"Loaded Configuration:\n\t{config.config_dict}")
+    return config
 
 
 def get_git_params(config: Configuration):
     """ Return tuple (x, y, z) with git url, user, pass. """
     log.debug(f'{myself()}() is working.')
-    # todo: implement!
 
     # get git general parameters - url/user/pass
     git_address = config.get(CONFIG_KEY_GIT_ADDRESS)
@@ -152,6 +160,8 @@ def get_git_params(config: Configuration):
     # check user/password and do fast-fail
     if string.is_str_empty(git_user) or string.is_str_empty(git_pass):
         raise AtlassianException('Provided invalid credentials (empty username or password)!')
+
+    return git_address, git_user, git_pass
 
 
 def prepare_arg_parser():
@@ -186,13 +196,22 @@ def prepare_arg_parser():
                         help='Switch downloading javadoc off')
     parser.add_argument('--nosources', dest=CONFIG_KEY_MVN_SOURCES_OFF, action='store_true',
                         help='Switch downloading sources off')
+
+    # option for dry run - no real actions will be done
+    parser.add_argument('--dry', dest=CONFIG_KEY_DRY_RUN, action='store_true',
+                        help='Turn on DRY RUN mode - no action will be done')
+
     return parser
 
 
-def git_process_repositories(repos_list: list, projects_location: str, git: PyGit):
-    log.debug(f'{myself()}() is working.')
+def git_process_repositories(repos_list: list, projects_location: str, git: PyGit, maven: PyMaven,
+                             dry_run: bool = False):
+    log.debug(f'{myself()}() is working. DRY RUN MODE [{dry_run}]')
 
     for repo in repos_list:  # processing repositories - clone/update
+
+        if dry_run:
+            log.warning('Dry run mode is ON!')
 
         # decide - will we clone (no directory exists) or update/pull (directory exists) repository
         repository_location = projects_location + '/' + get_project_folder(repo)  # repository user/type folder
@@ -201,22 +220,33 @@ def git_process_repositories(repos_list: list, projects_location: str, git: PyGi
         if os.path.exists(repository_location_full):  # pull (update) repository
             log.info(f"Pull repository [{repo}], repo full location [{repository_location_full}].")
             # pull/update repository
-            git.pull(repo, repository_location_full)
+            if not dry_run:
+                git.pull(repo, repository_location_full)
         else:  # clone repository
             log.info(f"Clone repository [{repo}], repo location [{repository_location}].")
             # check target project directory (locally) and create it, if necessary
             if not os.path.exists(repository_location):
                 log.info("Repo path [{}] doesn't exist. Trying to create it...".format(repository_location))
                 try:
-                    os.makedirs(repository_location)
+                    if not dry_run:
+                        os.makedirs(repository_location)
                 except OSError as exc:  # guard against race condition
                     if exc.errno != errno.EEXIST:
                         raise
             # clone repository
-            git.clone(repo, repository_location)  # clone repository
+            if not dry_run:
+                git.clone(repo, repository_location)  # clone repository
 
         # execute gc() for each repository
-        git.gc(repo, repository_location_full)
+        if not dry_run:
+            git.gc(repo, repository_location_full)
+
+        # execute maven tasks for repository
+        #build_repo = config.get[CONFIG_KEY_REPOS_BUILD.format(repo.replace('/', '.'))]
+
+
+def maven_process_repositories():
+    log.debug(f'{myself()}() is working.')
 
 
 def git_utility_start():
@@ -230,22 +260,29 @@ def git_utility_start():
     # parse cmd line and init Configuration
     config = get_initialized_config(prepare_arg_parser())
 
-    #
-    (address, user, password) = get_git_params()
+    # get git parameters
+    (address, user, password) = get_git_params(config)
+    # init PyGit class
+    git = PyGit(git_url=get_prepared_git_url(address, user, password))
 
-    # init GitUtility class todo: move to git_process_repositories()
-    git = PyGit(git_url=get_prepared_git_url(git_address, git_user, git_pass))
+    # get maven external settings
+    mvn_settings = None
+    if config.contains_key(CONFIG_KEY_MVN_SETTINGS):
+        mvn_settings = config.get(CONFIG_KEY_MVN_SETTINGS)
+    # init PyMaven class
+    maven = PyMaven(mvn_settings=mvn_settings)
 
-    # get list of repositories from config todo: move to git_process_repositories()
+    # get list of repositories from config
     repos_list = get_repos_list(config.get(CONFIG_KEY_REPOS))
     log.info(f"Loaded repos list: {repos_list}")
-
-    # get location for projects from config todo: move to git_process_repositories()
+    # get location for projects from config
     projects_location = get_projects_location(config.get(CONFIG_KEY_LOCATION))
     log.info(f"Loaded projects location: {projects_location}")
 
+    # get dry run value
+    dry_run = config.get(CONFIG_KEY_DRY_RUN)
     # process repositories clone/pull
-    git_process_repositories(repos_list, projects_location, git)
+    git_process_repositories(repos_list, projects_location, git, maven, dry_run)
 
 
 if __name__ == '__main__':

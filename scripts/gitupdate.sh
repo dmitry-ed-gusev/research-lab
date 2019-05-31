@@ -4,10 +4,9 @@
 #
 #
 #   Created:  Dmitrii Gusev, 22.05.2019
-#   Modified:
+#   Modified: Dmitrii Gusev, 29.05.2019
 #
 ###############################################################################
-
 
 # update MSD-based projects
 python3 -m scripts.atlassian.gitupdate
