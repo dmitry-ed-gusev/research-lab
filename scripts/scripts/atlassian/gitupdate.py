@@ -204,8 +204,7 @@ def prepare_arg_parser():
     return parser
 
 
-def git_process_repositories(repos_list: list, projects_location: str, git: PyGit, maven: PyMaven,
-                             dry_run: bool = False):
+def git_process_repositories(repos_list: list, projects_location: str, git: PyGit, dry_run: bool = False):
     log.debug(f'{myself()}() is working. DRY RUN MODE [{dry_run}]')
 
     for repo in repos_list:  # processing repositories - clone/update
@@ -241,12 +240,12 @@ def git_process_repositories(repos_list: list, projects_location: str, git: PyGi
         if not dry_run:
             git.gc(repo, repository_location_full)
 
-        # execute maven tasks for repository
-        #build_repo = config.get[CONFIG_KEY_REPOS_BUILD.format(repo.replace('/', '.'))]
-
 
 def maven_process_repositories():
     log.debug(f'{myself()}() is working.')
+
+    # execute maven tasks for repository
+    #build_repo = config.get[CONFIG_KEY_REPOS_BUILD.format(repo.replace('/', '.'))]
 
 
 def git_utility_start():
@@ -280,9 +279,13 @@ def git_utility_start():
     log.info(f"Loaded projects location: {projects_location}")
 
     # get dry run value
-    dry_run = config.get(CONFIG_KEY_DRY_RUN)
+    if config.contains_key(CONFIG_KEY_DRY_RUN) and config.get(CONFIG_KEY_DRY_RUN):
+        dry_run = True
+    else:
+        dry_run = False
+
     # process repositories clone/pull
-    git_process_repositories(repos_list, projects_location, git, maven, dry_run)
+    git_process_repositories(repos_list, projects_location, git, dry_run)
 
 
 if __name__ == '__main__':
