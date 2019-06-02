@@ -4,7 +4,7 @@
     <parent>
         <groupId>dgusev</groupId>
         <artifactId>research</artifactId>
-        <version>1.0</version>
+        <version>${revision}</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>

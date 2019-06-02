@@ -5,11 +5,13 @@
     <groupId>dgusev</groupId>
     <artifactId>research</artifactId>
     <packaging>pom</packaging>
-    <version>3.0</version>
+    <!-- For Apache Maven > 3.6 only allowed expression here is ${revision}  -->
+    <version>${revision}</version>
     <name>Research project :: research and self-education.</name>
 
     <properties>
         <!-- General properties -->
+        <revision>3.0</revision>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.sources.encoding>UTF-8</java.sources.encoding>
         <java.version>1.8</java.version>
@@ -151,10 +153,12 @@
 
     <!-- Additional Maven repositories for Maven plugins -->
     <pluginRepositories>
+        <!--
         <pluginRepository>
             <id>central-msd-plugins-repo</id>
             <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
         </pluginRepository>
+        -->
         <pluginRepository>
             <id>alt-plugins-repo-1</id>
             <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
