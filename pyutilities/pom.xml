@@ -28,13 +28,12 @@
     </dependencies>
     
     <profiles>
-        <!--
+
+        <!-- execute unit tests on windows environment -->
         <profile>
             <id>py-coverage-win</id>
             <activation>
-                <os>
-                    <family>windows</family>
-                </os>
+                <os><family>windows</family></os>
             </activation>
             <build>
                 <plugins>
@@ -50,7 +49,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>test_coverage.bat</executable>
+                                    <executable>test_with_coverage.bat</executable>
                                 </configuration>
                             </execution>
                         </executions>
@@ -58,8 +57,8 @@
                 </plugins>
             </build>
         </profile>
-        -->
 
+        <!-- execute unit tests on unix environment -->
         <profile>
             <id>py-coverage-unix</id>
             <activation>
@@ -73,7 +72,7 @@
                         <version>${maven.plugin.exec}</version>
                         <executions>
                             <execution>
-                                <id>PyUnit-run</id>
+                                <id>pyunit-run</id>
                                 <phase>test</phase>
                                 <goals>
                                     <goal>exec</goal>
