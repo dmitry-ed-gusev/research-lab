@@ -16,6 +16,7 @@ xlwt>=1.3.0
 nose2>=0.9.1
 mock>=2.0.0
 cov-core>=1.15.0
+virtualenv>=16.6.0
 
 # --- my own library
 pyutilities>=0.10.0
