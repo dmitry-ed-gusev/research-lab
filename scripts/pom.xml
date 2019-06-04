@@ -14,9 +14,6 @@
     <name>Scripts :: some shell/python scripts.</name>
 
     <properties>
-        <skipPythonTests>true</skipPythonTests>
-        <skipPythonCoverage>true</skipPythonCoverage>
-        <skipScriptRun>false</skipScriptRun>
     </properties>
 
     <build>
@@ -24,98 +21,6 @@
         <sourceDirectory>scripts</sourceDirectory>
 
         <plugins>
-            <!-- run python unit tests -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${maven.plugin.exec}</version>
-                <configuration>
-                    <workingDirectory>${project.basedir}</workingDirectory>
-                </configuration>
-                <executions>
-                    <!-- run python unit tests -->
-                    <execution>
-                        <id>PyUnit-Run</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipPythonTests}</skip>
-                            <executable>python</executable>
-                            <arguments>
-                                <argument>-m</argument>
-                                <argument>unittest</argument>
-                                <argument>discover</argument>
-                                <!--<argument>-s./scripts/pytests</argument>-->
-                                <argument>-v</argument>
-                            </arguments>
-                            <environmentVariables>
-                                <!-- python path for dependencies -->
-                                <!--<PYTHONPATH>${project.basedir}/target/dependency${path.separator}${project.basedir}/target/dependency/pymocks</PYTHONPATH>-->
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-
-                    <!-- run python unit tests and gather coverage report -->
-                    <execution>
-                        <id>PyUnit-Run-Coverage</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipPythonCoverage}</skip>
-                            <executable>python</executable>
-                            <arguments>
-                                <argument>-m</argument>
-                                <argument>unittest</argument>
-                                <argument>discover</argument>
-                                <!--<argument>-s./scripts/pytests</argument>-->
-                                <argument>-v</argument>
-                            </arguments>
-                            <environmentVariables>
-                                <!-- python path for dependencies -->
-                                <!--<PYTHONPATH>${project.basedir}/target/dependency${path.separator}${project.basedir}/target/dependency/pymocks</PYTHONPATH>-->
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
-		<!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.5.0</version>
-                <configuration>
-                    <workingDirectory>${project.basedir}</workingDirectory>
-                    <skip>${maven.test.skip}</skip>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>PyUnit-run</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>python</executable>
-                            <arguments>
-                                <argument>-m</argument>
-                                <argument>unittest</argument>
-                                <argument>discover</argument>
-                                <argument>-v</argument>
-                            </arguments>
-                            <environmentVariables>
-                                <PYTHONPATH>${project.basedir}/target/dependency${path.separator}${project.basedir}/target/dependency/pymocks</PYTHONPATH>
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-            
         </plugins>
     </build>
 
@@ -123,12 +28,12 @@
     </dependencies>
     
     <profiles>
+
+        <!-- execute unit tests on windows environment -->
         <profile>
             <id>py-coverage-win</id>
             <activation>
-                <os>
-                    <family>windows</family>
-                </os>
+                <os><family>windows</family></os>
             </activation>
             <build>
                 <plugins>
@@ -144,7 +49,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>test_coverage.bat</executable>
+                                    <executable>test_with_coverage.bat</executable>
                                 </configuration>
                             </execution>
                         </executions>
@@ -152,12 +57,12 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- execute unit tests on unix environment -->
         <profile>
-            <id>py-coverage-linux</id>
+            <id>py-coverage-unix</id>
             <activation>
-                <os>
-                    <family>linux</family>
-                </os>
+                <os><family>unix</family></os>
             </activation>
             <build>
                 <plugins>
@@ -167,7 +72,7 @@
                         <version>${maven.plugin.exec}</version>
                         <executions>
                             <execution>
-                                <id>PyUnit-run</id>
+                                <id>pyunit-run</id>
                                 <phase>test</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -176,7 +81,7 @@
                                     <executable>bash</executable>
                                     <arguments>
                                         <argument>-a</argument>
-                                        <argument>test_coverage.sh</argument>
+                                        <argument>test_with_coverage.sh</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -185,6 +90,7 @@
                 </plugins>
             </build>
         </profile>
+
     </profiles>
 
 </project>
