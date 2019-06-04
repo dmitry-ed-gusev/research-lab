@@ -10,9 +10,9 @@
 """
 
 import logging
-import pylib.consts as consts
+import scripts.pylib.consts as consts
 from jira import JIRA
-from pyutilities.utils import setup_logging
+from pyutilities.pylog import setup_logging
 from pyutilities.config import Configuration, ConfigurationXls
 
 # config keys and some useful constants for JIRA

@@ -9,7 +9,7 @@
 """
 
 import logging
-from pyutilities.utils import setup_logging
+from pyutilities.pylog import setup_logging
 
 # todo: move these tricks with logging (below) to pyutilities module
 # trick for getting name of working procedure

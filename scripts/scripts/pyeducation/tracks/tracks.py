@@ -58,7 +58,7 @@ def lookup(d, key):
 # -- parse input XML file
 stuff = ET.parse(fname)
 all = stuff.findall('dict/dict/dict')
-print 'Dict count:', len(all)
+print('Dict count:', len(all))
 
 # -- iterate over found entries and put data into database
 for entry in all:
@@ -78,7 +78,7 @@ for entry in all:
     if name is None or artist is None or album is None or genre is None:
         continue
 
-    print name, artist, album, genre, count, rating, length
+    print(name, artist, album, genre, count, rating, length)
 
     # -- insert data into Artist table and get last inserted ID
     cur.execute('''INSERT OR IGNORE INTO Artist (name) VALUES ( ? )''', (artist, ))

@@ -48,11 +48,11 @@ log.info("Starting GIT Utility...")
 
 json_data = get_page_json("284590357", "body.storage")  # with body content
 # json_data = get_page_json("284590357", '')  # without body content
-print json_data
-print 'Title -> ', json_data['title']
+print(json_data)
+print('Title -> ', json_data['title'])
 
 body = json_data['body']['storage']['value']
-print 'Body storage value -> ', body
+print('Body storage value -> ', body)
 
 # parse body of page with BeautifulSoup
 bs = BeautifulSoup(body, "html.parser")
@@ -61,6 +61,6 @@ for row in bs.find('table').find_all('tr'):
     cells = row.find_all('td')
     if len(cells) == 3:
         # print len(cells), '->', cells
-        print cells[2]
+        print(cells[2])
 
         #print '->', cells[2].find_all('ac')
