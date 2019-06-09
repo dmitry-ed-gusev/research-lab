@@ -13,8 +13,6 @@ import org.json.simple.parser.ParseException;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import java.io.IOException;
-import java.io.Reader;
 
 import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
@@ -237,9 +235,9 @@ public abstract class RestClient {
     }
 
     /***/
-    JSONArray parseJsonArray(Reader reader) throws IOException, ParseException {
-        LOGGER.debug("RestClient.parseJsonArray() is working.");
-        return (JSONArray) this.jsonParser.parse(reader);
-    }
+    //JSONArray parseJsonArray(Reader reader) throws IOException, ParseException {
+    //    LOGGER.debug("RestClient.parseJsonArray() is working.");
+    //    return (JSONArray) this.jsonParser.parse(reader);
+    //}
 
 }
