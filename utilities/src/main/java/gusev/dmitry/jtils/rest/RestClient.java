@@ -3,6 +3,12 @@ package gusev.dmitry.jtils.rest;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.client.urlconnection.HTTPSProperties;
+import gusev.dmitry.jtils.rest.security.SSLContextUtil;
+import gusev.dmitry.jtils.rest.security.SpecifiedHostnameVerifier;
+import lombok.NonNull;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
@@ -13,12 +19,15 @@ import org.json.simple.parser.ParseException;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
 /**
- * Basic HTTP REST Client.
- * Client assumes, that data exchange with server is done via JSON data.
+ * Basic HTTP/HTTPS REST Client. For HTTPS requests should be specified "trusted" host - it
+ * will be accepted without any certificates.
+ * Client assumes, that data exchange with server is done using JSON data.
  */
 
 // todo: migrate to latest Jersey Client version
@@ -26,16 +35,38 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
 public abstract class RestClient {
 
-    // module logger
-    private static final Log LOGGER = LogFactory.getLog(RestClient.class);
-    // internal jersey client instance
-    // todo: timeout for REST client (Jersey)??? for it's too long! How to set?
-    private final Client     jerseyClient = Client.create();
-    // internal json parser instance
-    private final JSONParser jsonParser = new JSONParser();
+    private static final Log LOGGER = LogFactory.getLog(RestClient.class);      // module logger
+    private static final String SERVER_RESPONSE_MSG = "Server response: [%s]."; // server response message
 
-    // response message
-    private static final String SERVER_RESPONSE_MSG = "Server response: [%s].";
+
+    // internal jersey client instance todo: timeout for jersey client???
+    private final Client           jerseyClient;
+    // internal json parser instance
+    private final JSONParser       jsonParser;
+
+    /** Default constructor, no trusted hosts. */
+    public RestClient() {
+
+        this.jerseyClient = Client.create();
+        this.jsonParser = new JSONParser();
+    }
+
+    /** Constructor with trusted hostname. */
+    public RestClient(@NonNull String trustedHost) throws NoSuchAlgorithmException, KeyManagementException {
+
+        // create jersey client config
+        ClientConfig config = new DefaultClientConfig();
+
+        // set config properties - our own hosts verifier and ssl context
+        config.getProperties()
+                .put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
+                        new HTTPSProperties(new SpecifiedHostnameVerifier(trustedHost),
+                                SSLContextUtil.getInsecureSSLContext()));
+
+        // init jersey client and json parser
+        this.jerseyClient = Client.create(config);
+        this.jsonParser = new JSONParser();
+    }
 
     /**
      * Should be implemented be each subclass.
@@ -158,7 +189,7 @@ public abstract class RestClient {
     }
 
     /** Build jersey client. */
-    protected WebResource.Builder buildClient(String resource, MediaType mediaType, Cookie cookie,
+    WebResource.Builder buildClient(String resource, MediaType mediaType, Cookie cookie,
                                               MultivaluedMap<String, String> headers) {
         LOGGER.debug("RestClient.buildClient() is working.");
 
@@ -215,8 +246,7 @@ public abstract class RestClient {
         MultivaluedMap<String, String> headers = response.getHeaders();
         LOGGER.debug(String.format("Response headers:%n[%s]%n", headers));
 
-        // parse response body into JSON object
-        //JSONObject body;
+        // depending on response body type (JSONObject/JSONArray) return RestResponse instance
         try {
             Object body = this.jsonParser.parse(entity);
             if (body instanceof JSONObject) { // returned JSON object
@@ -230,14 +260,6 @@ public abstract class RestClient {
             throw new RestException(request, response, "Cannot parse response body! " + e.toString());
         }
 
-        // create RestResponse instance and return it
-        //return new RestResponse(status, body, cookie, headers);
     }
-
-    /***/
-    //JSONArray parseJsonArray(Reader reader) throws IOException, ParseException {
-    //    LOGGER.debug("RestClient.parseJsonArray() is working.");
-    //    return (JSONArray) this.jsonParser.parse(reader);
-    //}
 
 }
