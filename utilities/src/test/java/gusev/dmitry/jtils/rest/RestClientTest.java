@@ -6,6 +6,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.*;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Delay;
@@ -17,6 +22,10 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static junit.framework.TestCase.assertTrue;
@@ -26,7 +35,10 @@ import static org.mockserver.matchers.Times.exactly;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
+// parameterized unit test example -> https://www.mkyong.com/unittest/junit-4-tutorial-6-parameterized-test/
+
 /** Unit tests for RestClient. */
+@RunWith(Parameterized.class) // <- parameterized tests class
 public class RestClientTest {
 
     // REST test server parameters
@@ -54,30 +66,48 @@ public class RestClientTest {
     // HTTP server JSON answers
     private static final String JSON_SUCCESS_ANSWER_STR = "{\"success\":\"true\"}";
 
-    /** HTTP REST client implementation for tests. */
-    static class HttpRestClientImpl extends RestClient {
-        @Override
-        protected String getPath() {
-            return REST_SERVER_FULL_HTTP_HOST;
-        }
-    }
+    @Rule // <- rule for expected exception to be thrown
+    public ExpectedException expectedException = ExpectedException.none();
+
+    @Parameter // <- parameter for parameterized test case
+    public String input;
+
+    @Parameters(name = "{index}: test for url {0}") // <- test data provider - provides test values for test method
+    public static Iterable<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                {"http://"},
+                {"http://a/"},
+                {"https://?"},
+                {"https://:"},
+                {"http://:8080"}
+        });
+    } // end of data() method
 
     /** HTTP REST client implementation for tests. */
-    static class HttpsRestClientImpl extends RestClient {
+//    static class HttpRestClientImpl extends RestClient {
+//        @Override
+//        protected String getPath() {
+//            return REST_SERVER_FULL_HTTP_HOST;
+//        }
+//    }
 
-        HttpsRestClientImpl(@NonNull String trustedHost) throws NoSuchAlgorithmException, KeyManagementException {
-            super(trustedHost);
-        }
-
-        @Override
-        protected String getPath() {
-            return REST_SERVER_FULL_HTTPS_HOST;
-        }
-    }
+    /** HTTP REST client implementation for tests. */
+//    static class HttpsRestClientImpl extends RestClient {
+//
+//        HttpsRestClientImpl(@NonNull String trustedHost) throws NoSuchAlgorithmException, KeyManagementException {
+//            super(trustedHost);
+//        }
+//
+//        @Override
+//        protected String getPath() {
+//            return REST_SERVER_FULL_HTTPS_HOST;
+//        }
+//    }
 
     // internal rest clients - for tests
-    private static HttpRestClientImpl  httpRestClient;
-    private static HttpsRestClientImpl httpsRestClient;
+    //private static HttpRestClientImpl  httpRestClient;
+    //private static HttpsRestClientImpl httpsRestClient;
+    //private static HttpsRestClientImpl httpsRestClientInvalidTrustedHost;
     // mock rest server - for tests
     private static ClientAndServer     mockRestServer;
 
@@ -85,18 +115,20 @@ public class RestClientTest {
     public static void startInitAndMockServers() throws KeyManagementException, NoSuchAlgorithmException {
 
         // init rest clients
-        httpRestClient  = new HttpRestClientImpl();                  // http rest client instance
-        httpsRestClient = new HttpsRestClientImpl(REST_SERVER_HOST); // https rest client instance
+        //httpRestClient  = new HttpRestClientImpl();                  // http rest client instance
+        //httpsRestClient = new HttpsRestClientImpl(REST_SERVER_HOST); // https rest client instance
+        //
+        //httpsRestClientInvalidTrustedHost = new HttpsRestClientImpl("invalid_trusted_host");
 
         // start mock server
-        mockRestServer = startClientAndServer(REST_SERVER_PORT);
+        //mockRestServer = startClientAndServer(REST_SERVER_PORT);
         // build mock server client expectations
-        createRestServerClientExpectations();
+        //createRestServerClientExpectations();
     }
 
     @AfterClass
     public static void stopMockServers() {
-        mockRestServer.stop();
+        //mockRestServer.stop();
     }
 
     private static void createRestServerClientExpectations() {
@@ -124,7 +156,7 @@ public class RestClientTest {
                                 .withCookie(DEFAULT_MOCK_COOKIE)
                                 .withBody(JSON_SUCCESS_ANSWER_STR)
                                 .withPath("/path/post"),
-                        exactly(1))
+                        exactly(2))
                 .respond(response() // <- response
                         .withStatusCode(200)
                         .withHeaders(DEFAULT_MOCK_HEADER)
@@ -140,7 +172,7 @@ public class RestClientTest {
                                 .withCookie(DEFAULT_MOCK_COOKIE)
                                 .withBody(JSON_SUCCESS_ANSWER_STR)
                                 .withPath("/path/put"),
-                        exactly(1))
+                        exactly(2))
                 .respond(response() // <- response
                         .withStatusCode(200)
                         .withHeaders(DEFAULT_MOCK_HEADER)
@@ -156,7 +188,7 @@ public class RestClientTest {
                                 .withCookie(DEFAULT_MOCK_COOKIE)
                                 .withBody(JSON_SUCCESS_ANSWER_STR)
                                 .withPath("/path/delete"),
-                        exactly(1))
+                        exactly(2))
                 .respond(response() // <- response
                         .withStatusCode(200)
                         .withHeaders(DEFAULT_MOCK_HEADER)
@@ -166,6 +198,82 @@ public class RestClientTest {
 
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void testProcessUrlNullUrl() {
+        RestClient.processUrl(null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testProcessURLEmptyUrl() {
+        RestClient.processUrl("");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testProcessUrlOnlySpacesUrl() {
+        RestClient.processUrl("       ");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testProcessUrlNotStartWithRightPrefix() {
+        RestClient.processUrl("localhost");
+    }
+
+    @Test
+    public void testProcessUrlRightUrl() {
+        Map<String, String> urlsMap = new HashMap<String, String>() {{
+            put("http://host1",      "http://host1");
+            put("https://host2.com", "    https://host2.com          ");
+            put("http://host3.com:8080",  "   hTTp://hOST3.COm:8080      ");
+        }};
+
+        // tests on sample map (each key and processed value should match)
+        urlsMap.forEach((key, value) -> assertEquals(key, RestClient.processUrl(value)));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testExtractHostNullUrl() {
+        RestClient.extractHost(null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testExtractHostEmptyUrl() {
+        RestClient.extractHost("");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testExtractHostOnlySpacesUrl() {
+        RestClient.extractHost("   ");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testExtractHostNotStartWithRightPrefix() {
+        RestClient.extractHost("localhost");
+    }
+
+    @Test //(expected = IllegalStateException.class)
+    public void testExtractHostResultInEmptyUrl() {
+
+        // todo: fix!! loop doesn't work!!!
+        //List<String> urlsList =
+
+        //urlsList.forEach(RestClient::extractHost);
+    }
+
+    @Test
+    public void testExtractHostRightUrl() {
+        Map<String, String> urlsMap = new HashMap<String, String>() {{
+            put("hostname",           "   hTTp://hostname    ");
+            put("hostname.com",       "     hTTps://hostname.com/path1/path2     ");
+            put("domain.hostname.ru", "   hTTp://domain.hostname.ru?name=value    ");
+            put("my.own.host",        " https://my.own.host/path1/path2?name=value    ");
+            put("myhost.com",         "    http://myhost.com:8080/path1/path2?name=value    ");
+        }};
+
+        // tests on sample map
+        urlsMap.forEach((key, value) -> assertEquals(key, RestClient.extractHost(value)));
+    }
+
+    /*
     @Test (expected = IllegalArgumentException.class)
     public void testBuildClientWithIllegalCharacterInPath() {
         httpRestClient.buildClient("/path1\n/path2", new MediaType(), new Cookie("name", "value"), null);
@@ -240,12 +348,54 @@ public class RestClientTest {
     }
 
     @Test
+    public void testSuccessHttpsPostRestRequest() {
+
+        // execute POST request
+        RestResponse response = httpsRestClient.executePost("/path/post", JSON_SUCCESS_ANSWER_STR,
+                MediaType.APPLICATION_JSON_TYPE, DEFAULT_COOKIE, DEFAULT_HEADER);
+
+        // general tests/assertions
+        assertEquals(200, response.getStatus());
+        assertEquals(JSON_SUCCESS_ANSWER_STR, response.getBodyObject().toString());
+        // test for response cookies
+        Cookie responseCookie = response.getCookie();
+        assertEquals("cookie_name", responseCookie.getName());
+        assertEquals("cookie_value", responseCookie.getValue());
+        // test for response headers
+        MultivaluedMap<String, String> headers = response.getHeaders();
+        assertTrue(headers.containsKey("Content-Type"));
+        assertEquals("application/json", headers.get("Content-Type").get(0));
+    }
+
+    @Test
     public void testSuccessHttpPutRestRequest() throws ParseException {
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse(JSON_SUCCESS_ANSWER_STR);
 
         // execute PUT request
         RestResponse response = httpRestClient.executePut("/path/put", jsonObject,
+                DEFAULT_COOKIE, DEFAULT_HEADER);
+
+        // general tests/assertions
+        assertEquals(200, response.getStatus());
+        assertEquals(JSON_SUCCESS_ANSWER_STR, response.getBodyObject().toString());
+        // test for response cookies
+        Cookie responseCookie = response.getCookie();
+        assertEquals("cookie_name", responseCookie.getName());
+        assertEquals("cookie_value", responseCookie.getValue());
+        // test for response headers
+        MultivaluedMap<String, String> headers = response.getHeaders();
+        assertTrue(headers.containsKey("Content-Type"));
+        assertEquals("application/json", headers.get("Content-Type").get(0));
+    }
+
+    @Test
+    public void testSuccessHttpsPutRestRequest() throws ParseException {
+
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(JSON_SUCCESS_ANSWER_STR);
+
+        // execute PUT request
+        RestResponse response = httpsRestClient.executePut("/path/put", jsonObject,
                 DEFAULT_COOKIE, DEFAULT_HEADER);
 
         // general tests/assertions
@@ -282,5 +432,28 @@ public class RestClientTest {
         assertTrue(headers.containsKey("Content-Type"));
         assertEquals("application/json", headers.get("Content-Type").get(0));
     }
+
+    @Test
+    public void testSuccessHttpsDeleteRestRequest() throws ParseException {
+
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(JSON_SUCCESS_ANSWER_STR);
+
+        // execute DELETE request
+        RestResponse response = httpsRestClient.executeDelete("/path/delete", jsonObject,
+                DEFAULT_COOKIE, DEFAULT_HEADER);
+
+        // general tests/assertions
+        assertEquals(200, response.getStatus());
+        assertEquals(JSON_SUCCESS_ANSWER_STR, response.getBodyObject().toString());
+        // test for response cookies
+        Cookie responseCookie = response.getCookie();
+        assertEquals("cookie_name", responseCookie.getName());
+        assertEquals("cookie_value", responseCookie.getValue());
+        // test for response headers
+        MultivaluedMap<String, String> headers = response.getHeaders();
+        assertTrue(headers.containsKey("Content-Type"));
+        assertEquals("application/json", headers.get("Content-Type").get(0));
+    }
+    */
 
 }

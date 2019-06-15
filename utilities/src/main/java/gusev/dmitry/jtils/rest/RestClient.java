@@ -9,8 +9,8 @@ import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import gusev.dmitry.jtils.rest.security.SSLContextUtil;
 import gusev.dmitry.jtils.rest.security.SpecifiedHostnameVerifier;
 import lombok.NonNull;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.apachecommons.CommonsLog;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -32,40 +32,58 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
 // todo: migrate to latest Jersey Client version
 // todo: for Jersey update see: https://stackoverflow.com/questions/32042944/upgrade-from-jersey-client-1-9-to-jersey-client-2-8
+// todo: timeout for jersey client???
 
+@CommonsLog
 public abstract class RestClient {
 
-    private static final Log LOGGER = LogFactory.getLog(RestClient.class);      // module logger
+    //private static final Log LOGGER = LogFactory.getLog(RestClient.class);      // module logger
     private static final String SERVER_RESPONSE_MSG = "Server response: [%s]."; // server response message
+    private static final String HTTP_URL_PREFIX     = "http://";
+    private static final String HTTPS_URL_PREFIX    = "https://";
 
-
-    // internal jersey client instance todo: timeout for jersey client???
-    private final Client           jerseyClient;
-    // internal json parser instance
-    private final JSONParser       jsonParser;
+    // internal client state
+    //private final String     path;         // server host path
+    private final Client     jerseyClient; // internal jersey client instance
+    private final JSONParser jsonParser;   // internal json parser instance
 
     /** Default constructor, no trusted hosts. */
-    public RestClient() {
-
-        this.jerseyClient = Client.create();
-        this.jsonParser = new JSONParser();
-    }
+    //public RestClient() {
+    //    this.jerseyClient = Client.create();
+    //    this.jsonParser = new JSONParser();
+    //}
 
     /** Constructor with trusted hostname. */
-    public RestClient(@NonNull String trustedHost) throws NoSuchAlgorithmException, KeyManagementException {
+    public RestClient(@NonNull String path, boolean trustHost) throws NoSuchAlgorithmException, KeyManagementException {
 
-        // create jersey client config
-        ClientConfig config = new DefaultClientConfig();
+        LOG.debug("RestClient constructor() is working.");
 
-        // set config properties - our own hosts verifier and ssl context
-        config.getProperties()
-                .put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-                        new HTTPSProperties(new SpecifiedHostnameVerifier(trustedHost),
-                                SSLContextUtil.getInsecureSSLContext()));
 
-        // init jersey client and json parser
-        this.jerseyClient = Client.create(config);
+
+        // init internal JSON parser instance
         this.jsonParser = new JSONParser();
+
+        if (trustHost) { // if we should trust the host - provide hostname verifier/insecure SSL context
+            LOG.debug("");
+            // extract host name
+            String trustedHost = "";
+
+            // create jersey client config
+            ClientConfig config = new DefaultClientConfig();
+
+            // set config properties - our own hosts verifier and ssl context
+            config.getProperties()
+                    .put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
+                            new HTTPSProperties(new SpecifiedHostnameVerifier(trustedHost),
+                                    SSLContextUtil.getInsecureSSLContext()));
+
+            // init jersey client and json parser
+            this.jerseyClient = Client.create(config);
+        } else {
+            LOG.debug("");
+            this.jerseyClient = Client.create();
+        }
+
     }
 
     /**
@@ -76,42 +94,42 @@ public abstract class RestClient {
 
     /***/
     public RestResponse executeGet(String resource) {
-        LOGGER.debug("RestClient.executeGet(String) is working.");
+        LOG.debug("RestClient.executeGet(String) is working.");
         return this.executeGet(resource, null, null);
     }
 
     /***/
     public RestResponse executeGet(String resource, Cookie cookie) {
-        LOGGER.debug("RestClient.executeGet(String, Cookie) is working.");
+        LOG.debug("RestClient.executeGet(String, Cookie) is working.");
         return this.executeGet(resource, cookie, null);
     }
 
     /***/
     public RestResponse executeGet(String resource, Cookie cookie, MultivaluedMap<String, String> headers) {
-        LOGGER.debug("RestClient.executeGet(String, Cookie) is working.");
-        LOGGER.debug(String.format("GET request parameters:%n\tresource [%s],%n\tcookie [%s].", resource, cookie));
+        LOG.debug("RestClient.executeGet(String, Cookie) is working.");
+        LOG.debug(String.format("GET request parameters:%n\tresource [%s],%n\tcookie [%s].", resource, cookie));
 
         ClientResponse response = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookie, headers)
                 .get(ClientResponse.class);
-        LOGGER.info(String.format(SERVER_RESPONSE_MSG, response));
+        LOG.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(null, response);
     }
 
     public RestResponse executePost(JSONObject entity) {
-        LOGGER.debug("RestClient.executePost(JSONObject) is working.");
+        LOG.debug("RestClient.executePost(JSONObject) is working.");
         return executePost(null, entity);
     }
 
     public RestResponse executePost(String resource, JSONObject entity) {
-        LOGGER.debug("RestClient.executePost(String, JSONObject) is working.");
+        LOG.debug("RestClient.executePost(String, JSONObject) is working.");
         return executePost(resource, entity, null, null);
     }
 
     /** Execute POST request with JSON entity. */
     public RestResponse executePost(String resource, JSONObject entity, Cookie cookie,
                                      MultivaluedMap<String, String> headers) {
-        LOGGER.debug("RestClient.executePost(String, JSONObject, Cookie, Headers) is working.");
-        LOGGER.debug(
+        LOG.debug("RestClient.executePost(String, JSONObject, Cookie, Headers) is working.");
+        LOG.debug(
                 String.format("POST request parameters:%n\tresource [%s],%n\tentity [%s]," +
                                 "%n\tcookie [%s],%n\theaders [%s]",
                         resource, entity, cookie, headers));
@@ -123,15 +141,15 @@ public abstract class RestClient {
                 .entity(entityString, MediaType.APPLICATION_JSON_TYPE)
                 .post(ClientResponse.class);
 
-        LOGGER.info(String.format(SERVER_RESPONSE_MSG, response));
+        LOG.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(entity, response);
     }
 
     /** Execute simple configurable POST request. */
     public RestResponse executePost(String resource, String entity, MediaType mediaType, Cookie cookie,
                                    MultivaluedMap<String, String> headers) {
-        LOGGER.debug("RestClient.executeSimplePost(String, String, MediaType, Cookie, Headers) is working.");
-        LOGGER.debug(
+        LOG.debug("RestClient.executeSimplePost(String, String, MediaType, Cookie, Headers) is working.");
+        LOG.debug(
                 String.format("POST request parameters:%n\tresource [%s],%n\tentity [%s]," +
                                 "%n\tmedia type [%s],%n\tcookie [%s],%n\theaders [%s]",
                         resource, entity, mediaType, cookie, headers));
@@ -141,19 +159,19 @@ public abstract class RestClient {
                 .entity(entity, mediaType)
                 .post(ClientResponse.class);
 
-        LOGGER.info(String.format(SERVER_RESPONSE_MSG, response));
+        LOG.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(null, response);
     }
 
     public RestResponse executePut(String resource, JSONObject entity) {
-        LOGGER.debug("RestClient.executePut(String, JSONObject) is working.");
+        LOG.debug("RestClient.executePut(String, JSONObject) is working.");
         return executePut(resource, entity, null, null);
     }
 
     public RestResponse executePut(String resource, JSONObject entity, Cookie cookie,
                             MultivaluedMap<String, String> headers) {
-        LOGGER.debug("RestClient.executePut(String, JSONObject, Cookie) is working.");
-        LOGGER.debug(
+        LOG.debug("RestClient.executePut(String, JSONObject, Cookie) is working.");
+        LOG.debug(
                 String.format("PUT request parameters:%n\tresource [%s],%n\tentity [%s],%n\tcookie [%s].",
                         resource, entity, cookie));
 
@@ -162,15 +180,15 @@ public abstract class RestClient {
                 .entity(entityString, MediaType.APPLICATION_JSON_TYPE)
                 .put(ClientResponse.class);
 
-        LOGGER.info(String.format(SERVER_RESPONSE_MSG, response));
+        LOG.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(entity, response);
     }
 
     /** Execute DELETE HTTP method. */
     public RestResponse executeDelete(String resource, JSONObject entity, Cookie cookie,
                                MultivaluedMap<String, String> headers) {
-        LOGGER.debug("RestClient.executeDelete(String, JSONObject, Cookie) is working.");
-        LOGGER.debug(
+        LOG.debug("RestClient.executeDelete(String, JSONObject, Cookie) is working.");
+        LOG.debug(
                 String.format("DELETE request parameters:%n\tresource [%s],%n\tentity [%s],%n\tcookie [%s].",
                         resource, entity, cookie));
 
@@ -184,14 +202,14 @@ public abstract class RestClient {
 
         // execute request
         ClientResponse response = builder.delete(ClientResponse.class);
-        LOGGER.info(String.format(SERVER_RESPONSE_MSG, response));
+        LOG.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(entity, response);
     }
 
     /** Build jersey client. */
     WebResource.Builder buildClient(String resource, MediaType mediaType, Cookie cookie,
                                               MultivaluedMap<String, String> headers) {
-        LOGGER.debug("RestClient.buildClient() is working.");
+        LOG.debug("RestClient.buildClient() is working.");
 
         // build full path
         String pathWithResource = this.getPath();
@@ -199,7 +217,7 @@ public abstract class RestClient {
             pathWithResource = pathWithResource + resource;
         }
 
-        LOGGER.debug(String.format("Building client. Path: [%s], media type: [%s], cookie: [%s].",
+        LOG.debug(String.format("Building client. Path: [%s], media type: [%s], cookie: [%s].",
                 pathWithResource, mediaType, cookie));
 
         // build jersey client
@@ -209,7 +227,7 @@ public abstract class RestClient {
         if (headers != null && !headers.isEmpty()) {  // process all headers from Map
             headers.forEach((key, values) -> {  // BiConsumer
                 values.forEach(value -> {  // Consumer
-                    LOGGER.debug(String.format("Adding header: %s = %s", key, value));
+                    LOG.debug(String.format("Adding header: %s = %s", key, value));
                     builder.header(key, value);
                 });
             });
@@ -222,14 +240,15 @@ public abstract class RestClient {
      * Build and return REST response class.
      * Response is returned without any processing - "as is".
      */
-    protected RestResponse buildResponse(JSONObject request, ClientResponse response) {
-        LOGGER.debug("RestClient.buildResponse() is working.");
+    // todo: implement unit tests (with mocks)
+    private RestResponse buildResponse(JSONObject request, ClientResponse response) {
+        LOG.debug("RestClient.buildResponse() is working.");
 
         // get response entity (body) and status code
         String entity = response.getEntity(String.class);
         int status = response.getStatus();
-        LOGGER.info(String.format("Response status: [%s].", status));
-        LOGGER.debug(String.format("Response body:%n%s", entity));
+        LOG.info(String.format("Response status: [%s].", status));
+        LOG.debug(String.format("Response body:%n%s", entity));
 
         // server returned error code
         if (response.getClientResponseStatus().getFamily() != SUCCESSFUL) {
@@ -240,11 +259,11 @@ public abstract class RestClient {
         Cookie cookie = response.getCookies().stream()
                 .findAny()
                 .orElse(null);
-        LOGGER.debug(String.format("Response cookie:%n[%s]%n", cookie));
+        LOG.debug(String.format("Response cookie:%n[%s]%n", cookie));
 
         // get response headers
         MultivaluedMap<String, String> headers = response.getHeaders();
-        LOGGER.debug(String.format("Response headers:%n[%s]%n", headers));
+        LOG.debug(String.format("Response headers:%n[%s]%n", headers));
 
         // depending on response body type (JSONObject/JSONArray) return RestResponse instance
         try {
@@ -259,6 +278,68 @@ public abstract class RestClient {
         } catch (ParseException e) {
             throw new RestException(request, response, "Cannot parse response body! " + e.toString());
         }
+
+    }
+
+    /***/
+    static String processUrl(@NonNull String url) {
+        LOG.debug("RestClient.processUrl() is working.");
+
+        if (StringUtils.isBlank(url)) { // fail-fast check for blank server url
+            throw new IllegalArgumentException("Provided empty url!");
+        }
+
+        String processedUrl = StringUtils.trimToEmpty(url).toLowerCase();
+
+        // fail-fast - server url should start with http:// or https://
+        if (!processedUrl.startsWith(HTTP_URL_PREFIX) && !processedUrl.startsWith(HTTPS_URL_PREFIX)) {
+            throw new IllegalArgumentException(String.format("Provided url [%s] should start with %s or %s!",
+                    url, HTTP_URL_PREFIX, HTTPS_URL_PREFIX));
+        }
+
+        return processedUrl;
+    }
+
+    /***/
+    static String extractHost(@NonNull String url) {
+        LOG.debug("RestClient.extractHost() is working.");
+
+        // pre-process url
+        String processedUrl = RestClient.processUrl(url);
+
+        // calculate prefix index for url
+        int prefixIndex;
+        // todo: replace with just .length() function for constants?
+        if (processedUrl.startsWith(HTTP_URL_PREFIX)) {
+            prefixIndex = processedUrl.indexOf(HTTP_URL_PREFIX) + HTTP_URL_PREFIX.length();
+        } else {
+            prefixIndex = processedUrl.indexOf(HTTPS_URL_PREFIX) + HTTPS_URL_PREFIX.length();
+        }
+        LOG.debug(String.format("For url [%s] prefix index [%s].", processedUrl, prefixIndex));
+
+        // calculate postfix index for url
+        int postfixIndex;
+        if (processedUrl.substring(prefixIndex).contains(":")) {        // contains (colon) : -> postfix starts with :
+            postfixIndex = processedUrl.indexOf(":", prefixIndex);
+        } else if (processedUrl.substring(prefixIndex).contains("/")) { // contains (slash) / -> postfix starts with /
+            postfixIndex = processedUrl.indexOf("/", prefixIndex);
+        } else if (processedUrl.substring(prefixIndex).contains("?")) { // contains ? -> postfix starts with ?
+            postfixIndex = processedUrl.indexOf("?", prefixIndex);
+        } else { // doesn't contain both - / and ? -> no postfix, hostname lasts till end of url string
+            postfixIndex = processedUrl.length();
+        }
+        LOG.debug(String.format("For url [%s] postfix index [%s].", processedUrl, postfixIndex));
+
+        // extract hostname from url
+        String result = processedUrl.substring(prefixIndex, postfixIndex);
+
+        if (StringUtils.isBlank(result)) { // extracted url is empty -> invalid state
+            throw new IllegalStateException("Extracted empty url!");
+        }
+
+        LOG.debug(String.format("For url [%s] extracted host [%s].", processedUrl, result));
+
+        return result;
 
     }
 
