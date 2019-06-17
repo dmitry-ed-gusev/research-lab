@@ -35,7 +35,7 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 // todo: timeout for jersey client???
 
 @CommonsLog
-public abstract class RestClient {
+public class RestClient {
 
     //private static final Log LOGGER = LogFactory.getLog(RestClient.class);      // module logger
     private static final String SERVER_RESPONSE_MSG = "Server response: [%s]."; // server response message
@@ -43,54 +43,53 @@ public abstract class RestClient {
     private static final String HTTPS_URL_PREFIX    = "https://";
 
     // internal client state
-    //private final String     path;         // server host path
     private final Client     jerseyClient; // internal jersey client instance
+    // JSON parser is not thread-safe - we need an instance of parser for each RestClient instance
     private final JSONParser jsonParser;   // internal json parser instance
+    // server path (usually - <protocol>://<host>[:port][/common_path_prefix]
+    private final String     path;
 
-    /** Default constructor, no trusted hosts. */
-    //public RestClient() {
-    //    this.jerseyClient = Client.create();
-    //    this.jsonParser = new JSONParser();
-    //}
+    /** Constructor with specified host path, no trusted hosts. */
+    public RestClient(@NonNull String path) throws KeyManagementException, NoSuchAlgorithmException {
+        this(path, false);
+    }
 
-    /** Constructor with trusted hostname. */
+    /** Constructor with specified host path and "do trust host" (boolean) option. */
     public RestClient(@NonNull String path, boolean trustHost) throws NoSuchAlgorithmException, KeyManagementException {
 
         LOG.debug("RestClient constructor() is working.");
 
+        // pre-process provided url and extract host (also check its validity)
+        this.path   = RestClient.processUrl(path);
+        String host = RestClient.extractHost(path);
 
+        if (this.path.startsWith(HTTP_URL_PREFIX) && trustHost) { // fail-fast - trust only hosts https://
+            throw new IllegalStateException("Can trust only HTTPS hosts!");
+        }
 
-        // init internal JSON parser instance
+        // init internal JSON parser instance (after all fail-fast checks :) )
         this.jsonParser = new JSONParser();
 
-        if (trustHost) { // if we should trust the host - provide hostname verifier/insecure SSL context
-            LOG.debug("");
-            // extract host name
-            String trustedHost = "";
+        // if we should blindly trust the host - provide hostname verifier and insecure SSL context
+        if (this.path.startsWith(HTTPS_URL_PREFIX) && trustHost) {
+            LOG.info(String.format("REST trusted host [%s].", host));
 
             // create jersey client config
             ClientConfig config = new DefaultClientConfig();
-
             // set config properties - our own hosts verifier and ssl context
             config.getProperties()
                     .put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-                            new HTTPSProperties(new SpecifiedHostnameVerifier(trustedHost),
+                            new HTTPSProperties(new SpecifiedHostnameVerifier(host),
                                     SSLContextUtil.getInsecureSSLContext()));
 
-            // init jersey client and json parser
+            // init jersey client with trusted host (and specified config)
             this.jerseyClient = Client.create(config);
         } else {
-            LOG.debug("");
+            LOG.info("REST: no trusted hosts specified.");
             this.jerseyClient = Client.create();
         }
 
     }
-
-    /**
-     * Should be implemented be each subclass.
-     * @return path to recourse for each implementation
-     */
-    protected abstract String getPath();
 
     /***/
     public RestResponse executeGet(String resource) {
@@ -212,7 +211,7 @@ public abstract class RestClient {
         LOG.debug("RestClient.buildClient() is working.");
 
         // build full path
-        String pathWithResource = this.getPath();
+        String pathWithResource = this.path;
         if (resource != null) {
             pathWithResource = pathWithResource + resource;
         }
@@ -241,7 +240,7 @@ public abstract class RestClient {
      * Response is returned without any processing - "as is".
      */
     // todo: implement unit tests (with mocks)
-    private RestResponse buildResponse(JSONObject request, ClientResponse response) {
+    RestResponse buildResponse(JSONObject request, ClientResponse response) {
         LOG.debug("RestClient.buildResponse() is working.");
 
         // get response entity (body) and status code
@@ -285,15 +284,13 @@ public abstract class RestClient {
     static String processUrl(@NonNull String url) {
         LOG.debug("RestClient.processUrl() is working.");
 
-        if (StringUtils.isBlank(url)) { // fail-fast check for blank server url
-            throw new IllegalArgumentException("Provided empty url!");
-        }
-
+        // trim provided url and cast it to lower case
         String processedUrl = StringUtils.trimToEmpty(url).toLowerCase();
 
         // fail-fast - server url should start with http:// or https://
-        if (!processedUrl.startsWith(HTTP_URL_PREFIX) && !processedUrl.startsWith(HTTPS_URL_PREFIX)) {
-            throw new IllegalArgumentException(String.format("Provided url [%s] should start with %s or %s!",
+        if (StringUtils.isBlank(processedUrl) ||
+                (!processedUrl.startsWith(HTTP_URL_PREFIX) && !processedUrl.startsWith(HTTPS_URL_PREFIX))) {
+            throw new IllegalArgumentException(String.format("Provided url [%s] is empty or must start with %s or %s!",
                     url, HTTP_URL_PREFIX, HTTPS_URL_PREFIX));
         }
 
