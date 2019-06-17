@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pyutilities</artifactId>
     <version>1.0</version>
-    <name>PyUtilities :: useful python utilities (2.7/3.7).</name>
+    <name>PyUtilities :: useful python utils (2.7/3.7).</name>
 
     <properties>
     </properties>

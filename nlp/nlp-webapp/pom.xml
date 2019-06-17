@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>nlp-webapp</artifactId>
     <packaging>war</packaging>
-    <name>NLP Web App :: Web application for NLP processing.</name>
+    <name>NLP Web App :: Web app for NLP processing.</name>
 
     <properties>
     </properties>
