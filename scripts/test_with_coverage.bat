@@ -6,10 +6,13 @@ rem #   Execute unit tests for [scripts] module with generating coverage report.
 rem #   Unit tests for Windows OS.
 rem #
 rem #   Created:  Dmitrii Gusev, 04.06.2019
-rem #   Modified:
+rem #   Modified: Dmitrii Gusev, 18.06.2019
 rem #
 rem ###############################################################################
 
+
+rem -- install dependencies
+pip install -r requirements.txt
 
 rem -- create virtual environment
 virtualenv .venv
@@ -21,7 +24,7 @@ rem -- activate environment
 call .venv\Scripts\activate.bat
 
 rem -- install necessary testing dependencies
-call pip install nose2 pyyaml mock xlrd jira pyutilities
+call pip install nose2 pyyaml mock xlrd jira pyutilities --proxy webproxy.merck.com:8080
 
 rem -- setup PYTHONPATH variable (if necessary)
 rem #PYTHONPATH=${WORKSPACE}/target/dependency:$PYTHONPATH

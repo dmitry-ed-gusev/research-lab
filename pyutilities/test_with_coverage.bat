@@ -6,10 +6,13 @@ rem #   Execute unit tests for pyutilities module with generating coverage repor
 rem #   Unit tests for Windows OS.
 rem #
 rem #   Created:  Dmitrii Gusev, 17.05.2019
-rem #   Modified: Dmitrii Gusev, 03.06.2019
+rem #   Modified: Dmitrii Gusev, 18.06.2019
 rem #
 rem ###############################################################################
 
+
+rem -- install dependencies
+pip install -r requirements.txt
 
 rem -- create virtual environment
 virtualenv .venv
@@ -21,7 +24,7 @@ rem -- activate environment
 call .venv\Scripts\activate.bat
 
 rem -- install necessary testing dependencies
-call pip install nose2 pyyaml mock xlrd
+call pip install nose2 pyyaml mock xlrd --proxy webproxy.merck.com:8080
 
 rem -- setup PYTHONPATH variable (if necessary)
 rem #PYTHONPATH=${WORKSPACE}/target/dependency:$PYTHONPATH

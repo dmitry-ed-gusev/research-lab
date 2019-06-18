@@ -165,12 +165,10 @@
 
     <!-- Additional Maven repositories for Maven plugins -->
     <pluginRepositories>
-        <!--
         <pluginRepository>
             <id>central-msd-plugins-repo</id>
             <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
         </pluginRepository>
-        -->
         <pluginRepository>
             <id>alt-plugins-repo-1</id>
             <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
