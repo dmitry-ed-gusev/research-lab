@@ -409,8 +409,8 @@
                 <module>pyutilities</module>
                 <module>scripts</module>
                 <module>marklogic</module>
-                <module>tmpresearch</module>
                 <module>utilities</module>
+                <module>tmpresearch</module>
                 <module>bigdata</module>
                 <module>socialnet</module>
                 <module>j2ee</module>
@@ -434,8 +434,8 @@
                 <module>pyutilities</module>
                 <module>scripts</module>
                 <module>marklogic</module>
-                <module>tmpresearch</module>
                 <module>utilities</module>
+                <module>tmpresearch</module>
                 <module>bigdata</module>
                 <module>socialnet</module>
                 <module>j2ee</module>

@@ -63,16 +63,14 @@ public class RestClient {
         this.path   = RestClient.processUrl(path);
         String host = RestClient.extractHost(path);
 
-        if (this.path.startsWith(HTTP_URL_PREFIX) && trustHost) { // fail-fast - trust only hosts https://
-            throw new IllegalStateException("Can trust only HTTPS hosts!");
-        }
-
         // init internal JSON parser instance (after all fail-fast checks :) )
         this.jsonParser = new JSONParser();
 
         // if we should blindly trust the host - provide hostname verifier and insecure SSL context
         if (this.path.startsWith(HTTPS_URL_PREFIX) && trustHost) {
             LOG.info(String.format("REST trusted host [%s].", host));
+
+            // todo: add unit tests for created config for client
 
             // create jersey client config
             ClientConfig config = new DefaultClientConfig();

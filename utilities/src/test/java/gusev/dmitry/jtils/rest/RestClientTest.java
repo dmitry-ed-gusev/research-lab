@@ -216,11 +216,6 @@ public class RestClientTest {
         new RestClient(url, true);
     }
 
-    @Test (expected = IllegalStateException.class)
-    public void testRestClientConstructorInvalidState() throws KeyManagementException, NoSuchAlgorithmException {
-        new RestClient("  http://myhost:9090/path1?name=val1", true);
-    }
-
     @Test
     public void testProcessUrlInvalidUrl() {
         // test only for invalid urls
