@@ -106,7 +106,8 @@
         <dbms.c3p0.version>0.9.1.2</dbms.c3p0.version>
 
         <!-- my own (local) utilities library useful version -->
-        <dgusev.utilities.version>1.0</dgusev.utilities.version>
+        <dgusev.utilities.version>2.0</dgusev.utilities.version>
+
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
         <skipCoverageReport>false</skipCoverageReport>
         <!-- don't skip python unit tests (skip: -DskipPythonTests=true) -->
