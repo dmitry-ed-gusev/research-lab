@@ -1,11 +1,11 @@
 ###############################################################################
 #
 #     Docker Composer file for SonarQube quality farm (Sonar+Mysql).
-#     On start up automatically reads docker-compose.env file and
+#     On start up automatically reads .env file (in the current dir) and
 #     exports all variables from it.
 #
 #     Created:  Dmitrii Gusev, 30.03.2019
-#     Modified: Dmitrii Gusev, 21.05.2019
+#     Modified: Dmitrii Gusev, 20.06.2019
 #
 ###############################################################################
 
