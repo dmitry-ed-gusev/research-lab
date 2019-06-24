@@ -21,6 +21,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
@@ -63,16 +65,14 @@ public class RestClient {
         this.path   = RestClient.processUrl(path);
         String host = RestClient.extractHost(path);
 
-        if (this.path.startsWith(HTTP_URL_PREFIX) && trustHost) { // fail-fast - trust only hosts https://
-            throw new IllegalStateException("Can trust only HTTPS hosts!");
-        }
-
         // init internal JSON parser instance (after all fail-fast checks :) )
         this.jsonParser = new JSONParser();
 
         // if we should blindly trust the host - provide hostname verifier and insecure SSL context
         if (this.path.startsWith(HTTPS_URL_PREFIX) && trustHost) {
             LOG.info(String.format("REST trusted host [%s].", host));
+
+            // todo: add unit tests for created config for client
 
             // create jersey client config
             ClientConfig config = new DefaultClientConfig();
@@ -206,7 +206,8 @@ public class RestClient {
     }
 
     /** Build jersey client. */
-    WebResource.Builder buildClient(String resource, MediaType mediaType, Cookie cookie,
+    // todo: cover with unit tests (all buildClient() methods) !!!
+    WebResource.Builder buildClient(String resource, MediaType mediaType, List<Cookie> cookies,
                                               MultivaluedMap<String, String> headers) {
         LOG.debug("RestClient.buildClient() is working.");
 
@@ -216,23 +217,40 @@ public class RestClient {
             pathWithResource = pathWithResource + resource;
         }
 
-        LOG.debug(String.format("Building client. Path: [%s], media type: [%s], cookie: [%s].",
-                pathWithResource, mediaType, cookie));
+        LOG.debug(String.format("Building client. Path: [%s], media type: [%s].", pathWithResource, mediaType));
 
         // build jersey client
-        WebResource.Builder builder = this.jerseyClient.resource(pathWithResource).accept(mediaType).cookie(cookie);
+        WebResource.Builder builder = this.jerseyClient.resource(pathWithResource).accept(mediaType);
+
+        // add cookies
+        if (cookies != null && !cookies.isEmpty()) { // process all cookies from list
+            cookies.forEach(cookie -> {
+                builder.cookie(cookie);
+                LOG.debug(String.format("Added cookie: %s", cookie));
+            });
+        } else {
+            LOG.debug("No cookies for this request!");
+        }
 
         // add headers
         if (headers != null && !headers.isEmpty()) {  // process all headers from Map
             headers.forEach((key, values) -> {  // BiConsumer
                 values.forEach(value -> {  // Consumer
-                    LOG.debug(String.format("Adding header: %s = %s", key, value));
                     builder.header(key, value);
+                    LOG.debug(String.format("Added header: %s = %s", key, value));
                 });
             });
+        } else {
+            LOG.debug("No headers for this request!");
         }
 
         return builder;
+    }
+
+    /***/
+    WebResource.Builder buildClient(String resource, MediaType mediaType, Cookie cookie,
+                                    MultivaluedMap<String, String> headers) {
+        return this.buildClient(resource, mediaType, Collections.singletonList(cookie), headers);
     }
 
     /**

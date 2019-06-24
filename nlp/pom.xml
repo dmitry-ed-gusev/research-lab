@@ -23,4 +23,26 @@
         <app.assembly.dir>${project.basedir}/../${app.base.name}</app.assembly.dir>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>dgusev</groupId>
+            <artifactId>utilities</artifactId>
+            <version>${dgusev.utilities.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
 </project>

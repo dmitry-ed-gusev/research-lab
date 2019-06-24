@@ -198,7 +198,7 @@
         <dependency>
             <groupId>dgusev</groupId>
             <artifactId>utilities</artifactId>
-            <version>1.0</version>
+            <version>${dgusev.utilities.version}</version>
         </dependency>
 
     </dependencies>
