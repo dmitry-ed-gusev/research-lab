@@ -122,22 +122,22 @@ public class RestClient {
 
     public RestResponse executePost(String resource, JSONObject entity) {
         LOG.debug("RestClient.executePost(String, JSONObject) is working.");
-        return executePost(resource, entity, null, null);
+        return executePost(resource, entity, (List<Cookie>) null, null);
     }
 
     /** Execute POST request with JSON entity. */
-    public RestResponse executePost(String resource, JSONObject entity, Cookie cookie,
+    public RestResponse executePost(String resource, JSONObject entity, List<Cookie> cookies,
                                      MultivaluedMap<String, String> headers) {
         LOG.debug("RestClient.executePost(String, JSONObject, Cookie, Headers) is working.");
         LOG.debug(
                 String.format("POST request parameters:%n\tresource [%s],%n\tentity [%s]," +
-                                "%n\tcookie [%s],%n\theaders [%s]",
-                        resource, entity, cookie, headers));
+                                "%n\tcookies [%s],%n\theaders [%s]",
+                        resource, entity, cookies, headers));
 
         String entityString = entity.toJSONString();
 
         // executing POST request with JSON entity
-        ClientResponse response = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookie, headers)
+        ClientResponse response = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookies, headers)
                 .entity(entityString, MediaType.APPLICATION_JSON_TYPE)
                 .post(ClientResponse.class);
 
@@ -145,22 +145,34 @@ public class RestClient {
         return this.buildResponse(entity, response);
     }
 
+    /***/
+    public RestResponse executePost(String resource, JSONObject entity, Cookie cookie,
+                                    MultivaluedMap<String, String> headers) {
+        return this.executePost(resource, entity, Collections.singletonList(cookie), headers);
+    }
+
     /** Execute simple configurable POST request. */
-    public RestResponse executePost(String resource, String entity, MediaType mediaType, Cookie cookie,
+    public RestResponse executePost(String resource, String entity, MediaType mediaType, List<Cookie> cookies,
                                    MultivaluedMap<String, String> headers) {
         LOG.debug("RestClient.executeSimplePost(String, String, MediaType, Cookie, Headers) is working.");
         LOG.debug(
                 String.format("POST request parameters:%n\tresource [%s],%n\tentity [%s]," +
-                                "%n\tmedia type [%s],%n\tcookie [%s],%n\theaders [%s]",
-                        resource, entity, mediaType, cookie, headers));
+                                "%n\tmedia type [%s],%n\tcookies [%s],%n\theaders [%s]",
+                        resource, entity, mediaType, cookies, headers));
 
         // execute POST request with string entity
-        ClientResponse response = this.buildClient(resource, mediaType, cookie, headers)
+        ClientResponse response = this.buildClient(resource, mediaType, cookies, headers)
                 .entity(entity, mediaType)
                 .post(ClientResponse.class);
 
         LOG.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(null, response);
+    }
+
+    /***/
+    public RestResponse executePost(String resource, String entity, MediaType mediaType, Cookie cookie,
+                                    MultivaluedMap<String, String> headers) {
+        return this.executePost(resource, entity, mediaType, Collections.singletonList(cookie), headers);
     }
 
     public RestResponse executePut(String resource, JSONObject entity) {

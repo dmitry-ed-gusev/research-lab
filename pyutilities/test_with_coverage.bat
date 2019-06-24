@@ -24,7 +24,7 @@ rem -- activate environment
 call .venv\Scripts\activate.bat
 
 rem -- install necessary testing dependencies
-call pip install nose2 pyyaml mock xlrd --proxy webproxy.merck.com:8080
+call pip install nose2 pyyaml mock xlrd
 
 rem -- setup PYTHONPATH variable (if necessary)
 rem #PYTHONPATH=${WORKSPACE}/target/dependency:$PYTHONPATH
