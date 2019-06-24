@@ -19,6 +19,7 @@ import org.json.simple.parser.ParseException;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.NewCookie;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -273,10 +274,8 @@ public class RestClient {
         }
 
         // get response cookies
-        Cookie cookie = response.getCookies().stream()
-                .findAny()
-                .orElse(null);
-        LOG.debug(String.format("Response cookie:%n[%s]%n", cookie));
+        List<NewCookie> cookies = response.getCookies();
+        LOG.debug(String.format("Response cookies:%n[%s]%n", cookies));
 
         // get response headers
         MultivaluedMap<String, String> headers = response.getHeaders();
@@ -286,9 +285,9 @@ public class RestClient {
         try {
             Object body = this.jsonParser.parse(entity);
             if (body instanceof JSONObject) { // returned JSON object
-                return new RestResponse(status, (JSONObject) body, cookie, headers);
+                return new RestResponse(status, (JSONObject) body, cookies, headers);
             } else if (body instanceof JSONArray) { // returned JSON Array
-                return new RestResponse(status, (JSONArray) body, cookie, headers);
+                return new RestResponse(status, (JSONArray) body, cookies, headers);
             } else { // unknown object returned
                 throw new IllegalStateException(String.format("Returned unknown object type [%s]!", body));
             }

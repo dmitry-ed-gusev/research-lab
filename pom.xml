@@ -458,8 +458,8 @@
             </properties>
             <!-- Some of modules to build -->
             <modules>
-                <module>pyutilities</module>
-                <module>scripts</module>
+                <!--<module>pyutilities</module>-->
+                <!--<module>scripts</module>-->
                 <module>utilities</module>
                 <!--<module>tmpresearch</module>-->
                 <!--<module>nlp</module>-->
