@@ -102,7 +102,7 @@ public class ProcessAccessLogsMain extends Configured implements Tool {
     public static void main(String[] args) throws Exception {
         LOG.info("Starting HW3: access logs processing.");
 
-        //CommonUtils.unZipIt("access_logs.zip");
+        //MyCommonUtils.unZipIt("access_logs.zip");
         //ProcessAccessLogsMain.readLogs();
 
         //if (args.length < 2) { // fail-fast

@@ -1,6 +1,6 @@
 package gusev.dmitry.jtils.nlp;
 
-import gusev.dmitry.jtils.utils.MapUtils;
+import gusev.dmitry.jtils.utils.MyCommonUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -10,8 +10,8 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static gusev.dmitry.jtils.utils.LambdaUtils.not;
-import static gusev.dmitry.jtils.utils.MapUtils.SortType.DESC;
+import static gusev.dmitry.jtils.utils.MyCommonUtils.MapSortType.DESC;
+import static gusev.dmitry.jtils.utils.MyCommonUtils.not;
 
 /**
  * NLP utilities. Used for processing natural language.
@@ -294,7 +294,7 @@ public final class NLPUtils {
             LOG.info(String.format("Total records [%s].", counter));
 
             // sort resulting map by values
-            ngramsMap = MapUtils.sortMapByValue(ngramsMap, DESC);
+            ngramsMap = MyCommonUtils.sortMapByValue(ngramsMap, DESC);
             // out result
             //System.out.println(ngramsMap.toString());
             int outCounter = 0;

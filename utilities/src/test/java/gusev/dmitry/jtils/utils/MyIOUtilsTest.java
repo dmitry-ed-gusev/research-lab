@@ -9,32 +9,46 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
-// todo: read file from test resources -> https://stackoverflow.com/questions/3891375/how-to-read-a-text-file-resource-into-java-unit-test
+public class MyIOUtilsTest {
 
-/** Unit tests for GeneralUtils. */
-public class GeneralUtilsTest {
+    @Test
+    public void testWriteLongToFile() {
+        // todo: implementation!!!
+    }
+
+    @Test
+    public void testReadLongFromFile() throws IOException {
+        assertEquals("Read invalid value!", 234,
+                MyIOUtils.readLongFromFile("src/test/resources/long_value.txt"));
+    }
+
+    @Test
+    public void testReadCSVFile() throws IOException {
+        List<String> sample = new ArrayList<>(Arrays.asList("one", "two", "three", "four", "five", "шесть"));
+        assertEquals(sample, MyIOUtils.readCSVFile("src/test/resources/csvfile.txt", "UTF-8"));
+    }
 
     private static final String           CSV_CONFIG  = "src/test/resources/csv_config.csv";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Test (expected = IllegalArgumentException.class)
     public void testReadDatesPeriodsFromCSVNullDateFormat() throws IOException {
-        GeneralUtils.readDatesPeriodsFromCSV("csv file", new Date(), null);
+        MyIOUtils.readDatesPeriodsFromCSV("csv file", new Date(), null);
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testReadDatesPeriodsFromCSVNullFile() throws IOException {
-        GeneralUtils.readDatesPeriodsFromCSV(null, new Date(), new SimpleDateFormat());
+        MyIOUtils.readDatesPeriodsFromCSV(null, new Date(), new SimpleDateFormat());
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testReadDatesPeriodsFromCSVNotExistingFile() throws IOException {
-        GeneralUtils.readDatesPeriodsFromCSV("invalid file", new Date(), new SimpleDateFormat());
+        MyIOUtils.readDatesPeriodsFromCSV("invalid file", new Date(), new SimpleDateFormat());
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testReadDatesPeriodsFromCSVNullDate() throws IOException {
-        GeneralUtils.readDatesPeriodsFromCSV("invalid file", null, new SimpleDateFormat());
+        MyIOUtils.readDatesPeriodsFromCSV("invalid file", null, new SimpleDateFormat());
     }
 
     @Test
@@ -49,7 +63,7 @@ public class GeneralUtilsTest {
         }};
 
         // get actual result
-        Map<String, List<String>> actual = GeneralUtils.readDatesPeriodsFromCSV(CSV_CONFIG, baseDate, DATE_FORMAT);
+        Map<String, List<String>> actual = MyIOUtils.readDatesPeriodsFromCSV(CSV_CONFIG, baseDate, DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }

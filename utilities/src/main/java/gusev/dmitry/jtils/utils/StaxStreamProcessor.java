@@ -1,7 +1,6 @@
 package gusev.dmitry.jtils.utils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.apachecommons.CommonsLog;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -10,16 +9,15 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
 
 /** XML Processor for Connector. */
+@CommonsLog
 public class StaxStreamProcessor implements AutoCloseable {
-
-    private static final Log LOGGER = LogFactory.getLog(StaxStreamProcessor.class);
 
     private static final XMLInputFactory FACTORY = XMLInputFactory.newInstance();
 
     private final XMLStreamReader reader;
 
     public StaxStreamProcessor(InputStream is) throws XMLStreamException {
-        LOGGER.debug("StaxStreamProcessor constructor() is working.");
+        LOG.debug("StaxStreamProcessor constructor() is working.");
         reader = FACTORY.createXMLStreamReader(is);
     }
 

@@ -37,13 +37,13 @@ public class AppMain {
         try {
             // todo: add config loading and getting needed values
             // delete output file if exists
-            //CommonUtils.deleteFileIfExist(TMP_FILE_NAME);
+            //MyCommonUtils.deleteFileIfExist(TMP_FILE_NAME);
             // clean input data (rewrite them in output file)
             //NLPEngine.cleanInputData(inputFile, TMP_FILE_NAME,
             //        AppConfig.DEFAULT_ENCODING, AppConfig.DEFAULT_PROGRESS_COUNTER);
 
             // delete ingrams file
-            //CommonUtils.deleteFileIfExist(outputFile);
+            //MyCommonUtils.deleteFileIfExist(outputFile);
             // build ngrams on cured data
             //NLPEngine.buildNgramsMap(TMP_FILE_NAME, outputFile,
             //        AppConfig.DEFAULT_ENCODING, AppConfig.DEFAULT_PROGRESS_COUNTER);
