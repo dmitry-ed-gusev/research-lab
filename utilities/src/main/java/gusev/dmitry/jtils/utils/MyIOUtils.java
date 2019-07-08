@@ -17,6 +17,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,6 +35,7 @@ import static gusev.dmitry.jtils.utils.MyCommonUtils.not;
 
 /** Some IO utilities, useful for me. */
 @CommonsLog
+@NotThreadSafe
 public final class MyIOUtils {
 
     private static final JSONParser JSON_PARSER = new JSONParser();
@@ -46,7 +48,7 @@ public final class MyIOUtils {
      * @param fileName String file for deletion
      * @param failOnDelete boolean if true - throws IOException if file can't be deleted
      */
-    public static void deleteFileIfExist(@NonNull String fileName, boolean failOnDelete) throws IOException {
+    public static void deleteFileIfExists(@NonNull String fileName, boolean failOnDelete) throws IOException {
         LOG.debug(String.format("MyIOUtils.deleteFileIfExist() is working. File [%s].", fileName));
 
         File file = new File(fileName);
@@ -67,7 +69,7 @@ public final class MyIOUtils {
 
     /** Read simple long value from file (file can be edited with with any editor). */
     public static long readLongFromFile(@NonNull String filePath) throws IOException {
-        LOG.info(String.format("MyIOUtils.readLongFromFile() is working. Reading long from [%s].", filePath));
+        LOG.info(String.format("MyIOUtils.readLongFromFile() is working. Read long from [%s].", filePath));
         // reading from file
         try (FileReader fr = new FileReader(filePath);
              BufferedReader br = new BufferedReader(fr)) {
@@ -79,26 +81,34 @@ public final class MyIOUtils {
 
     /** Write simple long value to file (file can be edited with with any editor). */
     public static void writeLongToFile(long value, @NonNull String fileName, boolean overwrite) throws IOException {
-        LOG.info(String.format("MyCommonUtils: write long [%s] to file [%s].", value, fileName));
+        LOG.info(String.format("MyIOUtils.writeLongToFile() is working. Write long [%s] to file [%s].", value, fileName));
 
-        // check for file existence (delete if needed)
-        File file = new File(fileName);
-        if (file.exists() && overwrite) {
-            boolean isDeleteOK = file.delete();
-            LOG.info(String.format("File [%s] exists. Removing -> [%s].", fileName, isDeleteOK ? "OK" : "Fail"));
-            if (!isDeleteOK) { // if can't delete - we won't process.
-                LOG.error(String.format("Cant't delete file [%s]!", fileName));
-                return;
-            }
+        // overwrite file (if specified) - and fail on deletion error
+        if (overwrite) {
+            MyIOUtils.deleteFileIfExists(fileName, true);
         }
 
         // write value to file
-        try (FileWriter fw = new FileWriter(fileName);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName)))) {
+            out.println(value);
+        }
+    }
 
-            // write value to file
-            out.println(String.valueOf(value));
+    /** Reads access token and its date from specified file. If file doesn't exist throw exception. */
+    public static Pair<Date, String> readDatePairFromFile(@NonNull String tokenFile, @NonNull SimpleDateFormat format)
+            throws IOException, ParseException {
+        LOG.debug(String.format("MyIOUtils.readDatePairFromFile() working. Read from [%s].", tokenFile));
+
+        // todo: remove this unnecessary code??? check!
+        if (StringUtils.isBlank(tokenFile)) { // fail-fast
+            throw new IllegalArgumentException("File name is null!");
+        }
+
+        // reading token from file
+        try (BufferedReader br = new BufferedReader(new FileReader(tokenFile))) {
+            Date tokenDate = format.parse(br.readLine()); // first line of file
+            String token = br.readLine();                 // second line of file
+            return new ImmutablePair<>(tokenDate, token);
         }
     }
 
@@ -106,58 +116,25 @@ public final class MyIOUtils {
      * Writes access token and its date from specified file.
      * If file already exist - throw exception or overwrite it (if overwrite = true).
      */
-    public static void saveDatePairToFile(Pair<Date, String> token, SimpleDateFormat format,
-                                    String fileName, boolean overwrite) throws IOException {
-        LOG.debug(String.format("CommonUtilities.saveAccessToken() working. " +
+    public static void writeDatePairToFile(@NonNull Pair<Date, String> token, @NonNull SimpleDateFormat format,
+                                    @NonNull String fileName, boolean overwrite) throws IOException {
+        LOG.debug(String.format("MyIOUtils.writeDatePairToFile() is working. " +
                 "Pair: [%s], file: [%s], overwrite: [%s].", token, fileName, overwrite));
 
-        if (token == null || token.getLeft() == null ||
-                StringUtils.isBlank(token.getRight()) ||
-                StringUtils.isBlank(fileName)) { // check input parameters
+        // check input parameters - fail-fast
+        if (token.getLeft() == null || StringUtils.isBlank(token.getRight()) || StringUtils.isBlank(fileName)) {
             throw new IllegalArgumentException(
                     String.format("Empty pair (or its part): [%s] or pair file name: [%s]!", token, fileName));
         }
 
-        // check for file existence (delete if needed)
-        File file = new File(fileName);
-        if (file.exists() && overwrite) {
-            boolean isDeleteOK = file.delete();
-            LOG.info(String.format("File [%s] exists. Removing -> [%s].", fileName, isDeleteOK ? "OK" : "Fail"));
-            if (!isDeleteOK) { // if can't delete - we won't process.
-                LOG.error(String.format("Cant't delete file [%s]!", fileName));
-                return;
-            }
+        if (overwrite) { // overwrite file
+            MyIOUtils.deleteFileIfExists(fileName, true);
         }
 
         // write token to file
-        try (FileWriter fw = new FileWriter(fileName);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
-            // write access token and current date/time to file
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName)))) {
             out.println(format.format(token.getLeft()));
             out.println(token.getRight());
-        }
-    }
-
-    /**
-     * Reads access token and its date from specified file.
-     * If file doesn't exist throw exception.
-     */
-    public static Pair<Date, String> readDatePairFromFile(String tokenFile, SimpleDateFormat format) throws IOException, ParseException {
-        LOG.debug("CommonUtilities.readAccessToken() working.");
-
-        if (StringUtils.isBlank(tokenFile)) { // fail-fast
-            throw new IllegalArgumentException("File name is null!");
-        }
-
-        // reading token from file
-        try (FileReader fr = new FileReader(tokenFile);
-             BufferedReader br = new BufferedReader(fr)) {
-
-            Date tokenDate = format.parse(br.readLine()); // first line of file
-            String token = br.readLine();                         // second line of file
-
-            return new ImmutablePair<>(tokenDate, token);
         }
     }
 
@@ -166,40 +143,31 @@ public final class MyIOUtils {
      * Returns file name.
      * If received string is empty throws run-time exception.
      */
-    // todo: thread safety! this code isn't thread safe!
-    // todo: add file name prefix - to determine source (social network client) for current file
-    public static void saveStringToFile(String string, String fileName, boolean overwrite) throws IOException {
-        LOG.debug("CommonUtilities.saveStringToFile() is working.");
+    public static void writeStringToFile(@NonNull String string, @NonNull String fileName, boolean overwrite) throws IOException {
+        LOG.debug(String.format("MyIOUtils.writeStringToFile() is working. Write to [%s].", fileName));
 
         if (StringUtils.isBlank(string) || StringUtils.isBlank(fileName)) {
             throw new IllegalArgumentException(
                     String.format("String to save [%s] and/or file name [%s] is empty!", string, fileName));
         }
 
-        // check for file existence (delete if needed)
-        File file = new File(fileName);
-        if (file.exists() && overwrite) {
-            boolean isDeleteOK = file.delete();
-            LOG.info(String.format("File [%s] exists. Removing -> [%s].", fileName, isDeleteOK ? "OK" : "Fail"));
-            if (!isDeleteOK) { // if can't delete - we won't process.
-                throw new IllegalStateException(String.format("Cant't delete file [%s]!", fileName));
-            }
+        if (overwrite) {
+            MyIOUtils.deleteFileIfExists(fileName, true);
         }
 
         // write data to file
-        try (FileWriter fw = new FileWriter(fileName);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName)))) {
             out.print(string); // write data to file
         }
-
     }
 
     /***/
     // todo: implement unit tests!
-    public static String readStringFromFile(String filePath) throws IOException {
-        LOG.debug(String.format("GeneralUtils.readStringFromFile() is working. File: [%s].", filePath));
+    public static String readStringFromFile(@NonNull String filePath) throws IOException {
+        LOG.debug(String.format("MyIOUtils.readStringFromFile() is working. Read from [%s].", filePath));
+
         StringBuilder strBuider = new StringBuilder();
+
         // try-with-resources
         try (BufferedReader strReader = new BufferedReader(new FileReader(new File(filePath)))) {
             String tmpStr;
@@ -207,13 +175,13 @@ public final class MyIOUtils {
                 strBuider.append(tmpStr).append("\n");
             }
         }
-        // return loaded SQL query
+
         return strBuider.toString();
     }
 
     /***/
-    public static List<String> readCSVFile(InputStream fileStream, String encoding) throws IOException {
-        LOG.debug("MyCommonUtils.readCSVFile(Stream) is working.");
+    public static List<String> readCSVFile(@NonNull InputStream fileStream, @NonNull String encoding) throws IOException {
+        LOG.debug("MyIOUtils.readCSVFile(Stream) is working.");
 
         if (fileStream == null) { // fail-fast
             throw new IOException("Empty file stream!");
@@ -236,8 +204,8 @@ public final class MyIOUtils {
     /***/
     // todo: add variable separator
     // todo: read file from input stream
-    public static List<String> readCSVFile(String fileName, String encoding) throws IOException {
-        LOG.debug("MyCommonUtils.readCSVFile(String) is working.");
+    public static List<String> readCSVFile(@NonNull String fileName, @NonNull String encoding) throws IOException {
+        LOG.debug("MyIOUtils.readCSVFile(String) is working.");
 
         if (StringUtils.isBlank(fileName)) { // fail-fast
             throw new IOException("Empty file name!");
@@ -248,11 +216,11 @@ public final class MyIOUtils {
 
     /***/
     // todo: change default comment marker? (parameter for it???)
-    public static Map<String, List<String>> readDatesPeriodsFromCSV(
-            String csvFile, Date baseDate, SimpleDateFormat dateFormat)
-            throws IOException {
+    public static Map<String, List<String>> readDatesPeriodsFromCSV(@NonNull String csvFile,
+                                                                    @NonNull Date baseDate,
+                                                                    @NonNull SimpleDateFormat dateFormat) throws IOException {
 
-        LOG.debug("GeneralUtils.readDatesPeriodsFromCSV() is working.");
+        LOG.debug("MyIOUtils.readDatesPeriodsFromCSV() is working.");
 
         // check and fail-fast behaviour
         if (dateFormat == null || baseDate == null || StringUtils.isBlank(csvFile) ||
@@ -313,7 +281,7 @@ public final class MyIOUtils {
     /** Dump sql ResultSet to CSV. Reworked original implementation with intermediate progress output. */
     // todo: move to some db utilities class (dbPilot project?)
     public static void dumpResultSetToCSV(String csvFile, int reportStep, ResultSet rs, String tableName) throws IOException, SQLException {
-        LOG.debug(String.format("GeneralUtils.dumpResultSetToCSV() is working. CSV file [%s].", csvFile));
+        LOG.debug(String.format("MyIOUtils.dumpResultSetToCSV() is working. CSV file [%s].", csvFile));
 
         // with commons-csv. write CSV from ResultSet with header from ResultSet
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(csvFile));
@@ -347,7 +315,7 @@ public final class MyIOUtils {
     /***/
     public static void dumpDBToCSV(@NonNull Connection connection, int fetchSize, int reportStep,
                                    @NonNull String[] tablesList, @NonNull String dumpDir) throws SQLException, IOException {
-        LOG.debug("ConnectorUtilities.dumpDBToCSV() is working.");
+        LOG.debug("MyIOUtils.dumpDBToCSV() is working.");
 
         try (Statement stmt = connection.createStatement()) {
             stmt.setFetchSize(fetchSize); // mandatory parameter to speed up dumping db
@@ -372,18 +340,14 @@ public final class MyIOUtils {
     }
 
     /***/
-    public static JSONObject getJsonObjectFromFile(@NonNull String jsonFile) throws IOException, org.json.simple.parser.ParseException {
-        LOG.debug("TestHelper.getJsonObjectFromFile() is working.");
-        LOG.debug(String.format("Processing file: %s", jsonFile));
-
+    public static JSONObject readJsonObjectFromFile(@NonNull String jsonFile) throws IOException, org.json.simple.parser.ParseException {
+        LOG.debug(String.format("MyIOUtils.readJsonObjectFromFile() is working. Read from [%s].", jsonFile));
         return (JSONObject) JSON_PARSER.parse(new FileReader(jsonFile));
     }
 
     /***/
-    public static JSONArray getJsonArrayFromFile(@NonNull String jsonFile) throws IOException, org.json.simple.parser.ParseException {
-        LOG.debug("TestHelper.getJsonObjectFromFile() is working.");
-        LOG.debug(String.format("Processing file: %s", jsonFile));
-
+    public static JSONArray readJsonArrayFromFile(@NonNull String jsonFile) throws IOException, org.json.simple.parser.ParseException {
+        LOG.debug(String.format("MyIOUtils.readJsonObjectFromFile() is working. Read from [%s].", jsonFile));
         return (JSONArray) JSON_PARSER.parse(new FileReader(jsonFile));
     }
 

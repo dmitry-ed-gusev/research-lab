@@ -151,7 +151,7 @@ public class VkClient extends AbstractClient {
                     default: // default case - unknown form
                         LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
                         String fileName = String.valueOf(System.currentTimeMillis()) + "_data_file.tmp";
-                        MyIOUtils.saveStringToFile(httpPageContent, fileName, false); // save unknown form to file (for analysis)
+                        MyIOUtils.writeStringToFile(httpPageContent, fileName, false); // save unknown form to file (for analysis)
                         return null; // no access token!
                 }
 
@@ -215,7 +215,7 @@ public class VkClient extends AbstractClient {
             throw new IllegalStateException("Can't get VK access token!");
         }
         // save received token to file
-        MyIOUtils.saveDatePairToFile(this.accessToken, DATE_TIME_FORMAT, this.getTokenFileName(), true);
+        MyIOUtils.writeDatePairToFile(this.accessToken, DATE_TIME_FORMAT, this.getTokenFileName(), true);
         // return new received token
         return this.accessToken;
     }
