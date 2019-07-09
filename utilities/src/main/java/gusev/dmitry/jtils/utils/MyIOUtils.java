@@ -71,10 +71,7 @@ public final class MyIOUtils {
     public static long readLongFromFile(@NonNull String filePath) throws IOException {
         LOG.info(String.format("MyIOUtils.readLongFromFile() is working. Read long from [%s].", filePath));
         // reading from file
-        try (FileReader fr = new FileReader(filePath);
-             BufferedReader br = new BufferedReader(fr)) {
-
-            // read first line with value
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             return Long.parseLong(br.readLine());
         }
     }
@@ -162,30 +159,23 @@ public final class MyIOUtils {
     }
 
     /***/
-    // todo: implement unit tests!
+    // todo: https://howtodoinjava.com/java/io/java-read-file-to-string-examples/
     public static String readStringFromFile(@NonNull String filePath) throws IOException {
         LOG.debug(String.format("MyIOUtils.readStringFromFile() is working. Read from [%s].", filePath));
 
-        StringBuilder strBuider = new StringBuilder();
-
-        // try-with-resources
-        try (BufferedReader strReader = new BufferedReader(new FileReader(new File(filePath)))) {
+        StringBuilder strBuilder = new StringBuilder();
+        try (BufferedReader strReader = new BufferedReader(new FileReader(filePath))) {
             String tmpStr;
             while ((tmpStr = strReader.readLine()) != null) {
-                strBuider.append(tmpStr).append("\n");
+                strBuilder.append(tmpStr).append("\n");
             }
         }
-
-        return strBuider.toString();
+        return strBuilder.toString();
     }
 
     /***/
     public static List<String> readCSVFile(@NonNull InputStream fileStream, @NonNull String encoding) throws IOException {
         LOG.debug("MyIOUtils.readCSVFile(Stream) is working.");
-
-        if (fileStream == null) { // fail-fast
-            throw new IOException("Empty file stream!");
-        }
 
         List<String> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
