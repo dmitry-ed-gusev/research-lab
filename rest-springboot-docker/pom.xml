@@ -21,7 +21,7 @@
     <artifactId>rest-springboot-docker</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
-    <name>Spring Rest :: REST example (Spring Boot + Docker).</name>
+    <name>Spring Rest :: REST with Spring Boot + Docker.</name>
 
     <properties>
         <mainClass>pl.finsys.example.BookstoreApplication</mainClass>

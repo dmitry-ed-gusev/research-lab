@@ -3,10 +3,10 @@ package dg.social.crawler.domain;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.*;
+
 
 /**
  * Unit test for VALUE domain object {@link EducationProfileValue}
@@ -68,7 +68,8 @@ public class EducationProfileValueTest {
 
     @Test
     public void testEqualityWithNotEqual() {
-        assertNotEquals("Shouldn't be equal!", profile1, profile3noteq1);
+        //Assert.assertNotEquals("Shouldn't be equal!", profile1, profile3noteq1);
+        assertThat(profile1, not(equalTo(profile3noteq1)));
     }
 
 }

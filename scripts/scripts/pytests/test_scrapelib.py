@@ -11,18 +11,18 @@ class WebScrapeLibTest(unittest.TestCase):
     EMPTY_LIST = [None, '', '    ']
 
     def setUp(self):
-        print "WebScrapeLibTest.setUp()"
+        print("WebScrapeLibTest.setUp()")
 
     def tearDown(self):
-        print "WebScrapeLibTest.tearDown()"
+        print("WebScrapeLibTest.tearDown()")
 
     @classmethod
     def setUpClass(cls):
-        print "WebScrapeLibTest.setUpClass()"
+        print("WebScrapeLibTest.setUpClass()")
 
     @classmethod
     def tearDownClass(cls):
-        print "WebScrapeLibTest.tearDownClass()"
+        print("WebScrapeLibTest.tearDownClass()")
 
 
 if __name__ == '__main__':

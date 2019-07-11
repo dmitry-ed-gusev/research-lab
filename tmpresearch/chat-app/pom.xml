@@ -12,7 +12,7 @@
     <artifactId>chat-app</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>Java Research :: Chat app (client-server system).</name>
+    <name>Java Research :: Client-server chat app.</name>
 
     <modules>
         <module>chat-client</module>

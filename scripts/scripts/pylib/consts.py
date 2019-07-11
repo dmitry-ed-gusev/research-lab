@@ -8,8 +8,8 @@
 """
 
 # keys for proxy (common)
-# CONFIG_KEY_PROXY_HTTP = 'proxy.http'
-# CONFIG_KEY_PROXY_HTTPS = 'proxy.https'
+CONFIG_KEY_PROXY_HTTP = 'proxy.http'
+CONFIG_KEY_PROXY_HTTPS = 'proxy.https'
 
 # general common keys
 CONST_COMMON_ENCODING = "utf-8"

@@ -45,7 +45,7 @@ for entry in json_data:
     name = entry[0]
     title = entry[1]
     role = entry[2]
-    print name, title, role
+    print(name, title, role)
 
     # -- insert user and get last inserted ID
     cur.execute('''INSERT OR IGNORE INTO User (name) VALUES ( ? )''', (name, ))

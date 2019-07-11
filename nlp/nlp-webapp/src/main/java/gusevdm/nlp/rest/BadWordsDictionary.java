@@ -1,8 +1,8 @@
 package gusevdm.nlp.rest;
 
-import gusev.dmitry.jtils.utils.CommonUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import gusev.dmitry.jtils.utils.MyCommonUtils;
+import gusev.dmitry.jtils.utils.MyIOUtils;
+import lombok.extern.apachecommons.CommonsLog;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
@@ -12,12 +12,10 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Dictionary with bad words. Initialized on application start.
- */
-public class BadWordsDictionary {
+/** Dictionary with bad words. Initialized on application start. */
 
-    private static final Log LOG = LogFactory.getLog(BadWordsDictionary.class);
+@CommonsLog
+public class BadWordsDictionary {
 
     private static final String DEFAULT_ENCODING         = "UTF-8";
     private static final String BADWORDS_DICTIONARY_FILE = "badwords.txt";
@@ -34,7 +32,7 @@ public class BadWordsDictionary {
             InputStream input = Thread.currentThread().getContextClassLoader()
                     .getResourceAsStream(BADWORDS_DICTIONARY_FILE);
             // read bad words and put it in unmodifiable collection
-            badwords = Collections.unmodifiableList(CommonUtils.readCSVFile(input, DEFAULT_ENCODING));
+            badwords = Collections.unmodifiableList(MyIOUtils.readCSVFile(input, DEFAULT_ENCODING));
 
             // some debug
             LOG.debug(String.format("Initialized bad words list:\n%s", badwords));

@@ -9,7 +9,7 @@
 """
 
 import unittest
-from pylib.jira_helpers import is_key_empty, get_issue_key
+from scripts.atlassian.jira_helpers import is_key_empty, get_issue_key
 
 EMPTY_KEYS_LIST = ['', '      ', None, '-', '   -', '-  ', '  -    ', '???', '  ???', '???    ', '  ???     ']
 

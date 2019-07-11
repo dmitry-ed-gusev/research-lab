@@ -1,9 +1,10 @@
 package gusev.dmitry.jtils.utils;
 
+import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -19,9 +20,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
-import java.io.StringWriter;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +37,11 @@ import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
  * Created by gusevdm on 12/9/2016.
  */
 
+@CommonsLog
 public final class HttpUtils {
 
-    private static final Log LOG = LogFactory.getLog(HttpUtils.class); // module logger
+    /** Connector USER AGENT header for HTTP requests */
+    private static final String USER_AGENT                  = "Mozilla/5.0";
 
     /** Default http headers for http client. */
     public static final Header[] HTTP_DEFAULT_HEADERS = {
@@ -297,5 +302,74 @@ public final class HttpUtils {
             throw new IllegalArgumentException(String.format("URL [%s] contains invalid characters!", url));
         }
     }
+
+    /** Sending simple HTTP GET request. */
+    public static Pair<Integer, String> sendGet(String url) throws IOException {
+        LOG.debug(String.format("GeneralUtils.sendGet() is working. URL: [%s].", url));
+
+        // build URL and open connection
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        con.setRequestMethod("GET");                      // optional, default is GET
+        con.setRequestProperty("User-Agent", USER_AGENT); // add request header
+
+        // get response code
+        int responseCode = con.getResponseCode();
+        // get response text
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        // build and return resulting tuple
+        return new ImmutablePair<>(responseCode, response.toString());
+    }
+
+    // HTTP POST request
+    // todo: method for future usage...
+    private static void sendPost(String url) throws Exception {
+        LOG.debug(String.format("GeneralUtils.sendPost() is working. URL: [%s].", url));
+
+        //String url = "https://selfsolve.apple.com/wcResults.do";
+        URL obj = new URL(url);
+        HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+
+        //add reuqest header
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+
+        String urlParameters = "sn=C02G8416DRJM&cn=&locale=&caller=&num=12345";
+
+        // Send post request
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        //print result
+        System.out.println(response.toString());
+    }
+
 
 }

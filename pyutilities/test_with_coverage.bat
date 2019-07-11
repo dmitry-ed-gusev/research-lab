@@ -6,34 +6,34 @@ rem #   Execute unit tests for pyutilities module with generating coverage repor
 rem #   Unit tests for Windows OS.
 rem #
 rem #   Created:  Dmitrii Gusev, 17.05.2019
-rem #   Modified: Dmitrii Gusev, 03.06.2019
+rem #   Modified: Dmitrii Gusev, 18.06.2019
 rem #
 rem ###############################################################################
 
 
-rem create virtual environment and make it relocatable
+rem -- install dependencies
+pip install -r requirements.txt
+
+rem -- create virtual environment
 virtualenv .venv
-virtualenv --relocatable .venv
 
-# activate environment
-source .venv/bin/activate
+rem -- make virtual environment relocatable (todo: ??? do we need relocatable env ???)
+rem virtualenv --relocatable .venv
 
-# install necessary testing dependencies
-pip install nose2 pyyaml mock xlrd
+rem -- activate environment
+call .venv\Scripts\activate.bat
 
-# setup PYTHONPATH variable (if necessary)
-#PYTHONPATH=${WORKSPACE}/target/dependency:$PYTHONPATH
-#PYTHONPATH=${WORKSPACE}/pymocks:$PYTHONPATH
-#export PYTHONPATH
+rem -- install necessary testing dependencies
+call pip install nose2 pyyaml mock xlrd
 
-# run unit tests with coverage
-python -m nose2 -v -s pyutilities/tests --plugin nose2.plugins.junitxml -X --with-coverage --coverage pyutilities \
+rem -- setup PYTHONPATH variable (if necessary)
+rem #PYTHONPATH=${WORKSPACE}/target/dependency:$PYTHONPATH
+rem #PYTHONPATH=${WORKSPACE}/pymocks:$PYTHONPATH
+rem #export PYTHONPATH
+
+rem -- run unit tests with coverage
+call python -m nose2 -v -s pyutilities/tests --plugin nose2.plugins.junitxml -X --with-coverage --coverage pyutilities ^
     --coverage-report xml --coverage-report html
 
-# deactivate virtual environment (exit)
-deactivate
-
-rem pip install nose2 cov-core coverage pyyaml mock --proxy webproxy.merck.com:8080
-rem pip install nose2 cov-core coverage pyyaml mock
-rem set PYTHONPATH=./target/dependency;./pymocks
-rem python -m nose2 -v --plugin nose2.plugins.junitxml -X --with-coverage --coverage-report html xml
+rem -- deactivate virtual environment (exit)
+call deactivate.bat

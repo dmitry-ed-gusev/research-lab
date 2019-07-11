@@ -56,33 +56,33 @@ def set_proxy(http_proxy="", https_proxy=""):
     :param https_proxy:
     :return:
     """
-    print "scrapelib.set_proxy() is working."
+    print("scrapelib.set_proxy() is working.")
     # preparation
     global is_http_proxy_set
     global is_https_proxy_set
     proxies = {}
     # HTTP proxy
     if http_proxy and http_proxy.strip() and not is_http_proxy_set:
-        print "Adding HTTP proxy [{}] to dictionary.".format(http_proxy)
+        print("Adding HTTP proxy [{}] to dictionary.".format(http_proxy))
         proxies['http'] = http_proxy
         is_http_proxy_set = True
     else:
-        print "Empty HTTP proxy [{}] or proxy already set [{}].".format(http_proxy, is_http_proxy_set)
+        print("Empty HTTP proxy [{}] or proxy already set [{}].".format(http_proxy, is_http_proxy_set))
     # HTTPS proxy
     if https_proxy and https_proxy.strip() and not is_https_proxy_set:
-        print "Adding HTTPS proxy [{}] to dictionary.".format(https_proxy)
+        print("Adding HTTPS proxy [{}] to dictionary.".format(https_proxy))
         proxies['https'] = https_proxy
         is_https_proxy_set = True
     else:
-        print "Empty HTTPS proxy [{}] or proxy already set [{}].".format(https_proxy, is_https_proxy_set)
+        print("Empty HTTPS proxy [{}] or proxy already set [{}].".format(https_proxy, is_https_proxy_set))
     # set up proxy handler (if there are and not set)
     if proxies:
-        print "Setting proxy handler. Proxies [{}].".format(proxies)
+        print("Setting proxy handler. Proxies [{}].".format(proxies))
         proxy = ProxyHandler(proxies)
         opener = build_opener(proxy)
         install_opener(opener)
     else:
-        print "Empty proxies list or proxy is already set."
+        print("Empty proxies list or proxy is already set.")
 
 
 def get_bs_object(url, http_proxy="", https_proxy=""):
@@ -103,7 +103,7 @@ def get_bs_object(url, http_proxy="", https_proxy=""):
         # open url, parse it and create/return beautiful soup object
         return BeautifulSoup(urlopen(url).read(), HTML_PARSER)
     except HTTPError as e:
-        print "HTTP Error: {}".format(e)
+        print("HTTP Error: {}".format(e))
         return None
 
 
@@ -180,7 +180,7 @@ if __name__ == '__main__':
     setup_logging()
     log.setLevel(logging.DEBUG)
     # print get_url("http://www.pythonscraping.com/exercises/exercise1.html")
-    print 'h1 value -> ', get_bs_object("http://www.pythonscraping.com/exercises/exercise1.html").h1
+    print('h1 value -> ', get_bs_object("http://www.pythonscraping.com/exercises/exercise1.html").h1)
 
     # scrap_1()
     # pages = set()

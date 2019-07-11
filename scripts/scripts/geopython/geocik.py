@@ -94,7 +94,7 @@ def init_geo_points(pretty_debug=False, text_filter=None):
 
     # pretty print json (just debug)
     if pretty_debug:
-        print json.dumps(myjson, sort_keys=True, indent=4, encoding=JSON_ENCODING)
+        print(json.dumps(myjson, sort_keys=True, indent=4, encoding=JSON_ENCODING))
 
     # get first geo point from json
     id = myjson[0]['id']

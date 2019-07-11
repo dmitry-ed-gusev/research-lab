@@ -1,78 +1,61 @@
 package gusev.dmitry.jtils.rest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.extern.apachecommons.CommonsLog;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.NewCookie;
+import java.util.List;
 
 /**
  * REST response object.
+ *
  * Warning! Class isn't immutable -> due to using MultiValuedMap!
  */
 
-// todo: fix immutability!
+// todo: fix immutability! do we need it?
+
+@CommonsLog
+@ToString
 public class RestResponse {
 
-    private static final Log LOGGER = LogFactory.getLog(RestResponse.class);
-
-    private final int        status;
-    private final JSONObject bodyObject;
-    private final JSONArray  bodyArray;
-    private final Cookie     cookie;
-    private final MultivaluedMap<String, String> headers;
+    @Getter private final int             status;
+    @Getter private final JSONObject      bodyObject;
+    @Getter private final JSONArray       bodyArray;
+    @Getter private final List<NewCookie> cookies;
+    @Getter private final MultivaluedMap<String, String> headers; // todo: copy map - breaks immutability!
 
     /** REST response object constructor with JSON object. */
-    public RestResponse(int status, JSONObject bodyObject, Cookie cookie, MultivaluedMap<String, String> headers) {
-        LOGGER.debug("RestResponse constructor(JSONObject) is working.");
+    public RestResponse(int status, JSONObject bodyObject, List<NewCookie> cookies, MultivaluedMap<String, String> headers) {
+        LOG.debug("RestResponse constructor(JSONObject) is working.");
         this.status     = status;
         this.bodyObject = bodyObject;
         this.bodyArray  = null;
-        this.cookie     = cookie;
+        this.cookies    = cookies;
         this.headers    = headers; // todo: copy map - breaks immutability!
     }
 
     /** REST response object constructor with JSON array. */
-    public RestResponse(int status, JSONArray bodyArray, Cookie cookie, MultivaluedMap<String, String> headers) {
+    public RestResponse(int status, JSONArray bodyArray, List<NewCookie> cookies, MultivaluedMap<String, String> headers) {
         this.status     = status;
         this.bodyObject = null;
         this.bodyArray  = bodyArray; // todo: check immutability
-        this.cookie     = cookie;
+        this.cookies    = cookies;
         this.headers    = headers; // todo: copy map - breaks immutability!
     }
 
-    public int getStatus() {
-        return status;
-    }
+    /***/
+    public Cookie getCookie() { // method for backward compatibility
 
-    public JSONObject getBodyObject() {
-        return bodyObject;
-    }
+        if (this.cookies != null) {
+            return this.cookies.stream().findAny().orElse(null);
+        }
 
-    public JSONArray getBodyArray() {
-        return bodyArray;
-    }
-
-    public Cookie getCookie() {
-        return cookie;
-    }
-
-    // todo: copy map - breaks immutability!
-    public MultivaluedMap<String, String> getHeaders() {
-        return headers;
-    }
-
-    @Override
-    public String toString() {
-        return "RestResponse {" +
-                "status="    + this.status +
-                ", bodyObject="    + this.bodyObject +
-                ", bodyArray=" + this.bodyArray +
-                ", cookies=" + this.cookie +
-                ", headers=" + this.headers +
-                '}';
+        return null;
     }
 
 }

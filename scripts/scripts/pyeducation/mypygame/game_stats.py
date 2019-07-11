@@ -14,7 +14,7 @@ class GameStats(object):
         
     def reset_stats(self):
         """Initialize statistics that can change during the game."""
-        print "GameStats -> reset_stats()"
+        print("GameStats -> reset_stats()")
         self.ships_left = self.ai_settings.ship_limit
         self.score = 0
         self.level = 1

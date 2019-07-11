@@ -1,7 +1,7 @@
 package dg.bigdata.hw2;
 
 import gusev.dmitry.jtils.utils.CmdLine;
-import gusev.dmitry.jtils.utils.MapUtils;
+import gusev.dmitry.jtils.utils.MyCommonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import static gusev.dmitry.jtils.utils.MapUtils.SortType.DESC;
+import static gusev.dmitry.jtils.utils.MyCommonUtils.MapSortType.DESC;
 
 /**
  * Implementation of BigData course HW #2.
@@ -183,14 +183,14 @@ public class IPinYou {
                 "Result map contains [%s] element(s).", statuses.length, values.size()));
 
         // reduce result map - remove all entries with value = 1
-        values = MapUtils.removeFromMapByValue(values, 1);
+        values = MyCommonUtils.removeFromMapByValue(values, 1);
         LOG.info(String.format("Map reduced (removed all with value 1) and now contains [%s] elements.",
                 values == null ? 0 : values.size()));
         // sort resulting map (after reducing)
-        Map<String, Integer> sortedMap = MapUtils.sortMapByValue(values, DESC);
+        Map<String, Integer> sortedMap = MyCommonUtils.sortMapByValue(values, DESC);
         LOG.info("Result map has been sorted.");
         // get big string from map (TOP 100)
-        String result = MapUtils.getTopFromMap(sortedMap, TOP_COUNT);
+        String result = MyCommonUtils.getTopFromMap(sortedMap, TOP_COUNT);
         LOG.info("Got TOP100 from sorted map.");
         // write results to file in hdfs
         HdfsUtils.writeStringToHdfs(hadoopConfig, StringUtils.isBlank(hdfsUser) ? null : hdfsUser, result, outputFile);

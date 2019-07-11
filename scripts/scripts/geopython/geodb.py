@@ -300,4 +300,4 @@ def db_get_geo_point_id(dbname, id, intid, cik_text, levelid):
 
 
 if __name__ == '__main__':
-    print "Don't execute library as an application!"
+    print("Don't execute library as an application!")

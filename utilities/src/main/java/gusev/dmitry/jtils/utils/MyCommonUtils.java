@@ -1,24 +1,26 @@
 package gusev.dmitry.jtils.utils;
 
+import lombok.NonNull;
+import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static gusev.dmitry.jtils.utils.LambdaUtils.not;
+import static gusev.dmitry.jtils.utils.MyCommonUtils.MapSortType.*;
 
 /**
  * Some useful common utils for whole application. Utils for different cases - counting, work with dbases etc.
@@ -30,11 +32,13 @@ import static gusev.dmitry.jtils.utils.LambdaUtils.not;
  * @version 4.0 (DATE: 28.05.2017)
  */
 
-public final class CommonUtils {
+@CommonsLog
+public final class MyCommonUtils {
 
-    private static Log LOG = LogFactory.getLog(CommonUtils.class);
-
-    private static final String DEFAULT_ENCODING = "UTF-8";
+    /** Sort type ASC/DESC. */
+    public enum MapSortType {
+        ASC, DESC
+    }
 
     // this static member is used for transliteration method
     private static final Map<Character, String> CHARS_MAP = new HashMap<Character, String>() {{
@@ -107,10 +111,11 @@ public final class CommonUtils {
         put('я', "ya");
     }};
 
-    private CommonUtils() { // non-instantiability
+    private MyCommonUtils() { // non-instantiability
     }
 
     /***/
+    // todo: move to some db utilities class (dbPilot project?)
     public static String getStringResultSet(ResultSet rs, int width) {
         LOG.debug("DBUtils.getStringResultSet() working.");
 
@@ -229,7 +234,7 @@ public final class CommonUtils {
      * @return String latin string
      */
     public static Pair<String, String> getShortAndTranslit(String str) {
-        //LOG.debug("CommonUtils.getShortAndTranslit() working."); // -> too much output
+        //LOG.debug("MyCommonUtils.getShortAndTranslit() working."); // -> too much output
 
         Pair<String, String> result;
         StringBuilder shortRusName = new StringBuilder();
@@ -305,100 +310,6 @@ public final class CommonUtils {
         endCalendar.set(Calendar.MILLISECOND, 999);
         // make a pair and return it
         return new ImmutablePair<>(startCalendar.getTime(), endCalendar.getTime());
-    }
-
-    /**
-     * Writes access token and its date from specified file.
-     * If file already exist - throw exception or overwrite it (if overwrite = true).
-     */
-    public static void saveDatePair(Pair<Date, String> token, SimpleDateFormat format,
-                                    String tokenFile, boolean overwrite) throws IOException {
-        LOG.debug(String.format("CommonUtilities.saveAccessToken() working. " +
-                "Pair: [%s], file: [%s], overwrite: [%s].", token, tokenFile, overwrite));
-
-        if (token == null || token.getLeft() == null ||
-                StringUtils.isBlank(token.getRight()) ||
-                StringUtils.isBlank(tokenFile)) { // check input parameters
-            throw new IllegalArgumentException(
-                    String.format("Empty pair (or its part): [%s] or pair file name: [%s]!", token, tokenFile));
-        }
-
-        // check for file existence (delete if needed)
-        File file = new File(tokenFile);
-        if (file.exists() && overwrite) {
-            boolean isDeleteOK = file.delete();
-            LOG.info(String.format("File [%s] exists. Removing -> [%s].", tokenFile, isDeleteOK ? "OK" : "Fail"));
-            if (!isDeleteOK) { // if can't delete - we won't process.
-                LOG.error(String.format("Cant't delete file [%s]!", tokenFile));
-                return;
-            }
-        }
-
-        // write token to file
-        try (FileWriter fw = new FileWriter(tokenFile);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
-            // write access token and current date/time to file
-            out.println(format.format(token.getLeft()));
-            out.println(token.getRight());
-        }
-
-    }
-
-    /**
-     * Reads access token and its date from specified file.
-     * If file doesn't exist throw exception.
-     */
-    public static Pair<Date, String> readDatePair(String tokenFile, SimpleDateFormat format) throws IOException, ParseException {
-        LOG.debug("CommonUtilities.readAccessToken() working.");
-
-        if (StringUtils.isBlank(tokenFile)) { // fail-fast
-            throw new IllegalArgumentException("File name is null!");
-        }
-
-        // reading token from file
-        try (FileReader fr = new FileReader(tokenFile);
-             BufferedReader br = new BufferedReader(fr)) {
-
-            Date tokenDate = format.parse(br.readLine()); // first line of file
-            String token = br.readLine();                         // second line of file
-
-            return new ImmutablePair<>(tokenDate, token);
-        }
-    }
-
-    /**
-     * Saves string to file with specified or auto-generated file name (based on time).
-     * Returns file name.
-     * If received string is empty throws run-time exception.
-     */
-    // todo: thread safety! this code isn't thread safe!
-    // todo: add file name prefix - to determine source (social network client) for current file
-    public static void saveStringToFile(String string, String fileName, boolean overwrite) throws IOException {
-        LOG.debug("CommonUtilities.saveStringToFile() is working.");
-
-        if (StringUtils.isBlank(string) || StringUtils.isBlank(fileName)) {
-            throw new IllegalArgumentException(
-                    String.format("String to save [%s] and/or file name [%s] is empty!", string, fileName));
-        }
-
-        // check for file existence (delete if needed)
-        File file = new File(fileName);
-        if (file.exists() && overwrite) {
-            boolean isDeleteOK = file.delete();
-            LOG.info(String.format("File [%s] exists. Removing -> [%s].", fileName, isDeleteOK ? "OK" : "Fail"));
-            if (!isDeleteOK) { // if can't delete - we won't process.
-                throw new IllegalStateException(String.format("Cant't delete file [%s]!", fileName));
-            }
-        }
-
-        // write data to file
-        try (FileWriter fw = new FileWriter(fileName);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
-            out.print(string); // write data to file
-        }
-
     }
 
     /**
@@ -479,13 +390,6 @@ public final class CommonUtils {
     } // end of unZipIt
 
     /**
-     * Unzip to current folder.
-     */
-    public static void unZipIt(String zipFile) {
-        CommonUtils.unZipIt(zipFile, "");
-    }
-
-    /**
      * Parses string arrays: ['value1', 'd"value2'] and returns set of strings.
      * If input string is empty or null, will return empty set.
      */
@@ -511,57 +415,228 @@ public final class CommonUtils {
         return result;
     }
 
-    /***/
-    // todo: add multiple files deletion
-    // todo: add flag throw exception on error or ignore
-    // todo: add return map with error on files deletion
-    public static void deleteFileIfExist(String fileName) throws IOException {
-        LOG.debug(String.format("NLPProcessor.deleteFileIfExist() is working. File [%s].", fileName));
+    /** Define predicate negation. */
+    public static <T> Predicate<T> not(Predicate<T> predicate) {
+        return t -> !predicate.test(t);
+    }
 
-        File file = new File(fileName);
-        if (file.exists()) {
-            boolean isDeleteOK = file.delete();
-            LOG.info(String.format("File [%s] exists. Removing -> [%s].", fileName, isDeleteOK ? "OK" : "Fail"));
-            if (!isDeleteOK) { // if can't delete - we won't process.
-                //LOG.error(String.format("Cant't delete file [%s] by unknown reason!", fileName));
-                throw new IOException(String.format("Cant't delete file [%s] by unknown reason!", fileName));
-            }
+    /**
+     * Return top of map as a string. If map is null/empty - return null.
+     * If count <= 0 or >= input map size - return a whole map.
+     */
+    public static <K, V> String getTopFromMap(Map<K, V> map, int topCount) {
+        LOG.debug("IPinYou.getTopFromMap() is working.");
+
+        if (map == null || map.isEmpty()) { // fast checks for map (and return)
+            return null;
         }
+
+        int upperBound;
+        if (topCount <= 0 || topCount >= map.size()) { // fast checks for count
+            upperBound = map.size();
+        } else {
+            upperBound = topCount;
+        }
+
+        int counter = 0;
+        StringBuilder builder = new StringBuilder();
+        Iterator<Map.Entry<K, V>> iterator = map.entrySet().iterator();
+        Map.Entry<K, V> entry;
+
+        // iterate over map and convert it to string
+        while (iterator.hasNext() && counter < upperBound) {
+            entry = iterator.next();
+            builder.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n");
+            counter++;
+        }
+
+        return builder.toString();
     }
 
     /***/
-    public static List<String> readCSVFile(InputStream fileStream, String encoding) throws IOException {
-        LOG.debug("CommonUtils.readCSVFile(Stream) is working.");
+    /*
+    public static Map<String, Integer> sortByValue(Map<String, Integer> unsortMap) {
 
-        if (fileStream == null) { // fail-fast
-            throw new IOException("Empty file stream!");
-        }
+        // 1. Convert Map to List of Map
+        List<Map.Entry<String, Integer>> list =
+                new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
 
-        List<String> result = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                fileStream, StringUtils.isBlank(encoding) ? DEFAULT_ENCODING : encoding))) {
-            String rawLine;
-            while ((rawLine = reader.readLine()) != null) {
-                result.addAll(Arrays.stream(StringUtils.split(rawLine, ','))
-                        .map(StringUtils::trimToEmpty)
-                        .filter(not(StringUtils::isBlank))
-                        .collect(Collectors.toList()));
+        // 2. Sort list with Collections.sort(), provide a custom Comparator
+        //    Try switch the o1 o2 position for a different order
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2) {
+                return (o1.getValue()).compareTo(o2.getValue());
             }
+        });
+
+        // 3. Loop the sorted list and put it into a new insertion order Map LinkedHashMap
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
         }
+
+        //classic iterator example
+//        for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext(); ) {
+//            Map.Entry<String, Integer> entry = it.next();
+//            sortedMap.put(entry.getKey(), entry.getValue());
+//        }
+
+        return sortedMap;
+    }
+    */
+
+    /**
+     * Sort input Map by values. Map values should be comparable. Method uses generics.
+     * Warning! Resulting type of map is LinkedHashMap (method may return different map type/implementation!)
+     * todo: add a parameter for selecting order
+     * todo: method changes the source map!!! add a key - change or not source map?
+     */
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue(Map<K, V> map, MapSortType type) {
+
+        if (map == null) { // fast check and return null
+            return null;
+        }
+
+        Map<K, V> result = new LinkedHashMap<>();
+        if (map.isEmpty()) { // if source empty - return empty result
+            return result;
+        }
+        if (map.size() == 1) { // if source size is 1 - don't sort
+            result.putAll(map);
+            return result;
+        }
+
+        if (type == null) { // fail-fast check
+            throw new IllegalArgumentException("Sort type mustn't be NULL!");
+        }
+
+        // convert map to list of entries <Key, Value>
+        //List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
+
+        // just move all map entries to list (modify source map, consume memory)
+        List<Map.Entry<K, V>> list = new LinkedList<>();
+        Iterator<Map.Entry<K, V>> sourceMapIterator = map.entrySet().iterator();
+        //Map.Entry<K, V> sourceMapEntry;
+        while (sourceMapIterator.hasNext()) {
+            list.add(sourceMapIterator.next());
+            //sourceMapEntry = sourceMapIterator.next();
+            //result.put(sourceMapEntry.getKey(), sourceMapEntry.getValue());
+            sourceMapIterator.remove();
+        }
+
+        // sort list of entries by values with specified comparator
+        // (switch the o1 o2 position for a different order)
+        list.sort((o1, o2) -> {
+            if (ASC == type) {
+                return (o1.getValue()).compareTo(o2.getValue()); // <- ASC
+            } else {
+                return (o2.getValue()).compareTo(o1.getValue()); // <- DESC
+            }
+        });
+
+        // version with lambda
+        //list.sort(Comparator.comparing(o -> (o.getValue())));
+
+        // loop the sorted list and put it into a new insertion ordered LinkedHashMap.
+        // not effective if map is very big (fails with out of memory)
+        //for (Map.Entry<K, V> entry : list) {
+        //    result.put(entry.getKey(), entry.getValue());
+        //}
+
+        // version with lambda. not effective if map is very big (fails with out of memory)
+        //list.forEach(entry -> result.put(entry.getKey(), entry.getValue()));
+
+        // iterate over list, put each map entry from list to resulting map and remove entry from list
+        // (we need it due to memory saving reasons)
+        Iterator<Map.Entry<K, V>> iterator = list.iterator();
+        Map.Entry<K, V> entry;
+        while (iterator.hasNext()) {
+            entry = iterator.next();
+            result.put(entry.getKey(), entry.getValue());
+            iterator.remove();
+        }
+
         return result;
     }
 
-    /***/
-    // todo: add variable separator
-    // todo: read file from input stream
-    public static List<String> readCSVFile(String fileName, String encoding) throws IOException {
-        LOG.debug("CommonUtils.readCSVFile(String) is working.");
-
-        if (StringUtils.isBlank(fileName)) { // fail-fast
-            throw new IOException("Empty file name!");
-        }
-
-        return CommonUtils.readCSVFile(new FileInputStream(fileName), encoding);
+    /**
+     * Java 8 Version. This will sort according to the value in ascending order; for descending order,
+     * it is just possible to uncomment the call to Collections.reverseOrder().
+     * todo: add a parameter for selecting order
+     * todo: add unit tests for method
+     */
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValueByLambda(Map<K, V> map) {
+        return map.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(/*Collections.reverseOrder()*/))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
     }
 
-} // end of CommonUtils class
+    /***/
+    public static <K, V> Map<K, V> removeFromMapByValue(Map<K, V> map, V value) {
+        LOG.debug("MapUtils.removeFromMapByValue() is working.");
+
+        if (map == null) { // fast check and return null
+            return null;
+        }
+
+        if (map.isEmpty()) { // fast check and return original
+            return map;
+        }
+
+        // iterate over map and remove unnecessary entries
+        Iterator<Map.Entry<K, V>> iterator = map.entrySet().iterator();
+        Map.Entry<K, V> entry;
+        V entryValue;
+        while (iterator.hasNext()) {
+            entry = iterator.next();
+            entryValue = entry.getValue();
+
+            // check condition and remove entry from map
+            if ((value == null && entryValue == null) ||
+                    (value != null && value.equals(entryValue))) {
+                iterator.remove();
+            }
+        } // end of WHILE
+
+        return map;
+    }
+
+    /** Validate single property. */
+    public static void validateSingleProperty(@NonNull String property, @NonNull String value) {
+
+        if (value == null || "null".equals(value)) {
+            String errorMessage = String.format("Required property is missing: %s", property);
+            throw new IllegalArgumentException(errorMessage);
+        }
+
+        if (value.trim().isEmpty()) {
+            String errorMessage = String.format("Required property is blank: %s", property);
+            throw new IllegalArgumentException(errorMessage);
+        }
+
+    }
+
+    /**
+     * Make sure that the whole environment is set up properly.
+     * @throws IllegalArgumentException if at least one of the system properties is invalid
+     */
+    public static void validateEnvironment(@NonNull Map<String, String> environment, @NonNull List<String> mandatoryProperties) {
+        LOG.debug("ConnectorUtilities.validateEnvironment() is working.");
+
+        // check presence of all required properties
+        for (String property : mandatoryProperties) {
+            // todo: warning! -> string valueOf(null) -> "null" (string literal), not null value itself!
+            MyCommonUtils.validateSingleProperty(property, String.valueOf(environment.getOrDefault(property, null)));
+        }
+
+        LOG.debug(String.format("Presence of all mandatory properties [%s] checked. All OK.", mandatoryProperties));
+    }
+
+} // end of MyCommonUtils class

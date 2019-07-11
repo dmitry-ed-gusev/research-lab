@@ -1,13 +1,12 @@
 package dg.social.crawler.networks.fb;
 
 import dg.social.crawler.networks.AbstractClient;
-import gusev.dmitry.jtils.utils.CommonUtils;
 import gusev.dmitry.jtils.utils.HttpUtils;
+import gusev.dmitry.jtils.utils.MyIOUtils;
+import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -47,10 +46,9 @@ import static gusev.dmitry.jtils.utils.HttpUtils.*;
  */
 
 // todo: implement periodically check of access token
-public class FbClient extends AbstractClient {
 
-	private static final Log LOG = LogFactory.getLog(FbClient.class); // module
-																		// logger
+@CommonsLog
+public class FbClient extends AbstractClient {
 
 	// todo: move it to abstract class
 	// http client instance (own instance of client for each instance of
@@ -105,7 +103,7 @@ public class FbClient extends AbstractClient {
 
 		// try to read FB access token from file
 		try {
-			Pair<Date, String> token = CommonUtils.readDatePair(config.getTokenFileName(), DATE_TIME_FORMAT);
+			Pair<Date, String> token = MyIOUtils.readDatePairFromFile(config.getTokenFileName(), DATE_TIME_FORMAT);
 			// check access token validity (by time)
 			if ((System.currentTimeMillis() - token.getLeft().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS) { // token
 																											// is

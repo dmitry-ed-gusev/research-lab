@@ -3,7 +3,7 @@ package gusev.dmitry.jtils;
 import gusev.dmitry.jtils.graph.typeIII.WeightedDigraphTest;
 import gusev.dmitry.jtils.graph.typeIII.WeightedEdgeTest;
 import gusev.dmitry.jtils.net.IPAddressValidatorTest;
-import gusev.dmitry.jtils.utils.CommonUtilsTest;
+import gusev.dmitry.jtils.utils.MyCommonUtilsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -14,6 +14,6 @@ import org.junit.runners.Suite;
 */
 
 @RunWith(value=Suite.class)
-@Suite.SuiteClasses(value={CommonUtilsTest.class, WeightedEdgeTest.class, WeightedDigraphTest.class,
+@Suite.SuiteClasses(value={MyCommonUtilsTest.class, WeightedEdgeTest.class, WeightedDigraphTest.class,
         IPAddressValidatorTest.class})
 public class JTilsTestSuite {}

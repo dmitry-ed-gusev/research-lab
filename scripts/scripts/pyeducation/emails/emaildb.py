@@ -20,7 +20,7 @@ cur.execute('''CREATE TABLE Counts (org TEXT, count INTEGER)''')
 fname = "mbox.txt"
 
 # -- count lines number for file
-print 'file length -> ', sum(1 for line in open(fname, 'r'))
+print('file length -> ', sum(1 for line in open(fname, 'r')))
 counter = 0
 
 # -- open and iterate over
@@ -29,7 +29,7 @@ for line in fh:
 
     # -- simple debug output
     if counter % 200 == 0:
-        print "processed ->", counter
+        print("processed ->", counter)
 
     # -- increment counter
     counter += 1
@@ -53,15 +53,15 @@ for line in fh:
     #conn.commit()
 
 # -- last simple debug output
-print "processed ->", counter
+print("processed ->", counter)
 # -- moved outside loop for speed up program
 conn.commit()
 
 # https://www.sqlite.org/lang_select.html
 sqlstr = 'SELECT org, count FROM Counts ORDER BY count DESC LIMIT 10'
-print
-print "Counts:"
-for row in cur.execute(sqlstr) :
-    print str(row[0]), row[1]
+print()
+print("Counts:")
+for row in cur.execute(sqlstr):
+    print(str(row[0]), row[1])
 
 cur.close()

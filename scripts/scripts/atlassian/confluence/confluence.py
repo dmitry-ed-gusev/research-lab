@@ -352,8 +352,7 @@ def Actions(token,xml_server,args,content):
 
         elif args.action == "getpagesummary":
             page = ConfluencePage(token,xml_server,args.name,args.spacekey,content).get()
-            print args.delimiter.join((
-             page['id'], page['space'], page['parentId'], page['title'], page['url']))
+            print(args.delimiter.join((page['id'], page['space'], page['parentId'], page['title'], page['url'])))
 
         elif args.action == "listpages":
             if args.spacekey == "":
@@ -363,8 +362,7 @@ def Actions(token,xml_server,args,content):
             for space in spaces:
                 all_pages = ConfluenceSpace(token,xml_server).get_all_pages(space['key'])
                 for page in all_pages:
-                    print args.delimiter.join((
-                     page['id'], page['space'], page['parentId'], page['title'], page['url']))
+                    print(args.delimiter.join((page['id'], page['space'], page['parentId'], page['title'], page['url'])))
 
         elif args.action == "removepage":
             removed_page = ConfluencePage(token,xml_server,args.name,args.spacekey,"").remove()
