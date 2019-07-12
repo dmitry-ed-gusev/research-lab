@@ -410,8 +410,9 @@
             <modules>
                 <module>pyutilities</module>
                 <module>scripts</module>
-                <module>marklogic</module>
                 <module>utilities</module>
+                <module>dbpilot</module>
+                <module>marklogic</module>
                 <module>tmpresearch</module>
                 <module>bigdata</module>
                 <module>socialnet</module>
@@ -435,8 +436,9 @@
             <modules>
                 <module>pyutilities</module>
                 <module>scripts</module>
-                <module>marklogic</module>
                 <module>utilities</module>
+                <module>dbpilot</module>
+                <module>marklogic</module>
                 <module>tmpresearch</module>
                 <module>bigdata</module>
                 <module>socialnet</module>
@@ -461,6 +463,7 @@
                 <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
                 <module>utilities</module>
+                <!--<module>dbpilot</module>-->
                 <!--<module>tmpresearch</module>-->
                 <!--<module>nlp</module>-->
                 <!--<module>bigdata</module>-->
@@ -485,8 +488,9 @@
             <modules>
                 <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
-                <!--<module>tmpresearch</module>-->
                 <module>utilities</module>
+                <!--<module>dbpilot</module>-->
+                <!--<module>tmpresearch</module>-->
                 <!--<module>bigdata</module>-->
                 <!--<module>j2ee</module>-->
                 <!--<module>nlp</module>-->
