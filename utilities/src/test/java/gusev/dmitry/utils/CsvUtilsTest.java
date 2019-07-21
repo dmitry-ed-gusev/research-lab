@@ -1,4 +1,4 @@
-package gusev.dmitry.jtils.utils;
+package gusev.dmitry.utils;
 
 import org.hamcrest.core.IsNull;
 import org.junit.Test;

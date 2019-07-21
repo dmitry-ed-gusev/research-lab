@@ -1,4 +1,4 @@
-package gusev.dmitry.jtils.utils;
+package gusev.dmitry.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;

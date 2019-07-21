@@ -1,24 +1,24 @@
-package gusev.dmitry.jtils.utils;
+package gusev.dmitry.utils;
 
 import org.junit.Test;
 
 /**
- * Unit tests for HttpUtils module.
+ * Unit tests for MyHttpUtils module.
  * Created by Dmitrii_Gusev on 7/24/2017.
  */
 
 // todo: implement test cases for all methods!
 
-public class HttpUtilsTest {
+public class MyHttpUtilsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCheckUrlCR() {
-        HttpUtils.checkUrl("http://aaa.\rbb/ccc/ddd?n=v");
+        MyHttpUtils.checkUrl("http://aaa.\rbb/ccc/ddd?n=v");
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testCheckUrlLF() {
-        HttpUtils.checkUrl("http://aaa.bb/ccc\n/ddd?n=v");
+        MyHttpUtils.checkUrl("http://aaa.bb/ccc\n/ddd?n=v");
     }
 
 }

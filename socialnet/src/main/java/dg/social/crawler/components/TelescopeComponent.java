@@ -4,7 +4,7 @@ import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.networks.telescope.TelescopeClient;
 import dg.social.crawler.networks.telescope.TelescopeParser;
 import dg.social.crawler.persistence.PeopleDao;
-import gusev.dmitry.jtils.utils.MyCommonUtils;
+import gusev.dmitry.utils.MyCommonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

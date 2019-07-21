@@ -14,7 +14,7 @@ import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ADD_MISSED_DIGITS_
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.LOGIN_FORM;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.UNKNOWN_FORM;
-import static gusev.dmitry.jtils.utils.HttpUtils.HTTP_FORM_TAG;
+import static gusev.dmitry.utils.MyHttpUtils.HTTP_FORM_TAG;
 
 /**
  * Recognizer for VK html forms.

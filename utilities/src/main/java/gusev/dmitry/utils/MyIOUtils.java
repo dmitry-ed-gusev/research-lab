@@ -1,7 +1,5 @@
-package gusev.dmitry.jtils.utils;
+package gusev.dmitry.utils;
 
-import gusev.dmitry.jtils.datetime.DateTimeUtils;
-import gusev.dmitry.jtils.datetime.TimePeriodType;
 import lombok.NonNull;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.csv.CSVFormat;
@@ -31,7 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
-import static gusev.dmitry.jtils.utils.MyCommonUtils.not;
+import static gusev.dmitry.utils.MyCommonUtils.not;
 
 /** Some IO utilities, useful for me. */
 @CommonsLog
@@ -259,7 +257,7 @@ public final class MyIOUtils {
             // get name (left value)
             name = entry.getLeft();
             // get list of dates (with middle and right values)
-            datesList = DateTimeUtils.getDatesListBack(baseDate, entry.getMiddle(), entry.getRight(), dateFormat);
+            datesList = MyDateTimeUtils.getDatesListBack(baseDate, entry.getMiddle(), entry.getRight(), dateFormat);
 
             result.put(name, datesList);
 

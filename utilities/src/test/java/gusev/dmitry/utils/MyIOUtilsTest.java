@@ -1,4 +1,4 @@
-package gusev.dmitry.jtils.utils;
+package gusev.dmitry.utils;
 
 import org.junit.Test;
 
@@ -12,12 +12,17 @@ import static org.junit.Assert.assertEquals;
 
 public class MyIOUtilsTest {
 
-    private static final String           CSV_CONFIG     = "src/test/resources/csv_config.csv";
-    private static final String           LONG_TEXT_FILE = "src/test/resources/long_value.txt";
-    private static final String           CSV_TEXT_FILE  = "src/test/resources/csvfile.txt";
-    private static final String           TEXT_FILE1     = "src/test/resources/gusev/dmitry/jtils/utils/text_file1.txt";
-    private static final String           TEXT_FILE2     = "src/test/resources/gusev/dmitry/jtils/utils/text_file2.txt";
-    private static final String           TEXT_FILE3     = "src/test/resources/gusev/dmitry/jtils/utils/text_file3.txt";
+    // CSV files with dates/times periods
+    private static final String CSV_DATES1 = "src/test/resources/gusev/dmitry/utils/csv_dates_periods1.csv";
+    private static final String CSV_DATES2 = "src/test/resources/gusev/dmitry/utils/csv_dates_periods2.csv";
+
+    // other test text files
+    private static final String           LONG_TEXT_FILE = "src/test/resources/gusev/dmitry/utils/long_value.txt";
+    private static final String           CSV_TEXT_FILE  = "src/test/resources/gusev/dmitry/utils/csvfile.txt";
+    private static final String           TEXT_FILE1     = "src/test/resources/gusev/dmitry/utils/text_file1.txt";
+    private static final String           TEXT_FILE2     = "src/test/resources/gusev/dmitry/utils/text_file2.txt";
+    private static final String           TEXT_FILE3     = "src/test/resources/gusev/dmitry/utils/text_file3.txt";
+
     private static final SimpleDateFormat DATE_FORMAT    = new SimpleDateFormat("yyyy-MM-dd");
 
     @Test
@@ -68,9 +73,14 @@ public class MyIOUtilsTest {
         }};
 
         // get actual result
-        Map<String, List<String>> actual = MyIOUtils.readDatesPeriodsFromCSV(CSV_CONFIG, baseDate, DATE_FORMAT);
+        Map<String, List<String>> actual = MyIOUtils.readDatesPeriodsFromCSV(CSV_DATES1, baseDate, DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
+    }
+
+    @Test
+    public void testReadDatesPeriodsFromCSVWithHours() {
+        // todo: implementation!!!
     }
 
     @Test (expected = IllegalArgumentException.class)

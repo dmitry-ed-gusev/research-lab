@@ -1,4 +1,4 @@
-package gusev.dmitry.jtils.datetime;
+package gusev.dmitry.utils;
 
 import org.apache.commons.lang3.StringUtils;
 

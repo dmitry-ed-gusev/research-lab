@@ -1,7 +1,7 @@
 package dg.social.crawler.utilities;
 
 import gusev.dmitry.jtils.spring.CustomStringProperty;
-import gusev.dmitry.jtils.utils.CmdLine;
+import gusev.dmitry.utils.CmdLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

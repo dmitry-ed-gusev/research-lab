@@ -1,4 +1,4 @@
-package gusev.dmitry.jtils.datetime;
+package gusev.dmitry.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,11 +10,11 @@ import java.util.Date;
 import java.util.List;
 
 /** Date & Time common utilities. */
-public final class DateTimeUtils {
+public final class MyDateTimeUtils {
 
-    private static final Log LOGGER = LogFactory.getLog(DateTimeUtils.class);
+    private static final Log LOGGER = LogFactory.getLog(MyDateTimeUtils.class);
 
-    private DateTimeUtils() {}
+    private MyDateTimeUtils() {}
 
     /** Check parameters and throw IllegalArgumentException in case of invalid parameters. */
     private static void checkParameters(Date date, int count, SimpleDateFormat dateFormat) {
@@ -30,10 +30,10 @@ public final class DateTimeUtils {
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
     public static List<String> getDatesList(Date date, int count, SimpleDateFormat dateFormat) {
-        LOGGER.debug(String.format("DateTimeUtils.getDatesList() is working. Date: [%s], count: [%s], format: [%s].",
+        LOGGER.debug(String.format("MyDateTimeUtils.getDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
 
-        DateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
 
         List<String> datesList = new ArrayList<>();
         // get sign of counter
@@ -57,10 +57,10 @@ public final class DateTimeUtils {
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
     public static List<String> getWeeksStartDatesList(Date date, int count, SimpleDateFormat dateFormat) {
-        LOGGER.debug(String.format("DateTimeUtils.getWeeksStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
+        LOGGER.debug(String.format("MyDateTimeUtils.getWeeksStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
 
-        DateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
 
         List<String> datesList = new ArrayList<>();
         // get sign of counter
@@ -88,10 +88,10 @@ public final class DateTimeUtils {
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
     public static List<String> getMonthsStartDatesList(Date date, int count, SimpleDateFormat dateFormat) {
-        LOGGER.debug(String.format("DateTimeUtils.getMonthStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
+        LOGGER.debug(String.format("MyDateTimeUtils.getMonthStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
 
-        DateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
 
         List<String> datesList = new ArrayList<>();
         // get sign of counter
@@ -116,10 +116,10 @@ public final class DateTimeUtils {
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
     public static List<String> getQuartersStartDatesList(Date date, int count, SimpleDateFormat dateFormat) {
-        LOGGER.debug(String.format("DateTimeUtils.getQuartersStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
+        LOGGER.debug(String.format("MyDateTimeUtils.getQuartersStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
 
-        DateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
 
         List<String> datesList = new ArrayList<>();
         // get sign of counter
@@ -150,10 +150,10 @@ public final class DateTimeUtils {
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
     public static List<String> getYearsStartDatesList(Date date, int count, SimpleDateFormat dateFormat) {
-        LOGGER.debug(String.format("DateTimeUtils.getDatesList() is working. Date: [%s], count: [%s], format: [%s].",
+        LOGGER.debug(String.format("MyDateTimeUtils.getDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
 
-        DateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
 
         List<String> datesList = new ArrayList<>();
         // get sign of counter
@@ -175,14 +175,14 @@ public final class DateTimeUtils {
 
     /***/
     public static List<String> getDatesListBack(Date date, TimePeriodType periodType, int count, SimpleDateFormat dateFormat) {
-        LOGGER.debug("DateTimeUtils.getDatesListBack() is working.");
+        LOGGER.debug("MyDateTimeUtils.getDatesListBack() is working.");
 
         switch (periodType) {
-            case DAY:     return DateTimeUtils.getDatesList(date, count, dateFormat);
-            case WEEK:    return DateTimeUtils.getWeeksStartDatesList(date, count, dateFormat);
-            case MONTH:   return DateTimeUtils.getMonthsStartDatesList(date, count, dateFormat);
-            case QUARTER: return DateTimeUtils.getQuartersStartDatesList(date, count, dateFormat);
-            case YEAR:    return DateTimeUtils.getYearsStartDatesList(date, count, dateFormat);
+            case DAY:     return MyDateTimeUtils.getDatesList(date, count, dateFormat);
+            case WEEK:    return MyDateTimeUtils.getWeeksStartDatesList(date, count, dateFormat);
+            case MONTH:   return MyDateTimeUtils.getMonthsStartDatesList(date, count, dateFormat);
+            case QUARTER: return MyDateTimeUtils.getQuartersStartDatesList(date, count, dateFormat);
+            case YEAR:    return MyDateTimeUtils.getYearsStartDatesList(date, count, dateFormat);
             default: throw new IllegalStateException(String.format("Invalid period specified: [%s]!", periodType));
         }
 

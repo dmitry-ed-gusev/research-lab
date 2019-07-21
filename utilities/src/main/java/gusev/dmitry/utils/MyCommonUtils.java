@@ -1,4 +1,4 @@
-package gusev.dmitry.jtils.utils;
+package gusev.dmitry.utils;
 
 import lombok.NonNull;
 import lombok.extern.apachecommons.CommonsLog;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static gusev.dmitry.jtils.utils.MyCommonUtils.MapSortType.*;
+import static gusev.dmitry.utils.MyCommonUtils.MapSortType.*;
 
 /**
  * Some useful common utils for whole application. Utils for different cases - counting, work with dbases etc.
