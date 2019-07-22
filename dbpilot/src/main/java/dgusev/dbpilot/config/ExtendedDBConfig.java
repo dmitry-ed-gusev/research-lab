@@ -1,8 +1,8 @@
-package jdb.config.connection;
+package dgusev.dbpilot.config;
 
 import jdb.DBConsts;
 import jdb.exceptions.DBModuleConfigException;
-import jlib.auth.Password;
+import dgusev.auth.Password;
 import jlib.exceptions.EmptyObjectException;
 import jlib.exceptions.EmptyPassException;
 import jlib.logging.InitLogger;

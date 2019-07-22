@@ -2,7 +2,7 @@ package jdb.config.connection;
 
 import jdb.DBConsts;
 import jdb.DBResources;
-import jlib.auth.Password;
+import dgusev.auth.Password;
 import jlib.exceptions.EmptyPassException;
 import org.junit.Before;
 import org.junit.Test;

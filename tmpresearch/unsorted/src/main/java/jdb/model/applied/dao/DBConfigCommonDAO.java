@@ -1,6 +1,6 @@
 package jdb.model.applied.dao;
 
-import jdb.config.DBConfig;
+import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.utils.DBUtils;

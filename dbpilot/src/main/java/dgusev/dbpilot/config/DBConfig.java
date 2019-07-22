@@ -1,6 +1,6 @@
-package jdb.config;
+package dgusev.dbpilot.config;
 
-import jdb.config.connection.ExtendedDBConfig;
+import dgusev.dbpilot.config.ExtendedDBConfig;
 import jdb.exceptions.DBModuleConfigException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 /**
  * Данный класс реализует полнофункциональную модель конфигурации для соединения с СУБД. Класс наследует от других
- * классов {@link jdb.config.connection.BaseDBConfig BaseJdbcConfig} и {@link jdb.config.connection.ExtendedDBConfig JdbcConfig}.
+ * классов {@link jdb.config.connection.BaseDBConfig BaseJdbcConfig} и {@link ExtendedDBConfig JdbcConfig}.
  * Умеет загружать/сохранять свою конфигурацию в файле на диске, умеет хранить списки ограничений и проверять их,
  * хранит флажок демо-режима, реализует различные проверки параметров. Из всей иерархии классов конфигурирования соединения
  * с СУБД (BaseJdbcConfig -> JdbcConfig -> DBConfig) рекомендуется пользоваться именно данным классом.

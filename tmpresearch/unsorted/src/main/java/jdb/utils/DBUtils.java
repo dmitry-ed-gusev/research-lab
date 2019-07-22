@@ -2,7 +2,7 @@ package jdb.utils;
 
 import jdb.DBConsts;
 import jdb.DBConsts.DBType;
-import jdb.config.DBConfig;
+import dgusev.dbpilot.config.DBConfig;
 import jdb.config.common.ConfigInterface;
 import jdb.config.connection.BaseDBConfig;
 import jdb.exceptions.DBConnectionException;

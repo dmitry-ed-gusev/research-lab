@@ -1,6 +1,6 @@
 package jlib;
 
-import jlib.auth.Password;
+import dgusev.auth.Password;
 import jlib.exceptions.EmptyObjectException;
 import jlib.exceptions.EmptyPassException;
 import jlib.logging.InitLogger;

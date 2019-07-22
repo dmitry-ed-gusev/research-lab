@@ -12,49 +12,6 @@ import java.util.Arrays;
 
 public class DBConsts
  {
-  /** Тип-перечисление поддерживаемых типов СУБД. */
-  public static enum DBType
-   {
-    UNKNOWN      ("UNKNOWN",     -1),
-    INFORMIX     ("INFORMIX",     0),
-    MYSQL        ("MYSQL",        1),
-    ODBC         ("ODBC",         2),
-    DBF          ("DBF",          3),
-    MSSQL_JTDS   ("MSSQL_JTDS",   4),
-    MSSQL_NATIVE ("MSSQL_NATIVE", 5);
-
-    // Поля класса-перечисления
-    private final String sValue;
-    private final int    iValue;
-
-    // Конструктор класса-перечисления
-    DBType(String sValue, int iValue) {this.sValue = sValue; this.iValue = iValue;}
-    
-    // Методы доступа к полям класса-перечисления
-    public String strValue() {return sValue;}
-    public int    intValue() {return iValue;}
-   }
-
-  /** Тип-перечисление типов таблиц. */
-  public static enum TableType
-   {
-    ALL              ("ALL"),
-    TABLE            ("TABLE"),
-    VIEW             ("VIEW"),
-    SYSTEM_TABLE     ("SYSTEM TABLE"),
-    GLOBAL_TEMPORARY ("GLOBAL TEMPORARY"),
-    LOCAL_TEMPORARY  ("LOCAL TEMPORARY"),
-    ALIAS            ("ALIAS"),
-    SYNONYM          ("SYNONYM"),
-    UNKNOWN          ("UNKNOWN");        // <- данное значение есть в Информиксе
-
-    // Поле класса-перечисления
-    private String sValue;
-    // Конструктор класса-перечисления
-    TableType(String sValue) {this.sValue = sValue;}
-    // Метод доступа к полю класса-перечисления
-    public String strValue() {return sValue;}
-   }
 
   /** Тип индекса (тип-перечисление). */
   public static enum IndexType {PRIMARY, FOREIGN, CASUAL}

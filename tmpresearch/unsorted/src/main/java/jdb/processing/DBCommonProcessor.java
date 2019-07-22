@@ -1,6 +1,6 @@
 package jdb.processing;
 
-import jdb.config.DBConfig;
+import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.utils.DBUtils;
 import org.apache.commons.lang.StringUtils;

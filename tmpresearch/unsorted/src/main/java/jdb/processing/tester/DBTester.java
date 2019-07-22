@@ -1,6 +1,6 @@
 package jdb.processing.tester;
 
-import jdb.config.DBConfig;
+import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.processing.spider.DBSpider;

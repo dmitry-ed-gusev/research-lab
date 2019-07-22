@@ -107,6 +107,7 @@
 
         <!-- my own (local) utilities library useful version -->
         <dgusev.utilities.version>2.0</dgusev.utilities.version>
+        <dgusev.dbpilot.version>1.0</dgusev.dbpilot.version>
 
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
         <skipCoverageReport>false</skipCoverageReport>
