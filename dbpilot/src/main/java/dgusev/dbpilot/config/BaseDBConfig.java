@@ -28,8 +28,8 @@ public class BaseDBConfig implements ConfigInterface {
     @Getter @Setter private String serverName;
     @Getter @Setter private String dbName;
     @Getter @Setter private String user;
-    @Getter @Setter private Password password;
-    @Getter @Setter private String connParams; // additional connection parameters (for JDBC url)
+    @Getter @Setter private Password   password;
+    @Getter @Setter private String     connParams; // additional connection parameters (for JDBC url)
     @Getter @Setter private Properties connInfo;   // additional connection info (added to DriverManager)
 
     /***/
