@@ -1,6 +1,6 @@
 package jdb.config.connection;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jdb.DBResources;
 import dgusev.auth.Password;
 import jlib.exceptions.EmptyPassException;

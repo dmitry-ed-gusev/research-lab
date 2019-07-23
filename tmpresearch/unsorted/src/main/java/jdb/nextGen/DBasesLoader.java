@@ -1,6 +1,7 @@
 package jdb.nextGen;
 
 import dgusev.dbpilot.config.DBConfig;
+import gusev.dmitry.utils.MyIOUtils;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.monitoring.DBProcessingMonitor;
@@ -9,7 +10,6 @@ import jdb.nextGen.models.SimpleDBIntegrityModel;
 import jdb.nextGen.models.SimpleDBTimedModel;
 import jdb.utils.DBUtils;
 import jlib.logging.InitLogger;
-import jlib.utils.FSUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -65,7 +65,7 @@ public final class DBasesLoader
             if (output.exists())
              {
               if (!output.isDirectory()) {throw new JdbException("Path [" + path + "] is not a directory!");}
-              else if (!FSUtils.isEmptyDir(path)) {throw new JdbException("Catalog [" + path + "] is not empty!");}
+              else if (!MyIOUtils.isEmptyDir(path)) {throw new JdbException("Catalog [" + path + "] is not empty!");}
               isOutputCatalogExists = true;
              }
             // Каталог назначения не существует - пробуем создать
@@ -74,15 +74,15 @@ public final class DBasesLoader
             // Если во время обработки каталога не возникла ИС - выгружаем данные
             try
              {
-              boolean unloadDBResult = DBasesLoaderCore.unloadDBToDisk(conn, FSUtils.fixFPath(path, true), dbName,
+              boolean unloadDBResult = DBasesLoaderCore.unloadDBToDisk(conn, MyIOUtils.fixFPath(path, true), dbName,
                                         tablesList, timedModel, integrityModel);
               // Если ничего выгружено не было - просто удалим созданный каталог для выгрузки
               if (!unloadDBResult)
                {
                 // Если каталог существовал на момент выгрузки - его не удаляем, а очищаем,
                 // если же каталог не существовал (мы его создали), то удаляем его.
-                if (isOutputCatalogExists) {FSUtils.clearDir(FSUtils.fixFPath(path, true) + dbName);}
-                else                       {FSUtils.delTree(FSUtils.fixFPath(path, true) + dbName);}
+                if (isOutputCatalogExists) {MyIOUtils.clearDir(MyIOUtils.fixFPath(path, true) + dbName);}
+                else                       {MyIOUtils.delTree(MyIOUtils.fixFPath(path, true) + dbName);}
                }
              }
             // В данном блоке CATCH не происходит обработка возникшей ИС, блок необходим только для
@@ -91,8 +91,8 @@ public final class DBasesLoader
               // При возникновении фатальной ИС во время выгрузки БД необходимо удалить созданный для выгрузки
               // БД каталог - провести очистку ресурсов. Если каталог существовал на момент выгрузки - его не
               // удаляем, а очищаем, если же каталог не существовал (мы его создали), то удаляем его.
-              if (isOutputCatalogExists) {FSUtils.clearDir(FSUtils.fixFPath(path, true) + dbName);}
-              else                       {FSUtils.delTree(FSUtils.fixFPath(path, true) + dbName);}
+              if (isOutputCatalogExists) {MyIOUtils.clearDir(MyIOUtils.fixFPath(path, true) + dbName);}
+              else                       {MyIOUtils.delTree(MyIOUtils.fixFPath(path, true) + dbName);}
               // ИС в данном блоке не обрабатывается - обработка передается выше
               throw new JdbException(e);
              }
@@ -143,7 +143,7 @@ public final class DBasesLoader
     if (conn != null)
      {
       // Проверка каталога, из которого загружаем БД (должен существовать, быть каталогом и быть непустым)
-      if (!StringUtils.isBlank(path) && new File(path).exists() && new File(path).isDirectory() && !FSUtils.isEmptyDir(path))
+      if (!StringUtils.isBlank(path) && new File(path).exists() && new File(path).isDirectory() && !MyIOUtils.isEmptyDir(path))
        {
         // Проверяем список таблиц (должен быть не пуст)
         if ((tablesList != null) && (!tablesList.isEmpty()))
@@ -221,8 +221,8 @@ public final class DBasesLoader
        ("Dvig", "Dvizh", "Gorod", "Insp", "Klcold", "Sost", "Statgr", "Stip", "Stran", "tip"));
 
       // Выгрузка БД Шторм из Информикса и загрузка в MSSQL
-      FSUtils.delTree("c:\\temp\\storm");
-      //FSUtils.delTree("c:\\temp\\fleet");
+      MyIOUtils.delTree("c:\\temp\\storm");
+      //MyIOUtils.delTree("c:\\temp\\fleet");
       // new ArrayList<String>(Arrays.asList("survey"))
       // Выгрузка/загрузка БД Шторм
       DBasesLoader.unloadDB(ifxStormConn, "c:\\temp\\storm", "storm", new ArrayList<String>(Arrays.asList("check_list1")), null, null);

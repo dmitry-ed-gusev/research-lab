@@ -35,7 +35,12 @@ import static gusev.dmitry.utils.MyCommonUtils.MapSortType.*;
 @CommonsLog
 public final class MyCommonUtils {
 
-    /** Sort type ASC/DESC. */
+    private static final String PAIRS_DELIM = ";";
+    private static final String KEY_VALUE_DELIM = "=";
+
+    /**
+     * Sort type ASC/DESC.
+     */
     public enum MapSortType {
         ASC, DESC
     }
@@ -415,7 +420,9 @@ public final class MyCommonUtils {
         return result;
     }
 
-    /** Define predicate negation. */
+    /**
+     * Define predicate negation.
+     */
     public static <T> Predicate<T> not(Predicate<T> predicate) {
         return t -> !predicate.test(t);
     }
@@ -608,7 +615,9 @@ public final class MyCommonUtils {
         return map;
     }
 
-    /** Validate single property. */
+    /**
+     * Validate single property.
+     */
     public static void validateSingleProperty(@NonNull String property, @NonNull String value) {
 
         if (value == null || "null".equals(value)) {
@@ -625,6 +634,7 @@ public final class MyCommonUtils {
 
     /**
      * Make sure that the whole environment is set up properly.
+     *
      * @throws IllegalArgumentException if at least one of the system properties is invalid
      */
     public static void validateEnvironment(@NonNull Map<String, String> environment, @NonNull List<String> mandatoryProperties) {
@@ -637,6 +647,186 @@ public final class MyCommonUtils {
         }
 
         LOG.debug(String.format("Presence of all mandatory properties [%s] checked. All OK.", mandatoryProperties));
+    }
+
+    /***/
+    private static String getPairsDelimiter(String pairsDelimeter) {
+        if (!StringUtils.isBlank(pairsDelimeter)) {
+            return StringUtils.trimToEmpty(pairsDelimeter);
+        } else {
+            return PAIRS_DELIM;
+        }
+    }
+
+    /***/
+    private static String getKeyValueDelimeter(String keyValueDelimeter) {
+        if (!StringUtils.isBlank(keyValueDelimeter)) {
+            return StringUtils.trimToEmpty(keyValueDelimeter);
+        } else {
+            return KEY_VALUE_DELIM;
+        }
+    }
+
+    /**
+     * Converts string in format [name1=value1[pairsDelim]....[pairsDelim]nameN=valueN] into Properties object.
+     * Deviations like: [name1=name2=name3=value1] or [name1=value1=value2] are processed correctly.
+     */
+    public static Properties getPropsFromString(String str, String pairsDelim, String keyValueDelim) {
+        LOG.debug("MyCommonUtils.getPropsFromString() is working.");
+        Properties result = null;
+
+        // Если строка не пустая - работаем дальше
+        if ((str != null) && (!str.trim().equals(""))) {
+
+            String localPairsDelim = MyCommonUtils.getPairsDelimiter(pairsDelim);
+            String localKeyValueDelim = MyCommonUtils.getKeyValueDelimeter(keyValueDelim);
+            LOG.debug("USED: pairsDelim: [" + localPairsDelim + "]; keyValuesDelim: [" + localKeyValueDelim + "].");
+
+            String[] keyValueArray, keyValueSplitted;
+            result = new Properties();
+            // Разделяем строку на массив пар имя=значение. Пары значений разделяются символом <pairsDelim>, или, если нам не
+            // передали этот символ, то символом по умолчанию - ; (PAIRS_DELIM). Нам необходимо получить значение ключа, которое
+            // находится справа от самого первого слева знака pairsDelim (в строке 1=2=3;4=5;6=7 мы должны получить: key={1}, value={2=3;4=5;6=7}).
+            keyValueArray = str.trim().split(localPairsDelim);
+
+            // В цикле каждую пару имя=значение разбиваем на имя и значение
+            for (String keyValuePair : keyValueArray) {
+
+                //logger.debug("keyValuePair: " + keyValuePair); // <- вывод был необходим для отладки метода
+
+                if ((keyValuePair != null) && (!keyValuePair.trim().equals(""))) {
+                    // Значения разделяются символом localKeyValueDelim
+                    keyValueSplitted = keyValuePair.split(localKeyValueDelim);
+
+                    //if (keyValueSplitted.length >= 2)                                    // <- вывод был необходим для отладки метода
+                    // logger.debug("splitted pair: key=[" + keyValueSplitted[0] + "] " +  // <- вывод был необходим для отладки метода
+                    //              "value=[" + keyValueSplitted[1] + "]");                // <- вывод был необходим для отладки метода
+
+                    // Если мы получили несколько параметров (более 2-х как минимум), то первый из них - имя значения (name), а второй
+                    // - само значение (value), остальные парметры игнорируются (имя - параметр номер 0, значение - параметр номер 1).
+                    if ((keyValueSplitted.length >= 2) && (!keyValueSplitted[0].trim().equals("")) && (!keyValueSplitted[1].trim().equals(""))) {
+
+                        //logger.debug("Result splitted pair: key=[" + keyValueSplitted[0] + "] " +  // <- вывод был необходим для отладки метода
+                        //             "value=[" + keyValueSplitted[1] + "]");                       // <- вывод был необходим для отладки метода
+
+                        result.put(keyValueSplitted[0].trim(), keyValueSplitted[1].trim());
+                    }
+                }
+            } // end of for
+
+        } // end of if
+        else {
+            LOG.debug("Source string is empty!");
+        }
+
+        return result;
+    }
+
+    /**
+     * Метод получает на входе набор свойств (Properties), из которого формирует строку формата
+     * [name1=value1[pairsDelim]...[pairsDelim]nameN=valueN]. pairsDelim - символ-разделитель для пар значений. Если не
+     * указан - используется значение по умолчанию - ; (константа PAIRS_DELIM - модуль Consts). Имя параметра от его значения
+     * отделяется символом keyValueDelim - по умолчанию =. Если переданный набор свойств (Properties) пуст - метод вернет
+     * значение null.
+     *
+     * @param props         Properties набор свойств, который преобразуется в результирующую строку.
+     * @param pairsDelim    String символ-разделитель для пар имя/значение: name=value[DELIM]name=value.
+     * @param keyValueDelim String символ-разделитель для имени и значения в паре имя/значение: name[KEY_VALUE_DELIM]value.
+     * @return String строка, сформированная из полученного набора свойств.
+     */
+    public static String getStringFromProps(Properties props, String pairsDelim, String keyValueDelim) {
+        LOG.debug("MyCommonUtils.getStringFromProps() is working.");
+
+        StringBuilder result = null;
+
+        // Если Properties не пусто - то продолжаем работать
+        if ((props != null) && (!props.isEmpty())) {
+            String key;
+            result = new StringBuilder();
+
+            String localPairsDelim = MyCommonUtils.getPairsDelimiter(pairsDelim);
+            String localKeyValueDelim = MyCommonUtils.getKeyValueDelimeter(keyValueDelim);
+            LOG.debug("USED PARAMS: pairsDelim: [" + localPairsDelim + "]; keyValuesDelim: [" + localKeyValueDelim + "].");
+
+            // Проходим по всем парам имя/значение в наборе и формируем строку
+            Enumeration e = props.keys();
+            while (e.hasMoreElements()) {
+                key = e.nextElement().toString();
+                // Пара имя=значение не добавляется к строке, если ключ пустой
+                if (!key.trim().equals("")) {
+                    result.append(key).append(localKeyValueDelim).append(props.getProperty(key)).append(localPairsDelim);
+                }
+            }
+
+            LOG.debug("RESULT: [" + result.toString() + "].");
+        } else {
+            LOG.debug("Received Properties object is empty!");
+        }
+
+        if (result == null) {
+            return null;
+        }
+
+        return result.toString();
+    }
+
+    public enum DatePeriod {YEAR, MONTH, DAY}
+
+    /***/
+    public static String trans(String name) {
+        StringBuilder name_trans = new StringBuilder();
+        char name_char;
+        int index_c;
+        String rus = "АаБбВвГгДдЕеЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя";
+        String[] eng = {"A", "a", "B", "b", "V", "v", "G", "g", "D", "d", "E", "e", "ZH", "zh", "Z", "z", "I", "i", "Y", "y", "K", "k", "L", "l",
+                "M", "m", "N", "n", "O", "o", "P", "p", "R", "r", "S", "s", "T", "t", "U", "u", "F", "f", "KH", "kh", "TS", "ts", "CH", "ch",
+                "SH", "sh", "SHCH", "shch", "Y", "y", "Y", "y", "Y", "y", "E", "e", "YU", "yu", "YA", "ya"};
+
+        if (name != null && name.length() > 0) {
+            for (int i = 0; i < name.length(); i++) {
+                name_char = name.charAt(i);
+                index_c = rus.indexOf(name_char);
+                if (index_c > -1) {
+                    name_trans.append(eng[index_c]);
+                } else {
+                    name_trans.append(name_char);
+                }
+            }
+        }
+
+        return name_trans.toString();
+    }
+
+    /**
+     * Изменение на N-ое количество дней/месяцев/лет даты типа java.util.Date
+     *
+     * @param date       - дата
+     * @param period     - количество дней/месяцев/лет на которые требуется перенести дату
+     * @param typePeriod - тип периода: день/месяц/год
+     * @return -  дата типа java.util.Date
+     */
+    public static Date dateToPeriod(Date date, int period, DatePeriod typePeriod) {
+
+        Date returnDate = null;
+
+        if (date != null) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(date);
+
+            if (DatePeriod.YEAR.equals(typePeriod)) {
+                cal.add(Calendar.YEAR, period);
+            } else if (DatePeriod.MONTH.equals(typePeriod)) {
+                cal.add(Calendar.MONTH, period);
+            } else if (DatePeriod.DAY.equals(typePeriod)) {
+                cal.add(Calendar.DATE, period);
+            }
+
+            returnDate = cal.getTime();
+
+        } else {
+            LOG.warn("Input data is NULL!");
+        }
+        return returnDate;
     }
 
 } // end of MyCommonUtils class

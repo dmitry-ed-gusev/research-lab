@@ -242,7 +242,7 @@
    <br>&nbsp;&nbsp;&nbsp;- исправлена серьезная ошибка в методе DataChecker.isRecordExists() - метод всегда возвращал
    значение ИСТИНА, т.к. результат выполнения зароса select всегда был != null. 
    <br>&nbsp;&nbsp;&nbsp;- удален интерфейс jdb.processing.serialization.SerializationConsts и единственная, содержавшаяся
-   в нем константа перенесена в общий модуль констант данной библиотеки - jdb.DBConsts.
+   в нем константа перенесена в общий модуль констант данной библиотеки - dgusev.dbpilot.DBConsts.
    <br>&nbsp;&nbsp;&nbsp;- доработана система журналирования нескольких модулей библиотеки (DataChecker, DDSerializer,
    TableDeserializer, SqlExecutor) в режиме отладки (DEBUG).
    <br>&nbsp;&nbsp;&nbsp;- В модуль DBUtils добавлены методы проверки соединения с СУБД с помощью конфигурации для
@@ -388,7 +388,7 @@
    <br>&nbsp;&nbsp;&nbsp;- улучшено журналирование в модуле ExtendedDBConfig: при ошибочном файле конфигурации соединения с СУБД
    выводится в лог не только относительный путь к файлу (указанный в качестве параметра метода), но и абсолютный путь к файлу.
    <br>&nbsp;&nbsp;&nbsp;- все константы из модуля jdb.filter.sql.SqlFilterConsts перенесены в общий модуль констант библиотеки
-   jdb.DBConsts. При переносе константы модуля SqlFilterConsts переименованы следующим образом: <br>
+   dgusev.dbpilot.DBConsts. При переносе константы модуля SqlFilterConsts переименованы следующим образом: <br>
    <ul>
     <li>DEPRECATED        -&gt; SQL_DEPRECATED_SYMBOLS
     <li>DEPRECATED_QUOTES -&gt; SQL_DEPRECATED_QUOTES

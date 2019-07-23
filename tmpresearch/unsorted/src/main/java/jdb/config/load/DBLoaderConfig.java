@@ -1,6 +1,6 @@
 package jdb.config.load;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jdb.config.common.CommonModuleConfig;
 import jdb.config.common.ConfigInterface;
 import jdb.exceptions.DBModuleConfigException;

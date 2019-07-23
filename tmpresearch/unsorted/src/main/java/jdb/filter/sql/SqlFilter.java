@@ -1,6 +1,6 @@
 package jdb.filter.sql;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;

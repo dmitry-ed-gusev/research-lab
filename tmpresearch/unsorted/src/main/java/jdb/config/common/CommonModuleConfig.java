@@ -1,6 +1,6 @@
 package jdb.config.common;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.monitoring.DBProcessingMonitor;
@@ -191,7 +191,7 @@ public class CommonModuleConfig implements ConfigInterface
   public String getConfigErrors()
    {
     String result = null;
-    String dbConfigErrors = DBUtils.getConfigErrors(dbConfig);
+    String dbConfigErrors = null; //DBUtils.getConfigErrors(dbConfig);
     if (!StringUtils.isBlank(dbConfigErrors))      {result = dbConfigErrors;}
     return result;
    }

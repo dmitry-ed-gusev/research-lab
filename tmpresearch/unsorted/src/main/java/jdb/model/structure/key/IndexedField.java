@@ -1,6 +1,6 @@
 package jdb.model.structure.key;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jdb.exceptions.DBModelException;
 import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;

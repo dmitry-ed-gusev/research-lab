@@ -1,6 +1,6 @@
 package mass_email_sender.spammer.mailsList.impl.dbf;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;

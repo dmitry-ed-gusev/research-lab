@@ -1,6 +1,6 @@
 package jdb.processing.sql.execution.batch.executors;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jdb.DBResources;
 import jdb.config.batch.BatchConfig;
 import jdb.exceptions.DBConnectionException;

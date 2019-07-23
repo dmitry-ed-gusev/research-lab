@@ -1,6 +1,6 @@
 package jdb.processing.sql.generation;
 
-import jdb.DBConsts.DBType;
+import dgusev.dbpilot.DBConsts.DBType;
 import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;

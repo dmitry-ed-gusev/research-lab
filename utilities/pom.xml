@@ -162,7 +162,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
-            <version>${apache.commons.csv}</version>
+            <version>${apache.commons.csv.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>

@@ -1,6 +1,6 @@
 package jdb.processing.data;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jdb.exceptions.DBConnectionException;
 import jdb.processing.data.helpers.DataProcessingHelper;
 import jdb.processing.sql.execution.SqlExecutor;

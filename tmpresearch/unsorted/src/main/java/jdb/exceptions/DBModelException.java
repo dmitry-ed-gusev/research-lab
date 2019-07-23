@@ -2,6 +2,9 @@ package jdb.exceptions;
 
 /**
  * ИС для ошибок моделей баз данных, таблиц, полей индексов и т.п.
+ *
+ * @deprecated
+ *
  * @author Gusev Dmitry (019gus)
  * @version 1.0 (DATE: 14.07.2009)
 */

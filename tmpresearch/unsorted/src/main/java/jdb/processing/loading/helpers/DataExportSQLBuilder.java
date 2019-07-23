@@ -1,6 +1,6 @@
 package jdb.processing.loading.helpers;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jdb.exceptions.DBModelException;
 import jdb.model.integrity.TableIntegrityModel;
 import jdb.model.structure.FieldStructureModel;

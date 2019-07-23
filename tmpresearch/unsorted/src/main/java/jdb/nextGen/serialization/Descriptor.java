@@ -1,10 +1,9 @@
 package jdb.nextGen.serialization;
 
+import gusev.dmitry.utils.MyIOUtils;
 import jdb.nextGen.DBasesLoaderCore;
 import jdb.nextGen.exceptions.JdbException;
-import jlib.exceptions.EmptyObjectException;
 import jlib.logging.InitLogger;
-import jlib.utils.FSUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -91,14 +90,13 @@ public final class Descriptor implements Serializable
       descriptor.addItem("file1");
       descriptor.addItem("file2");
       descriptor.addItem("file3");
-      FSUtils.serializeObject(descriptor, "c:\\temp\\", "descriptor", "tbl");
-      Descriptor loadedDescriptor = (Descriptor)FSUtils.deserializeObject("c:\\temp\\descriptor.tbl", false);
+      MyIOUtils.serializeObject(descriptor, "c:\\temp\\", "descriptor", "tbl", false);
+      Descriptor loadedDescriptor = (Descriptor) MyIOUtils.deserializeObject("c:\\temp\\descriptor.tbl", false, false);
       logger.info(loadedDescriptor.getObjectItems());
       logger.info(loadedDescriptor.getObjectType());
      }
     catch (IOException e)            {logger.error(e.getMessage());}
     catch (JdbException e)           {logger.error(e.getMessage());}
-    catch (EmptyObjectException e)   {logger.error(e.getMessage());}
     catch (ClassNotFoundException e) {logger.error(e.getMessage());}
    }
 

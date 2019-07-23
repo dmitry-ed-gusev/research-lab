@@ -1,6 +1,6 @@
 package jdb.processing.spider;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;

@@ -1,4 +1,4 @@
-package jdb;
+package dgusev.dbpilot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -315,15 +315,4 @@ public class DBConsts
   */
   public static final String SQL_DEFAULT_QUOTE = "\"";
 
-  /**
-   * Метод только для отладки и тестирования.
-   * @param args String[] параметры метода main.
-  */
-  public static void main(String[] args)
-   {
-    DBType db = DBType.INFORMIX;
-    System.out.println(db);
-   }
-
-  
  }

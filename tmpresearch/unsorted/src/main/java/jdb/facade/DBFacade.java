@@ -1,6 +1,6 @@
 package jdb.facade;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jlib.common.Consts;
 import org.apache.log4j.*;
 

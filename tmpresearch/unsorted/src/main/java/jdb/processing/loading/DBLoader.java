@@ -1,6 +1,6 @@
 package jdb.processing.loading;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
 import jdb.config.load.DBLoaderConfig;
 import jdb.exceptions.DBConnectionException;
