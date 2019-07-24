@@ -1,7 +1,6 @@
 package jlib.mail;
 
 import jlib.JLibConsts;
-import jlib.logging.InitLogger;
 import org.apache.log4j.Logger;
 
 import javax.activation.DataHandler;
@@ -132,7 +131,6 @@ public class JMail
  public static void main(String[] args)
   {
    Logger logger = Logger.getLogger(JMail.class.getName());
-   InitLogger.initLogger(JMail.class.getName());
 
    JMailConfig config = new JMailConfig();
    config.setTo("019gus@rs-head.spb.ru");

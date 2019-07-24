@@ -2,6 +2,7 @@ package jdb.processing.modeling;
 
 import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
+import dgusev.dbpilot.config.DBType;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
 import jdb.exceptions.DBModuleConfigException;
@@ -163,8 +164,8 @@ public class DBModeler extends DBCommonProcessor
     if (!StringUtils.isBlank(dbName))
      {
       // Для типов СУБД DBF и ODBC нельзя переключиться на другую БД при подключении
-      if ((DBConsts.DBType.DBF.equals(this.getConfig().getDbType()) ||
-           DBConsts.DBType.ODBC.equals(this.getConfig().getDbType())) &&
+      if ((DBType.DBF.equals(this.getConfig().getDbType()) ||
+           DBType.ODBC.equals(this.getConfig().getDbType())) &&
            !dbName.equalsIgnoreCase(this.getConfig().getDbName()))
        {throw new SQLException("Can't change database [" + this.getConfig().getDbName() + "] -> [" +
                                dbName + "] for this DBMS type [" + this.getConfig().getDbType() + "]!");}
@@ -204,7 +205,7 @@ public class DBModeler extends DBCommonProcessor
 
         // Для СУБД Информикс необходимо выбрать БД, если мы хотим получить данные по БД отличной, от БД подключения
         // (указанной в конфиге соединения) или если БД в конфиге подключения не указана вовсе.
-        if (this.getConfig().getDbType().equals(DBConsts.DBType.INFORMIX))
+        if (this.getConfig().getDbType().equals(DBType.INFORMIX))
          {
           if (StringUtils.isBlank(this.getConfig().getDbName()) ||
               (!StringUtils.isBlank(this.getConfig().getDbName()) &&
@@ -252,7 +253,7 @@ public class DBModeler extends DBCommonProcessor
          } // END OF FOR CYCLE
 
         // Также для СУБД Информикс необходимо вернуть БД в исходное состояние (если мы применяли оператор "DATABASE ...")
-        if (this.getConfig().getDbType().equals(DBConsts.DBType.INFORMIX))
+        if (this.getConfig().getDbType().equals(DBType.INFORMIX))
          {
           // Если в конфиге соединения не указана БД - закроем выбранную
           // todo: читай доку информикса про "CLOSE DATABASE" - может нет необходимости?
@@ -313,8 +314,8 @@ public class DBModeler extends DBCommonProcessor
     if (!StringUtils.isBlank(dbName))
      {
       // Для типов СУБД DBF и ODBC нельзя переключиться на другую БД при подключении
-      if ((DBConsts.DBType.DBF.equals(this.getConfig().getDbType()) ||
-           DBConsts.DBType.ODBC.equals(this.getConfig().getDbType())) &&
+      if ((DBType.DBF.equals(this.getConfig().getDbType()) ||
+           DBType.ODBC.equals(this.getConfig().getDbType())) &&
            !dbName.equalsIgnoreCase(this.getConfig().getDbName()))
        {throw new SQLException("Can't change database [" + this.getConfig().getDbName() + "] -> [" +
                                dbName + "] for this DBMS type [" + this.getConfig().getDbType() + "]!");}
@@ -465,8 +466,8 @@ public class DBModeler extends DBCommonProcessor
     if (!StringUtils.isBlank(dbName))
      {
       // Для типов СУБД DBF и ODBC нельзя переключиться на другую БД при подключении
-      if ((DBConsts.DBType.DBF.equals(this.getConfig().getDbType()) ||
-           DBConsts.DBType.ODBC.equals(this.getConfig().getDbType())) &&
+      if ((DBType.DBF.equals(this.getConfig().getDbType()) ||
+           DBType.ODBC.equals(this.getConfig().getDbType())) &&
            !dbName.equalsIgnoreCase(this.getConfig().getDbName()))
        {throw new SQLException("Can't change database [" + this.getConfig().getDbName() + "] -> [" +
                                dbName + "] for this DBMS type [" + this.getConfig().getDbType() + "]!");}

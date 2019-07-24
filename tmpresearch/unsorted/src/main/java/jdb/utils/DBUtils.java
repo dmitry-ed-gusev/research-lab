@@ -1,23 +1,24 @@
 package jdb.utils;
 
-import dgusev.dbpilot.DBConsts;
-import dgusev.dbpilot.DBConsts.DBType;
 import dgusev.dbpilot.config.DBConfig;
-import jdb.config.common.ConfigInterface;
-import jdb.config.connection.BaseDBConfig;
+import jdb.config.load.DBLoaderConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.model.DBModel;
 import jdb.utils.helpers.JdbcUrlHelper;
 import jlib.exceptions.utils.ExceptionUtils;
-import jlib.logging.InitLogger;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.sql.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -83,45 +84,13 @@ public final class DBUtils
    }
 
   /**
-   * Метод в зависимости от указанного типа СУБД возвращает необходимый класс драйвера для соединения с СУБД
-   * (наименование драйвера). Если тип соединения не указан (пустой или не поддерживаемый например) - метод
-   * возвращает значение null.
-   * @param dbType DBType тип СУБД для выбора драйвера.
-   * @return String наименование класса драйвера для подключения к СУБД.
-  */
-  public static String getDBDriver(DBType dbType)
-   {
-    String driverClass = null;
-    // Если тип СУБД не пуст - работаем
-    if (dbType != null)
-     {
-      logger.debug("DBType is not empty. Processing.");
-      // Выбор драйвера в зависимости от типа СУБД
-      switch (dbType)
-       {
-        case INFORMIX:     driverClass = DBConsts.DBDRIVER_INFORMIX;     break;
-        case MYSQL:        driverClass = DBConsts.DBDRIVER_MYSQL;        break;
-        case DBF:          driverClass = DBConsts.DBDRIVER_DBF;          break;
-        case ODBC:         driverClass = DBConsts.DBDRIVER_ODBC;         break;
-        case MSSQL_JTDS:   driverClass = DBConsts.DBDRIVER_MSSQL_JTDS;   break;
-        case MSSQL_NATIVE: driverClass = DBConsts.DBDRIVER_MSSQL_NATIVE; break;
-        default:           logger.error("Unsupported DB type: [" + dbType + "]!"); driverClass = null; break;
-       }
-     }
-    else {logger.error("DBType is empty! Can't select DB driver class.");}
-    // Отладочный вывод
-    logger.debug("getDBDriverClass: DB type [" + dbType + "]. DB driver class [" + driverClass + "].");
-    return driverClass;
-   }
-
-  /**
    * Метод, в зависимости от параметров соединения с СУБД, формирует конфигурационный URL для соединения с СУБД - jdbcUrl.
    * Если будет указан пустой конфиг - метод возвращает значение null. Если не поддерживается указанный тип СУБД -
    * метод также вернет значение null.
    * @param config конфиг для формирования JDBC URL.
    * @return String универсальная строка-конфигуратор для соединения с СУБД (URL).
   */
-  public static String getDBUrl(BaseDBConfig config)
+  public static String getDBUrl(DBConfig config)
    {
     // Результат выполнения метода
     String result = null;
@@ -155,12 +124,12 @@ public final class DBUtils
    * от переданного методу конфига - если в конфиге заполнено поле dataSource, то будет выполнено соединение через
    * JNDI источник данных, если же не заполнено - метод попытается установить соединение посредством JDBC драйвера
    * указанной СУБД.
-   * @param config BaseDBConfig конфиг для соединения с СУБД.
+   * @param config DBConfig конфиг для соединения с СУБД.
    * @return Connection созданное с СУБД соединение.
    * @throws DBModuleConfigException ошибки в конфигурации соединения с СУБД (в классе конфига).
    * @throws DBConnectionException ошибки при соединении с СУБД.
   */
-  public static Connection getDBConn(BaseDBConfig config) throws DBModuleConfigException, DBConnectionException
+  public static Connection getDBConn(DBConfig config) throws DBModuleConfigException, DBConnectionException
    {
     logger.debug("DBUtils.getDBConn(): connecting to DBMS.");
     Connection connection;
@@ -189,7 +158,7 @@ public final class DBUtils
       try
        {
         // Получаем драйвер
-        String dbDriver = DBUtils.getDBDriver(config.getDbType());
+        String dbDriver = config.getDbType().getDriver();
         // Если драйвер не пуст - работаем дальше
         if (!StringUtils.isBlank(dbDriver))
          {
@@ -234,11 +203,10 @@ public final class DBUtils
    * @throws DBModuleConfigException ошибки в конфигурации соединения с СУБД (пустое имя источника данных).
    * @throws DBConnectionException ошибки при соединении с СУБД.
   */
-  public static Connection getDBConn(String dataSourceName) throws DBConnectionException, DBModuleConfigException
-   {
+  public static Connection getDBConn(String dataSourceName) throws DBConnectionException, DBModuleConfigException, IOException, ConfigurationException {
     if (!StringUtils.isBlank(dataSourceName))
      {
-      BaseDBConfig config = new BaseDBConfig();
+      DBConfig config = new DBConfig();
       config.setDataSource(dataSourceName);
       return DBUtils.getDBConn(config);
      }
@@ -252,10 +220,10 @@ public final class DBUtils
    * удачно - мы получили соединение - метод возвращает значение ИСТИНА, полученное соединение закрывается. При
    * возникновении каких-либо ошибок, метод возвращает значение ЛОЖЬ, при этом все возможные ИС перехватываются,
    * сообщения о возникших ошибках записываются в лог.
-   * @param config BaseDBConfig проверяемая конфигурация для соединения с СУБД.
+   * @param config DBConfig проверяемая конфигурация для соединения с СУБД.
    * @return boolean ИСТИНА/ЛОЖЬ в зависимости от того, возможно ли соединение с СУБД с помощью указанного конфига.
   */
-  public static boolean isConnectionValid(BaseDBConfig config)
+  public static boolean isConnectionValid(DBConfig config)
    {
     boolean result = false;
     Connection connection = null;
@@ -327,7 +295,7 @@ public final class DBUtils
    * @param config ConfigInterface конфигурация для проверки.
    * @return String описание ошибок конфига или NULL.
   */
-  public static String getConfigErrors(ConfigInterface config)
+  public static String getConfigErrors(DBConfig config)
    {
     // Если конфиг в порядке, то метод должен вернуть NULL
     String result;
@@ -335,6 +303,16 @@ public final class DBUtils
     else                {result = config.getConfigErrors();}
     return result;
    }
+
+   // todo: remove method!!!
+  public static String getConfigErrors(DBLoaderConfig config)
+  {
+   // Если конфиг в порядке, то метод должен вернуть NULL
+   String result;
+   if (config == null) {result = "Configuration is NULL!";}
+   else                {result = config.getConfigErrors();}
+   return result;
+  }
 
   /**
    * Данный метод возвращает значение ИСТИНА/ЛОЖЬ в зависимости от того, является ли указанный SQL-запрос запросом
@@ -364,72 +342,4 @@ public final class DBUtils
     return result;
    }
 
-  /**
-   * Метод только для отладки и тестирования данного класса!
-   * @param args String[] аргументы метода main.
-  */
-  public static void main(String[] args)
-   {
-    InitLogger.initLogger("jdb");
-    Logger logger = Logger.getLogger("jdb");
-    try
-     {
-      DBConfig ifxConfig = new DBConfig();
-      ifxConfig.setDbType(DBType.INFORMIX);
-      ifxConfig.setHost("appserver:1526");
-      ifxConfig.setServerName("hercules");
-      ifxConfig.setDbName("memorandum");
-      ifxConfig.setUser("informix");
-      ifxConfig.setPassword("ifx_dba_019");
-      
-      DBConfig mysqlConfig = new DBConfig();
-      mysqlConfig.setDbType(DBType.MYSQL);
-      //mysqlConfig.setDbName("akme");
-      mysqlConfig.setUser("root");
-      mysqlConfig.setPassword("mysql");
-
-      DBConfig dbfConfig = new DBConfig();
-      dbfConfig.setDbType(DBType.DBF);
-      dbfConfig.setDbName("//rshead/db002/new/fleet");
-
-      DBConfig config = new DBConfig();
-      config.setDbType(DBType.MSSQL_JTDS);
-      config.setHost("APP");
-      config.setDbName("MassEmailsSender");
-      config.setUser("sa");
-      config.setPassword("adminsql245#I");
-
-      //DBSpider spider   = new DBSpider(ifxConfig);
-      //DBModeler modeler = new DBModeler(config);
-
-      //logger.info("DBS list: " + spider.getDBSList());
-      //logger.info(spider.isDBExists("mkub"));
-      //logger.info(spider.getUserTablesPlainList("c:/temp/dbf/fLEEt"));
-      //logger.info(modeler.getDBStructureModel());
-      //logger.info(modeler.getDBIntegrityModel("c:/temp/dbf/firm"));
-      //logger.info(modeler.getDBTimedModel("memorandum"));
-
-      Connection connection = DBUtils.getDBConn(config);
-
-      // Вызов хранимой процедуры на MS SQL 2005
-      CallableStatement cstmt = connection.prepareCall("{call dbo.addDelivery(?, ?, ?, ?, ?)}");
-      cstmt.setString(1, "subject from java");
-      cstmt.setString(2, "text from java");
-      cstmt.setInt(3, 0);
-      cstmt.setString(4, "019bru");
-      cstmt.registerOutParameter(5, java.sql.Types.INTEGER);
-      cstmt.execute();
-      logger.info("ID: " + cstmt.getInt(5));
-
-      // Ожидаем ввода с клавы (нажатия ЕНТЕР)
-      //Scanner scanner = new Scanner(System.in);
-      //scanner.nextLine();
-      connection.close();
-     }
-    catch (DBModuleConfigException e) {logger.error(e.getMessage());}
-    catch (DBConnectionException e)   {logger.error(e.getMessage());}
-    catch (SQLException e)            {logger.error(e.getMessage());}
-    //catch (DBModelException e)        {logger.error(e.getMessage());}
-   }
-
- }
+}

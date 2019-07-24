@@ -1,5 +1,6 @@
 package jdb.processing.loading.core;
 
+import gusev.dmitry.utils.MyIOUtils;
 import jdb.config.load.DBLoaderConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
@@ -9,7 +10,6 @@ import jdb.model.structure.TableStructureModel;
 import jdb.monitoring.DBProcessingMonitor;
 import jdb.processing.modeling.DBModeler;
 import jdb.utils.DBUtils;
-import jlib.utils.FSUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -70,7 +70,7 @@ public class DBLoadCore
     // Сообщим о том, что каталог все проверки прошел
     else {logger.debug("Catalog [" + dbPath + "] is OK. Processing.");}
     // Локальная копия параметра "путь к сериализованной БД" (сразу корректируем отсутствие символа / в конце пути)
-    String localDBPath = FSUtils.fixFPath(config.getPath(), true);
+    String localDBPath = MyIOUtils.fixFPath(config.getPath(), true);
 
     // Ссылка на модуль-монитор данного процесса
     DBProcessingMonitor monitor = config.getMonitor();

@@ -1,8 +1,8 @@
 package mass_email_sender.spammer.mailsProcessor;
 
+import gusev.dmitry.utils.MyIOUtils;
 import jlib.mail.JMail;
 import jlib.mail.JMailConfig;
-import jlib.utils.FSUtils;
 import mass_email_sender.spammer.Defaults;
 import mass_email_sender.spammer.config.MailerConfig;
 import mass_email_sender.spammer.dataModel.dao.DeliveriesDAO;
@@ -16,6 +16,7 @@ import mass_email_sender.spammer.mailsList.impl.TestEmailsListBuilder;
 import mass_email_sender.spammer.mailsList.impl.dbf.DbfShipownersEng;
 import mass_email_sender.spammer.mailsList.impl.dbf.DbfShipownersRus;
 import mass_email_sender.spammer.mailsList.interfaces.EmailsListInterface;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -51,8 +52,7 @@ public class Mailer
    * Непосредственно метод, осуществляющий массовую рассылку почты. Перед применением ознакомьтесь с инструкцией.
   */
   @SuppressWarnings({"ReuseOfLocalVariable"})
-  public void startSpam()
-   {
+  public void startSpam() throws ConfigurationException {
     logger.debug("Mailer: startSpam().");
     // Проверяем конфиг для работы майлера - если конфиг пуст или содержит ошибки - ничо не делаем! Ошибка!
     if ((this.config != null) && (StringUtils.isBlank(this.config.getConfigErrors())))
@@ -105,7 +105,7 @@ public class Mailer
           if ((!StringUtils.isBlank(filesPath)) && (new File(filesPath).exists()))
            {
             logger.debug("Files repository path [" + filesPath + "] is ok.");
-            String path = FSUtils.fixFPath(filesPath, true); // <- коректировка пути к файлам с добавлением конечного слеша
+            String path = MyIOUtils.fixFPath(filesPath, true); // <- коректировка пути к файлам с добавлением конечного слеша
 
             // В цикле проходим по всем файлам, указанным в классе рассылки и, если они найдены, добавляем к
             // конфигурации модуля почтовой рассылки (JMail). Если хоть один из файлов не найден - ошибка, рассылка
@@ -362,23 +362,4 @@ public class Mailer
      }
    }
 
-  /**
-   * Метод для тестирования.
-   * @param args String[] параметры метода.
-  */
-  /**
-  public static void main(String[] args)
-   {
-    InitLogger.initLoggers(new String[] {"jdb", "org", "jlib", Defaults.LOGGER_NAME},
-     Level.INFO, Defaults.LOGGER_FILE, Defaults.LOGGER_PATTERN, true);
-    Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
-
-    MailerConfig config = new MailerConfig();
-    config.setDeliveryId(6);
-    config.setDeliveriesFilesPath("c:\\temp\\SpammerFiles");
-    Mailer mailer = new Mailer(config);
-    mailer.startSpam();
-   }
-  */
-
- }
+}

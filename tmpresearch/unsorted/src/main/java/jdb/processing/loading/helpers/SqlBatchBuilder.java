@@ -2,6 +2,7 @@ package jdb.processing.loading.helpers;
 
 import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
+import gusev.dmitry.utils.MyIOUtils;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
 import jdb.exceptions.DBModuleConfigException;
@@ -11,7 +12,6 @@ import jdb.model.dto.TableDTOModel;
 import jdb.processing.data.DataChecker;
 import jdb.processing.sql.generation.DataChangeSQLBuilder;
 import jdb.utils.DBUtils;
-import jlib.utils.FSUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -91,7 +91,7 @@ public class SqlBatchBuilder
     TableDTOModel tableDTOModel;
     try
      {
-      tableDTOModel = (TableDTOModel) FSUtils.deserializeObject(fullFilePath, deleteSource);
+      tableDTOModel = (TableDTOModel) MyIOUtils.deserializeObject(fullFilePath, deleteSource, false);
       logger.debug("Object TableDTOModel was deserialized from file [" + fullFilePath + "]. Checking object.");
      }
     // Несоответсвие классов - преобразуем в IOException

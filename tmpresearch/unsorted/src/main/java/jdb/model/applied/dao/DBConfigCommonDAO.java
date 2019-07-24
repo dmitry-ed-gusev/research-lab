@@ -27,8 +27,7 @@ public class DBConfigCommonDAO
   private static DBConfig config     = null;
 
   /***/
-  public DBConfigCommonDAO(String loggerName, String configFile)
-   {
+  public DBConfigCommonDAO(String loggerName, String configFile) throws org.apache.commons.configuration2.ex.ConfigurationException {
     // Получаем ссылку на логгер
     if (StringUtils.isBlank(loggerName)) {logger = Logger.getLogger(getClass().getName());}
     else                                 {logger = Logger.getLogger(loggerName);}
@@ -47,8 +46,6 @@ public class DBConfigCommonDAO
           DBConfigCommonDAO.config = new DBConfig(configFile);
           logger.info("DBConfig initialized from file [" + configFile + "].");
          }
-        catch (DBModuleConfigException e) {logger.error(e.getMessage());}
-        catch (ConfigurationException e)  {logger.error(e.getMessage());}
         catch (IOException e)             {logger.error(e.getMessage());}
        }
       // Если указано пустое имя файла - нет инициализации, в лог - ошибка!

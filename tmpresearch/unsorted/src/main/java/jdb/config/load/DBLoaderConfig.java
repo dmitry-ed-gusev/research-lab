@@ -7,7 +7,6 @@ import jdb.exceptions.DBModuleConfigException;
 import jdb.model.integrity.DBIntegrityModel;
 import jdb.model.time.DBTimedModel;
 import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -242,7 +241,7 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   public void resetAllowedTables() throws DBModuleConfigException
    {
     String configErrors = DBUtils.getConfigErrors(this.getDbConfig());
-    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().resetAllowedTables();}
+    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().setAllowedTables(null);}
     else {throw new DBModuleConfigException(configErrors);}
    }
 
@@ -253,7 +252,7 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   public void resetDeprecatedTables() throws DBModuleConfigException
    {
     String configErrors = DBUtils.getConfigErrors(this.getDbConfig());
-    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().resetDeprecatedTables();}
+    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().setDeprecatedTables(null);}
     else {throw new DBModuleConfigException(configErrors);}
    }
 
@@ -264,7 +263,7 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   public void resetConstraints() throws DBModuleConfigException
    {
     String configErrors = DBUtils.getConfigErrors(this.getDbConfig());
-    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().resetConstraints();}
+    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().setConstraints(null, null);}
     else {throw new DBModuleConfigException(configErrors);}
    }
 
@@ -300,7 +299,6 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger("jdb");
     Logger logger = Logger.getLogger("jdb");
     DBLoaderConfig config = new DBLoaderConfig();
     logger.debug(config.toString());

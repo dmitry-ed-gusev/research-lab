@@ -4,12 +4,9 @@ import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
 import mass_email_sender.spammer.config.MailerConfig;
 import mass_email_sender.spammer.mailsProcessor.Mailer;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -30,11 +27,7 @@ import java.sql.SQLException;
 public class MAIN
  {
 
-  public static void main(String[] args)
-   {
-    // Инициализируем логгеры для данного приложения
-    InitLogger.initLoggers(new String[] {"jdb", "org", "jlib", Defaults.LOGGER_NAME},
-     Level.DEBUG, Defaults.LOGGER_FILE, Defaults.LOGGER_PATTERN, true);
+  public static void main(String[] args) throws org.apache.commons.configuration2.ex.ConfigurationException {
 
     // Берем логгер приложения
     Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
@@ -79,7 +72,6 @@ public class MAIN
        }
       // Перехват ИС
       catch (DBModuleConfigException e) {logger.error(e.getMessage());}
-      catch (ConfigurationException e)  {logger.error(e.getMessage());}
       catch (IOException e)             {logger.error(e.getMessage());}
       catch (DBConnectionException e)   {logger.error(e.getMessage());}
       catch (SQLException e)            {logger.error(e.getMessage());}

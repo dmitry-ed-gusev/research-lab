@@ -1,5 +1,6 @@
 package jlib.utils;
 
+import gusev.dmitry.utils.MyIOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -37,7 +38,7 @@ public class RandomFileName
       logger.debug("Path [" + catalogPath + "] exists! Processing.");
       // Если используется коррекция имени файла - выполняем ее
       String localPath;
-      if (usePathCorrection) {localPath = FSUtils.fixFPath(catalogPath, true);}
+      if (usePathCorrection) {localPath = MyIOUtils.fixFPath(catalogPath, true);}
       else                   {localPath = catalogPath;}
       // Используемое расширение файла
       String localExt;

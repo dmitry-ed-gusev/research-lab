@@ -1,6 +1,5 @@
 package jlib.system.exec;
 
-import jlib.logging.InitLogger;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -131,7 +130,6 @@ public class WindowsExec
   */
   public static void main(String args[])
    {
-    InitLogger.initLogger(WindowsExec.class.getName());
     Logger logger = Logger.getLogger(WindowsExec.class.getName());
     
     WindowsExec exec = new WindowsExec();

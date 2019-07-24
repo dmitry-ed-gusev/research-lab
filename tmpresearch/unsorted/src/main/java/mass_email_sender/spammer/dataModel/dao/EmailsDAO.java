@@ -4,9 +4,9 @@ import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.model.applied.dao.DBConfigCommonDAO;
 import jdb.processing.sql.execution.SqlExecutor;
-import jlib.logging.InitLogger;
 import mass_email_sender.spammer.Defaults;
 import mass_email_sender.spammer.dataModel.dto.EmailDTO;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -27,7 +27,7 @@ public class EmailsDAO extends DBConfigCommonDAO
   private Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
 
   /** Конструктор. */
-  public EmailsDAO() {super(Defaults.LOGGER_NAME, Defaults.DBCONFIG_FILE);}
+  public EmailsDAO() throws ConfigurationException {super(Defaults.LOGGER_NAME, Defaults.DBCONFIG_FILE);}
 
   /**
    * Поиск всех мыл, по которым были разосланы письма в рамках рассылки с идентифкатором ID. Если такой рассылки нет
@@ -154,9 +154,7 @@ public class EmailsDAO extends DBConfigCommonDAO
    * Метод для тестирования.
    * @param args String[] параметры метода.
   */
-  public static void main(String[] args)
-   {
-    InitLogger.initLoggers(new String[] {"jdb", "org", "jlib", Defaults.LOGGER_NAME});
+  public static void main(String[] args) throws ConfigurationException {
     Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
     logger.info(new EmailsDAO().findByDeliveryId(11).size());
    }

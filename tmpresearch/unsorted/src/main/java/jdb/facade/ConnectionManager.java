@@ -2,7 +2,6 @@ package jdb.facade;
 
 import dgusev.dbpilot.DBConsts;
 import jlib.common.Consts;
-import jlib.logging.InitLogger;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -58,7 +57,6 @@ class ConnectionManager
   private ConnectionManager()
    {
     // Инициализация логгера
-    InitLogger.initLogger(getClass().getName());
     logger.debug("WORKING ConnectionManager constructor.");
    }
 

@@ -1,6 +1,6 @@
 package jdb.utils.helpers;
 
-import jdb.config.connection.BaseDBConfig;
+import dgusev.dbpilot.config.DBConfig;
 import jdb.utils.DBUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -25,7 +25,7 @@ public final class JdbcUrlHelper
    * @param config DBJdbcConfig конфигурация (параметры) соединения с СУБД.
    * @return String сформированный URL для соединения.
   */
-  public static String getInformixJdbcUrl(BaseDBConfig config)
+  public static String getInformixJdbcUrl(DBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
@@ -60,7 +60,7 @@ public final class JdbcUrlHelper
    * @param config DBJdbcConfig конфигурация (параметры) соединения с СУБД.
    * @return String сформированный URL для соединения.
   */
-  public static String getMysqlJdbcUrl(BaseDBConfig config)
+  public static String getMysqlJdbcUrl(DBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
@@ -117,7 +117,7 @@ public final class JdbcUrlHelper
    * @param config DBJdbcConfig конфигурация (параметры) соединения с СУБД.
    * @return String сформированный URL для соединения.
   */
-  public static String getOdbcJdbcUrl(BaseDBConfig config)
+  public static String getOdbcJdbcUrl(DBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
@@ -153,7 +153,7 @@ public final class JdbcUrlHelper
    * @param config DBJdbcConfig конфигурация (параметры) соединения с СУБД.
    * @return String сформированный URL для соединения.
   */
-  public static String getDbfJdbcUrl(BaseDBConfig config)
+  public static String getDbfJdbcUrl(DBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
@@ -182,7 +182,7 @@ public final class JdbcUrlHelper
    * @param config DBJdbcConfig конфигурация (параметры) соединения с СУБД.
    * @return String сформированный URL для соединения.
   */
-  public static String getMssqlJtdsJdbcUrl(BaseDBConfig config)
+  public static String getMssqlJtdsJdbcUrl(DBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;
@@ -222,7 +222,7 @@ public final class JdbcUrlHelper
    * @param config DBJdbcConfig конфигурация (параметры) соединения с СУБД.
    * @return String сформированный URL для соединения.
   */
-  public static String getMssqlNativeJdbcUrl(BaseDBConfig config)
+  public static String getMssqlNativeJdbcUrl(DBConfig config)
    {
     String result;
     StringBuilder jdbcUrl = null;

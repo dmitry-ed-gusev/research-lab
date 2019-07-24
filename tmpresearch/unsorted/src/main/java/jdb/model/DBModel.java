@@ -1,6 +1,6 @@
 package jdb.model;
 
-import dgusev.dbpilot.DBConsts.DBType;
+import dgusev.dbpilot.config.DBType;
 import jdb.exceptions.DBModelException;
 import org.apache.commons.lang.StringUtils;
 

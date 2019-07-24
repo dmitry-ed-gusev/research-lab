@@ -1,10 +1,7 @@
 package jlib;
 
 import dgusev.auth.Password;
-import jlib.exceptions.EmptyObjectException;
-import jlib.exceptions.EmptyPassException;
-import jlib.logging.InitLogger;
-import jlib.utils.FSUtils;
+import gusev.dmitry.utils.MyIOUtils;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -91,8 +88,6 @@ public class MAIN
   @SuppressWarnings({"AccessStaticViaInstance"})
   public static void main(String[] args)
    {
-    InitLogger.initLogger("jlib");
-
     logger.debug("-> " + SystemUtils.getUserDir().getAbsolutePath());
 
     // Получим разобранную командную строку
@@ -141,10 +136,8 @@ public class MAIN
           // Создаем экземпляр класса "пароль"
           Password pass = new Password(password);
           // Записываем созданный экземпляр на диск (сериализуем)
-          FSUtils.serializeObject(pass, passFileDir, passFileName, passFileExt);
+          MyIOUtils.serializeObject(pass, passFileDir, passFileName, passFileExt, false);
          }
-        catch (EmptyPassException e) {logger.error(e.getMessage());}
-        catch (EmptyObjectException e) {logger.error(e.getMessage());}
         catch (IOException e) {logger.error(e.getMessage());}
        }
       else {logger.warn("Password not specified!");}
@@ -157,18 +150,18 @@ public class MAIN
       String passFileName;
       // Читаем каталог, в котором нужно искать файл пароля. Если каталог указан (не пусто значение) - берем его.
       if ((cmdLine.hasOption(OPTION_PASS_FILE_DIR)) && (!StringUtils.isBlank(cmdLine.getOptionValue(OPTION_PASS_FILE_DIR))))
-       {passFileDir = FSUtils.fixFPath(cmdLine.getOptionValue(OPTION_PASS_FILE_DIR), true);}
+       {passFileDir = MyIOUtils.fixFPath(cmdLine.getOptionValue(OPTION_PASS_FILE_DIR), true);}
       // Если же каталог не указан - файл ищется в текущем каталоге
-      else {passFileDir = FSUtils.fixFPath(SystemUtils.getUserDir().getAbsolutePath(), true);}
+      else {passFileDir = MyIOUtils.fixFPath(SystemUtils.getUserDir().getAbsolutePath(), true);}
       // Читаем имя файла пароля. Если имя указано (не пусто значение) - берем его.
       if ((cmdLine.hasOption(OPTION_PASS_FILE_NAME)) && (!StringUtils.isBlank(cmdLine.getOptionValue(OPTION_PASS_FILE_NAME))))
-       {passFileName = FSUtils.fixFPath(cmdLine.getOptionValue(OPTION_PASS_FILE_NAME));}
+       {passFileName = MyIOUtils.fixFPath(cmdLine.getOptionValue(OPTION_PASS_FILE_NAME), false);}
       // Если имя файла пароля не указано - ищем файл пароля с именем по умолчанию
       else {passFileName = DEFAULT_PASS_FILE_NAME + "." + DEFAULT_PASS_FILE_EXTENSION;}
       // Непосредственно читаем файл пароля
       try
        {
-        Password password = (Password) FSUtils.deserializeObject(passFileDir + passFileName, false);
+        Password password = (Password) MyIOUtils.deserializeObject(passFileDir + passFileName, false, false);
         System.out.println("PASSWORD (from file [" + passFileDir + passFileName + "]): " + password.getPassword());
        }
       catch (ClassNotFoundException e) {logger.error(e.getMessage());}

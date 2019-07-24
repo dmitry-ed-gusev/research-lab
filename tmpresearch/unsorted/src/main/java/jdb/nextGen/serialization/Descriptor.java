@@ -3,7 +3,6 @@ package jdb.nextGen.serialization;
 import gusev.dmitry.utils.MyIOUtils;
 import jdb.nextGen.DBasesLoaderCore;
 import jdb.nextGen.exceptions.JdbException;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -82,7 +81,6 @@ public final class Descriptor implements Serializable
   /***/
   public static void main(String[] args)
    {
-    InitLogger.initLoggers(new String[]{"jdb", "jlib"});
     Logger logger = Logger.getLogger("jdb");
     try
      {

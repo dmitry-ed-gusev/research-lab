@@ -1,8 +1,7 @@
 package jlib.fileModel;
 
-import jlib.logging.InitLogger;
+import gusev.dmitry.utils.MyIOUtils;
 import jlib.system.CalcCRC;
-import jlib.utils.FSUtils;
 import jlib.utils.FSUtilsConsts;
 import org.apache.log4j.Logger;
 
@@ -57,7 +56,7 @@ public class FileSystem implements Serializable
     if ((homeDir != null) && (!homeDir.trim().equals("")))
      {
       // Корректоровка значения с добавлением символа "/" в конец
-      String dir = FSUtils.fixFPath(homeDir, true);
+      String dir = MyIOUtils.fixFPath(homeDir, true);
       // Проверка существования каталога и что это действительно каталог
       if ((!new File(dir).exists()) || (!new File(dir).isDirectory())) 
        throw new IOException("Home catalog [" + dir + "] doesn't exists or not a directory!");
@@ -107,7 +106,7 @@ public class FileSystem implements Serializable
   */
   private void addFile(String filePath)
    {
-    String path = FSUtils.fixFPath(filePath);
+    String path = MyIOUtils.fixFPath(filePath, true);
     logger.debug("WORKING addFile(). Processing path [" + path + "].");
     // Проверка валидности пути к файлу (путь не пуст, файл существует и это действительно файл, путь к файлу содержит
     // путь к корневому каталогу данной файловой системы и не содержит каталогов из списка неиндексируемых)
@@ -192,7 +191,7 @@ public class FileSystem implements Serializable
     if ((dir != null) && (!dir.trim().equals("")) /*&& (this.homeDir.indexOf(dir) == -1)*/)
      {
       // Если запрещенный каталог состоит из нескольких - необходимо откорректировать путь
-      String localDir = FSUtils.fixFPath(dir);
+      String localDir = MyIOUtils.fixFPath(dir, false);
       // Если список не проинициализирован - инициализация
       if (this.deprecatedDirsList == null) {this.deprecatedDirsList = new ArrayList<String>();}
       // Непосредственно добавление каталога в список неиндексируемых (если такого еще нет в списке)
@@ -223,7 +222,7 @@ public class FileSystem implements Serializable
     if ((this.deprecatedDirsList != null) && (!this.deprecatedDirsList.isEmpty()) && (path != null) && (!path.trim().equals("")))
      {
       // Локальная копия указанного пути (пофиксим в указанном пути все разделители)
-      String localPath = FSUtils.fixFPath(path);
+      String localPath = MyIOUtils.fixFPath(path, false);
       // Разбиваем строковый путь на каталоги (для точного поиска запрещенных каталогов в нем)
       ArrayList<String> catList = new ArrayList<String>();
       catList.addAll(Arrays.asList(localPath.split(String.valueOf(FSUtilsConsts.DEFAULT_DIR_DELIMITER))));
@@ -442,24 +441,4 @@ public class FileSystem implements Serializable
     return result.toString();
    }
 
-  /**
-   * Данный метод предназначен только для тестирования класса Filesystem.
-   * @param args String[] аргументы метода main.
-  */
-  public static void main(String[] args)
-   {
-    InitLogger.initLogger("jlib");
-    Logger logger = Logger.getLogger(FileSystem.class.getName());
-    try
-     {
-      FileSystem clientFS = new FileSystem("c://////temp/////\\\\\\");
-      clientFS.addDeprecatedDir("ff/ff");
-      clientFS.addDeprecatedDir("c:/tem");
-      clientFS.buildFileSystem();
-      logger.info("-->\n\n" + clientFS);
-     }
-    catch (IOException e) {logger.error("PROCESSING ERROR: " + e.getMessage());}
-
-   }
-  
- }
+}

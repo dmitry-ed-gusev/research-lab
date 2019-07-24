@@ -2,6 +2,8 @@ package jdb.processing.spider;
 
 import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
+import dgusev.dbpilot.config.DBTableType;
+import dgusev.dbpilot.config.DBType;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
 import jdb.exceptions.DBModuleConfigException;
@@ -10,8 +12,6 @@ import jdb.model.TypeMapping;
 import jdb.processing.DBCommonProcessor;
 import jdb.processing.sql.execution.SqlExecutor;
 import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -106,7 +106,7 @@ public class DBSpider extends DBCommonProcessor
    * @throws DBModuleConfigException ошибки конфигурирования соединения с СУБД.
    * @throws DBConnectionException ошибки соединения с СУБД.
   */
-  public ArrayList<TableModel> getUserTablesList(String dbName, DBConsts.TableType[] tableTypes)
+  public ArrayList<TableModel> getUserTablesList(String dbName, DBTableType[] tableTypes)
    throws SQLException, DBConnectionException, DBModuleConfigException
    {
     // Если конфигурация модуля ошибочна - возбуждаем ИС!
@@ -119,8 +119,7 @@ public class DBSpider extends DBCommonProcessor
     if (!StringUtils.isBlank(dbName))
      {
       // Для типов СУБД DBF и ODBC нельзя переключиться на другую БД при подключении
-      if ((DBConsts.DBType.DBF.equals(this.getConfig().getDbType()) ||
-           DBConsts.DBType.ODBC.equals(this.getConfig().getDbType())) &&
+      if ((DBType.DBF.equals(this.getConfig().getDbType()) || DBType.ODBC.equals(this.getConfig().getDbType())) &&
            !dbName.equalsIgnoreCase(this.getConfig().getDbName()))
        {throw new SQLException("Can't change database [" + this.getConfig().getDbName() + "] -> [" +
                                dbName + "] for this DBMS type [" + this.getConfig().getDbType() + "]!");}
@@ -141,7 +140,7 @@ public class DBSpider extends DBCommonProcessor
     if ((tableTypes != null) && (tableTypes.length > 0))
      {
       localTableTypes = new String[tableTypes.length];
-      for (int i = 0; i < tableTypes.length; i++) {localTableTypes[i] = tableTypes[i].strValue();}
+      for (int i = 0; i < tableTypes.length; i++) {localTableTypes[i] = tableTypes[i].getStrValue();}
      }
     else {localTableTypes = null;}
 
@@ -158,7 +157,7 @@ public class DBSpider extends DBCommonProcessor
 
       // Для СУБД Информикс необходимо выбрать БД, если мы хотим получить список таблиц БД отличной, от БД подключения
       // (указанной в конфиге соединения) или если БД в конфиге подключения не указана вовсе.
-      if (this.getConfig().getDbType().equals(DBConsts.DBType.INFORMIX))
+      if (this.getConfig().getDbType().equals(DBType.INFORMIX))
        {
         if (StringUtils.isBlank(this.getConfig().getDbName()) ||
             (!StringUtils.isBlank(this.getConfig().getDbName()) && 
@@ -192,11 +191,10 @@ public class DBSpider extends DBCommonProcessor
             boolean isTableSystem = false;
 
             // Проверяем таблицу на принадлежность к системному каталогу СУБД Информикс
-            if (DBConsts.DBType.INFORMIX.equals(this.getConfig().getDbType()))
+            if (DBType.INFORMIX.equals(this.getConfig().getDbType()))
              {if (DBConsts.SYSCATALOG_INFORMIX.contains(tableName.toUpperCase())) {isTableSystem = true;}}
             // Проверяем таблицу на принадлежность к системному каталогу СУБД MS SQL
-            else if (DBConsts.DBType.MSSQL_JTDS.equals(this.getConfig().getDbType()) ||
-                     DBConsts.DBType.MSSQL_NATIVE.equals(this.getConfig().getDbType()))
+            else if (DBType.MSSQL_JTDS.equals(this.getConfig().getDbType()) || DBType.MSSQL_NATIVE.equals(this.getConfig().getDbType()))
              {
               // Для Сиквел-сервера проверяем принадлежность к системному каталогу только если указана схема для таблицы
               if (!StringUtils.isBlank(tableSchema))
@@ -226,7 +224,7 @@ public class DBSpider extends DBCommonProcessor
               catch (DBModelException e) {logger.error(e.getMessage());}
              }
             // Если же таблица оказалась системной - просто сообщим об этом
-            else {logger.debug("Table [" + tableName + "] is system table in DBMS [" + this.getConfig().getDbType().strValue() + "].");}
+            else {logger.debug("Table [" + tableName + "] is system table in DBMS [" + this.getConfig().getDbType().getStrValue() + "].");}
            }
           // Если полученное имя таблицы пусто - обломс! :)
           else {logger.warn("Empty table name!");}
@@ -237,7 +235,7 @@ public class DBSpider extends DBCommonProcessor
       else {logger.warn("Received tables list is empty or NULL!");}
 
       // Также для СУБД Информикс необходимо вернуть БД в исходное состояние (если мы применяли оператор "DATABASE ...")
-      if (this.getConfig().getDbType().equals(DBConsts.DBType.INFORMIX))
+      if (this.getConfig().getDbType().equals(DBType.INFORMIX))
        {
         // Если в конфиге соединения не указана БД - закроем выбранную
         // todo: читай доку информикса про "CLOSE DATABASE" - может нет необходимости?
@@ -300,7 +298,7 @@ public class DBSpider extends DBCommonProcessor
    * @throws DBModuleConfigException ошибки конфигурирования соединения с СУБД.
    * @throws DBConnectionException ошибки соединения с СУБД.
   */
-  public ArrayList<String> getUserTablesPlainList(String dbName, DBConsts.TableType[] tableTypes, boolean useSchemaPrefix)
+  public ArrayList<String> getUserTablesPlainList(String dbName, DBTableType[] tableTypes, boolean useSchemaPrefix)
    throws DBConnectionException, DBModuleConfigException, SQLException
    {
     // Результат работы метода
@@ -413,10 +411,10 @@ public class DBSpider extends DBCommonProcessor
     // Пытаемся получить список баз данных текущего сервера только если это Informix, MySQL или MSSQL. Для Dbf и ODBC
     // список баз получать нет смысла - т.к. БД этого типа это каталоги.
     if (
-        this.getConfig().getDbType().equals(DBConsts.DBType.INFORMIX)     ||
-        this.getConfig().getDbType().equals(DBConsts.DBType.MYSQL)        ||
-        this.getConfig().getDbType().equals(DBConsts.DBType.MSSQL_JTDS)   ||
-        this.getConfig().getDbType().equals(DBConsts.DBType.MSSQL_NATIVE) 
+        this.getConfig().getDbType().equals(DBType.INFORMIX)     ||
+        this.getConfig().getDbType().equals(DBType.MYSQL)        ||
+        this.getConfig().getDbType().equals(DBType.MSSQL_JTDS)   ||
+        this.getConfig().getDbType().equals(DBType.MSSQL_NATIVE)
        )
      {
       logger.debug("DBType is INFORMIX or MYSQL. Processing DBs list.");
@@ -477,10 +475,10 @@ public class DBSpider extends DBCommonProcessor
       // Если СУБД - Informix или MySQL - получаем список баз данных указанного сервера (если он доступен и у
       // нас есть права), а если тип СУБД - Derby или Dbf - проверяем существование соответствующего каталога на диске.
       if (
-          this.getConfig().getDbType().equals(DBConsts.DBType.INFORMIX)     ||
-          this.getConfig().getDbType().equals(DBConsts.DBType.MYSQL)        ||
-          this.getConfig().getDbType().equals(DBConsts.DBType.MSSQL_JTDS)   ||
-          this.getConfig().getDbType().equals(DBConsts.DBType.MSSQL_NATIVE)
+          this.getConfig().getDbType().equals(DBType.INFORMIX)     ||
+          this.getConfig().getDbType().equals(DBType.MYSQL)        ||
+          this.getConfig().getDbType().equals(DBType.MSSQL_JTDS)   ||
+          this.getConfig().getDbType().equals(DBType.MSSQL_NATIVE)
          )
        {
         logger.debug("DBType is INFORMIX or MYSQL.");
@@ -662,9 +660,7 @@ public class DBSpider extends DBCommonProcessor
    * Метод предназначен только для тестирования данного класса.
    * @param args String[] параметры метода main.
   */
-  public static void main(String[] args)
-   {
-    InitLogger.initLogger("jdb");
+  public static void main(String[] args) throws org.apache.commons.configuration2.ex.ConfigurationException {
     Logger logger = Logger.getLogger(DBSpider.class.getName());
 
 //    ConnectionConfig mysqlConfig = new ConnectionConfig();
@@ -700,10 +696,10 @@ public class DBSpider extends DBCommonProcessor
     try
      {
       DBConfig derbyConfig = new DBConfig();
-      derbyConfig.loadFromFile("derbyConfig.xml");
+      derbyConfig.loadFromFile("derbyConfig.xml", null, true);
 
       DBConfig ifxConfig = new DBConfig();
-      ifxConfig.loadFromFile("ifxNormDocsConfig.xml");
+      ifxConfig.loadFromFile("ifxNormDocsConfig.xml", null, true);
       
       DBSpider spider = new DBSpider(ifxConfig);
       //logger.debug("DBs list -> " + spider.getDBSList());
@@ -711,7 +707,6 @@ public class DBSpider extends DBCommonProcessor
 
      }
     catch (IOException e) {logger.error(e.getMessage());}
-    catch (ConfigurationException e) {logger.error(e.getMessage());}
     //catch (SQLException e) {logger.error(e.getMessage());}
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     //catch (DBConnectionException e) {logger.error(e.getMessage());}

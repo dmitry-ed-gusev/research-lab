@@ -8,8 +8,6 @@ import jdb.nextGen.exceptions.JdbException;
 import jdb.nextGen.models.SimpleDBIntegrityModel;
 import jdb.nextGen.models.SimpleDBTimedModel;
 import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -223,9 +221,7 @@ public final class ModelsBuilder
     return model;
    }
 
-  public static void main(String[] args)
-   {
-    InitLogger.initLoggers(new String[]{"jdb", "jlib", "org"});
+  public static void main(String[] args) throws org.apache.commons.configuration2.ex.ConfigurationException {
     Logger logger = Logger.getLogger("jdb");
 
     // Таблицы системы Шторм - для обновления
@@ -248,7 +244,6 @@ public final class ModelsBuilder
      }
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     catch (DBConnectionException e)   {logger.error(e.getMessage());}
-    catch (ConfigurationException e)  {logger.error(e.getMessage());}
     catch (IOException e)             {logger.error(e.getMessage());}
     //catch (SQLException e)            {logger.error(e.getMessage());}
     //catch (JdbException e)            {logger.error(e.getMessage());}

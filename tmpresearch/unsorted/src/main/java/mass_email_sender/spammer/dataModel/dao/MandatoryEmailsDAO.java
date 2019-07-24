@@ -6,6 +6,7 @@ import jdb.model.applied.dao.DBConfigCommonDAO;
 import jdb.processing.sql.execution.SqlExecutor;
 import mass_email_sender.spammer.Defaults;
 import mass_email_sender.spammer.mailsList.interfaces.EmailsListInterface;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -26,7 +27,7 @@ public class MandatoryEmailsDAO extends DBConfigCommonDAO implements EmailsListI
   private Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
 
   /** Конструктор. Поля инициализируются значениями по умолчанию. */
-  public MandatoryEmailsDAO() {super(Defaults.LOGGER_NAME, Defaults.DBCONFIG_FILE);}
+  public MandatoryEmailsDAO() throws ConfigurationException {super(Defaults.LOGGER_NAME, Defaults.DBCONFIG_FILE);}
 
   public TreeMap<String, Integer> getEmailsList()
    {

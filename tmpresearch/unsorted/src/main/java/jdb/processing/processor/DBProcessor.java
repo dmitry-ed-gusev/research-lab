@@ -1,7 +1,7 @@
 package jdb.processing.processor;
 
-import dgusev.dbpilot.DBConsts.DBType;
 import dgusev.dbpilot.config.DBConfig;
+import dgusev.dbpilot.config.DBType;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.model.structure.DBStructureModel;
@@ -9,7 +9,6 @@ import jdb.processing.DBCommonProcessor;
 import jdb.processing.spider.DBSpider;
 import jdb.processing.sql.generation.SQLGenerator;
 import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -92,59 +91,4 @@ public class DBProcessor extends DBCommonProcessor
     return result;
    }
 
-  /**
-   * Метод предназначен только для тестирования данного класса.
-   * @param args String[] параметры метода main.
-  */
-  public static void main(String[] args)
-   {
-    InitLogger.initLogger("jdb");
-    Logger logger = Logger.getLogger(DBProcessor.class.getName());
-
-    // Убираем отладочный вывод universalConnector
-    InitLogger.initLogger("jdb.universalConnector", Level.INFO);
-    // Убираем отладочный вывод universalConfig
-    InitLogger.initLogger("jdb.universalConfig", Level.INFO);
-
-    /**
-    ConnectionConfig mysqlConfig = new ConnectionConfig();
-    mysqlConfig.setDbConnectionType("direct");
-    mysqlConfig.setDbType("mysql");
-    mysqlConfig.setDbHost("appserver:3306");
-    mysqlConfig.setDbName("_storm_");
-    mysqlConfig.setDbUser("root_");
-    mysqlConfig.setDbPassword("mysql");
-
-    ConnectionConfig mysqlClientConfig = new ConnectionConfig();
-    mysqlClientConfig.setDbConnectionType("direct");
-    mysqlClientConfig.setDbType("mysql");
-    mysqlClientConfig.setDbHost("appserver:3306");
-    mysqlClientConfig.setDbName("storm_test_test");
-    mysqlClientConfig.setDbUser("root");
-    mysqlClientConfig.setDbPassword("mysql");
-
-    ConnectionConfig mysqlLocalConfig = new ConnectionConfig();
-    mysqlLocalConfig.setDbConnectionType("direct");
-    mysqlLocalConfig.setDbType("mysql");
-    mysqlLocalConfig.setDbHost("localhost:3306");
-    mysqlLocalConfig.setDbName("storm_client");
-    mysqlLocalConfig.setDbUser("root");
-    mysqlLocalConfig.setDbPassword("mysql");
-
-    ConnectionConfig ifxConfig = new ConnectionConfig();
-    ifxConfig.setDbConnectionType("direct");
-    ifxConfig.setDbType("informix");
-    ifxConfig.setDbHost("appserver:1526");
-    ifxConfig.setDbServerName("hercules");
-    ifxConfig.setDbName("storm");
-    ifxConfig.setDbUser("informix");
-    ifxConfig.setDbPassword("ifx_dba_019");
-
-    ConnectionConfig dbfConfig = new ConnectionConfig();
-    dbfConfig.setDbConnectionType("direct");
-    dbfConfig.setDbType("dbf");
-    dbfConfig.setDbName("q:/new/fleet");
-    */
-   }
-
- }
+}

@@ -3,7 +3,6 @@ package jdb.model.structure;
 import jdb.exceptions.DBModelException;
 import jdb.model.TableModel;
 import jdb.model.structure.key.IndexedField;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -417,7 +416,6 @@ public class TableStructureModel extends TableModel implements Serializable, Com
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger(TableStructureModel.class.getName());
     Logger logger = Logger.getLogger(TableStructureModel.class.getName());
     try
      {

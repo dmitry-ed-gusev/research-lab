@@ -2,6 +2,7 @@ package jdb.nextGen;
 
 import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
+import gusev.dmitry.utils.MyIOUtils;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.monitoring.DBProcessingMonitor;
@@ -11,12 +12,8 @@ import jdb.nextGen.models.SimpleDBTimedModel;
 import jdb.nextGen.serialization.Descriptor;
 import jdb.nextGen.serialization.SerializableResultSet;
 import jdb.utils.DBUtils;
-import jlib.exceptions.EmptyObjectException;
-import jlib.logging.InitLogger;
-import jlib.utils.FSUtils;
 import jlib.utils.JLibCommonUtils;
 import jlib.utils.string.StrUtilities;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -161,7 +158,7 @@ public final class DBasesLoaderCore
               if ((srs != null) && !srs.isEmpty())
                {
                 String fileName = StrUtilities.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, counter);
-                FSUtils.serializeObject(srs, path, fileName, EXTENSION_TABLE);
+                MyIOUtils.serializeObject(srs, path, fileName, EXTENSION_TABLE, false);
                 // Запись данных в дескриптор выгружаемой таблицы
                 if (descriptor == null) {descriptor = new Descriptor(tableName, DBasesLoaderCore.ObjectType.TABLE);}
                 descriptor.addItem(fileName + "." + EXTENSION_TABLE);
@@ -170,7 +167,7 @@ public final class DBasesLoaderCore
                 // Увеличение счетчика выгружаемых файлов
                 counter++;
                 // todo: Глубокая отладка. РЕАЛЬНО записанный файл на диск. В продакшене можно удалить!
-                logger.debug("Writed file [" + FSUtils.fixFPath(path, true) + fileName + "." + EXTENSION_TABLE + "].");
+                logger.debug("Writed file [" + MyIOUtils.fixFPath(path, true) + fileName + "." + EXTENSION_TABLE + "].");
                }
               // Если последний выгруженный SRS пуст - итерации прекращаем!
               else {iterationFlag = false;}
@@ -179,13 +176,12 @@ public final class DBasesLoaderCore
             // После выполнения всех операций с данными - записываем на диск дескриптор сериализованной таблицы.
             // Дескриптор записывается только в том случае, если он был проинициализирован, т.е. если были
             // записаны на диск какие-либо данные.
-            if (descriptor != null) {FSUtils.serializeObject(descriptor, path, DESCRIPTOR_FILE_NAME, EXTENSION_TABLE);}
+            if (descriptor != null) {MyIOUtils.serializeObject(descriptor, path, DESCRIPTOR_FILE_NAME, EXTENSION_TABLE, false);}
             // Если дескриптор не инициализирован, то просто сообщим в лог, что ничего не выгружено
             else {logger.info("No data was serialized for table [" + tableName + "].");}
            }
           // Перехватываемые ИС обертываются в одну - JdbException. Зачем? См. коммент *** выше.
           catch (SQLException e)         {throw new JdbException(e);}
-          catch (EmptyObjectException e) {throw new JdbException(e);}
           catch (IOException e)          {throw new JdbException(e);}
           // Освобождение ресурсов
           finally
@@ -232,7 +228,7 @@ public final class DBasesLoaderCore
              {
               // Создаем каталог для выгрузки конкретной таблицы. Если создание каталога не
               // удалось - возбуждается ИС и обработка прерывается
-              if (new File(FSUtils.fixFPath(path, true) + tableName.toUpperCase()).mkdir())
+              if (new File(MyIOUtils.fixFPath(path, true) + tableName.toUpperCase()).mkdir())
                {
                 // Получаем таймштамп для данной таблицы
                 Timestamp timestamp = null;
@@ -248,7 +244,7 @@ public final class DBasesLoaderCore
                 try
                  {
                   // Непосредственно выгрузка таблицы на диск
-                  boolean unloadTableResult = DBasesLoaderCore.unloadTableToDisk(conn, FSUtils.fixFPath(path, true) + tableName,
+                  boolean unloadTableResult = DBasesLoaderCore.unloadTableToDisk(conn, MyIOUtils.fixFPath(path, true) + tableName,
                                                tableName, timestamp, null, keysList);
 
                   // Инициализация дескриптора и запись в него выгруженной таблицы, только если что-то РЕАЛЬНО было выгружено
@@ -263,18 +259,18 @@ public final class DBasesLoaderCore
                   else
                    {
                     // Очистка после пустой выгрузки таблицы на диск (удаление каталога)
-                    FSUtils.delTree(FSUtils.fixFPath(path, true) + tableName.toUpperCase());
+                    MyIOUtils.delTree(MyIOUtils.fixFPath(path, true) + tableName.toUpperCase());
                    }
                  }
                 catch (JdbException e)
                  {
                   // Очистка после неудачной выгрузки таблицы на диск
-                  FSUtils.delTree(FSUtils.fixFPath(path, true) + tableName.toUpperCase());
+                  MyIOUtils.delTree(MyIOUtils.fixFPath(path, true) + tableName.toUpperCase());
                   // Вывод сообщения ИС.
                   logger.error("Error processing table [" + tableName + "]! Message [" + e.getMessage() + "].");
                  }
                }
-              else {logger.error("Can't create catalog [" + (FSUtils.fixFPath(path, true) + tableName) + "] for " +
+              else {logger.error("Can't create catalog [" + (MyIOUtils.fixFPath(path, true) + tableName) + "] for " +
                                  "table [" + tableName + "]! Table skipped.");}
              }
             // Пустое имя таблицы - сообщим в лог (WARN)
@@ -288,8 +284,7 @@ public final class DBasesLoaderCore
             // Конструкция try-catch и "обертывание" ИС в JdbException необходимы для того, чтобы вызывающий код мог
             // корректно очистить диск после неудачной выгрузки БД - удалить папку, созданную для выгрузки БД.
             // (в противном случае пришлось бы писать catch() для каждой ИС и в каждом модуле были бы одни и те же действия)
-            try {FSUtils.serializeObject(descriptor, path, DESCRIPTOR_FILE_NAME, EXTENSION_DB);}
-            catch (EmptyObjectException e) {throw new JdbException("Can't serialize db descriptor!", e);}
+            try {MyIOUtils.serializeObject(descriptor, path, DESCRIPTOR_FILE_NAME, EXTENSION_DB, false);}
             catch (IOException e)          {throw new JdbException("Can't serialize db descriptor!", e);}
            }
           // Если дескриптор проинициализирован не был - это означает, что никакие данные вообще не были выгружены.
@@ -405,8 +400,8 @@ public final class DBasesLoaderCore
         if (!StringUtils.isBlank(path) && new File(path).exists() && new File(path).isDirectory())
          {
           // Вначале - из каталога загружаем дескриптор таблицы. Если не получилось - возбуждаем ИС.
-          String descriptorPath = FSUtils.fixFPath(path, true) + DESCRIPTOR_FILE_NAME + "." + EXTENSION_TABLE;
-          Descriptor tableDescriptor = (Descriptor) FSUtils.deserializeObject(descriptorPath, false);
+          String descriptorPath = MyIOUtils.fixFPath(path, true) + DESCRIPTOR_FILE_NAME + "." + EXTENSION_TABLE;
+          Descriptor tableDescriptor = (Descriptor) MyIOUtils.deserializeObject(descriptorPath, false, false);
 
           // После успешного прочтения дескриптора - проверяем имя таблицы и тип объекта
           if ((ObjectType.TABLE.equals(tableDescriptor.getObjectType()))
@@ -429,11 +424,11 @@ public final class DBasesLoaderCore
                 // по таймштампу, то при обрыве загрузки все последующие файлы и данные (для данной таблицы) загружены не
                 // будут и, соотв., не должно возникать "дыр" в данных!
                 SerializableResultSet srs =
-                 (SerializableResultSet)FSUtils.deserializeObject(FSUtils.fixFPath(path, true) + tableFile, false);
+                 (SerializableResultSet)MyIOUtils.deserializeObject(MyIOUtils.fixFPath(path, true) + tableFile, false, false);
                 // Если прочитанный SRS не пуст и имя таблицы совпадает с указанным - загружаем его (SRS) в БД
                 if ((!srs.isEmpty()) && (!useTableNameCheck || tableName.toUpperCase().equals(srs.getTableName())))
                  {
-                  logger.debug("Data ok in file: [" + (FSUtils.fixFPath(path, true) + tableFile) + "]. Rows: " + srs.getRowsCount());
+                  logger.debug("Data ok in file: [" + (MyIOUtils.fixFPath(path, true) + tableFile) + "]. Rows: " + srs.getRowsCount());
                   DBasesLoaderCore.loadSrsToDB(conn, srs, tableName);
                   // После УСПЕШНОЙ загрузки данных из очередного файла выполняем COMMIT - запись изменений в БД
                   conn.commit();
@@ -442,7 +437,7 @@ public final class DBasesLoaderCore
                 // Соответственно обработка - прерывается.
                 else
                  {
-                  throw new JdbException("SRS in file [" + (FSUtils.fixFPath(path, true) + tableFile) +
+                  throw new JdbException("SRS in file [" + (MyIOUtils.fixFPath(path, true) + tableFile) +
                    "] is empty or invalid table name [" + srs.getTableName() + "] (must be: " + tableName + ")!");
                  }
                 // Увеличим счетчик кол-ва обработанных файлов
@@ -486,15 +481,15 @@ public final class DBasesLoaderCore
     if (conn != null)
      {
       // Проверка каталога, из которого загружаем БД (должен существовать, быть каталогом и быть непустым)
-      if (!StringUtils.isBlank(path) && new File(path).exists() && new File(path).isDirectory() && !FSUtils.isEmptyDir(path))
+      if (!StringUtils.isBlank(path) && new File(path).exists() && new File(path).isDirectory() && !MyIOUtils.isEmptyDir(path))
        {
         // Проверяем список таблиц (должен быть не пуст)
         if ((tablesList != null) && (!tablesList.isEmpty()))
          {
           // Вначале - из каталога загружаем дескриптор БД. Если не получилось - возбуждаем ИС.
-          String descriptorPath = FSUtils.fixFPath(path, true) + DESCRIPTOR_FILE_NAME + "." + EXTENSION_DB;
+          String descriptorPath = MyIOUtils.fixFPath(path, true) + DESCRIPTOR_FILE_NAME + "." + EXTENSION_DB;
           // Ошибка при загрузке дескриптора БД приводит к останову. Мы не перехватываем ИС при десериализации объекта SRS.
-          Descriptor dbDescriptor = (Descriptor) FSUtils.deserializeObject(descriptorPath, false);
+          Descriptor dbDescriptor = (Descriptor) MyIOUtils.deserializeObject(descriptorPath, false, false);
 
           // После успешного прочтения дескриптора - проверяем тип объекта. Имя БД в данной версии не проверяется, т.е.
           // данные возможно загружать в любую БД - необходимо лишь наличие в ней (в БД) соотв. таблиц.
@@ -524,8 +519,8 @@ public final class DBasesLoaderCore
                   // Сообщение об обрабатываемой таблице классу-монитору
                   if (monitor != null) {monitor.processMessage("[" + table + "]");}
 
-                  String tablePath = FSUtils.fixFPath(path, true) + table.toUpperCase();
-                  if (new File(tablePath).exists() && new File(tablePath).isDirectory() && !FSUtils.isEmptyDir(tablePath))
+                  String tablePath = MyIOUtils.fixFPath(path, true) + table.toUpperCase();
+                  if (new File(tablePath).exists() && new File(tablePath).isDirectory() && !MyIOUtils.isEmptyDir(tablePath))
                    {
                     // Конструкция try-catch применена для того, чтобы ошибка загрузки одной таблицы не оборвал загрузку
                     // всей БД в целом. Возникающие ИС не оборачиваем в свою ИС (JdbException) - это будет делать вызывающий
@@ -602,9 +597,7 @@ public final class DBasesLoaderCore
     else {throw new JdbException("Empty DBMS connection!");}
    }
 
-  public static void main(String[] args)
-   {
-    InitLogger.initLogger("jdb");
+  public static void main(String[] args) throws org.apache.commons.configuration2.ex.ConfigurationException {
     Logger logger = Logger.getLogger("jdb");
 
     try
@@ -620,7 +613,7 @@ public final class DBasesLoaderCore
       // Выгрузка на диск
       String basePath = "c:\\temp\\supid";
       new File(basePath).mkdirs();
-      FSUtils.clearDir(basePath);
+      MyIOUtils.clearDir(basePath);
       DBasesLoaderCore.unloadDBToDisk(supidConn, basePath, "supid", tables, null, null);
 
       // Загрузка данных в БД
@@ -629,7 +622,6 @@ public final class DBasesLoaderCore
      }
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     catch (DBConnectionException e)   {logger.error(e.getMessage());}
-    catch (ConfigurationException e)  {logger.error(e.getMessage());}
     catch (IOException e)             {logger.error(e.getMessage());}
     catch (JdbException e)            {logger.error(e.getMessage());}
     catch (ClassNotFoundException e)  {logger.error(e.getMessage());}

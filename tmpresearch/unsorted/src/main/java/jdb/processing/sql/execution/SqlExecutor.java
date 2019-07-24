@@ -1,6 +1,6 @@
 package jdb.processing.sql.execution;
 
-import jdb.config.connection.BaseDBConfig;
+import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.filter.sql.SqlFilter;
@@ -230,7 +230,7 @@ public class SqlExecutor
    * использует указанную в параметрах конфигурацию соединения - перед выполнением запроса соединяемся с БД.
    * При ошибках в параметрах (конфигурация соединения с СУБД или неверном sql-запросе) будет сгенерирована ИС. Метод
    * может использовать фильтрацию sql-запросов (см. параметр useSqlFilter).
-   * @param config BaseDBConfig конфигурация соединения с СУБД. Если конфигурация пуста или неверна, то запрос
+   * @param config DBConfig конфигурация соединения с СУБД. Если конфигурация пуста или неверна, то запрос
    * выполнен не будет, а будет сгенерирована ИС.
    * @param sql выполняемый SELECT-запрос. Если запрос не SELECT-типа, то будет выдана ошибка (ИС)!
    * @param useSqlFilter boolean сипользовать или нет фильтрацию sql-запроса перед выполнением
@@ -240,7 +240,7 @@ public class SqlExecutor
    * @throws jdb.exceptions.DBConnectionException ошибки соединения с СУБД (соединение пусто).
    * @throws jdb.exceptions.DBModuleConfigException неверный или пустой конфиг для соединения с СУБД.
   */
-  public static String executeStrSelectQuery(BaseDBConfig config, String sql, boolean useSqlFilter)
+  public static String executeStrSelectQuery(DBConfig config, String sql, boolean useSqlFilter)
    throws SQLException, DBModuleConfigException, DBConnectionException
    {
     logger.debug("executeStrSelectQuery: executing query [" + sql + "].");
@@ -278,7 +278,7 @@ public class SqlExecutor
    * использует указанную в параметрах конфигурацию соединения - перед выполнением запроса соединяемся с БД.
    * При ошибках в параметрах (конфигурация соединения с СУБД или неверном sql-запросе) будет сгенерирована ИС. Метод
    * всегда использует фильтрацию sql-запросов.
-   * @param config BaseDBConfig конфигурация соединения с СУБД. Если конфигурация пуста или неверна, то запрос
+   * @param config DBConfig конфигурация соединения с СУБД. Если конфигурация пуста или неверна, то запрос
    * выполнен не будет, а будет сгенерирована ИС.
    * @param sql выполняемый SELECT-запрос. Если запрос не SELECT-типа, то будет выдана ошибка (ИС)!
    * @return String курсор (в строковом виде), полученный в результате выборки из БД или значение null.
@@ -286,13 +286,13 @@ public class SqlExecutor
    * @throws jdb.exceptions.DBConnectionException ошибки соединения с СУБД (соединение пусто).
    * @throws jdb.exceptions.DBModuleConfigException неверный или пустой конфиг для соединения с СУБД.
   */
-  public static String executeStrSelectQuery(BaseDBConfig config, String sql)
+  public static String executeStrSelectQuery(DBConfig config, String sql)
    throws SQLException, DBModuleConfigException, DBConnectionException {return SqlExecutor.executeStrSelectQuery(config, sql, true);}
   
   /**
    * Метод выполняет один не-"SELECT..." запрос для указанного в конфиге config соединения с СУБД. Метод может
    * использовать фильтрацию sql-запросов (см. параметр useSqlFilter).
-   * @param config BaseDBConfig конфиг для соединения с СУБД.
+   * @param config DBConfig конфиг для соединения с СУБД.
    * @param sql выполняемый запрос.
    * @param useSqlFilter boolean сипользовать или нет фильтрацию sql-запроса перед выполнением
    * (true=использовать/false=не использовать).
@@ -301,7 +301,7 @@ public class SqlExecutor
    * @throws jdb.exceptions.DBModuleConfigException ошибки конфигурации соединения с СУБД.
    * @throws jdb.exceptions.DBConnectionException ошибки соединения с СУБД.
   */
-  public static int executeUpdateQuery(BaseDBConfig config, String sql, boolean useSqlFilter)
+  public static int executeUpdateQuery(DBConfig config, String sql, boolean useSqlFilter)
    throws SQLException, DBConnectionException, DBModuleConfigException
    {
     logger.debug("executeUpdate: executing query [" + sql + "].");
@@ -337,20 +337,20 @@ public class SqlExecutor
   /**
    * Метод выполняет один не-"SELECT..." запрос для указанного в конфиге config соединения с СУБД. Метод всегда
    * использует фильтрацию sql-запросов.
-   * @param config BaseDBConfig конфиг для соединения с СУБД.
+   * @param config DBConfig конфиг для соединения с СУБД.
    * @param sql выполняемый запрос.
    * @return int результат выполнения запроса.
    * @throws java.sql.SQLException ошибка при создании объекта Statement.
    * @throws jdb.exceptions.DBModuleConfigException ошибки конфигурации соединения с СУБД.
    * @throws jdb.exceptions.DBConnectionException ошибки соединения с СУБД.
   */
-  public static int executeUpdateQuery(BaseDBConfig config, String sql)
+  public static int executeUpdateQuery(DBConfig config, String sql)
    throws SQLException, DBConnectionException, DBModuleConfigException {return SqlExecutor.executeUpdateQuery(config, sql, true);}
 
   /**
    * Метод выполняет один не-"SELECT..." запрос для указанного в конфиге config соединения с СУБД. Метод может
    * использовать фильтрацию sql-запросов (см. параметр useSqlFilter).
-   * @param config BaseDBConfig конфиг для соединения с СУБД.
+   * @param config DBConfig конфиг для соединения с СУБД.
    * @param sql StrinBuilder выполняемый запрос.
    * @param useSqlFilter boolean сипользовать или нет фильтрацию sql-запроса перед выполнением
    * (true=использовать/false=не использовать).
@@ -359,7 +359,7 @@ public class SqlExecutor
    * @throws jdb.exceptions.DBModuleConfigException ошибки конфигурации соединения с СУБД.
    * @throws jdb.exceptions.DBConnectionException ошибки соединения с СУБД.
   */
-  public static int executeUpdateQuery(BaseDBConfig config, StringBuilder sql, boolean useSqlFilter)
+  public static int executeUpdateQuery(DBConfig config, StringBuilder sql, boolean useSqlFilter)
    throws SQLException, DBConnectionException, DBModuleConfigException
    {
     if ((sql == null) || (StringUtils.isBlank(sql.toString()))) {throw new SQLException("Empty sql-query!");}
@@ -369,14 +369,14 @@ public class SqlExecutor
   /**
    * Метод выполняет один не-"SELECT..." запрос для указанного в конфиге config соединения с СУБД. Метод всегда
    * использует фильтрацию sql-запросов (см. параметр useSqlFilter).
-   * @param config BaseDBConfig конфиг для соединения с СУБД.
+   * @param config DBConfig конфиг для соединения с СУБД.
    * @param sql выполняемый запрос.
    * @return int результат выполнения запроса.
    * @throws java.sql.SQLException ошибка при создании объекта Statement.
    * @throws jdb.exceptions.DBModuleConfigException ошибки конфигурации соединения с СУБД.
    * @throws jdb.exceptions.DBConnectionException ошибки соединения с СУБД.
   */
-  public static int executeUpdateQuery(BaseDBConfig config, StringBuilder sql)
+  public static int executeUpdateQuery(DBConfig config, StringBuilder sql)
    throws DBConnectionException, DBModuleConfigException, SQLException
    {return SqlExecutor.executeUpdateQuery(config, sql, true);}
 

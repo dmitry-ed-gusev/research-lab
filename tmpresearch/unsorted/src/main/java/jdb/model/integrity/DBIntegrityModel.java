@@ -1,19 +1,13 @@
 package jdb.model.integrity;
 
 import dgusev.dbpilot.DBConsts;
-import dgusev.dbpilot.config.DBConfig;
-import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
-import jdb.exceptions.DBModuleConfigException;
 import jdb.model.DBModel;
 import jdb.monitoring.DBProcessingMonitor;
-import jdb.processing.DBEngineer;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -558,58 +552,6 @@ public class DBIntegrityModel extends DBModel implements Serializable
     if ((this.tables != null) && (!this.tables.isEmpty()))
      {result = this.tables.size();}
     return result;
-   }
-
-  /**
-   * Метод только для тестирования класса!
-   * @param args String[] параметры метода.
-  */
-  public static void main(String[] args)
-   {
-    InitLogger.initLogger("jdb");
-    Logger logger = Logger.getLogger(TableIntegrityModel.class.getName());
-
-    DBConfig mysqlConfig1 = new DBConfig();
-    mysqlConfig1.setDbType(DBConsts.DBType.MYSQL);
-    mysqlConfig1.setHost("localhost:3306");
-    mysqlConfig1.setDbName("storm");
-    mysqlConfig1.setUser("root");
-    mysqlConfig1.setPassword("mysql");
-    //mysqlConfig1.addAllowedTable("items");
-    //mysqlConfig1.addAllowedTable("ruleset");
-
-    DBConfig ifxConfig1 = new DBConfig();
-    ifxConfig1.setDbType(DBConsts.DBType.INFORMIX);
-    ifxConfig1.setServerName("hercules");
-    ifxConfig1.setHost("appserver:1526");
-    ifxConfig1.setDbName("storm");
-    ifxConfig1.setUser("informix");
-    ifxConfig1.setPassword("ifx_dba_019");
-    //ifxConfig1.addAllowedTable("items");
-    //ifxConfig1.addAllowedTable("ruleset");
-
-    try
-     {
-      DBEngineer serverEngineer = new DBEngineer(ifxConfig1);
-      DBIntegrityModel serverModel = serverEngineer.getDBIntegrityModel();
-
-      DBEngineer clientEngineer = new DBEngineer(mysqlConfig1);
-      DBIntegrityModel clientModel = clientEngineer.getDBIntegrityModel();
-
-      if ((serverModel != null) && (clientModel != null))
-       {
-        logger.debug("\n\n-----------------------------------------------------------------------\n\n");
-        logger.debug("multi multiThreadsHelpers -> " + serverModel.simpleMultiThreadsCompareTo(clientModel, false, 130, null, 2000));
-        logger.debug("\n\n-----------------------------------------------------------------------\n\n");
-        logger.debug("standart -> " + serverModel.compareTo(clientModel, false, null, 2000));
-       }
-
-     }
-    catch (DBModuleConfigException e) {logger.error(e.getMessage());}
-    catch (DBConnectionException e) {logger.error(e.getMessage());}
-    catch (DBModelException e) {logger.error(e.getMessage());}
-    catch (SQLException e) {logger.error(e.getMessage());}
-
    }
 
  }

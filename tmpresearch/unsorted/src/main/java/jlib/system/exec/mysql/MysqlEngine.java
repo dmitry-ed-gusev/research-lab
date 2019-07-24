@@ -1,6 +1,5 @@
 package jlib.system.exec.mysql;
 
-import jlib.logging.InitLogger;
 import jlib.system.exec.WindowsExec;
 import jlib.system.exec.WindowsExecResult;
 import org.apache.log4j.Logger;
@@ -92,7 +91,6 @@ public class MysqlEngine
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger("updater");
     Logger logger = Logger.getLogger("updater");
     MysqlEngine mysql = new MysqlEngine();
     logger.info(mysql.isMysqlServiceInstalled());

@@ -2,7 +2,6 @@ package jdb.model.structure.key;
 
 import dgusev.dbpilot.DBConsts;
 import jdb.exceptions.DBModelException;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -148,7 +147,6 @@ public class IndexedField implements Comparable, Serializable
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger(IndexedField.class.getName());
     Logger logger = Logger.getLogger(IndexedField.class.getName());
     try
      {

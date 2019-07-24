@@ -4,11 +4,11 @@ import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.model.applied.dao.DBConfigCommonDAO;
 import jdb.processing.sql.execution.SqlExecutor;
-import jlib.logging.InitLogger;
 import mass_email_sender.spammer.Defaults;
 import mass_email_sender.spammer.dataModel.dto.DeliveryDTO;
 import mass_email_sender.spammer.dataModel.dto.DeliveryFileDTO;
 import mass_email_sender.spammer.dataModel.dto.RecipientTypeDTO;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -28,14 +28,14 @@ public class DeliveriesDAO extends DBConfigCommonDAO
   private Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
 
   /** Конструктор. Поля инициализируются значениями по умолчанию. */
-  public DeliveriesDAO() {super(Defaults.LOGGER_NAME, Defaults.DBCONFIG_FILE);}
+  public DeliveriesDAO() throws ConfigurationException {super(Defaults.LOGGER_NAME, Defaults.DBCONFIG_FILE);}
 
   /**
    * Конструктор. Значением по умолчанию инициализируется только наименование логгера, конфиг-файл для соединения
    * с СУБД указывается в качестве параметра конструктора.
    * @param dbConfigFileName String конфиг-файл для соединения с СУБД. 
   */
-  public DeliveriesDAO(String dbConfigFileName) {super(Defaults.LOGGER_NAME, dbConfigFileName);}
+  public DeliveriesDAO(String dbConfigFileName) throws ConfigurationException {super(Defaults.LOGGER_NAME, dbConfigFileName);}
 
   /**
    * Метод находит и возвращает записи из таблицы рассылок (dbo.deliveries). Если метод ничего не нашел - метод
@@ -414,9 +414,7 @@ public class DeliveriesDAO extends DBConfigCommonDAO
    * Метод для тестирования.
    * @param args String[] параметры метода.
   */
-  public static void main(String[] args)
-   {
-    InitLogger.initLoggers(new String[] {"jdb", "org", "jlib", Defaults.LOGGER_NAME});
+  public static void main(String[] args) throws ConfigurationException {
     Logger logger = Logger.getLogger(Defaults.LOGGER_NAME);
 
     // Добавление доставки

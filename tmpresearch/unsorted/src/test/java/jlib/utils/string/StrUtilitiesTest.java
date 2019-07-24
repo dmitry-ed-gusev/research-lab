@@ -1,6 +1,5 @@
 package jlib.utils.string;
 
-import jlib.logging.InitLogger;
 import jlib.utils.string.StrUtilities;
 import org.junit.Test;
 
@@ -17,7 +16,6 @@ public class StrUtilitiesTest
   @Test
   public void testGetFixedLenghtName()
    {
-    InitLogger.initLogger("jlib");
     assertEquals("00012", StrUtilities.getFixedLengthName(5, '0', "12"));
     assertEquals("12",    StrUtilities.getFixedLengthName(1, 'x', "12"));
     assertEquals(null,    StrUtilities.getFixedLengthName(-1, '0', "12"));

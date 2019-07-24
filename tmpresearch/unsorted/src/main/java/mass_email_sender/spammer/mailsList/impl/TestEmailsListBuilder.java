@@ -1,6 +1,5 @@
 package mass_email_sender.spammer.mailsList.impl;
 
-import jlib.logging.InitLogger;
 import mass_email_sender.spammer.Defaults;
 import mass_email_sender.spammer.dataModel.dto.DeliveryFileDTO;
 import mass_email_sender.spammer.mailsList.interfaces.EmailsListInterface;
@@ -81,7 +80,6 @@ public class TestEmailsListBuilder implements EmailsListInterface
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger(DeliveryFileDTO.class.getName());
     Logger logger = Logger.getLogger(DeliveryFileDTO.class.getName());
     TestEmailsListBuilder builder = new TestEmailsListBuilder();
     logger.info(builder.getEmailsList().size());

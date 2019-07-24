@@ -57,10 +57,12 @@ public class MultiThreadsSqlBatchExecutor
     // Объектная переменная для хранения и доступа из потоков к счетчику обработанных запросов. Инициализируем
     // переменную сразу. Объявление final - к данной переменной осуществляется доступ из всех создаваемых потоков.
     final TotalProcessedQueries total  = new TotalProcessedQueries();
+
     // Проверяем конфигурацию на ошибки, если они есть - ничего не делаем (возбуждаем ИС)!
-    String configErrors = DBUtils.getConfigErrors(config);
-    if (!StringUtils.isBlank(configErrors)) {throw new DBModuleConfigException(configErrors);}
-    else                                    {logger.debug("Batch configuration is OK. Testing connection to DBMS.");}
+    //String configErrors = DBUtils.getConfigErrors(config);
+    //if (!StringUtils.isBlank(configErrors)) {throw new DBModuleConfigException(configErrors);}
+    //else                                    {logger.debug("Batch configuration is OK. Testing connection to DBMS.");}
+
     // Проверяем соединение с СУБД перед выполнением вычислений и запуском цикла создания потоков
     Connection connection = null;
     Statement  statement  = null;

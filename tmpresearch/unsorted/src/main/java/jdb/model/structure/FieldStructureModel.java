@@ -1,7 +1,6 @@
 package jdb.model.structure;
 
 import jdb.exceptions.DBModelException;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -162,7 +161,6 @@ public class FieldStructureModel implements Serializable, Comparable
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger(FieldStructureModel.class.getName());
     Logger logger = Logger.getLogger(FieldStructureModel.class.getName());
     try
      {

@@ -5,8 +5,6 @@ import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -83,9 +81,7 @@ public final class DBPilot
     return result;
    }
 
-  public static void main(String[] args)
-   {
-    InitLogger.initLogger("jdb");
+  public static void main(String[] args) throws org.apache.commons.configuration2.ex.ConfigurationException {
     Logger logger = Logger.getLogger("jdb");
     try
      {
@@ -97,7 +93,6 @@ public final class DBPilot
      }
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     catch (DBConnectionException e)   {logger.error(e.getMessage());}
-    catch (ConfigurationException e)  {logger.error(e.getMessage());}
     catch (IOException e)             {logger.error(e.getMessage());}
     catch (SQLException e)            {logger.error(e.getMessage());}
    }

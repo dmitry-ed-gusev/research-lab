@@ -54,9 +54,9 @@ public class SingleThreadSqlBatchExecutor
     ArrayList<String> result = null;
 
     // Проверяем конфигурацию на ошибки, если они есть - ничего не делаем!
-    String configErrors = DBUtils.getConfigErrors(config);
-    if (!StringUtils.isBlank(configErrors)) {throw new DBModuleConfigException(configErrors);}
-    else                                    {logger.debug("Batch configuration is OK. Processing.");}
+    //String configErrors = DBUtils.getConfigErrors(config);
+    //if (!StringUtils.isBlank(configErrors)) {throw new DBModuleConfigException(configErrors);}
+    //else                                    {logger.debug("Batch configuration is OK. Processing.");}
     
     logger.debug("Processing batch. Size [" + config.getBatchSize() + "]");
     // Префиксное сообщение для сообщения монитора. Вычисляем один раз.

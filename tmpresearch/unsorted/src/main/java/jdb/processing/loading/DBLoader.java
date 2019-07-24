@@ -1,7 +1,7 @@
 package jdb.processing.loading;
 
-import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
+import dgusev.dbpilot.config.DBType;
 import jdb.config.load.DBLoaderConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
@@ -11,9 +11,7 @@ import jdb.monitoring.DBTestMonitor;
 import jdb.processing.loading.core.DBLoadCore;
 import jdb.processing.loading.core.DBUnloadCore;
 import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -86,8 +84,6 @@ public class DBLoader
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger("jdb", Level.INFO);
-    InitLogger.initLogger("jlib", Level.INFO);
     Logger logger = Logger.getLogger("jdb");
 
     // Тестовый монитор
@@ -101,19 +97,19 @@ public class DBLoader
     //mysqlConfig1.setPassword("mysql");
 
     DBConfig ifxConfig = new DBConfig();
-    ifxConfig.setDbType(DBConsts.DBType.INFORMIX);
+    ifxConfig.setDbType(DBType.INFORMIX);
     ifxConfig.setServerName("hercules");
     ifxConfig.setHost("appserver:1526");
     ifxConfig.setDbName("norm_docs");
     ifxConfig.setUser("informix");
-    ifxConfig.setPassword("ifx_dba_019");
+    //ifxConfig.setPassword("ifx_dba_019");
 
     DBConfig mssqlConfig = new DBConfig();
-    mssqlConfig.setDbType(DBConsts.DBType.MSSQL_JTDS);
+    mssqlConfig.setDbType(DBType.MSSQL_JTDS);
     mssqlConfig.setHost("APP");
     mssqlConfig.setDbName("norm_docs");
     mssqlConfig.setUser("sa");
-    mssqlConfig.setPassword("adminsql245#I");
+    //mssqlConfig.setPassword("adminsql245#I");
 
     try
      {

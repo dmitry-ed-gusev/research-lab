@@ -4,7 +4,6 @@ import jdb.config.common.CommonModuleConfig;
 import jdb.config.common.ConfigInterface;
 import jdb.config.load.DBLoaderConfig;
 import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -356,7 +355,6 @@ public class BatchConfig extends CommonModuleConfig implements ConfigInterface
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger("jdb");
     Logger logger = Logger.getLogger("jdb");
     BatchConfig config = new BatchConfig();
     logger.debug(config.toString());

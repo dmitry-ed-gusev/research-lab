@@ -1,19 +1,13 @@
 package jdb.model.integrity;
 
 import dgusev.dbpilot.DBConsts;
-import dgusev.dbpilot.config.DBConfig;
-import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
-import jdb.exceptions.DBModuleConfigException;
 import jdb.model.TableModel;
 import jdb.monitoring.DBProcessingMonitor;
-import jdb.processing.DBEngineer;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -443,73 +437,6 @@ public class TableIntegrityModel extends TableModel implements Serializable
     else {tableString.append(0);}
 
     return tableString.toString();
-   }
-
-  /**
-   * Метод предназначен только для тестирования данного класса.
-   * @param args String[] параметры метода main.
-  */
-  public static void main(String[] args)
-   {
-    InitLogger.initLogger("jdb");
-    Logger logger = Logger.getLogger(TableIntegrityModel.class.getName());
-    
-    DBConfig mysqlConfig1 = new DBConfig();
-    mysqlConfig1.setDbType(DBConsts.DBType.MYSQL);
-    mysqlConfig1.setHost("localhost:3306");
-    mysqlConfig1.setDbName("storm");
-    mysqlConfig1.setUser("root");
-    mysqlConfig1.setPassword("mysql");
-    //mysqlConfig1.addAllowedTable("items");
-
-    /**
-    DBConfig mysqlConfig2 = new DBConfig();
-    mysqlConfig2.setDbType(DBConsts.DBType.MYSQL);
-    mysqlConfig2.setHost("localhost:3306");
-    mysqlConfig2.setDbName("storm");
-    mysqlConfig2.setUser("root");
-    mysqlConfig2.setPassword("mysql");
-    mysqlConfig2.addAllowedTable("items");
-    */
-
-    DBConfig ifxConfig1 = new DBConfig();
-    ifxConfig1.setDbType(DBConsts.DBType.INFORMIX);
-    ifxConfig1.setServerName("hercules");
-    ifxConfig1.setHost("appserver:1526");
-    ifxConfig1.setDbName("storm");
-    ifxConfig1.setUser("informix");
-    ifxConfig1.setPassword("ifx_dba_019");
-    //ifxConfig1.addAllowedTable("items");
-
-    try
-     {
-      DBEngineer serverEngineer = new DBEngineer(ifxConfig1);
-      DBIntegrityModel serverModel = serverEngineer.getDBIntegrityModel();
-
-      DBEngineer clientEngineer = new DBEngineer(mysqlConfig1);
-      DBIntegrityModel clientModel = clientEngineer.getDBIntegrityModel();
-
-      // Получаем таблицы
-      TableIntegrityModel serverTable = serverModel.getTable("ruleset");
-      if (serverTable != null) {logger.debug("server table ok!");}
-      else {logger.debug("server table is null!");}
-      
-      TableIntegrityModel clientTable = clientModel.getTable("ruleset");
-      if (clientTable != null) {logger.debug("client table ok!");}
-      else {logger.debug("client table is null!");}
-
-      if ((serverTable != null) && (clientTable != null))
-       {
-        logger.debug("standart -> " + serverTable.compareTo(clientTable, false, null, 2000));
-        logger.debug("multi multiThreadsHelpers -> " + serverTable.multiThreadsCompareTo(clientTable, false, 20, null, 2000));
-       }
-
-     }
-    catch (DBModuleConfigException e) {logger.error(e.getMessage());}
-    catch (DBConnectionException e) {logger.error(e.getMessage());}
-    catch (DBModelException e) {logger.error(e.getMessage());}
-    catch (SQLException e) {logger.error(e.getMessage());}
-
    }
 
  }

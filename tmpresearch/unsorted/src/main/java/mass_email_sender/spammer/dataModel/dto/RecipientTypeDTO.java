@@ -1,6 +1,5 @@
 package mass_email_sender.spammer.dataModel.dto;
 
-import jlib.logging.InitLogger;
 import mass_email_sender.spammer.Defaults;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -106,7 +105,6 @@ public class RecipientTypeDTO
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger(DeliveryFileDTO.class.getName());
     Logger logger = Logger.getLogger(DeliveryFileDTO.class.getName());
 
     RecipientTypeDTO type1 = new RecipientTypeDTO(1, 1, 10);

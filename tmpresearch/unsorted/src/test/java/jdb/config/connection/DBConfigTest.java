@@ -1,6 +1,8 @@
 package jdb.config.connection;
 
 import dgusev.dbpilot.DBConsts;
+import dgusev.dbpilot.config.DBConfig;
+import dgusev.dbpilot.config.DBType;
 import jdb.DBResources;
 import dgusev.auth.Password;
 import jlib.exceptions.EmptyPassException;
@@ -16,15 +18,15 @@ import static junit.framework.Assert.assertNull;
  * @version 1.0 (DATE: 14.03.11)
 */
 
-public class BaseDBConfigTest
+public class DBConfigTest
  {
-  private BaseDBConfig config;
+  private DBConfig config;
   private Password     password;
 
   @Before
   public void setUp() throws EmptyPassException
    {
-    config = new BaseDBConfig();
+    config = new DBConfig();
     password = new Password("password");
    }
 
@@ -39,26 +41,26 @@ public class BaseDBConfigTest
     config.setDataSource("dataSourceName");
     assertNull("With data source name must return null!", config.getConfigErrors());
     // есть неверный тип СУБД - возвращает ошибку
-    config.setDbType(DBConsts.DBType.UNKNOWN);
-    //assertEquals("Wrong db type! Must return: [" + String.format(DBResources.ERR_MSG_DB_TYPE, DBConsts.DBType.UNKNOWN) + "].",
-    //             String.format(DBResources.ERR_MSG_DB_TYPE, DBConsts.DBType.UNKNOWN), config.getConfigErrors());
+    config.setDbType(DBType.UNKNOWN);
+    //assertEquals("Wrong db type! Must return: [" + String.format(DBResources.ERR_MSG_DB_TYPE, DBType.UNKNOWN) + "].",
+    //             String.format(DBResources.ERR_MSG_DB_TYPE, DBType.UNKNOWN), config.getConfigErrors());
    }
 
   /** Тест проверки параметров для СУБД Информикс. */
   @Test
   public void testGetConfigErrorsInformix()
    {
-    config.setDbType(DBConsts.DBType.INFORMIX);
+    config.setDbType(DBType.INFORMIX);
     // пустое имя хоста
-    assertEquals("No host name. Must return message.", String.format(DBResources.ERR_MSG_DB_HOST, DBConsts.DBType.INFORMIX),
+    assertEquals("No host name. Must return message.", String.format(DBResources.ERR_MSG_DB_HOST, DBType.INFORMIX),
                   config.getConfigErrors());
     // пустое имя пользователя
     config.setHost("hostName");
-    assertEquals("No user name. Must return message.", String.format(DBResources.ERR_MSG_DB_USERNAME, DBConsts.DBType.INFORMIX),
+    assertEquals("No user name. Must return message.", String.format(DBResources.ERR_MSG_DB_USERNAME, DBType.INFORMIX),
             config.getConfigErrors());
     // пустой пароль
     config.setUser("username");
-    assertEquals("No password for user. Must return message.", String.format(DBResources.ERR_MSG_DB_PASSWORD, DBConsts.DBType.INFORMIX),
+    assertEquals("No password for user. Must return message.", String.format(DBResources.ERR_MSG_DB_PASSWORD, DBType.INFORMIX),
             config.getConfigErrors());
     // все заполнено (без ошибок)
     config.setPassword(password);
@@ -69,17 +71,17 @@ public class BaseDBConfigTest
   @Test
   public void testGetConfigErrorsMySql()
    {
-    config.setDbType(DBConsts.DBType.MYSQL);
+    config.setDbType(DBType.MYSQL);
     // пустое имя хоста
-    assertEquals("No host name. Must return message.", String.format(DBResources.ERR_MSG_DB_HOST, DBConsts.DBType.MYSQL),
+    assertEquals("No host name. Must return message.", String.format(DBResources.ERR_MSG_DB_HOST, DBType.MYSQL),
                   config.getConfigErrors());
     // пустое имя пользователя
     config.setHost("hostName");
-    assertEquals("No user name. Must return message.", String.format(DBResources.ERR_MSG_DB_USERNAME, DBConsts.DBType.MYSQL),
+    assertEquals("No user name. Must return message.", String.format(DBResources.ERR_MSG_DB_USERNAME, DBType.MYSQL),
             config.getConfigErrors());
     // пустой пароль
     config.setUser("username");
-    assertEquals("No password for user. Must return message.", String.format(DBResources.ERR_MSG_DB_PASSWORD, DBConsts.DBType.MYSQL),
+    assertEquals("No password for user. Must return message.", String.format(DBResources.ERR_MSG_DB_PASSWORD, DBType.MYSQL),
             config.getConfigErrors());
     // все заполнено (без ошибок)
     config.setPassword(password);
@@ -90,17 +92,17 @@ public class BaseDBConfigTest
   @Test
   public void testGetConfigErrorsMSSqlJTDS()
    {
-    config.setDbType(DBConsts.DBType.MSSQL_JTDS);
+    config.setDbType(DBType.MSSQL_JTDS);
     // пустое имя хоста
-    assertEquals("No host name. Must return message.", String.format(DBResources.ERR_MSG_DB_HOST, DBConsts.DBType.MSSQL_JTDS),
+    assertEquals("No host name. Must return message.", String.format(DBResources.ERR_MSG_DB_HOST, DBType.MSSQL_JTDS),
                   config.getConfigErrors());
     // пустое имя пользователя
     config.setHost("hostName");
-    assertEquals("No user name. Must return message.", String.format(DBResources.ERR_MSG_DB_USERNAME, DBConsts.DBType.MSSQL_JTDS),
+    assertEquals("No user name. Must return message.", String.format(DBResources.ERR_MSG_DB_USERNAME, DBType.MSSQL_JTDS),
             config.getConfigErrors());
     // пустой пароль
     config.setUser("username");
-    assertEquals("No password for user. Must return message.", String.format(DBResources.ERR_MSG_DB_PASSWORD, DBConsts.DBType.MSSQL_JTDS),
+    assertEquals("No password for user. Must return message.", String.format(DBResources.ERR_MSG_DB_PASSWORD, DBType.MSSQL_JTDS),
             config.getConfigErrors());
     // все заполнено (без ошибок)
     config.setPassword(password);
@@ -111,17 +113,17 @@ public class BaseDBConfigTest
   @Test
   public void testGetConfigErrorsMSSqlNative()
    {
-    config.setDbType(DBConsts.DBType.MSSQL_NATIVE);
+    config.setDbType(DBType.MSSQL_NATIVE);
     // пустое имя хоста
-    assertEquals("No host name. Must return message.", String.format(DBResources.ERR_MSG_DB_HOST, DBConsts.DBType.MSSQL_NATIVE),
+    assertEquals("No host name. Must return message.", String.format(DBResources.ERR_MSG_DB_HOST, DBType.MSSQL_NATIVE),
                   config.getConfigErrors());
     // пустое имя пользователя
     config.setHost("hostName");
-    assertEquals("No user name. Must return message.", String.format(DBResources.ERR_MSG_DB_USERNAME, DBConsts.DBType.MSSQL_NATIVE),
+    assertEquals("No user name. Must return message.", String.format(DBResources.ERR_MSG_DB_USERNAME, DBType.MSSQL_NATIVE),
             config.getConfigErrors());
     // пустой пароль
     config.setUser("username");
-    assertEquals("No password for user. Must return message.", String.format(DBResources.ERR_MSG_DB_PASSWORD, DBConsts.DBType.MSSQL_NATIVE),
+    assertEquals("No password for user. Must return message.", String.format(DBResources.ERR_MSG_DB_PASSWORD, DBType.MSSQL_NATIVE),
             config.getConfigErrors());
     // все заполнено (без ошибок)
     config.setPassword(password);
@@ -132,9 +134,9 @@ public class BaseDBConfigTest
   @Test
   public void testGetConfigErrorsOdbc()
    {
-    config.setDbType(DBConsts.DBType.ODBC);
+    config.setDbType(DBType.ODBC);
     // пустое имя БД
-    assertEquals("No db name. Must return message.", String.format(DBResources.ERR_MSG_DB_NAME, DBConsts.DBType.ODBC),
+    assertEquals("No db name. Must return message.", String.format(DBResources.ERR_MSG_DB_NAME, DBType.ODBC),
             config.getConfigErrors());
     // все заполнено (без ошибок)
     config.setDbName("dbName");
@@ -145,9 +147,9 @@ public class BaseDBConfigTest
   @Test
   public void testGetConfigErrorsDbf()
    {
-    config.setDbType(DBConsts.DBType.DBF);
+    config.setDbType(DBType.DBF);
     // пустое имя БД
-    assertEquals("No db name. Must return message.", String.format(DBResources.ERR_MSG_DB_NAME, DBConsts.DBType.DBF),
+    assertEquals("No db name. Must return message.", String.format(DBResources.ERR_MSG_DB_NAME, DBType.DBF),
             config.getConfigErrors());
     // все заполнено (без ошибок)
     config.setDbName("dbName");

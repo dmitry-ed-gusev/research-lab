@@ -1,6 +1,6 @@
 package jdb.utils.helpers;
 
-import jdb.config.connection.BaseDBConfig;
+import dgusev.dbpilot.config.DBConfig;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,12 +9,12 @@ import org.junit.Test;
  */
 public class JdbcUrlHelperTest
  {
-  private BaseDBConfig config;
+  private DBConfig config;
 
   @Before
   public void instantiate()
    {
-    config = new BaseDBConfig();
+    config = new DBConfig();
    }
 
   @Test

@@ -1,6 +1,5 @@
 package jlib.graphics2D;
 
-import jlib.logging.InitLogger;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
@@ -193,7 +192,6 @@ public class ImageResizer
     out = ImageResizer.resize(in, 100, 100);
     ImageIO.write(out, "jpg", new File("c:/temp/img3_2.jpg"));
     */
-    InitLogger.initLogger("jlib");
     FileInputStream  inImage  = new FileInputStream("c:/temp/1.jpg");
     FileOutputStream outImage = new FileOutputStream("c:/temp/1a.jpg");
     ImageResizer.resizeImageSmooth(inImage, outImage, 200, GraphicsConsts.ImageFormat.JPG);

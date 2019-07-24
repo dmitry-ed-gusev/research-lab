@@ -1,6 +1,6 @@
 package jdb.processing.sql.generation;
 
-import dgusev.dbpilot.DBConsts.DBType;
+import dgusev.dbpilot.config.DBType;
 import jdb.model.DBModelConsts;
 import jdb.model.structure.FieldStructureModel;
 import jdb.model.structure.TableStructureModel;

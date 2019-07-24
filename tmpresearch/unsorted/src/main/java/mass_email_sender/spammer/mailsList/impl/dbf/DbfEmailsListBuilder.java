@@ -1,11 +1,10 @@
 package mass_email_sender.spammer.mailsList.impl.dbf;
 
-import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
+import dgusev.dbpilot.config.DBType;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
 import mass_email_sender.spammer.Defaults;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -90,11 +89,11 @@ public class DbfEmailsListBuilder
         logger.debug("DB FLEET and DB FIRMS databases paths are ok. Processing.");
         // Конфиг для соединения с ДБФ базой фирм
         DBConfig firmConfig = new DBConfig();
-        firmConfig.setDbType(DBConsts.DBType.DBF);
+        firmConfig.setDbType(DBType.DBF);
         firmConfig.setDbName(firmDbPath);
         // Конфиг для соединения с ДБФ базой флота
         DBConfig fleetConfig = new DBConfig();
-        fleetConfig.setDbType(DBConsts.DBType.DBF);
+        fleetConfig.setDbType(DBType.DBF);
         fleetConfig.setDbName(fleetDbPath);
         // Выборка из БД флот
         String fleetSql = "select firm_id7 as operatorId, firm_id2 as shipownerId, firm_id1 as ownerId from fleet where " +
@@ -231,7 +230,6 @@ public class DbfEmailsListBuilder
   */
   public static void main(String[] args)
    {
-    InitLogger.initLoggers(new String[] {"spammer", "jdb"});
     Logger logger = Logger.getLogger("spammer");
 
     DbfEmailsListBuilder builder = new DbfEmailsListBuilder("\\\\rshead\\db002\\new\\fleet", "\\\\rshead\\db002\\new\\firm");

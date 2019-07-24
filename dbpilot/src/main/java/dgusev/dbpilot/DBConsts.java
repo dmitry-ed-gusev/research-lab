@@ -41,56 +41,6 @@ public class DBConsts
   public final static String DB_CONN_INFO   = "info";
 
   
-  /** Константа для обозначения значения: "ИСП-Е ПРЕПОДГОТОВЛЕННЫХ SQL-ЗАПРОСОВ". */
-  //public final static String DBCONN_USE_PREPARED    = "use_prepared";
-  /**
-   * Список констант для обозначения конфигурационных параметров.
-   * Эти параметры используются для соединения с СУБД. Данный список
-   * параметров используется для создания/чтения наборов свойств в
-   * цикле.
-  */
-  //public final static String[] DBCONN_KEYS =
-  // {
-  //  DBConsts.DB_TYPE, DBConsts.DB_HOST, DBConsts.DB_SERVER,
-  //  DBConsts.DB_NAME,      DBConsts.DB_USER, DBConsts.DB_PWD,
-  //  DBConsts.DB_CONN_PARAMS,  DBConsts.DB_CONN_INFO, DBConsts.DBCONN_USE_PREPARED
-  // };
-
-  /**
-   * Константа, определяющая тип СУБД - Informix.
-   * @deprecated данная константа не рекомендуется к использованию. Возможно будет удалена в следующих релизах.
-  */
-  //public final static String DBTYPE_INFORMIX = "informix";
-  /**
-   * Константа, определяющая тип СУБД - MySQL.
-   * @deprecated данная константа не рекомендуется к использованию. Возможно будет удалена в следующих релизах.
-  */
-  //public final static String DBTYPE_MYSQL    = "mysql";
-  /**
-   * Константа, определяющая тип СУБД - ODBC-источник данных.
-   * @deprecated данная константа не рекомендуется к использованию. Возможно будет удалена в следующих релизах.
-  */
-  //public final static String DBTYPE_ODBC     = "odbc";
-  /**
-   * Константа, определяющая тип СУБД - DBF-файл.
-   * @deprecated данная константа не рекомендуется к использованию. Возможно будет удалена в следующих релизах. 
-  */
-  //public final static String DBTYPE_DBF      = "dbf";
-  /**
-   * Константа, определяющая тип СУБД - текстовый файл. Для данного типа БД нужен только один параметр -
-   * наименование БД - имя текстового файла.
-  */
-  //public final static String DBCONN_DB_TYPE_TXT     = "txt";
-  /**
-   * Список допустимых типов СУБД для работы данной библиотеки.
-   * @deprecated данная константа не рекомендуется к использованию. Возможно будет удалена в следующих релизах. 
-  */
-  //public final static String[] DBCONN_DB_TYPES_LIST_ =
-  // {
-  //  DBConsts.DBTYPE_INFORMIX,  DBConsts.DBTYPE_MYSQL,
-  //  DBConsts.DBTYPE_ODBC, DBConsts.DBTYPE_DBF
-  // };
-
   /**
    * Информация для соединения (connection info) для соединения с СУБД Информикс в кодировке win1251 и с форматом даты
    * дд/мм/гггг. Значение: [CLIENT_LOCALE=RU_RU.CP1251;SERVER_LOCALE=RU_RU.CP1251;DB_LOCALE=RU_RU.CP1251;DBLANG=RU_RU.CP1251;
@@ -106,43 +56,18 @@ public class DBConsts
   */
   public final static String DBCONN_INFO_DBF_DBASE4 = "charSet=Cp866";
 
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "набор входных параметров пуст". */
-  //public final static String DBCONN_ERR_ALL_PARAMS       = "Input parameters are invalid (is null or size()=0)!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "неверный параметр <db_type> для соединения с СУБД". */
-  //public final static String DBCONN_ERR_DB_TYPE          = "[db_type] parameter is invalid!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "неверный параметр <host> для соединения с СУБД". */
-  //public final static String DBCONN_ERR_HOST             = "[host]    parameter is invalid!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "неверный параметр <sever> для соединения с СУБД". */
-  //public final static String DBCONN_ERR_SERVER           = "[server]  parameter is invalid!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "неверный параметр <db> для соединения с СУБД". */
-  //public final static String DBCONN_ERR_DB               = "[db] parameter is invalid!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "пустой sql-запрос". */
-  //public final static String DBCONN_ERR_EMPTY_SQL        = "SQL-query is empty!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "не инициализирован объект SqlStatement". */
-  //public final static String DBCONN_ERR_SQLSTMT_INIT     = "Object SqlStatement is not initialized!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "не инициализирован объект PSqlStatement". */
-  //public final static String DBCONN_ERR_PSQLSTMT_INIT    = "Object PSqlStatement is not initialized!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "ошибочные входные параметры". */
-  //public final static String DBCONN_ERR_INIT_PARAMS      = "Input parameters are invalid!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "неверный тип результирующего курсора". */
-  //public final static String DBCONN_ERR_RESULT_SET_TYPE  = "Invalid ResultSet type!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "не могу загрузить драйвер СУБД". */
-  //public final static String DBCONN_ERR_CANT_LOAD_DRIVER = "Can't unload DBMS driver!";
-  /** СООБЩЕНИЕ ОБ ОШИБКЕ: "пул соединений пуст (не инициализирован)". */
-  //public final static String DBCONN_ERR_CONNPOOL_INIT    = "Connection pool is empty!";
-
   /** Класс драйвера для соединения с СУБД Informix. */
-  public static final String DBDRIVER_INFORMIX            = "com.informix.jdbc.IfxDriver";
+  //public static final String DBDRIVER_INFORMIX            = "com.informix.jdbc.IfxDriver";
   /** Класс драйвера для соединения с СУБД MySQL. */
-  public static final String DBDRIVER_MYSQL               = "com.mysql.jdbc.Driver";
+  //public static final String DBDRIVER_MYSQL               = "com.mysql.jdbc.Driver";
   /** Класс драйвера для соединения с ODBC-источником. */
-  public static final String DBDRIVER_ODBC                = "sun.jdbc.odbc.JdbcOdbcDriver";
+  //public static final String DBDRIVER_ODBC                = "sun.jdbc.odbc.JdbcOdbcDriver";
   /** Класс драйвера для соединения с DBF-файлом. */
-  public static final String DBDRIVER_DBF                 = "com.hxtt.sql.dbf.DBFDriver";
+  //public static final String DBDRIVER_DBF                 = "com.hxtt.sql.dbf.DBFDriver";
   /** Класс драйвера для соединения с СУБД MS SQL с использованием драйверов JTDS. */
-  public static final String DBDRIVER_MSSQL_JTDS          = "net.sourceforge.jtds.jdbc.Driver";
+  //public static final String DBDRIVER_MSSQL_JTDS          = "net.sourceforge.jtds.jdbc.Driver";
   /** Класс драйвера для соединения с СУБД MS SQL с использованием родных драйверов от Microsoft. */
-  public static final String DBDRIVER_MSSQL_NATIVE        = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+  //public static final String DBDRIVER_MSSQL_NATIVE        = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
   /**
    * Для многопоточных методов - максимально возможное количество одновременных соединений с СУБД. Данное значение (50)

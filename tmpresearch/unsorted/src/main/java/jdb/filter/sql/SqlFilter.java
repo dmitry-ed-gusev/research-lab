@@ -1,7 +1,6 @@
 package jdb.filter.sql;
 
 import dgusev.dbpilot.DBConsts;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -129,7 +128,6 @@ public class SqlFilter
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger("jdb");
     Logger logger = Logger.getLogger("jdb");
     String sql    = "<script>FFFF</script>";
     logger.debug(SqlFilter.changeChevronsToSymbols(sql));

@@ -2,6 +2,7 @@ package jdb.processing;
 
 import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
+import dgusev.dbpilot.config.DBType;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
 import jdb.exceptions.DBModuleConfigException;
@@ -14,7 +15,6 @@ import jdb.processing.modeling.DBModeler;
 import jdb.processing.spider.DBSpider;
 import jdb.processing.tester.DBTesterConsts;
 import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -166,15 +166,14 @@ public class DBEngineer
 
   public static void main(String[] args)
    {
-    InitLogger.initLogger("jdb");
     Logger logger = Logger.getLogger(DBEngineer.class.getName());
 
     DBConfig mysqlConfig1 = new DBConfig();
-    mysqlConfig1.setDbType(DBConsts.DBType.MYSQL);
+    mysqlConfig1.setDbType(DBType.MYSQL);
     mysqlConfig1.setHost("localhost:3306");
     mysqlConfig1.setDbName("storm");
     mysqlConfig1.setUser("root");
-    mysqlConfig1.setPassword("mysql");
+    //mysqlConfig1.setPassword("mysql");
     try
      {
       DBEngineer engineer = new DBEngineer(mysqlConfig1);

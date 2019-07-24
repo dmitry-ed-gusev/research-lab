@@ -6,7 +6,6 @@ import jdb.model.integrity.TableIntegrityModel;
 import jdb.model.structure.FieldStructureModel;
 import jdb.model.structure.TableStructureModel;
 import jdb.model.time.TableTimedModel;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -143,7 +142,6 @@ public class DataExportSQLBuilder
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger(DataExportSQLBuilder.class.getName());
     Logger logger = Logger.getLogger(DataExportSQLBuilder.class.getName());
     try
      {
