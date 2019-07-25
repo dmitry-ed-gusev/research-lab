@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+<head>
+    <style media="all">        .cell {
+        padding: 3px;
+    }
+
+    .label {
+        border-radius: 3px;
+        padding: 2px 6px;
+        color: #fff;
+        letter-spacing: 1px;
+        font-weight: bold;
+    }
+
+    .label.pass {
+        background-color: #5cb85c;
+    }
+    .label.exclamation {
+        background-color: #FFFF00;
+        color: black;
+    }
+
+    .label.fail {
+        background-color: #d9534f;
+    }
+
+    .label.skipped {
+        background-color: #0022FF;
+    }    </style>
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script>        jQuery(function () {
+        var minimized_elements = $('p.minimize');
+        minimized_elements.each(function () {
+            var t = $(this).text();
+            if (t.length < 100) return;
+            $(this).html(t.slice(0, 100) + '<span>... </span><a href="#" class="more">More</a>' + '<span style="display:none;">' + t.slice(100, t.length) + ' <a href="#" class="less">Less</a></span>');
+        });
+        $('a.more', minimized_elements).click(function (event) {
+            event.preventDefault();
+            $(this).hide().prev().hide();
+            $(this).next().show();
+        });
+        $('a.less', minimized_elements).click(function (event) {
+            event.preventDefault();
+            $(this).parent().hide().prev().show().prev().show();
+        });
+    });    </script>
+    <title>Data Integrity Result</title>
+</head>
+<body>
+<div style="padding:10px 25px 25px 25px;">
+    <table border="1">
+        <tbody>
+        <tr id="sourceDatabaseUrl">
+            <td>Source Database URL</td>
+            <td></td>
+        </tr>
+        <tr id="sourceDatabaseUser">
+            <td>Source Database User</td>
+            <td></td>
+        </tr>
+        <tr id="sourceDatabaseSchema">
+            <td>Source Database Schema</td>
+            <td></td>
+        </tr>
+        <tr id="targetDatabaseUrl">
+            <td>Target Database URL</td>
+            <td></td>
+        </tr>
+        <tr id="targetDatabaseUser">
+            <td>Target Database User</td>
+            <td></td>
+        </tr>
+        <tr id="targetDatabaseSchema">
+            <td>Target Database Schema</td>
+            <td></td>
+        </tr>
+        <tr id="JSONFile">
+            <td>JSON File</td>
+            <td></td>
+        </tr>
+        <tr id="executionDate">
+            <td>Execution Date</td>
+            <td></td>
+        </tr>
+        <tr id="executionTime">
+            <td>Duration</td>
+            <td></td>
+        </tr>
+        <tr id="testType">
+            <td>Test type</td>
+            <td></td>
+        </tr>
+        <tr id="acceptPercentage">
+            <td>Acceptance Limit</td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div style="padding:10px 25px 2px 25px;">
+    <table id="resultNumbers">
+        <tbody>
+        <tr>
+            <td>
+                <div id="totalPass" class="cell">
+                    <span class="label pass"></span>
+                </div>
+            </td>
+            <td>
+                <div id="totalFail" class="cell">
+                    <span class="label fail"></span>
+                </div>
+            </td>
+            <td>
+                <div id="totalSkipped" class="cell">
+                    <span class="label skipped"></span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div style="padding:2px 25px 25px 25px;">
+    <table border="1" id="success" width="100%">
+        <tbody>
+        <tr>
+            <th width="4%">Status</th>
+            <th width="15%">Source Table Name</th>
+            <th width="15%">Target Table Name</th>
+            <th width="5%">Source Table Size</th>
+            <th width="5%">Target Table Size</th>
+            <th width="2">% Diff</th>>
+            <th width="10%">Source From Target File</th>
+            <th width="10%">Target From Source File</th>
+            <th width="34%">Message</th>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<br>
+<div style="padding:2px 25px 25px 25px;">
+    <table border="1" id="fail" width="100%">
+        <tbody>
+        <tr>
+            <th width="4%">Status</th>
+            <th width="15%">Source Table Name</th>
+            <th width="15%">Target Table Name</th>
+            <th width="5%">Source Table Size</th>
+            <th width="5%">Target Table Size</th>
+            <th width="2">% Diff</th>>
+            <th width="10%">Source From Target File</th>
+            <th width="10%">Target From Source File</th>
+            <th width="34%">Message</th>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<br>
+<div style="padding:2px 25px 25px 25px;">
+    <table border="1" id="skipped" width="100%">
+        <tbody>
+        <tr>
+            <th width="4%">Status</th>
+            <th width="15%">Source Table Name</th>
+            <th width="15%">Target Table Name</th>
+            <th width="5%">Source Table Size</th>
+            <th width="5%">Target Table Size</th>
+            <th width="2">% Diff</th>>
+            <th width="10%">Source From Target File</th>
+            <th width="10%">Target From Source File</th>
+            <th width="34%">Message</th>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>
