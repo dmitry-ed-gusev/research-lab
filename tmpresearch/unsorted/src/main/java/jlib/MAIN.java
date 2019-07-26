@@ -1,7 +1,7 @@
 package jlib;
 
 import dgusev.auth.Password;
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;

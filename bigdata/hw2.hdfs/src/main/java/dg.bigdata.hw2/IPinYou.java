@@ -1,6 +1,6 @@
 package dg.bigdata.hw2;
 
-import gusev.dmitry.utils.CmdLine;
+import dgusev.cmd.CmdLine;
 import gusev.dmitry.utils.MyCommonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;

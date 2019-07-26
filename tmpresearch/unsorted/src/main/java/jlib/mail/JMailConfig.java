@@ -1,6 +1,5 @@
 package jlib.mail;
 
-import jlib.JLibConsts;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -8,99 +7,123 @@ import java.util.ArrayList;
 /**
  * @author Gusev Dmitry (019gus)
  * @version 2.0 (DATE: 09.12.2010)
-*/
+ */
 
-public class JMailConfig
- {
-  /** Поле "кому" - список адресов/адрес. Обязательное поле. */
-  private String            to        = null;
-  /** Поле для хранения имени майл-сервера. Формат имени: host[:port] Обязательное поле. */
-  private String            mailHost  = null;
-  /** Поле для хранения порта мейл-сервера. Необязятельно. */
-  private int               mailPort  = 0;
-  /** Кодировка для темы и текста письма. По умолчанию - windows-1251 (см. константу в модуле JLibConsts). */
-  private String            encoding  = JLibConsts.JMAIL_ENCODING;
-  /** Поле для хранения информации для поля FROM письма. Обязательное поле. */
-  private String            from      = null;
-  /** Поле для хранения текста сообщения. Обязательное поле. */
-  private String            text      = null;
-  /** Поле для хранения информации для поля SUBJECT письма. */
-  private String            subject   = null;
-  /** Список прикрепленных к письму файлов (массив строк с именами - список). */
-  private ArrayList<String> filesList = null;
+public class JMailConfig {
 
-  public String getTo() {
-   return to;
-  }
+    private static final String JMAIL_ENCODING = "windows-1251";
 
-  public void setTo(String to) {
-   this.to = to;
-  }
+    /**
+     * Поле "кому" - список адресов/адрес. Обязательное поле.
+     */
+    private String to = null;
+    /**
+     * Поле для хранения имени майл-сервера. Формат имени: host[:port] Обязательное поле.
+     */
+    private String mailHost = null;
+    /**
+     * Поле для хранения порта мейл-сервера. Необязятельно.
+     */
+    private int mailPort = 0;
+    /**
+     * Кодировка для темы и текста письма. По умолчанию - windows-1251 (см. константу в модуле JLibConsts).
+     */
+    private String encoding = JMAIL_ENCODING;
+    /**
+     * Поле для хранения информации для поля FROM письма. Обязательное поле.
+     */
+    private String from = null;
+    /**
+     * Поле для хранения текста сообщения. Обязательное поле.
+     */
+    private String text = null;
+    /**
+     * Поле для хранения информации для поля SUBJECT письма.
+     */
+    private String subject = null;
+    /**
+     * Список прикрепленных к письму файлов (массив строк с именами - список).
+     */
+    private ArrayList<String> filesList = null;
 
-  public String getMailHost() {
-   return mailHost;
-  }
+    public String getTo() {
+        return to;
+    }
 
-  public void setMailHost(String mailHost) {
-   this.mailHost = mailHost;
-  }
+    public void setTo(String to) {
+        this.to = to;
+    }
 
-  public int getMailPort() {
-   return mailPort;
-  }
+    public String getMailHost() {
+        return mailHost;
+    }
 
-  public void setMailPort(int mailPort) {
-   this.mailPort = mailPort;
-  }
+    public void setMailHost(String mailHost) {
+        this.mailHost = mailHost;
+    }
 
-  public String getFrom() {
-   return from;
-  }
+    public int getMailPort() {
+        return mailPort;
+    }
 
-  public void setFrom(String from) {
-   this.from = from;
-  }
+    public void setMailPort(int mailPort) {
+        this.mailPort = mailPort;
+    }
 
-  public String getText() {
-   return text;
-  }
+    public String getFrom() {
+        return from;
+    }
 
-  public void setText(String text) {
-   this.text = text;
-  }
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
-  public String getSubject() {
-   return subject;
-  }
+    public String getText() {
+        return text;
+    }
 
-  public void setSubject(String subject) {
-   this.subject = subject;
-  }
+    public void setText(String text) {
+        this.text = text;
+    }
 
-  public ArrayList<String> getFilesList() {
-   return filesList;
-  }
+    public String getSubject() {
+        return subject;
+    }
 
-  public void setFilesList(ArrayList<String> filesList) {
-   this.filesList = filesList;
-  }
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
 
-  public String getEncoding() {
-   return encoding;
-  }
+    public ArrayList<String> getFilesList() {
+        return filesList;
+    }
 
-  public void setEncoding(String encoding) {
-   this.encoding = encoding;
-  }
+    public void setFilesList(ArrayList<String> filesList) {
+        this.filesList = filesList;
+    }
 
-  /** Экземпляр класса считается пустым, если пусто одно из полей (или больше): to, mailHost, from, text. */
-  public boolean isEmpty()
-   {return (StringUtils.isBlank(to) || StringUtils.isBlank(mailHost) || StringUtils.isBlank(from) || StringUtils.isBlank(text));}
+    public String getEncoding() {
+        return encoding;
+    }
 
-  public void addFile(String file)
-   {
-    if (!StringUtils.isBlank(file))
-     {if (filesList == null) {filesList = new ArrayList<String>();} filesList.add(file);}
-   }
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
 
- }
+    /**
+     * Экземпляр класса считается пустым, если пусто одно из полей (или больше): to, mailHost, from, text.
+     */
+    public boolean isEmpty() {
+        return (StringUtils.isBlank(to) || StringUtils.isBlank(mailHost) || StringUtils.isBlank(from) || StringUtils.isBlank(text));
+    }
+
+    public void addFile(String file) {
+        if (!StringUtils.isBlank(file)) {
+            if (filesList == null) {
+                filesList = new ArrayList<String>();
+            }
+            filesList.add(file);
+        }
+    }
+
+}

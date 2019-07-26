@@ -2,7 +2,7 @@ package dg.social.crawler.networks.fb;
 
 import dg.social.crawler.networks.AbstractClient;
 import gusev.dmitry.utils.MyHttpUtils;
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;

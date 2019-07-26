@@ -1,5 +1,7 @@
-package gusev.dmitry.utils;
+package dgusev.io;
 
+import gusev.dmitry.utils.MyDateTimeUtils;
+import gusev.dmitry.utils.TimePeriodType;
 import lombok.NonNull;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.csv.CSVFormat;
@@ -29,10 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
 
 import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
 import static gusev.dmitry.utils.MyCommonUtils.not;
@@ -910,6 +909,106 @@ public final class MyIOUtils {
         else {
             throw new IOException("Empty file name!");
         }
+    }
+
+    /**
+     * Метод возвращает контрольную сумму CRC32 для файла fileName. Если файла не существует или подсчет не
+     * удался (возникла ИС), метод возвращает значение 0.
+     */
+    // todo: use try-with-resources
+    public static long getChecksum(String fileName) {
+        long result = 0;
+        BufferedInputStream in = null;
+        try {
+            // Если полученное имя файла пусто - вообще ничего не делаем
+            if ((fileName != null) && (!fileName.trim().equals(""))) {
+                in = new BufferedInputStream(new FileInputStream(fileName));
+                CRC32 crc = new CRC32();
+                int iByte;
+                // Непосредственно цикл вычисления контрольной суммы файла
+                while ((iByte = in.read()) != -1) {
+                    crc.update(iByte);
+                }
+                result = crc.getValue();
+                LOG.debug("CalcCRC: file [" + fileName + "]; result [" + result + "]");
+            }
+            // Сообщение о пустом имени файла
+            else {
+                LOG.warn("Received file name is EMPTY!");
+            }
+        }
+        // Перехватываем ИС
+        catch (IOException e) {
+            LOG.error("ERROR occured while CRC32 calculating: " + e.getMessage());
+        }
+
+        // Обязательно необходимо закрыть за собой потоки
+        finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                LOG.error("Can't close stream for file [" + fileName + "]! Reason: [" + e.getMessage() + "].");
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Метод находит и возвращает уникальное для каталога catalogPath имя файла с расширением fileExtension. Расширение
+     * указывается БЕЗ точки. Параметр usePathCorrection указывает, использовать ли коррекцию (метод fixFPath) пути
+     * (для catalogPath) или нет. Если указан режим без коррекции пути, то необходимо следить, чтобы указанный путь
+     * оканчивался на символ-разделитель пути. Если в указанном каталоге много файлов - работа метода может занять
+     * некоторое время. Если указан пустой путь к каталогу или каталога не существует - метод вернет значение null.
+     * Если не указано расширение, то будет найдено уникальное имя для файла без расширения.
+     */
+    public static String findUniqFileName(String catalogPath, String fileExtension, boolean usePathCorrection) {
+        String result = null;
+        // Если указанный каталог для поиска имени существует - работаемс
+        if ((!StringUtils.isBlank(catalogPath)) && (new File(catalogPath).exists())) {
+            LOG.debug("Path [" + catalogPath + "] exists! Processing.");
+            // Если используется коррекция имени файла - выполняем ее
+            String localPath;
+            if (usePathCorrection) {
+                localPath = MyIOUtils.fixFPath(catalogPath, true);
+            } else {
+                localPath = catalogPath;
+            }
+            // Используемое расширение файла
+            String localExt;
+            if (!StringUtils.isBlank(fileExtension)) {
+                localExt = "." + fileExtension;
+            } else {
+                localExt = "";
+            }
+
+            // Генерация случайного имени файла
+            Random random = new Random();
+            int randomFileName;
+            File destFile;
+            boolean nameFound = false;
+            // В цикле генерируем имя файла до тех пор, пока не найдем уникальное (в идеале на это необходим один проход).
+            do {
+                randomFileName = random.nextInt(Integer.MAX_VALUE); // <- генерация большого случайного числа
+                // Файл со случайным именем
+                destFile = new File(localPath + randomFileName + localExt);
+                // Если такого файла не существует - мы нашли искомое имя.
+                if (!destFile.exists()) {
+                    nameFound = true;
+                }
+            }
+            while (!nameFound);
+            LOG.debug("Found random file name [" + randomFileName + "].");
+            // Сохраняем результат
+            result = String.valueOf(randomFileName);
+        }
+        // Если же указан пустой каталог или каталог просто не существует - сообщим об этом в лог
+        else {
+            LOG.warn("Path [" + catalogPath + "] is empty or doesn't exists!");
+        }
+        // Возвращаем результат
+        return result;
     }
 
 }

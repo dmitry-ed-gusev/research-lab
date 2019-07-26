@@ -1,6 +1,6 @@
 package jdb.processing.loading.core;
 
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 import jdb.config.load.DBLoaderConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;

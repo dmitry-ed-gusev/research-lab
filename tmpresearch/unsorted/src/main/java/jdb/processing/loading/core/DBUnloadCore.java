@@ -3,7 +3,8 @@ package jdb.processing.loading.core;
 import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
 import dgusev.dbpilot.config.DBTableType;
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
+import gusev.dmitry.utils.MyCommonUtils;
 import jdb.config.load.DBLoaderConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
@@ -20,7 +21,6 @@ import jdb.model.time.TableTimedModel;
 import jdb.processing.loading.helpers.DataExportSQLBuilder;
 import jdb.processing.modeling.DBModeler;
 import jdb.utils.DBUtils;
-import jlib.utils.string.StrUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -288,7 +288,7 @@ public class DBUnloadCore {
                                             if ((counter % serializeFraction == 0) /** || ((counter%serializeFraction != 0) && (rs.isLast()))*/) {
                                                 // Получаем имя для очередного записываемого файла. Имя строится по определенным правилам (см.
                                                 // документацию/комментарии к методу getNameForFile())
-                                                String fileName = StrUtilities.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, packCounter);
+                                                String fileName = MyCommonUtils.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, String.valueOf(packCounter));
                                                 // Вызов модуля MyIOUtils для сериализации объекта
                                                 MyIOUtils.serializeObject(tableDTOModel, pathToTable, fileName, null, false);
                                                 logger.debug("### created file [" + fileName + "]");
@@ -312,7 +312,7 @@ public class DBUnloadCore {
                                             logger.debug("Serializing records remainder [" + ((counter - 1) % serializeFraction) + " records].");
                                             // Получаем имя для очередного записываемого файла. Имя строится по определенным правилам (см.
                                             // документацию/комментарии к методу getNameForFile())
-                                            String fileName = StrUtilities.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, packCounter);
+                                            String fileName = MyCommonUtils.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, String.valueOf(packCounter));
                                             // Вызов модуля MyIOUtils для сериализации объекта
                                             MyIOUtils.serializeObject(tableDTOModel, pathToTable, fileName, null, false);
                                             logger.debug("### created file [" + fileName + "]");
@@ -546,7 +546,7 @@ public class DBUnloadCore {
                                             if ((counter % serializeFraction == 0) /** || ((counter%serializeFraction != 0) && (rs.isLast()))*/) {
                                                 // Получаем имя для очередного записываемого файла. Имя строится по определенным правилам (см.
                                                 // документацию/комментарии к методу getNameForFile())
-                                                String fileName = StrUtilities.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, packCounter);
+                                                String fileName = MyCommonUtils.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, String.valueOf(packCounter));
 
                                                 // Вызов модуля MyIOUtils для сериализации объекта
                                                 MyIOUtils.serializeObject(tableDTOModel, pathToTable, fileName, null, false);
@@ -571,7 +571,7 @@ public class DBUnloadCore {
                                             logger.debug("Serializing records remainder [" + ((counter - 1) % serializeFraction) + " records].");
                                             // Получаем имя для очередного записываемого файла. Имя строится по определенным правилам (см.
                                             // документацию/комментарии к методу getNameForFile())
-                                            String fileName = StrUtilities.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, packCounter);
+                                            String fileName = MyCommonUtils.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, String.valueOf(packCounter));
                                             // Вызов модуля MyIOUtils для сериализации объекта
 
                                             MyIOUtils.serializeObject(tableDTOModel, pathToTable, fileName, null, false);

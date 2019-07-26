@@ -1,6 +1,6 @@
 package jdb.nextGen.serialization;
 
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 import jdb.nextGen.DBasesLoaderCore;
 import jdb.nextGen.exceptions.JdbException;
 import org.apache.commons.lang.StringUtils;

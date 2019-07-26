@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static gusev.dmitry.utils.MyCommonUtils.MapSortType.*;
+import static gusev.dmitry.utils.MyCommonUtils.MapSortType.ASC;
 
 /**
  * Some useful common utils for whole application. Utils for different cases - counting, work with dbases etc.
@@ -827,6 +827,71 @@ public final class MyCommonUtils {
             LOG.warn("Input data is NULL!");
         }
         return returnDate;
+    }
+
+    /**
+     * Метод возвращает список, разделенный запятыми (CSV - Comma-Separated-Values), полученный из массива-списка.
+     * Если исходный список пуст метод вернет значение NULL.
+     */
+    public static String getCSVFromArrayList(ArrayList<Integer> list) {
+        String result = null;
+        if ((list != null) && (!list.isEmpty())) {
+            StringBuilder csv = new StringBuilder();
+            for (int i = 0; i < list.size(); i++) {
+                csv.append(list.get(i));
+                if (i < (list.size() - 1)) {
+                    csv.append(", ");
+                }
+            }
+            result = csv.toString();
+        }
+        return result;
+    }
+
+    /**
+     * Метод формирует имя (строковое) фиксированной длины (параметр lenght) на основе указанного в параметре
+     * name имени. Указанное имя дополняется лидирующими символами, указанными в парметре symbol. Параметр lenght
+     * обязательно должен быть положительным и не равным 0, иначе метод вернет значение null. Еще одно ограничение на
+     * значение параметра lenght: значение данного параметра должно быть больше (строго больше) длины значения параметра
+     * name - в противном случае метод не выполнит никаких действий и вернет значение параметра name (имеется в виду случай
+     * непустого параметра name, при пустом name метод вернет null). Параметр symbol должен содержать отображаемый символ,
+     * в противном случае результирующее имя может вызывать крах различных модулей. Параметр name должен быть непустым (и
+     * не состоять из одних символов пробела, табуляции и т.п.), если же он пуст, то метод верент значение null.
+     */
+    public static String getFixedLengthName(int lenght, char symbol, String name) {
+        String result = null;
+        // Проверяем параметр name
+        if (!StringUtils.isBlank(name)) {
+            LOG.debug("Name parameter is OK. Processing name [" + name + "].");
+            // Проверяем параметр lenght (он должен быть положителен и не равен 0)
+            if (lenght > 0) {
+                LOG.debug("Lenght [" + lenght + "] is OK. Processing.");
+                // Действия выполняем только при значении lenght > name.lenght
+                if (lenght > name.length()) {
+                    StringBuilder resultName = new StringBuilder();
+                    for (int i = 0; i < (lenght - name.length()); i++) {
+                        resultName.append(symbol);
+                    }
+                    resultName.append(name);
+                    // Присвоение значения результату
+                    result = resultName.toString();
+                }
+                // Значение lenght <= name.lenght
+                else {
+                    result = name;
+                }
+            }
+            // Параметр lenght не подошел
+            else {
+                LOG.error("Wrong lenght [" + lenght + "]!");
+            }
+        }
+        // Параметр name пуст - сообщим об ошибке!
+        else {
+            LOG.error("Name parameter is empty!");
+        }
+        // Возвращаем результат
+        return result;
     }
 
 } // end of MyCommonUtils class

@@ -294,10 +294,10 @@ class ConnectionManager
   */
   public static void main(String[] args)
    {
-    Logger logger                   = Logger.getLogger(ConnectionManager.class.getName());
-    PatternLayout patternLayout     = new PatternLayout(Consts.LOGGER_LOG_FORMAT_DEFAULT);
-    ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
-    logger.addAppender(consoleAppender);
+    //Logger logger                   = Logger.getLogger(ConnectionManager.class.getName());
+    //PatternLayout patternLayout     = new PatternLayout(Consts.LOGGER_LOG_FORMAT_DEFAULT);
+    //ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
+    //logger.addAppender(consoleAppender);
 
     ConnectionManager conn = ConnectionManager.getInstance();
 

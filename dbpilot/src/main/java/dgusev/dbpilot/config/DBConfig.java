@@ -3,7 +3,7 @@ package dgusev.dbpilot.config;
 import dgusev.auth.Password;
 import dgusev.dbpilot.DBConsts;
 import gusev.dmitry.utils.MyCommonUtils;
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +11,6 @@ import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;

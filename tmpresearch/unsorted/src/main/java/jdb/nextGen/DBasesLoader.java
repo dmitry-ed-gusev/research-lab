@@ -1,7 +1,7 @@
 package jdb.nextGen;
 
 import dgusev.dbpilot.config.DBConfig;
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.monitoring.DBProcessingMonitor;

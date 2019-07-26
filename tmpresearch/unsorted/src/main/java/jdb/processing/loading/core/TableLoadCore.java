@@ -2,7 +2,7 @@ package jdb.processing.loading.core;
 
 import dgusev.dbpilot.config.DBConfig;
 import dgusev.dbpilot.config.DBType;
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 import jdb.config.batch.BatchConfig;
 import jdb.config.load.DBLoaderConfig;
 import jdb.exceptions.DBConnectionException;

@@ -1,5 +1,7 @@
 package gusev.dmitry.utils;
 
+import dgusev.cmd.CmdLine;
+import dgusev.cmd.CmdLineOption;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

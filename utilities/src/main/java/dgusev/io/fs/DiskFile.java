@@ -1,6 +1,6 @@
-package jlib.fileModel;
+package dgusev.io.fs;
 
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 
 import java.io.Serializable;
 

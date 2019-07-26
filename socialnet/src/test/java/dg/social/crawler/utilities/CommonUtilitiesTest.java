@@ -1,7 +1,7 @@
 package dg.social.crawler.utilities;
 
 import gusev.dmitry.jtils.spring.CustomStringProperty;
-import gusev.dmitry.utils.CmdLine;
+import dgusev.cmd.CmdLine;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

@@ -1,6 +1,6 @@
 package gusev.dmitry.jtils.mail.console;
 
-import gusev.dmitry.utils.CmdLine;
+import dgusev.cmd.CmdLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

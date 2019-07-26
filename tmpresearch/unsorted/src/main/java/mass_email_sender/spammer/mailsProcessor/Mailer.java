@@ -1,6 +1,6 @@
 package mass_email_sender.spammer.mailsProcessor;
 
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 import jlib.mail.JMail;
 import jlib.mail.JMailConfig;
 import mass_email_sender.spammer.Defaults;

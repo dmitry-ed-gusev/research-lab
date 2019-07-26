@@ -2,7 +2,8 @@ package jdb.nextGen;
 
 import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
+import gusev.dmitry.utils.MyCommonUtils;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.monitoring.DBProcessingMonitor;
@@ -12,8 +13,6 @@ import jdb.nextGen.models.SimpleDBTimedModel;
 import jdb.nextGen.serialization.Descriptor;
 import jdb.nextGen.serialization.SerializableResultSet;
 import jdb.utils.DBUtils;
-import jlib.utils.JLibCommonUtils;
-import jlib.utils.string.StrUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -97,7 +96,7 @@ public final class DBasesLoaderCore
           if ((keysList != null) && (!keysList.isEmpty()))
            {
             sql.append(" where ").append(DBConsts.FIELD_NAME_KEY).append("in (");
-            sql.append(JLibCommonUtils.getCSVFromArrayList(keysList)).append(")");
+            sql.append(MyCommonUtils.getCSVFromArrayList(keysList)).append(")");
            }
           // Добавляем в запрос нижнюю границу по времени (по таймштампу)
           if (lowerTimestamp != null)
@@ -157,7 +156,7 @@ public final class DBasesLoaderCore
               // Если в результате обработки получен непустой SRS - записываем его на диск
               if ((srs != null) && !srs.isEmpty())
                {
-                String fileName = StrUtilities.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, counter);
+                String fileName = MyCommonUtils.getFixedLengthName(FILE_NAME_LENGTH, FILE_NAME_FILL_SYMBOL, String.valueOf(counter));
                 MyIOUtils.serializeObject(srs, path, fileName, EXTENSION_TABLE, false);
                 // Запись данных в дескриптор выгружаемой таблицы
                 if (descriptor == null) {descriptor = new Descriptor(tableName, DBasesLoaderCore.ObjectType.TABLE);}

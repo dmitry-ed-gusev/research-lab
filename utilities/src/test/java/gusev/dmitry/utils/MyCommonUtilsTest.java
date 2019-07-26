@@ -1,8 +1,10 @@
 package gusev.dmitry.utils;
 
+import dgusev.cmd.CmdLine;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -11,7 +13,6 @@ import java.util.*;
 import static gusev.dmitry.utils.MyCommonUtils.MapSortType.ASC;
 import static gusev.dmitry.utils.MyCommonUtils.MapSortType.DESC;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
@@ -349,4 +350,18 @@ public class MyCommonUtilsTest {
         assertFalse(resultMap.containsKey("ddd"));
         assertFalse(resultMap.containsKey(2));
     }
+
+    @Test
+    @Ignore
+    // todo: ignored test!
+    public void testGetFixedLenghtName() {
+        assertEquals("00012", MyCommonUtils.getFixedLengthName(5, '0', "12"));
+        assertEquals("12", MyCommonUtils.getFixedLengthName(1, 'x', "12"));
+        assertEquals(null, MyCommonUtils.getFixedLengthName(-1, '0', "12"));
+        assertEquals(null, MyCommonUtils.getFixedLengthName(10, '0', ""));
+        assertEquals(null, MyCommonUtils.getFixedLengthName(10, '0', String.valueOf(-1)));
+        assertEquals(null, MyCommonUtils.getFixedLengthName(10, '0', String.valueOf(0)));
+        assertEquals("0000001234", MyCommonUtils.getFixedLengthName(10, '0', String.valueOf(1234)));
+    }
+
 }

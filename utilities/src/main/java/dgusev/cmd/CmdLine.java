@@ -1,4 +1,4 @@
-package gusev.dmitry.utils;
+package dgusev.cmd;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;

@@ -1,5 +1,6 @@
 package gusev.dmitry.utils;
 
+import dgusev.io.MyIOUtils;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;

@@ -2,7 +2,7 @@ package jdb.processing.loading.helpers;
 
 import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
 import jdb.exceptions.DBModuleConfigException;

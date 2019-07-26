@@ -1,6 +1,6 @@
 package gusevdm.nlp.rest;
 
-import gusev.dmitry.utils.MyIOUtils;
+import dgusev.io.MyIOUtils;
 import lombok.extern.apachecommons.CommonsLog;
 
 import javax.enterprise.context.ApplicationScoped;
