@@ -45,8 +45,7 @@ public class DbfShipownersEng implements EmailsListInterface
   }
 
   @Override
-  public TreeMap<String, Integer> getEmailsList()
-   {
+  public TreeMap<String, Integer> getEmailsList() throws IllegalAccessException, ClassNotFoundException, InstantiationException {
     DbfEmailsListBuilder builder = new DbfEmailsListBuilder(fleetDbPath, firmDbPath);
     return builder.getEmailsList(Defaults.RecipientType.RECIPIENT_TYPE_SHIPOWNERS_ENG);
    }

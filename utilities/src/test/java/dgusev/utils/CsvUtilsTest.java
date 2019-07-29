@@ -1,5 +1,6 @@
-package gusev.dmitry.utils;
+package dgusev.utils;
 
+import dgusev.utils.CsvUtils;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
 

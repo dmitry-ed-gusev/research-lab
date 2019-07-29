@@ -2,7 +2,7 @@ package dgusev.dbpilot.config;
 
 import dgusev.auth.Password;
 import dgusev.dbpilot.DBConsts;
-import gusev.dmitry.utils.MyCommonUtils;
+import dgusev.utils.MyCommonUtils;
 import dgusev.io.MyIOUtils;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,5 +1,6 @@
-package gusev.dmitry.utils;
+package dgusev.utils;
 
+import dgusev.utils.MyHttpUtils;
 import org.junit.Test;
 
 /**

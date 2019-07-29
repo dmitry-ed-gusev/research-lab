@@ -1,7 +1,7 @@
 package dg.bigdata.hw2;
 
 import dgusev.cmd.CmdLine;
-import gusev.dmitry.utils.MyCommonUtils;
+import dgusev.utils.MyCommonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import static gusev.dmitry.utils.MyCommonUtils.MapSortType.DESC;
+import static dgusev.utils.MyCommonUtils.MapSortType.DESC;
 
 /**
  * Implementation of BigData course HW #2.

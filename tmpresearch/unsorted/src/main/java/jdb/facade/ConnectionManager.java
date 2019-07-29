@@ -1,10 +1,7 @@
 package jdb.facade;
 
 import dgusev.dbpilot.DBConsts;
-import jlib.common.Consts;
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 
 import java.sql.Connection;
 import java.sql.SQLException;

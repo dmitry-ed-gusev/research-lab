@@ -4,7 +4,6 @@ import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.processing.spider.DBSpider;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -95,8 +94,7 @@ public class DBTester
    * @param dbName String имя искомой БД.
    * @return boolean ИСТИНА/ЛОЖЬ - существует ли указанная БД.
   */
-  public boolean isDBExists(String dbName)
-   {
+  public boolean isDBExists(String dbName) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
     boolean result = false;
     logger.debug("Checking existence DB [" + dbName + "] on current DBMS server.");
     try

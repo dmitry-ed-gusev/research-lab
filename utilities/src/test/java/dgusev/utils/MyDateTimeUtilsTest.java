@@ -1,5 +1,7 @@
-package gusev.dmitry.utils;
+package dgusev.utils;
 
+import dgusev.utils.MyDateTimeUtils;
+import dgusev.utils.TimePeriodType;
 import org.junit.Test;
 
 import java.text.ParseException;

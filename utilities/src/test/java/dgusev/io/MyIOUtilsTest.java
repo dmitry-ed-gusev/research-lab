@@ -1,4 +1,4 @@
-package gusev.dmitry.utils;
+package dgusev.io;
 
 import dgusev.io.MyIOUtils;
 import org.junit.Test;

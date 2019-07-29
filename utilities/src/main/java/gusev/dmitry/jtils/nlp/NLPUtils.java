@@ -1,6 +1,6 @@
 package gusev.dmitry.jtils.nlp;
 
-import gusev.dmitry.utils.MyCommonUtils;
+import dgusev.utils.MyCommonUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -10,8 +10,8 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static gusev.dmitry.utils.MyCommonUtils.MapSortType.DESC;
-import static gusev.dmitry.utils.MyCommonUtils.not;
+import static dgusev.utils.MyCommonUtils.MapSortType.DESC;
+import static dgusev.utils.MyCommonUtils.not;
 
 /**
  * NLP utilities. Used for processing natural language.

@@ -8,7 +8,6 @@ import jdb.exceptions.DBModuleConfigException;
 import jdb.model.structure.DBStructureModel;
 import jdb.model.structure.TableStructureModel;
 import jdb.processing.DBEngineer;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -169,7 +168,7 @@ public class SQLGenerator
    * Метод только для тестирования данного класса.
    * @param args String[] аргументы метода main.
   */
-  public static void main(String[] args) throws org.apache.commons.configuration2.ex.ConfigurationException {
+  public static void main(String[] args) throws org.apache.commons.configuration2.ex.ConfigurationException, IllegalAccessException, ClassNotFoundException, InstantiationException {
     Logger logger = Logger.getLogger("jdb");
     
     try

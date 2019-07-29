@@ -1,5 +1,6 @@
-package gusev.dmitry.utils;
+package dgusev.utils;
 
+import dgusev.utils.MoneyAmountInWords;
 import org.junit.Test;
 
 import java.util.HashMap;

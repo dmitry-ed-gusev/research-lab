@@ -1,8 +1,6 @@
 package jdb.processing.data;
 
 import jdb.exceptions.DBConnectionException;
-import jdb.processing.data.helpers.DataProcessingHelper;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -16,7 +14,6 @@ import java.sql.SQLException;
  * @version 2.0 (DATE: 30.11.2010)
 */
 
-@SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
 public class DataReader
  {
   /** Компонент-логгер данного класса. */
@@ -42,9 +39,11 @@ public class DataReader
     String result = null;
     // Проверяем соединение
     if (connection == null) {throw new DBConnectionException("Connection is empty!");}
+
     // Проверяем параметры
-    String paramsCheckResult = DataProcessingHelper.checkParams(tableName, keyFieldName, dataFieldName);
-    if (!StringUtils.isBlank(paramsCheckResult)) {throw new SQLException(paramsCheckResult);}
+    //String paramsCheckResult = DataProcessingHelper.checkParams(tableName, keyFieldName, dataFieldName);
+    //if (!StringUtils.isBlank(paramsCheckResult)) {throw new SQLException(paramsCheckResult);}
+
     // Генерируем запрос для чтения поля данных
     String sql = "select " + dataFieldName + " from " + tableName + " where " + keyFieldName + " = " + keyFieldValue;
     logger.debug("Generated query: " + sql);
@@ -75,9 +74,11 @@ public class DataReader
     int result = 0;
     // Проверяем соединение
     if (connection == null) {throw new DBConnectionException("Connection is empty!");}
+
     // Проверяем параметры
-    String paramsCheckResult = DataProcessingHelper.checkParams(tableName, keyFieldName, dataFieldName);
-    if (!StringUtils.isBlank(paramsCheckResult)) {throw new SQLException(paramsCheckResult);}
+    //String paramsCheckResult = DataProcessingHelper.checkParams(tableName, keyFieldName, dataFieldName);
+    //if (!StringUtils.isBlank(paramsCheckResult)) {throw new SQLException(paramsCheckResult);}
+
     // Генерируем запрос для чтения поля данных
     String sql = "select " + dataFieldName + " from " + tableName + " where " + keyFieldName + " = " + keyFieldValue;
     logger.debug("Generated query: " + sql);

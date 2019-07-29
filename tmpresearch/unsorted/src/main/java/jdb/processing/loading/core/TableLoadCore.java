@@ -11,7 +11,6 @@ import jdb.exceptions.DBModuleConfigException;
 import jdb.monitoring.DBProcessingMonitor;
 import jdb.processing.loading.helpers.SqlBatchBuilder;
 import jdb.processing.sql.execution.batch.SqlBatcher;
-import jdb.utils.DBUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -56,7 +55,7 @@ public class TableLoadCore {
      * @throws DBConnectionException   ошибки соединения с СУБД.
      */
     public static ArrayList<String> load(DBLoaderConfig config, String tableName)
-            throws DBModuleConfigException, DBConnectionException, IOException, SQLException {
+            throws DBModuleConfigException, DBConnectionException, IOException, SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         logger.debug("WORKING TableLoadCore.load().");
         // Возвращаемый список возникших некритических ИС (при десериализации таблицы)
         ArrayList<String> errorsList = null;
@@ -65,7 +64,7 @@ public class TableLoadCore {
         ArrayList<String> fullSqlBatch = null;
 
         // Если нам передан конфиг с ошибками, возбуждаем ИС!
-        String configErrors = DBUtils.getConfigErrors(config);
+        String configErrors = null; // DBUtils.getConfigErrors(config);
         if (!StringUtils.isBlank(configErrors)) {
             throw new DBModuleConfigException(configErrors);
         }
@@ -73,12 +72,14 @@ public class TableLoadCore {
         else {
             logger.debug("Serialization config is OK. Processing.");
         }
+
         // Проверка соединения с СУБД с помощью конфига (без соединения с СУБД невозможна десериализация данных)
-        if (!DBUtils.isConnectionValid(config.getDbConfig())) {
-            throw new DBConnectionException("Can't connect to DBMS!");
-        } else {
-            logger.debug("Connection to DBMS is OK! Processing.");
-        }
+        //if (!DBUtils.isConnectionValid(config.getDbConfig())) {
+        //    throw new DBConnectionException("Can't connect to DBMS!");
+        //} else {
+        //    logger.debug("Connection to DBMS is OK! Processing.");
+        //}
+
         // Проверяем указанное имя таблицы - если оно пусто - ошибка
         if (StringUtils.isBlank(tableName)) {
             throw new SQLException("Specifyied table name is empty!");
@@ -332,7 +333,7 @@ public class TableLoadCore {
      *
      * @param args String[] параметры метода main.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
         Logger logger = Logger.getLogger("jdb");
 
         DBConfig mysqlConfig1 = new DBConfig();

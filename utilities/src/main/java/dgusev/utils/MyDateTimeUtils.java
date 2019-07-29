@@ -1,4 +1,4 @@
-package gusev.dmitry.utils;
+package dgusev.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

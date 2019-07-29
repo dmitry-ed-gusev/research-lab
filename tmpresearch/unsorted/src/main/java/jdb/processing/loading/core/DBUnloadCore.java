@@ -3,8 +3,9 @@ package jdb.processing.loading.core;
 import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
 import dgusev.dbpilot.config.DBTableType;
+import dgusev.dbpilot.utils.DBUtilities;
 import dgusev.io.MyIOUtils;
-import gusev.dmitry.utils.MyCommonUtils;
+import dgusev.utils.MyCommonUtils;
 import jdb.config.load.DBLoaderConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
@@ -20,7 +21,6 @@ import jdb.model.time.DBTimedModel;
 import jdb.model.time.TableTimedModel;
 import jdb.processing.loading.helpers.DataExportSQLBuilder;
 import jdb.processing.modeling.DBModeler;
-import jdb.utils.DBUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -116,13 +116,13 @@ public class DBUnloadCore {
      */
     @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
     public static boolean unload(DBLoaderConfig config) throws SQLException, DBConnectionException,
-            DBModuleConfigException, IOException, DBModelException {
+            DBModuleConfigException, IOException, DBModelException, IllegalAccessException, InstantiationException, ClassNotFoundException {
         // Результат сериализации БД - если ИСТИНА, то часть данных сериализована, если ЛОЖЬ - ничего не сериализовано.
         boolean isDataSerialized = false;
         logger.debug("WORKING DBSerializer.unload().");
 
         // Если конфигурация модуля ошибочна - возбуждаем ИС!
-        String configErrors = DBUtils.getConfigErrors(config);
+        String configErrors = null; // DBUtils.getConfigErrors(config);
         if (!StringUtils.isBlank(configErrors)) {
             throw new DBModuleConfigException(configErrors);
         }
@@ -160,7 +160,7 @@ public class DBUnloadCore {
         logger.debug("Calculated value for table serialize fraction:" + serializeFraction);
 
         // Компоненты для соединения с сериализуемой СУБД
-        Connection connection = DBUtils.getDBConn(config.getDbConfig());
+        Connection connection = DBUtilities.getDBConn(config.getDbConfig());
         Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         stmt.setFetchSize(5000);
 
@@ -202,12 +202,12 @@ public class DBUnloadCore {
 
                             // Модель целостности для данной таблицы (получаем по имени таблицы, БЕЗ указания схемы)
                             TableIntegrityModel integrityTable = null;
-                            if (!DBUtils.isDBModelEmpty(integrityDB)) {
+                            if (integrityDB != null && !integrityDB.isEmpty()) {
                                 integrityTable = integrityDB.getTable(currentTableName);
                             }
                             // Модель с указанием времени для данной таблицы (получаем по имени таблицы, БЕЗ указания схемы)
                             TableTimedModel timedTable = null;
-                            if (!DBUtils.isDBModelEmpty(timedDB)) {
+                            if (timedDB != null && !timedDB.isEmpty()) {
                                 timedTable = timedDB.getTable(currentTableName);
                             }
 
@@ -374,13 +374,13 @@ public class DBUnloadCore {
     }
 
     public static boolean unload2(DBLoaderConfig config) throws SQLException, DBConnectionException,
-            DBModuleConfigException, IOException, DBModelException {
+            DBModuleConfigException, IOException, DBModelException, IllegalAccessException, InstantiationException, ClassNotFoundException {
         // Результат сериализации БД - если ИСТИНА, то часть данных сериализована, если ЛОЖЬ - ничего не сериализовано.
         boolean isDataSerialized = false;
         logger.debug("WORKING DBSerializer.unload().");
 
         // Если конфигурация модуля ошибочна - возбуждаем ИС!
-        String configErrors = DBUtils.getConfigErrors(config);
+        String configErrors = null; // DBUtils.getConfigErrors(config);
         if (!StringUtils.isBlank(configErrors)) {
             throw new DBModuleConfigException(configErrors);
         }
@@ -418,7 +418,7 @@ public class DBUnloadCore {
         logger.debug("Calculated value for table serialize fraction:" + serializeFraction);
 
         // Компоненты для соединения с сериализуемой СУБД
-        Connection connection = DBUtils.getDBConn(config.getDbConfig());
+        Connection connection = DBUtilities.getDBConn(config.getDbConfig());
         Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         stmt.setFetchSize(5000);
 
@@ -460,12 +460,12 @@ public class DBUnloadCore {
 
                             // Модель целостности для данной таблицы (получаем по имени таблицы, БЕЗ указания схемы)
                             TableIntegrityModel integrityTable = null;
-                            if (!DBUtils.isDBModelEmpty(integrityDB)) {
+                            if (integrityDB != null && !integrityDB.isEmpty()) {
                                 integrityTable = integrityDB.getTable(currentTableName);
                             }
                             // Модель с указанием времени для данной таблицы (получаем по имени таблицы, БЕЗ указания схемы)
                             TableTimedModel timedTable = null;
-                            if (!DBUtils.isDBModelEmpty(timedDB)) {
+                            if (timedDB != null && !timedDB.isEmpty()) {
                                 timedTable = timedDB.getTable(currentTableName);
                             }
 
@@ -639,7 +639,7 @@ public class DBUnloadCore {
      *
      * @param args String[] параметры метода main.
      */
-    public static void main(String[] args) throws org.apache.commons.configuration2.ex.ConfigurationException {
+    public static void main(String[] args) throws org.apache.commons.configuration2.ex.ConfigurationException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         // Логгер текущего класса
         Logger logger = Logger.getLogger(DBUnloadCore.class.getName());
         try {

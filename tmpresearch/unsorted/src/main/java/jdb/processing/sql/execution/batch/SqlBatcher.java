@@ -3,12 +3,12 @@ package jdb.processing.sql.execution.batch;
 import dgusev.dbpilot.DBConsts;
 import dgusev.dbpilot.config.DBConfig;
 import dgusev.dbpilot.config.DBType;
+import dgusev.dbpilot.utils.DBUtilities;
 import jdb.config.batch.BatchConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.processing.sql.execution.batch.executors.MultiThreadsSqlBatchExecutor;
 import jdb.processing.sql.execution.batch.executors.SingleThreadSqlBatchExecutor;
-import jdb.utils.DBUtils;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -42,7 +42,7 @@ public class SqlBatcher {
      * @throws SQLException            ИС - критические ошибки при выполнении sql-запросов.
      */
     @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
-    public static ArrayList<String> execute(BatchConfig config) throws DBModuleConfigException, DBConnectionException, SQLException {
+    public static ArrayList<String> execute(BatchConfig config) throws DBModuleConfigException, DBConnectionException, SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException {
         // Результат - список ошибок, возникших при выполнении sql-батча
         ArrayList<String> result;
 
@@ -60,7 +60,7 @@ public class SqlBatcher {
         try {
             // Соединяемся с указанной СУБД. Если соединение с СУБД установить не удалось - ничего больше не
             // выполняется (так как возбуждается ИС).
-            connection = DBUtils.getDBConn(config.getDbConfig());
+            connection = DBUtilities.getDBConn(config.getDbConfig());
             statement = connection.createStatement();
             logger.debug("Connection to DBMS established. All OK.");
         }
@@ -112,7 +112,7 @@ public class SqlBatcher {
      *
      * @param args String[] параметры метода.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
         Logger logger = Logger.getLogger("jdb");
 
         // Соединение с БД

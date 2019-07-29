@@ -1,6 +1,7 @@
 package jdb.processing.sql.execution.batch.executors;
 
 import dgusev.dbpilot.DBConsts;
+import dgusev.dbpilot.utils.DBUtilities;
 import jdb.DBResources;
 import jdb.config.batch.BatchConfig;
 import jdb.exceptions.DBConnectionException;
@@ -8,7 +9,6 @@ import jdb.exceptions.DBModuleConfigException;
 import jdb.monitoring.DBProcessingMonitor;
 import jdb.processing.sql.execution.batch.executors.multiThreadsHelpers.SqlBatchRunnable;
 import jdb.processing.sql.execution.batch.executors.multiThreadsHelpers.TotalProcessedQueries;
-import jdb.utils.DBUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -48,8 +48,7 @@ public class MultiThreadsSqlBatchExecutor
    * @throws jdb.exceptions.DBConnectionException ошибки непосредственно соединения с СУБД.
   */
   @SuppressWarnings({"MethodWithMultipleReturnPoints"})
-  public static ArrayList<String> execute(BatchConfig config) throws SQLException, DBModuleConfigException, DBConnectionException
-   {
+  public static ArrayList<String> execute(BatchConfig config) throws SQLException, DBModuleConfigException, DBConnectionException, IllegalAccessException, InstantiationException, ClassNotFoundException {
     logger.debug("execute: executing!");
     // Результат выполнения батча - список возникших ошибок. Переменная объявлена как final - т.к. к
     // данной переменной осуществляется доступ из всех создаваемых потоков.
@@ -70,7 +69,7 @@ public class MultiThreadsSqlBatchExecutor
      {
       // Соединяемся с указанной СУБД. Если соединение с СУБД установить не удалось - ничего больше не
       // выполняется (так как возбуждается ИС).
-      connection = DBUtils.getDBConn(config.getDbConfig());
+      connection = DBUtilities.getDBConn(config.getDbConfig());
       statement  = connection.createStatement();
       logger.debug("Connection to DBMS established. All OK.");
      }

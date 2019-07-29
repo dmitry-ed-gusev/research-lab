@@ -52,7 +52,7 @@ public class Mailer
    * Непосредственно метод, осуществляющий массовую рассылку почты. Перед применением ознакомьтесь с инструкцией.
   */
   @SuppressWarnings({"ReuseOfLocalVariable"})
-  public void startSpam() throws ConfigurationException {
+  public void startSpam() throws ConfigurationException, IllegalAccessException, InstantiationException, ClassNotFoundException {
     logger.debug("Mailer: startSpam().");
     // Проверяем конфиг для работы майлера - если конфиг пуст или содержит ошибки - ничо не делаем! Ошибка!
     if ((this.config != null) && (StringUtils.isBlank(this.config.getConfigErrors())))

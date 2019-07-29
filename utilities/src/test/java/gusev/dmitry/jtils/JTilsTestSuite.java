@@ -3,7 +3,7 @@ package gusev.dmitry.jtils;
 import gusev.dmitry.jtils.graph.typeIII.WeightedDigraphTest;
 import gusev.dmitry.jtils.graph.typeIII.WeightedEdgeTest;
 import gusev.dmitry.jtils.net.IPAddressValidatorTest;
-import gusev.dmitry.utils.MyCommonUtilsTest;
+import dgusev.utils.MyCommonUtilsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

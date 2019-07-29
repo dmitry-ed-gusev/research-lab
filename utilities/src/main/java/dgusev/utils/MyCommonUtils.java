@@ -1,4 +1,4 @@
-package gusev.dmitry.utils;
+package dgusev.utils;
 
 import lombok.NonNull;
 import lombok.extern.apachecommons.CommonsLog;
@@ -10,8 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -20,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static gusev.dmitry.utils.MyCommonUtils.MapSortType.ASC;
+import static dgusev.utils.MyCommonUtils.MapSortType.ASC;
 
 /**
  * Some useful common utils for whole application. Utils for different cases - counting, work with dbases etc.
@@ -116,56 +114,7 @@ public final class MyCommonUtils {
         put('я', "ya");
     }};
 
-    private MyCommonUtils() { // non-instantiability
-    }
-
-    /***/
-    // todo: move to some db utilities class (dbPilot project?)
-    public static String getStringResultSet(ResultSet rs, int width) {
-        LOG.debug("DBUtils.getStringResultSet() working.");
-
-        StringBuilder rows = new StringBuilder();
-        // process result set
-        if (rs != null) {
-            try {
-
-                if (rs.next()) {
-                    int columnCount = rs.getMetaData().getColumnCount();
-                    // line for header and footer of the table
-                    String horizontalLine = StringUtils.repeat("-", width * columnCount + columnCount + 1) + "\n";
-                    // creating header
-                    StringBuilder header = new StringBuilder(horizontalLine).append("|");
-                    for (int i = 1; i <= columnCount; i++) {
-                        header.append(String.format("%" + width + "s|", StringUtils.center(rs.getMetaData().getColumnName(i), width)));
-                    }
-                    header.append("\n").append(horizontalLine);
-                    // add header to result
-                    rows.append(header);
-                    // creating data rows
-                    int counter = 0;
-                    do {
-                        StringBuilder row = new StringBuilder("|");
-                        for (int i = 1; i <= columnCount; i++) {
-                            row.append(String.format("%" + width + "s|", StringUtils.center(rs.getString(i), width)));
-                        }
-                        row.append("\n");
-                        // add data row to result
-                        rows.append(row);
-                        counter++;
-                    } while (rs.next());
-                    // add footer horizontal line
-                    rows.append(horizontalLine).append("Total record(s): ").append(counter).append("\n");
-                } else {
-                    LOG.warn("ResultSet is not NULL, but is EMPTY!");
-                }
-            } // end of TRY
-            catch (SQLException e) {
-                LOG.error("SQL error occured: " + e.getMessage());
-            }
-        } else LOG.warn("ResultSet is NULL!");
-
-        return rows.toString();
-    }
+    private MyCommonUtils() {}
 
     /**
      * Method returns date range for specified date and delta (in days). Method is null-safe, if input date is null,

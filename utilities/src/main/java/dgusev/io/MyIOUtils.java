@@ -1,7 +1,7 @@
 package dgusev.io;
 
-import gusev.dmitry.utils.MyDateTimeUtils;
-import gusev.dmitry.utils.TimePeriodType;
+import dgusev.utils.MyDateTimeUtils;
+import dgusev.utils.TimePeriodType;
 import lombok.NonNull;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.csv.CSVFormat;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 import java.util.zip.*;
 
 import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
-import static gusev.dmitry.utils.MyCommonUtils.not;
+import static dgusev.utils.MyCommonUtils.not;
 
 /** Some IO utilities, useful for me. */
 @CommonsLog

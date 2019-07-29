@@ -1,4 +1,4 @@
-package gusev.dmitry.utils;
+package dgusev.utils;
 
 import lombok.extern.apachecommons.CommonsLog;
 

@@ -12,5 +12,5 @@ import java.util.TreeMap;
 
 public interface EmailsListInterface
  {
-  public TreeMap<String, Integer> getEmailsList();
+  public TreeMap<String, Integer> getEmailsList() throws IllegalAccessException, ClassNotFoundException, InstantiationException;
  }

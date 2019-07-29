@@ -1,4 +1,4 @@
-package gusev.dmitry.utils;
+package dgusev.utils;
 
 import dgusev.cmd.CmdLine;
 import org.apache.commons.lang3.tuple.Pair;
@@ -10,8 +10,8 @@ import org.mockito.Mock;
 
 import java.util.*;
 
-import static gusev.dmitry.utils.MyCommonUtils.MapSortType.ASC;
-import static gusev.dmitry.utils.MyCommonUtils.MapSortType.DESC;
+import static dgusev.utils.MyCommonUtils.MapSortType.ASC;
+import static dgusev.utils.MyCommonUtils.MapSortType.DESC;
 import static org.junit.Assert.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 

@@ -1,4 +1,4 @@
-package gusev.dmitry.utils;
+package dgusev.cmd;
 
 import dgusev.cmd.CmdLine;
 import dgusev.cmd.CmdLineOption;
