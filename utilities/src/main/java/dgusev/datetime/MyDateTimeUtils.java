@@ -45,6 +45,33 @@ public final class MyDateTimeUtils {
      * Rejects null values for Date/SimpleDateFormat and MIN_INT value for count (method uses Math.abs() that
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
+    public static List<String> getHoursList(Date date, int count, SimpleDateFormat dateFormat) {
+        LOGGER.debug(String.format("MyDateTimeUtils.getHoursList() is working. Date: [%s], count: [%s], format: [%s].",
+                date, count, dateFormat));
+
+        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+
+        List<String> datesList = new ArrayList<>();
+        // get sign of counter
+        int signum = Integer.signum(count);
+
+        // set specified date
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        // create list of days dates with specified date/time format
+        for (int i = 0; i <= Math.abs(count); i++) { // iterate
+            datesList.add(dateFormat.format(cal.getTime()));
+            cal.add(Calendar.HOUR_OF_DAY, signum); // shift calendar by days
+        }
+
+        return datesList;
+    }
+
+    /**
+     * Rejects null values for Date/SimpleDateFormat and MIN_INT value for count (method uses Math.abs() that
+     * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
+     */
     public static List<String> getDatesList(Date date, int count, SimpleDateFormat dateFormat) {
         LOGGER.debug(String.format("MyDateTimeUtils.getDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
@@ -194,6 +221,7 @@ public final class MyDateTimeUtils {
         LOGGER.debug("MyDateTimeUtils.getDatesListBack() is working.");
 
         switch (periodType) {
+            case HOUR:    return MyDateTimeUtils.getHoursList(date, count, dateFormat);
             case DAY:     return MyDateTimeUtils.getDatesList(date, count, dateFormat);
             case WEEK:    return MyDateTimeUtils.getWeeksStartDatesList(date, count, dateFormat);
             case MONTH:   return MyDateTimeUtils.getMonthsStartDatesList(date, count, dateFormat);
@@ -387,16 +415,13 @@ public final class MyDateTimeUtils {
     }
 
     /***/
-    // todo: change default comment marker? (parameter for it???)
-    public static Map<String, List<String>> readDatesPeriodsFromCSV(@NonNull String csvFile,
-                                                                    @NonNull Date baseDate,
+    public static Map<String, List<String>> readDatesPeriodsFromCSV(@NonNull String csvFile, @NonNull Date baseDate,
                                                                     @NonNull SimpleDateFormat dateFormat) throws IOException {
 
-        LOG.debug("MyIOUtils.readDatesPeriodsFromCSV() is working.");
+        LOG.debug("MyDateTimeUtils.readDatesPeriodsFromCSV() is working.");
 
         // check and fail-fast behaviour
-        if (dateFormat == null || baseDate == null || StringUtils.isBlank(csvFile) ||
-                !new File(csvFile).exists() || !new File(csvFile).isFile()) {
+        if (StringUtils.isBlank(csvFile) || !new File(csvFile).exists() || !new File(csvFile).isFile()) {
             throw new IllegalArgumentException(
                     String.format("Empty date format [%s], date [%s] or invalid CSV file [%s]!",
                             (dateFormat == null ? null : dateFormat.toPattern()), baseDate, csvFile));
@@ -415,15 +440,15 @@ public final class MyDateTimeUtils {
                 .withIgnoreEmptyLines()  // ignore empty lines
                 .withCommentMarker('#'); // use # as a comment sign
 
-        // todo: merge two cycles - iterating over resords and generating dates lists (see FOR below)
+        // todo: merge two cycles - iterating over records and generating dates lists (see FOR below)
         // create CSV file reader (and read the file)
         try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), DEFAULT_ENCODING))) {
             CSVParser csvParser = new CSVParser(fileReader, csvFormat);
             List<CSVRecord> csvRecords = csvParser.getRecords();
-            LOG.info(String.format("Got records from CSV [%s]. Records count [%s].", csvFile, csvRecords.size()));
-            // iterate over records, create instances and fill in resulting list
+            LOG.info(String.format("Got [%s] record(s) from CSV [%s].", csvRecords.size(), csvFile));
 
             // todo: add check - record columns count (.size()) and non-empty values for first and last (3rd) columns
+            // iterate over records, create instances and fill in resulting list
             csvRecords.forEach(record -> periodsList.add(
                     new ImmutableTriple<String, TimePeriodType, Integer>(
                             record.get(0), TimePeriodType.getTypeByName(record.get(1)), Integer.parseInt(record.get(2)))));

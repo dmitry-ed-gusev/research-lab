@@ -384,8 +384,10 @@ public class MyDateTimeUtilsTest {
 
     @Test
     public void testReadDatesPeriodsFromCSV() throws IOException, ParseException {
+
         // fixed base date
         Date baseDate = DATE_FORMAT.parse("2018-08-10");
+
         // expected result
         Map<String, List<String>> expected = new HashMap<String, List<String>>() {{
             put("name1", Arrays.asList("2018-08-10", "2018-08-11", "2018-08-12", "2018-08-13"));
@@ -396,12 +398,34 @@ public class MyDateTimeUtilsTest {
         // get actual result
         Map<String, List<String>> actual = MyDateTimeUtils.readDatesPeriodsFromCSV(CSV_DATES1, baseDate, DATE_FORMAT);
 
+        // test/assertion
         assertEquals("Should be equals!", expected, actual);
     }
 
     @Test
-    public void testReadDatesPeriodsFromCSVWithHours() {
-        // todo: implementation!!!
+    public void testReadDatesPeriodsFromCSVWithHours() throws ParseException {
+
+        // we use date in ISO 8601 format (https://ru.wikipedia.org/wiki/ISO_8601)
+        // see also: https://stackoverflow.com/questions/19112357/java-simpledateformatyyyy-mm-ddthhmmssz-gives-timezone-as-ist
+
+        // setup base date
+        SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        FORMAT.setTimeZone(TimeZone.getTimeZone("MSK"));
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        Date baseDate = FORMAT.parse("2019-03-11T12:01:28+03:00");
+
+        // expected result
+        Map<String, List<String>> expected = new HashMap<String, List<String>>() {{
+            put("name1", Arrays.asList("2018-08-10", "2018-08-11", "2018-08-12", "2018-08-13"));
+            put("name2", Arrays.asList("2018-08-01", "2018-07-01", "2018-06-01", "2018-05-01"));
+            put("name3", Arrays.asList("2018-01-01", "2017-01-01"));
+        }};
+
+        System.out.println(baseDate);
+        System.out.println(FORMAT.format(baseDate));
+        System.out.println(new Date());
+        System.out.println(FORMAT.format(new Date()));
+
     }
 
 

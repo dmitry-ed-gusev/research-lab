@@ -1,8 +1,10 @@
 package dgusev.datetime;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
-/** Time periods types. */
+/** Simple time periods types enumeration. */
+
 public enum TimePeriodType {
 
     SECOND  (1, 0),
@@ -19,23 +21,15 @@ public enum TimePeriodType {
         this.days  = days;
     }
 
-    private final int value;
-    private final int days;
-
-    public int getValue() {
-        return value;
-    }
-
-    public int getDays() {
-        return days;
-    }
+    @Getter private final int value;
+    @Getter private final int days;
 
     public static TimePeriodType getTypeByName(String typeName) {
         if (StringUtils.isBlank(typeName)) {
             return null;
         }
 
-        // todo: error processing!!!
+        // todo: implement error processing!!!
         return TimePeriodType.valueOf(typeName.toUpperCase());
     }
 
