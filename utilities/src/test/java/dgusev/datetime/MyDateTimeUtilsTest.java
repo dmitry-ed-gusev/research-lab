@@ -410,21 +410,29 @@ public class MyDateTimeUtilsTest {
 
         // setup base date
         SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        FORMAT.setTimeZone(TimeZone.getTimeZone("MSK"));
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        //FORMAT.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
+        //TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         Date baseDate = FORMAT.parse("2019-03-11T12:01:28+03:00");
 
-        // expected result
-        Map<String, List<String>> expected = new HashMap<String, List<String>>() {{
-            put("name1", Arrays.asList("2018-08-10", "2018-08-11", "2018-08-12", "2018-08-13"));
-            put("name2", Arrays.asList("2018-08-01", "2018-07-01", "2018-06-01", "2018-05-01"));
-            put("name3", Arrays.asList("2018-01-01", "2017-01-01"));
-        }};
+        // get current (default) time zone
+        TimeZone currentZone = TimeZone.getDefault();
+        System.out.println(String.format("Date in current timezone ([%s] / [%s]) -> %s", currentZone.getID(),
+                currentZone.getDisplayName(), baseDate));
 
-        System.out.println(baseDate);
-        System.out.println(FORMAT.format(baseDate));
-        System.out.println(new Date());
-        System.out.println(FORMAT.format(new Date()));
+        // set time zone to GMT
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        currentZone = TimeZone.getDefault();
+        System.out.println(String.format("Date in changed timezone ([%s] / [%s]) -> %s", currentZone.getID(),
+                currentZone.getDisplayName(), baseDate));
+
+        TimeZone formatZone = FORMAT.getTimeZone();
+        System.out.println(String.format("Date in timezone of SimpleDateFormat ([%s] / [%s]) -> %s", formatZone.getID(),
+                formatZone.getDisplayName(), FORMAT.format(baseDate)));
+
+        FORMAT.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
+        formatZone = FORMAT.getTimeZone();
+        System.out.println(String.format("Date in changed timezone of SimpleDateFormat ([%s] / [%s]) -> %s", formatZone.getID(),
+                formatZone.getDisplayName(), FORMAT.format(baseDate)));
 
     }
 
