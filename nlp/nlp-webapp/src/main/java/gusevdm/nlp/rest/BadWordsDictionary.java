@@ -1,6 +1,6 @@
 package gusevdm.nlp.rest;
 
-import dgusev.io.MyIOUtils;
+import dgusev.utils.MyCsvUtils;
 import lombok.extern.apachecommons.CommonsLog;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,7 +31,7 @@ public class BadWordsDictionary {
             InputStream input = Thread.currentThread().getContextClassLoader()
                     .getResourceAsStream(BADWORDS_DICTIONARY_FILE);
             // read bad words and put it in unmodifiable collection
-            badwords = Collections.unmodifiableList(MyIOUtils.readCSVFile(input, DEFAULT_ENCODING));
+            badwords = Collections.unmodifiableList(MyCsvUtils.readCSVFile(input, DEFAULT_ENCODING));
 
             // some debug
             LOG.debug(String.format("Initialized bad words list:\n%s", badwords));

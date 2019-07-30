@@ -5,6 +5,7 @@ import dgusev.dbpilot.config.DBConfig;
 import dgusev.dbpilot.utils.DBUtilities;
 import dgusev.io.MyIOUtils;
 import dgusev.utils.MyCommonUtils;
+import dgusev.utils.MyCsvUtils;
 import jdb.monitoring.DBProcessingMonitor;
 import jdb.nextGen.exceptions.JdbException;
 import jdb.nextGen.models.SimpleDBIntegrityModel;
@@ -101,7 +102,7 @@ public final class DBasesLoaderCore {
                     // Добавляем в запрос список ключей, в который должны входить выбираемые из таблицы ключи
                     if ((keysList != null) && (!keysList.isEmpty())) {
                         sql.append(" where ").append(DBConsts.FIELD_NAME_KEY).append("in (");
-                        sql.append(MyCommonUtils.getCSVFromArrayList(keysList)).append(")");
+                        sql.append(MyCsvUtils.getCSVFromArrayList(keysList)).append(")");
                     }
                     // Добавляем в запрос нижнюю границу по времени (по таймштампу)
                     if (lowerTimestamp != null) {

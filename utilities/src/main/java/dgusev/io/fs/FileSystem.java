@@ -122,7 +122,7 @@ public class FileSystem implements Serializable {
      * @param filePath String добавляемый к списку файл. Параметр должен содержать АБСОЛЮТНЫЙ путь к файлу, т.к. по
      *                 этому пути будет проверяться существование файла на диске.
      */
-    private void addFile(String filePath) {
+    private void addFile(String filePath) throws IOException {
         String path = MyIOUtils.fixFPath(filePath, true);
         logger.debug("WORKING addFile(). Processing path [" + path + "].");
         // Проверка валидности пути к файлу (путь не пуст, файл существует и это действительно файл, путь к файлу содержит

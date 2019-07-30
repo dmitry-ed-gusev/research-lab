@@ -1,22 +1,24 @@
 package dgusev.utils;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static dgusev.utils.MyCommonUtils.MapSortType.ASC;
 
@@ -33,14 +35,25 @@ import static dgusev.utils.MyCommonUtils.MapSortType.ASC;
 @CommonsLog
 public final class MyCommonUtils {
 
-    private static final String PAIRS_DELIM = ";";
+    private static final String PAIRS_DELIM     = ";";
     private static final String KEY_VALUE_DELIM = "=";
 
-    /**
-     * Sort type ASC/DESC.
-     */
+    /** Sort type ASC/DESC. */
     public enum MapSortType {
         ASC, DESC
+    }
+
+    public static enum ImageFormat {
+        BMP("BMP"),
+        JPEG("JPEG"),
+        JPG("JPG"),
+        PNG("PNG"),
+        GIF("GIF");
+
+        @Getter private final String strValue;
+        ImageFormat(String strValue) {
+            this.strValue = strValue;
+        }
     }
 
     // this static member is used for transliteration method
@@ -115,45 +128,6 @@ public final class MyCommonUtils {
     }};
 
     private MyCommonUtils() {}
-
-    /**
-     * Method returns date range for specified date and delta (in days). Method is null-safe, if input date is null,
-     * method returns pair with two current date/time values.
-     *
-     * @param date      Date date for date range (start point)
-     * @param deltaDays int half-range delta
-     * @return Pair[Date, Date] immutable pair with date range bounds.
-     */
-    public static Pair<Date, Date> getDateRange(Date date, int deltaDays) {
-        Pair<Date, Date> result;
-        if (date != null) { // input date isn't null - processing
-            // calendar instance for date manipulating
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            Date startDate;
-            Date endDate;
-            // calculate bounds of date range
-            if (deltaDays > 0) {
-                calendar.add(Calendar.DATE, deltaDays); // move date forward
-                endDate = calendar.getTime();
-                calendar.add(Calendar.DATE, -2 * deltaDays); // move date backward
-                startDate = calendar.getTime();
-            } else if (deltaDays < 0) {
-                calendar.add(Calendar.DATE, deltaDays); // move date backward
-                startDate = calendar.getTime();
-                calendar.add(Calendar.DATE, -2 * deltaDays); // move date forward
-                endDate = calendar.getTime();
-            } else {
-                startDate = date;
-                endDate = startDate;
-            }
-            result = new ImmutablePair<>(startDate, endDate);
-        } else { // input date is null - we return pair with today date/time
-            result = new ImmutablePair<>(new Date(), new Date());
-        }
-        // resulting pair
-        return result;
-    }
 
     /**
      * Format string to specified length - cut long string or fit short string with spaces (to the rigth) to fit
@@ -236,112 +210,6 @@ public final class MyCommonUtils {
         }
         return ret;
     }
-
-    /***/
-    public static Pair<Date, Date> getMonthDateRange(int startMonthDelta, int endMonthDelta) {
-        Date currentDate = new Date();
-        // generating start date of current month
-        Calendar startCalendar = GregorianCalendar.getInstance();
-        startCalendar.setTime(currentDate);
-        startCalendar.set(Calendar.DAY_OF_MONTH, startCalendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-        if (startMonthDelta != 0) { // add delta to start date month number, delta can be greater/less than zero
-            startCalendar.add(Calendar.MONTH, startMonthDelta);
-        }
-        startCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        startCalendar.set(Calendar.MINUTE, 0);
-        startCalendar.set(Calendar.SECOND, 0);
-        startCalendar.set(Calendar.MILLISECOND, 0);
-        // generating end date of current month
-        Calendar endCalendar = GregorianCalendar.getInstance();
-        endCalendar.setTime(currentDate);
-        endCalendar.set(Calendar.DAY_OF_MONTH, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        if (endMonthDelta != 0) { // add delta to end date month number, delta can be greater/less than zero
-            endCalendar.add(Calendar.MONTH, endMonthDelta);
-        }
-        endCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        endCalendar.set(Calendar.MINUTE, 59);
-        endCalendar.set(Calendar.SECOND, 59);
-        endCalendar.set(Calendar.MILLISECOND, 999);
-        // make a pair and return it
-        return new ImmutablePair<>(startCalendar.getTime(), endCalendar.getTime());
-    }
-
-    /**
-     * Unzip ZIP archive and output its content to outputFolder.
-     * If there are files (in output folder) - they will be overwritten.
-     *
-     * @param zipFile      input zip file
-     * @param outputFolder zip file output folder
-     */
-    public static void unZipIt(String zipFile, String outputFolder) {
-
-        if (StringUtils.isBlank(zipFile)) { // fail-fast
-            throw new IllegalArgumentException(String.format("Empty ZIP file name [%s]!", zipFile));
-        }
-
-        byte[] buffer = new byte[1024]; // unzip process buffer
-
-        // use try-with-resources for auto close input streams
-        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
-
-            if (!StringUtils.isBlank(outputFolder)) {
-                //create output directory if not exists
-                File folder = new File(outputFolder);
-                if (!folder.exists()) {
-                    LOG.info(String.format("Destination output path [%s] doesn't exists! Creating...", outputFolder));
-                    if (folder.mkdirs()) {
-                        LOG.info(String.format("Destination output path [%s] created successfully!", outputFolder));
-                    } else {
-                        throw new IllegalStateException(String.format("Can't create zip output folder [%s]!", outputFolder));
-                    }
-                }
-            } // end of check/create output folder
-
-            ZipEntry ze = zis.getNextEntry(); // get first zip entry and start iteration
-            while (ze != null) {
-                String fileName = ze.getName();
-                File newFile = new File((StringUtils.isBlank(outputFolder) ? "" : (outputFolder + File.separator)) + fileName);
-
-                LOG.debug(String.format("Processing -> name: %s | size: %s | compressed size: %s \n\t" +
-                                "absolute name: %s",
-                        fileName, ze.getSize(), ze.getCompressedSize(), newFile.getAbsoluteFile()));
-
-                // if entry is a directory - create it and continue (skip the rest of cycle body)
-                if (fileName.endsWith("/") || fileName.endsWith("\\")) {
-                    if (newFile.mkdirs()) {
-                        LOG.debug(String.format("Created dir: [%s].", newFile.getAbsoluteFile()));
-                    } else {
-                        throw new IllegalStateException(String.format("Can't create dir [%s]!", newFile.getAbsoluteFile()));
-                    }
-                    ze = zis.getNextEntry();
-                    continue;
-                }
-
-                // todo: do we need this additional dirs creation?
-                //File parent = file.getParentFile();
-                //if (parent != null) {
-                //    parent.mkdirs();
-                //}
-
-                // write extracted file on disk
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-                fos.close();
-                ze = zis.getNextEntry();
-            } // end of WHILE cycle
-
-            //zis.closeEntry();
-            //zis.close();
-            LOG.info(String.format("Archive [%s] unzipped successfully.", zipFile));
-
-        } catch (IOException ex) {
-            LOG.error(ex);
-        }
-
-    } // end of unZipIt
 
     /**
      * Parses string arrays: ['value1', 'd"value2'] and returns set of strings.
@@ -747,57 +615,6 @@ public final class MyCommonUtils {
     }
 
     /**
-     * Изменение на N-ое количество дней/месяцев/лет даты типа java.util.Date
-     *
-     * @param date       - дата
-     * @param period     - количество дней/месяцев/лет на которые требуется перенести дату
-     * @param typePeriod - тип периода: день/месяц/год
-     * @return -  дата типа java.util.Date
-     */
-    public static Date dateToPeriod(Date date, int period, DatePeriod typePeriod) {
-
-        Date returnDate = null;
-
-        if (date != null) {
-            Calendar cal = new GregorianCalendar();
-            cal.setTime(date);
-
-            if (DatePeriod.YEAR.equals(typePeriod)) {
-                cal.add(Calendar.YEAR, period);
-            } else if (DatePeriod.MONTH.equals(typePeriod)) {
-                cal.add(Calendar.MONTH, period);
-            } else if (DatePeriod.DAY.equals(typePeriod)) {
-                cal.add(Calendar.DATE, period);
-            }
-
-            returnDate = cal.getTime();
-
-        } else {
-            LOG.warn("Input data is NULL!");
-        }
-        return returnDate;
-    }
-
-    /**
-     * Метод возвращает список, разделенный запятыми (CSV - Comma-Separated-Values), полученный из массива-списка.
-     * Если исходный список пуст метод вернет значение NULL.
-     */
-    public static String getCSVFromArrayList(ArrayList<Integer> list) {
-        String result = null;
-        if ((list != null) && (!list.isEmpty())) {
-            StringBuilder csv = new StringBuilder();
-            for (int i = 0; i < list.size(); i++) {
-                csv.append(list.get(i));
-                if (i < (list.size() - 1)) {
-                    csv.append(", ");
-                }
-            }
-            result = csv.toString();
-        }
-        return result;
-    }
-
-    /**
      * Метод формирует имя (строковое) фиксированной длины (параметр lenght) на основе указанного в параметре
      * name имени. Указанное имя дополняется лидирующими символами, указанными в парметре symbol. Параметр lenght
      * обязательно должен быть положительным и не равным 0, иначе метод вернет значение null. Еще одно ограничение на
@@ -841,6 +658,148 @@ public final class MyCommonUtils {
         }
         // Возвращаем результат
         return result;
+    }
+
+    /** Изменение размера изображения. */
+    public static BufferedImage resize(BufferedImage imageToResize, int width, int height, boolean isSmooth) {
+        float dx = ((float) width) / imageToResize.getWidth();
+        float dy = ((float) height) / imageToResize.getHeight();
+        int genX, genY;
+        int startX, startY;
+        if (imageToResize.getWidth() <= width && imageToResize.getHeight() <= height) {
+            genX = imageToResize.getWidth();
+            genY = imageToResize.getHeight();
+        } else {
+            if (dx <= dy) {
+                genX = width;
+                genY = (int) (dx * imageToResize.getHeight());
+            } else {
+                genX = (int) (dy * imageToResize.getWidth());
+                genY = height;
+            }
+        }
+        startX = (width - genX) / 2;
+        startY = (height - genY) / 2;
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics2D = null;
+        try {
+            graphics2D = bufferedImage.createGraphics();
+            graphics2D.fillRect(0, 0, width, height);
+            // Если указан параметр isSmooth=true, то используем антиалиасинг (как возможно)
+            if (isSmooth) {
+                graphics2D.drawImage(imageToResize.getScaledInstance(genX, genY, Image.SCALE_SMOOTH), startX, startY, null);
+            }
+            // Если указан isSMooth=false, то без антиалиасинга
+            else {
+                graphics2D.drawImage(imageToResize, startX, startY, genX, genY, null);
+            }
+        } finally {
+            if (graphics2D != null) {
+                graphics2D.dispose();
+            }
+        }
+        return bufferedImage;
+    }
+
+    /**
+     * Изменение размеров изображения. Результирующее изображение получается гладким (smooth). Формат результирующего
+     * изображения указывается как параметр, если он не указан (null), то по умолчанию результирующим будет формат JPG.
+     */
+    public static void resizeImageSmooth(InputStream input, OutputStream output, int destWidth, int destHeight,
+                                         ImageFormat outputFormat) throws IOException {
+        // Класс для обработки графики
+        Graphics2D graphics = null;
+        // Класс для хранения результирующего изображения
+        BufferedImage destinationImage;
+        try {
+            // Открываем исходное изображение
+            BufferedImage sourceImage = ImageIO.read(input);
+
+            // todo: input и output картинки должны иметь разные имена... или перезаписывать исходный файл?
+            // todo: сейчас (01.04.2010) если картинки имеют одинаковое имя - возникает NullPointerException
+
+            // Получаем размеры исходного изображения
+            int sourceWidth = sourceImage.getWidth();
+            int sourceHeight = sourceImage.getHeight();
+            LOG.debug("SOURCE: width=" + sourceWidth + "; height=" + sourceHeight);
+
+            // Вычисляем масштаб (пропорцию) изменения исходного изображения (ориентируясь на данные параметры результирующего
+            // изображения). При этом, если высота результирующего изображения не указана, то масштаб берем по ширине.
+            double scale;
+            if (destHeight > 0) {
+                scale = Math.min((double) destWidth / (double) sourceWidth, (double) destHeight / (double) sourceHeight);
+            } else {
+                scale = (double) destWidth / (double) sourceWidth;
+            }
+
+            // Размеры масштабированного (изменнного) изображения
+            int destinationWidth = (int) (sourceWidth * scale);
+            int destinationHeight = (int) (sourceHeight * scale);
+            LOG.debug("DESTINATION: width=" + destinationWidth + "; height=" + destinationHeight);
+
+            // Вычисляем координаты (необходимо только если конечное изображение будет такого размера, как указано во входных
+            // параметрах данного метода, но тогда могут появиться лишние поля по краям. При масштабировании изображения
+            // по вычисленному масштабу - координаты не нужны)
+            //int x = (int)(((double)destWidth - (double)sourceWidth * scale) / 2.0d);
+            //int y = (int)(((double)destHeight - (double)sourceHeight * scale) / 2.0d);
+
+            // Создаем объект для хранения изображения (объект размером уже с маштабированное изображение)
+            destinationImage = new BufferedImage(destinationWidth, destinationHeight, BufferedImage.TYPE_INT_RGB);
+
+            // Создаем объект графики - для обработки
+            graphics = destinationImage.createGraphics();
+
+            // Устанавливаем параметры обработки изображения (rendering hints)
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+
+            // Получаем масштабированную копию исходного изображения
+            Image scaled = sourceImage.getScaledInstance(destinationWidth, destinationHeight, Image.SCALE_SMOOTH);
+
+            // Устанавливаем цвет и рисуем прямоугольник внутри графического объекта, в который будет помещено масштабированное
+            // изображение. Если этого не сделать, то вроде бы изображение будет прозрачным (без белых краев при обрезке).
+            // (не используется, т.к. размер контейнера для хранения масштабированного изображения совпадают - нет границ вокруг)
+            //if (isWhiteBorder)
+            // {
+            //  graphics.setColor(Color.WHITE);
+            //  graphics.fillRect(0, 0, destWidth, destHeight);
+            // }
+
+            // Непосредственно вставляем масштабированную копию изображения в графический объект
+            //graphics.drawImage(scaled, x, y, null); // <- для вставления по центру графического объекта (не используем)
+            graphics.drawImage(scaled, 0, 0, null); // <- изображение вставляем в левый верхний угол графического объекта
+
+            // Список доступных форматов для записи изображений (отладочный вывод)
+            //logger.debug("FORMATS->");
+            //for (String formatName : ImageIO.getWriterFormatNames()) {logger.debug("-> " + formatName);}
+
+        }
+        // Освобождение ресурсов
+        finally {
+            if (graphics != null) {
+                graphics.dispose();
+            }
+        }
+
+        // Непосредственно запись на диск объекта с масштабированной копией изображения
+        String format;
+        // Если указан формат - используем его
+        if (outputFormat != null) {
+            format = outputFormat.getStrValue();
+        }
+        // Если формат не указан, то используем по умолчанию JPG
+        else {
+            format = ImageFormat.JPG.getStrValue();
+        }
+        ImageIO.write(destinationImage, format, output);
+
+        // Т.к. при записи объекта выходной поток не закрывается - закрываем поток вручную
+        output.flush();
+        output.close();
+
+        // Также закроем входной поток (чтобы точно его освободить)
+        input.close();
     }
 
 } // end of MyCommonUtils class

@@ -1,7 +1,7 @@
 package dg.social.crawler.networks.fb;
 
 import dg.social.crawler.networks.AbstractClient;
-import dgusev.utils.MyHttpUtils;
+import dgusev.web.MyHttpUtils;
 import dgusev.io.MyIOUtils;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +38,7 @@ import java.util.Map;
 import static dg.social.crawler.SCrawlerDefaults.DATE_TIME_FORMAT;
 import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
 import static dg.social.crawler.networks.fb.FbFormType.*;
-import static dgusev.utils.MyHttpUtils.*;
+import static dgusev.web.MyHttpUtils.*;
 
 /**
  * FB social network client. Implemented: - receiving access token -

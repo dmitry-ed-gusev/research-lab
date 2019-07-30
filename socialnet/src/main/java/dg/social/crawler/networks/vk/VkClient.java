@@ -2,7 +2,7 @@ package dg.social.crawler.networks.vk;
 
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.networks.AbstractClient;
-import dgusev.utils.MyHttpUtils;
+import dgusev.web.MyHttpUtils;
 import dgusev.io.MyIOUtils;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +30,7 @@ import java.util.Map;
 
 import static dg.social.crawler.SCrawlerDefaults.*;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.*;
-import static dgusev.utils.MyHttpUtils.HTTP_GET_COOKIES_HEADER;
+import static dgusev.web.MyHttpUtils.HTTP_GET_COOKIES_HEADER;
 
 /**
  * VK (VKontakte) social network client.

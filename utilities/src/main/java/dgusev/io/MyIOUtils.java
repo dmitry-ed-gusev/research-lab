@@ -1,20 +1,14 @@
 package dgusev.io;
 
-import dgusev.utils.MyDateTimeUtils;
-import dgusev.utils.TimePeriodType;
 import lombok.NonNull;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,22 +23,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.zip.*;
 
-import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
-import static dgusev.utils.MyCommonUtils.not;
+/** Some useful IO utilities. */
 
-/** Some IO utilities, useful for me. */
 @CommonsLog
 @NotThreadSafe
 public final class MyIOUtils {
 
-    private static final JSONParser JSON_PARSER           = new JSONParser();
-    private static final String     SELECT_SQL            = "SELECT * FROM %s"; // SQL query: get data from source DB
-    private static final char[]     DEPRECATED_DELIMITERS = {'\\'};
-    private static final char       DEFAULT_DIR_DELIMITER = '/';
+    private static final JSONParser JSON_PARSER                   = new JSONParser();
+    private static final String     SELECT_SQL                    = "SELECT * FROM %s"; // SQL query: get data from source DB
+    private static final char[]     DEPRECATED_DELIMITERS         = {'\\'};
+    private static final char       DEFAULT_DIR_DELIMITER         = '/';
     private static final String     SERIALIZED_OBJECT_EXTENSION_1 = "_1_";
     private static final String     SERIALIZED_OBJECT_EXTENSION_2 = "_2_";
     private static final String     ZIPPED_OBJECT_EXTENSION       = ".zip";
@@ -182,103 +176,9 @@ public final class MyIOUtils {
         return strBuilder.toString();
     }
 
-    /***/
-    public static List<String> readCSVFile(@NonNull InputStream fileStream, @NonNull String encoding) throws IOException {
-        LOG.debug("MyIOUtils.readCSVFile(Stream) is working.");
-
-        List<String> result = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                fileStream, StringUtils.isBlank(encoding) ? DEFAULT_ENCODING : encoding))) {
-            String rawLine;
-            while ((rawLine = reader.readLine()) != null) {
-                result.addAll(Arrays.stream(StringUtils.split(rawLine, ','))
-                        .map(StringUtils::trimToEmpty)
-                        .filter(not(StringUtils::isBlank))
-                        .collect(Collectors.toList()));
-            }
-        }
-        return result;
-    }
-
-    /***/
-    // todo: add variable separator
-    // todo: read file from input stream
-    public static List<String> readCSVFile(@NonNull String fileName, @NonNull String encoding) throws IOException {
-        LOG.debug("MyIOUtils.readCSVFile(String) is working.");
-
-        if (StringUtils.isBlank(fileName)) { // fail-fast
-            throw new IOException("Empty file name!");
-        }
-
-        return MyIOUtils.readCSVFile(new FileInputStream(fileName), encoding);
-    }
-
-    /***/
-    // todo: change default comment marker? (parameter for it???)
-    public static Map<String, List<String>> readDatesPeriodsFromCSV(@NonNull String csvFile,
-                                                                    @NonNull Date baseDate,
-                                                                    @NonNull SimpleDateFormat dateFormat) throws IOException {
-
-        LOG.debug("MyIOUtils.readDatesPeriodsFromCSV() is working.");
-
-        // check and fail-fast behaviour
-        if (dateFormat == null || baseDate == null || StringUtils.isBlank(csvFile) ||
-                !new File(csvFile).exists() || !new File(csvFile).isFile()) {
-            throw new IllegalArgumentException(
-                    String.format("Empty date format [%s], date [%s] or invalid CSV file [%s]!",
-                            (dateFormat == null ? null : dateFormat.toPattern()), baseDate, csvFile));
-        }
-
-        // resulting map -> <name, dates list>
-        Map<String, List<String>> result = new HashMap<>();
-
-        // list of names with periods -> <name, time period, counter>
-        List<Triple<String, TimePeriodType, Integer>> periodsList = new ArrayList<>();
-
-        // build CSV format (with specified file header)
-        CSVFormat csvFormat = CSVFormat.DEFAULT
-                .withIgnoreSurroundingSpaces()
-                .withTrim()              // trim leading/trailing spaces
-                .withIgnoreEmptyLines()  // ignore empty lines
-                .withCommentMarker('#'); // use # as a comment sign
-
-        // todo: merge two cycles - iterating over resords and generating dates lists (see FOR below)
-        // create CSV file reader (and read the file)
-        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), DEFAULT_ENCODING))) {
-            CSVParser csvParser = new CSVParser(fileReader, csvFormat);
-            List<CSVRecord> csvRecords = csvParser.getRecords();
-            LOG.info(String.format("Got records from CSV [%s]. Records count [%s].", csvFile, csvRecords.size()));
-            // iterate over records, create instances and fill in resulting list
-
-            // todo: add check - record columns count (.size()) and non-empty values for first and last (3rd) columns
-            csvRecords.forEach(record -> periodsList.add(
-                    new ImmutableTriple<String, TimePeriodType, Integer>(
-                            record.get(0), TimePeriodType.getTypeByName(record.get(1)), Integer.parseInt(record.get(2)))));
-        }
-
-        LOG.debug(String.format("Loaded from CSV:%n[%s].", periodsList)); // <- just debug output
-
-        // iterate over periods and get dates list for each name
-        String name;            // tmp name
-        List<String> datesList; // generated dates list for each name
-
-        // iterate over batches list and do GET requests
-        for (Triple<String, TimePeriodType, Integer> entry : periodsList) {
-
-            // get name (left value)
-            name = entry.getLeft();
-            // get list of dates (with middle and right values)
-            datesList = MyDateTimeUtils.getDatesListBack(baseDate, entry.getMiddle(), entry.getRight(), dateFormat);
-
-            result.put(name, datesList);
-
-        } // end of FOR -> batches
-
-        return result;
-    }
 
     /** Dump sql ResultSet to CSV. Reworked original implementation with intermediate progress output. */
-    // todo: move to some db utilities class (dbPilot project?)
+    // todo: move to some dbpilot module
     public static void dumpResultSetToCSV(String csvFile, int reportStep, ResultSet rs, String tableName) throws IOException, SQLException {
         LOG.debug(String.format("MyIOUtils.dumpResultSetToCSV() is working. CSV file [%s].", csvFile));
 
@@ -312,6 +212,7 @@ public final class MyIOUtils {
     }
 
     /***/
+    // todo: move to some dbpilot module
     public static void dumpDBToCSV(@NonNull Connection connection, int fetchSize, int reportStep,
                                    @NonNull String[] tablesList, @NonNull String dumpDir) throws SQLException, IOException {
         LOG.debug("MyIOUtils.dumpDBToCSV() is working.");
@@ -490,7 +391,6 @@ public final class MyIOUtils {
      * @return String полный путь к сериализованному и заархивированному объекту.
      * @throws IOException                          ошибка ввода/вывода при работе с файловой системой.
      */
-    @SuppressWarnings({"IOResourceOpenedButNotSafelyClosed"})
     public static String serializeObject(@NonNull Object object, String fullPath, String fileName,
                                          String fileExt, boolean useFilePathCorrection) throws IOException {
         LOG.debug("WORKING FSUtils.serializeObject().");
@@ -649,7 +549,6 @@ public final class MyIOUtils {
      * @throws IOException            ошибка ввода/вывода при работе с файловой системой.
      * @throws ClassNotFoundException ошибка при десериализации объекта из файла.
      */
-    @SuppressWarnings({"IOResourceOpenedButNotSafelyClosed"})
     public static Object deserializeObject(String filePath, boolean deleteSource, boolean useFilePathCorrection)
             throws IOException, ClassNotFoundException {
         LOG.debug("WORKING FSUtils.deserializeObject().");
@@ -813,9 +712,6 @@ public final class MyIOUtils {
      * файлы или другие каталоги (если указан именно каталог). ИСТИНА - каталог пуст, ЛОЖЬ - в каталоге есть подкаталоги/файлы.
      * Если указанное значение пусто - метод возвращает значение ИСТИНА. Если путь указывает на файл (а не на каталог), то метод
      * возвращает значение ИСТИНА.
-     *
-     * @param path String абсолютный путь к каталогу, пустоту которого проверяем.
-     * @return boolean ИСТИНА/ЛОЖЬ - в зависимости от наличия файлов/подкаталогов в указанном каталоге.
      */
     public static boolean isEmptyDir(String path) {
         LOG.debug("FSUtils.isEmptyDir(). Checking path [" + path + "].");
@@ -849,11 +745,6 @@ public final class MyIOUtils {
      * каталога не существует - он будет создан. Если создать каталог (если он не существовал) не удалось - возникает ИС.
      * Если путь указывает не на каталог - возникает ИС. Данный метод часто используется в веб-приложениях при инициализации
      * для "проверки"/очистки/создания необходимых каталогов.
-     *
-     * @param catalogPath String путь к "проверяемому" каталогу.
-     * @param clearPath   boolean очищать или нет указанный каталог.
-     * @throws IOException ИС возникает если путь указывает не на каталог, если не удается создать каталог, если
-     *                     указанный путь пуст.
      */
     public static void processPath(String catalogPath, boolean clearPath) throws IOException {
         // Если путь не пуст - обрабатываем его
@@ -911,48 +802,54 @@ public final class MyIOUtils {
         }
     }
 
+    /** Метод возвращает контрольную сумму CRC32 для файла fileName. */
+    // todo: duplicate for getCRC()!!!
+    public static long getChecksum(@NonNull String fileName) throws IOException {
+        LOG.debug("MyIOUtils.getChecksum() is working.");
+
+        if (StringUtils.isBlank(fileName)) {
+            throw new IllegalArgumentException("Provided empty file name for checksum calculating!");
+        }
+
+        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(fileName))) {
+
+            long result;
+            int iByte;
+
+            CRC32 crc = new CRC32();
+            while ((iByte = in.read()) != -1) { // Непосредственно цикл вычисления контрольной суммы файла
+                crc.update(iByte);
+            }
+
+            result = crc.getValue();
+            LOG.info(String.format("CRC for file [%s]: %s", fileName, result));
+            return result;
+        }
+
+    }
+
     /**
      * Метод возвращает контрольную сумму CRC32 для файла fileName. Если файла не существует или подсчет не
      * удался (возникла ИС), метод возвращает значение 0.
+     *
+     * @param file File file for CRCr calculating
+     * @return long value of CRC32.
      */
-    // todo: use try-with-resources
-    public static long getChecksum(String fileName) {
-        long result = 0;
-        BufferedInputStream in = null;
-        try {
-            // Если полученное имя файла пусто - вообще ничего не делаем
-            if ((fileName != null) && (!fileName.trim().equals(""))) {
-                in = new BufferedInputStream(new FileInputStream(fileName));
-                CRC32 crc = new CRC32();
-                int iByte;
-                // Непосредственно цикл вычисления контрольной суммы файла
-                while ((iByte = in.read()) != -1) {
-                    crc.update(iByte);
-                }
-                result = crc.getValue();
-                LOG.debug("CalcCRC: file [" + fileName + "]; result [" + result + "]");
-            }
-            // Сообщение о пустом имени файла
-            else {
-                LOG.warn("Received file name is EMPTY!");
-            }
+    // todo: duplicate for getChecksum()!!!
+    public static long getCRC(File file) throws IOException {
+        if (file == null) { // check file object
+            throw new IOException("Empty file name!");
         }
-        // Перехватываем ИС
-        catch (IOException e) {
-            LOG.error("ERROR occured while CRC32 calculating: " + e.getMessage());
-        }
-
-        // Обязательно необходимо закрыть за собой потоки
-        finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException e) {
-                LOG.error("Can't close stream for file [" + fileName + "]! Reason: [" + e.getMessage() + "].");
+        CRC32 crc;
+        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
+            crc = new CRC32();
+            int iByte;
+            while ((iByte = in.read()) != -1) { // cycle for calculating
+                crc.update(iByte);
             }
+            //log.debug("CalcCRC: file [" + file + "]; result [" + result + "]");
         }
-        return result;
+        return crc.getValue();
     }
 
     /**
@@ -963,7 +860,9 @@ public final class MyIOUtils {
      * некоторое время. Если указан пустой путь к каталогу или каталога не существует - метод вернет значение null.
      * Если не указано расширение, то будет найдено уникальное имя для файла без расширения.
      */
-    public static String findUniqFileName(String catalogPath, String fileExtension, boolean usePathCorrection) {
+    public static String findUniqueFileName(String catalogPath, String fileExtension, boolean usePathCorrection) {
+        LOG.debug("MyIOUtils.findUniqueFileName() is working.");
+
         String result = null;
         // Если указанный каталог для поиска имени существует - работаемс
         if ((!StringUtils.isBlank(catalogPath)) && (new File(catalogPath).exists())) {

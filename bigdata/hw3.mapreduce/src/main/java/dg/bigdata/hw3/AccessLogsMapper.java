@@ -1,6 +1,6 @@
 package dg.bigdata.hw3;
 
-import dgusev.utils.CsvUtils;
+import dgusev.utils.MyCsvUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -26,7 +26,7 @@ public class AccessLogsMapper extends Mapper<LongWritable, Text, LongWritable, T
         if (!StringUtils.isEmpty(value.toString())) {
 
             // parse input line
-            parsedLine = CsvUtils.parseLine(value.toString());
+            parsedLine = MyCsvUtils.parseLine(value.toString());
             ip = parsedLine.get(0); // ip -> first token
             userAgentString = parsedLine.get(parsedLine.size() - 1); // agent - the last token
             try {

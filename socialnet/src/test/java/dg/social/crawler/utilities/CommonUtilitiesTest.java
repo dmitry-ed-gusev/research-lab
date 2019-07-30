@@ -1,6 +1,6 @@
 package dg.social.crawler.utilities;
 
-import gusev.dmitry.jtils.spring.CustomStringProperty;
+import dgusev.spring.CustomStringProperty;
 import dgusev.cmd.CmdLine;
 import org.junit.Before;
 import org.junit.Test;

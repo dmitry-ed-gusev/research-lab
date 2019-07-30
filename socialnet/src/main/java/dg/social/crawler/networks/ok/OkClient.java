@@ -1,7 +1,7 @@
 package dg.social.crawler.networks.ok;
 
 import dg.social.crawler.networks.AbstractClient;
-import dgusev.utils.MyHttpUtils;
+import dgusev.web.MyHttpUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,7 +21,7 @@ import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ACCESS_TOKEN_FORM;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.LOGIN_FORM;
-import static dgusev.utils.MyHttpUtils.HTTP_GET_COOKIES_HEADER;
+import static dgusev.web.MyHttpUtils.HTTP_GET_COOKIES_HEADER;
 
 /**
  * OK (Odnoklassniki) social network client.
