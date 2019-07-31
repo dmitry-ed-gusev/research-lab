@@ -1,6 +1,7 @@
 package dgusev.datetime;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -10,16 +11,29 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Unit tests for Date & Time common utilities.
- */
+/** Unit tests for Date & Time common utilities. */
+
 public class MyDateTimeUtilsTest {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    // various date/time formats for testing
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT            = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat SIMPLE_DATETIME_FORMAT        = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat DATETIME_FORMAT_WITH_TIMEZONE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     // CSV files with dates/times periods
     private static final String CSV_DATES1 = "src/test/resources/dgusev/datetime/csv_dates_periods1.csv";
     private static final String CSV_DATES2 = "src/test/resources/dgusev/datetime/csv_dates_periods2.csv";
+
+    @Before
+    public void beforeEach() {
+        TimeZone gmtZone = TimeZone.getTimeZone("GMT");
+        TimeZone.setDefault(gmtZone); // set the general time zone before each test
+
+        // set the same time zone for all SDF instances
+        SIMPLE_DATE_FORMAT.setTimeZone(gmtZone);
+        SIMPLE_DATETIME_FORMAT.setTimeZone(gmtZone);
+        DATETIME_FORMAT_WITH_TIMEZONE.setTimeZone(gmtZone);
+    }
 
     // --- tests for dates list
 
@@ -41,7 +55,7 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetDatesList() throws ParseException {
         List<String> expected = Arrays.asList("2000-06-12", "2000-06-11");
-        List<String> actual = MyDateTimeUtils.getDatesList(DATE_FORMAT.parse("2000-6-12"), -1, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getDatesList(SIMPLE_DATE_FORMAT.parse("2000-6-12"), -1, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -66,7 +80,7 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetWeeksStartDatesList1() throws ParseException {
         List<String> expected = Arrays.asList("2018-03-26", "2018-03-19", "2018-03-12", "2018-03-05");
-        List<String> actual = MyDateTimeUtils.getWeeksStartDatesList(DATE_FORMAT.parse("2018-4-1"), -3, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getWeeksStartDatesList(SIMPLE_DATE_FORMAT.parse("2018-4-1"), -3, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -74,7 +88,7 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetWeeksStartDatesList2() throws ParseException {
         List<String> expected = Arrays.asList("2018-03-26", "2018-04-02", "2018-04-09");
-        List<String> actual = MyDateTimeUtils.getWeeksStartDatesList(DATE_FORMAT.parse("2018-03-30"), 2, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getWeeksStartDatesList(SIMPLE_DATE_FORMAT.parse("2018-03-30"), 2, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -99,7 +113,7 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetMonthsStartDatesList1() throws ParseException {
         List<String> expected = Arrays.asList("1980-03-01");
-        List<String> actual = MyDateTimeUtils.getMonthsStartDatesList(DATE_FORMAT.parse("1980-03-11"), 0, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getMonthsStartDatesList(SIMPLE_DATE_FORMAT.parse("1980-03-11"), 0, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -107,7 +121,7 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetMonthsStartDatesList2() throws ParseException {
         List<String> expected = Arrays.asList("1980-03-01", "1980-02-01", "1980-01-01", "1979-12-01");
-        List<String> actual = MyDateTimeUtils.getMonthsStartDatesList(DATE_FORMAT.parse("1980-03-11"), -3, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getMonthsStartDatesList(SIMPLE_DATE_FORMAT.parse("1980-03-11"), -3, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -132,7 +146,7 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetQuartersStartDatesList1() throws ParseException {
         List<String> expected = Arrays.asList("2000-10-01", "2000-07-01", "2000-04-01", "2000-01-01");
-        List<String> actual = MyDateTimeUtils.getQuartersStartDatesList(DATE_FORMAT.parse("2000-12-30"), -3, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getQuartersStartDatesList(SIMPLE_DATE_FORMAT.parse("2000-12-30"), -3, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -140,7 +154,7 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetQuartersStartDatesList2() throws ParseException {
         List<String> expected = Arrays.asList("1979-10-01");
-        List<String> actual = MyDateTimeUtils.getQuartersStartDatesList(DATE_FORMAT.parse("1979-12-30"), 0, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getQuartersStartDatesList(SIMPLE_DATE_FORMAT.parse("1979-12-30"), 0, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -165,7 +179,7 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetYearsStartDatesList() throws ParseException {
         List<String> expected = Arrays.asList("2010-01-01", "2009-01-01");
-        List<String> actual = MyDateTimeUtils.getYearsStartDatesList(DATE_FORMAT.parse("2010-03-3"), -1, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getYearsStartDatesList(SIMPLE_DATE_FORMAT.parse("2010-03-3"), -1, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -188,8 +202,8 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetDatesListBackYears() throws ParseException {
         List<String> expected = Arrays.asList("1970-01-01");
-        List<String> actual = MyDateTimeUtils.getDatesListBack(DATE_FORMAT.parse("1970-07-11"),
-                TimePeriodType.YEAR, 0, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getDatesListBack(SIMPLE_DATE_FORMAT.parse("1970-07-11"),
+                TimePeriodType.YEAR, 0, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -197,8 +211,8 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetDatesListBackQuarters() throws ParseException {
         List<String> expected = Arrays.asList("2010-04-01", "2010-01-01");
-        List<String> actual = MyDateTimeUtils.getDatesListBack(DATE_FORMAT.parse("2010-04-01"),
-                TimePeriodType.QUARTER, -1, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getDatesListBack(SIMPLE_DATE_FORMAT.parse("2010-04-01"),
+                TimePeriodType.QUARTER, -1, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -206,8 +220,8 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetDatesListBackMonths() throws ParseException {
         List<String> expected = Arrays.asList("2000-04-01", "2000-03-01", "2000-02-01");
-        List<String> actual = MyDateTimeUtils.getDatesListBack(DATE_FORMAT.parse("2000-04-10"),
-                TimePeriodType.MONTH, -2, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getDatesListBack(SIMPLE_DATE_FORMAT.parse("2000-04-10"),
+                TimePeriodType.MONTH, -2, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -215,8 +229,8 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetDatesListBackWeeks() throws ParseException {
         List<String> expected = Arrays.asList("2018-08-20", "2018-08-13", "2018-08-06");
-        List<String> actual = MyDateTimeUtils.getDatesListBack(DATE_FORMAT.parse("2018-08-24"),
-                TimePeriodType.WEEK, -2, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getDatesListBack(SIMPLE_DATE_FORMAT.parse("2018-08-24"),
+                TimePeriodType.WEEK, -2, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -224,8 +238,8 @@ public class MyDateTimeUtilsTest {
     @Test
     public void testGetDatesListBackDays() throws ParseException {
         List<String> expected = Arrays.asList("2000-04-01", "2000-03-31", "2000-03-30", "2000-03-29");
-        List<String> actual = MyDateTimeUtils.getDatesListBack(DATE_FORMAT.parse("2000-04-01"),
-                TimePeriodType.DAY, -3, DATE_FORMAT);
+        List<String> actual = MyDateTimeUtils.getDatesListBack(SIMPLE_DATE_FORMAT.parse("2000-04-01"),
+                TimePeriodType.DAY, -3, SIMPLE_DATE_FORMAT);
 
         assertEquals("Should be equals!", expected, actual);
     }
@@ -242,13 +256,10 @@ public class MyDateTimeUtilsTest {
 
     @Test
     public void testGeneratePeriods() throws ParseException {
-        // execute test method
-        Map<Long, TimePeriod> periods = MyDateTimeUtils.generatePeriods("2019");
-
-        System.out.println(periods);
 
         // prepare sample data
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
         // year
         TimePeriod timePeriodYear = new TimePeriod(1, "2019", -1, dateFormat.parse("2019-01-01"), TimePeriodType.YEAR);
 
@@ -272,9 +283,13 @@ public class MyDateTimeUtilsTest {
         TimePeriod timePeriodM11 = new TimePeriod(16, "ноя 2019", 14, dateFormat.parse("2019-11-01"), TimePeriodType.MONTH);
         TimePeriod timePeriodM12 = new TimePeriod(17, "дек 2019", 14, dateFormat.parse("2019-12-01"), TimePeriodType.MONTH);
 
-        // tests
+        // execute test method itself
+        Map<Long, TimePeriod> periods = MyDateTimeUtils.generatePeriods("2019");
+
+        // test count of periods
         assertEquals(17, periods.entrySet().size());
 
+        // tests for different periods
         assertEquals(timePeriodYear, periods.get(2019L));  // year
 
         assertEquals(timePeriodQ1, periods.get(1000002019L)); // Q1
@@ -386,7 +401,7 @@ public class MyDateTimeUtilsTest {
     public void testReadDatesPeriodsFromCSV() throws IOException, ParseException {
 
         // fixed base date
-        Date baseDate = DATE_FORMAT.parse("2018-08-10");
+        Date baseDate = SIMPLE_DATE_FORMAT.parse("2018-08-10");
 
         // expected result
         Map<String, List<String>> expected = new HashMap<String, List<String>>() {{
@@ -396,7 +411,7 @@ public class MyDateTimeUtilsTest {
         }};
 
         // get actual result
-        Map<String, List<String>> actual = MyDateTimeUtils.readDatesPeriodsFromCSV(CSV_DATES1, baseDate, DATE_FORMAT);
+        Map<String, List<String>> actual = MyDateTimeUtils.readDatesPeriodsFromCSV(CSV_DATES1, baseDate, SIMPLE_DATE_FORMAT);
 
         // test/assertion
         assertEquals("Should be equals!", expected, actual);
@@ -409,10 +424,9 @@ public class MyDateTimeUtilsTest {
         // see also: https://stackoverflow.com/questions/19112357/java-simpledateformatyyyy-mm-ddthhmmssz-gives-timezone-as-ist
 
         // setup base date
-        SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         //FORMAT.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
         //TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
-        Date baseDate = FORMAT.parse("2019-03-11T12:01:28+03:00");
+        Date baseDate = DATETIME_FORMAT_WITH_TIMEZONE.parse("2019-03-11T12:01:28+03:00");
 
         // get current (default) time zone
         TimeZone currentZone = TimeZone.getDefault();
@@ -425,16 +439,88 @@ public class MyDateTimeUtilsTest {
         System.out.println(String.format("Date in changed timezone ([%s] / [%s]) -> %s", currentZone.getID(),
                 currentZone.getDisplayName(), baseDate));
 
-        TimeZone formatZone = FORMAT.getTimeZone();
+        TimeZone formatZone = DATETIME_FORMAT_WITH_TIMEZONE.getTimeZone();
         System.out.println(String.format("Date in timezone of SimpleDateFormat ([%s] / [%s]) -> %s", formatZone.getID(),
-                formatZone.getDisplayName(), FORMAT.format(baseDate)));
+                formatZone.getDisplayName(), DATETIME_FORMAT_WITH_TIMEZONE.format(baseDate)));
 
-        FORMAT.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
-        formatZone = FORMAT.getTimeZone();
+        DATETIME_FORMAT_WITH_TIMEZONE.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
+        formatZone = DATETIME_FORMAT_WITH_TIMEZONE.getTimeZone();
         System.out.println(String.format("Date in changed timezone of SimpleDateFormat ([%s] / [%s]) -> %s", formatZone.getID(),
-                formatZone.getDisplayName(), FORMAT.format(baseDate)));
-
+                formatZone.getDisplayName(), DATETIME_FORMAT_WITH_TIMEZONE.format(baseDate)));
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void testShiftDatetimeByPeriodNullDate() {
+        MyDateTimeUtils.shiftDatetimeByPeriod(null, 10, TimePeriodType.DAY);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testShiftDatetimeByPeriodNullTimePeriodType() {
+        MyDateTimeUtils.shiftDatetimeByPeriod(new Date(), 3, null);
+    }
+
+    @Test
+    public void testShiftDatetimeByPeriodSecond() throws ParseException {
+        Date baseDate     = SIMPLE_DATETIME_FORMAT.parse("2019-01-01 00:00:00");
+        Date expectedDate = SIMPLE_DATETIME_FORMAT.parse("2018-12-31 23:59:59");
+
+        assertEquals(expectedDate, MyDateTimeUtils.shiftDatetimeByPeriod(baseDate, -1, TimePeriodType.SECOND));
+    }
+
+    @Test
+    public void testShiftDatetimeByPeriodMinute() throws ParseException {
+        Date baseDate     = SIMPLE_DATETIME_FORMAT.parse("2019-01-01 00:00:00");
+        Date expectedDate = SIMPLE_DATETIME_FORMAT.parse("2018-12-31 23:59:00");
+
+        assertEquals(expectedDate, MyDateTimeUtils.shiftDatetimeByPeriod(baseDate, -1, TimePeriodType.MINUTE));
+    }
+
+    @Test
+    public void testShiftDatetimeByPeriodHour() throws ParseException {
+        Date baseDate     = SIMPLE_DATETIME_FORMAT.parse("2019-01-01 00:00:00");
+        Date expectedDate = SIMPLE_DATETIME_FORMAT.parse("2018-12-31 23:00:00");
+
+        assertEquals(expectedDate, MyDateTimeUtils.shiftDatetimeByPeriod(baseDate, -1, TimePeriodType.HOUR));
+    }
+
+    @Test
+    public void testShiftDatetimeByPeriodDay() throws ParseException {
+        Date baseDate     = SIMPLE_DATETIME_FORMAT.parse("2019-01-01 00:00:00");
+        Date expectedDate = SIMPLE_DATETIME_FORMAT.parse("2018-12-31 00:00:00");
+
+        assertEquals(expectedDate, MyDateTimeUtils.shiftDatetimeByPeriod(baseDate, -1, TimePeriodType.DAY));
+    }
+
+    @Test
+    public void testShiftDatetimeByPeriodWeek() throws ParseException {
+        Date baseDate     = SIMPLE_DATETIME_FORMAT.parse("2019-01-01 00:00:00");
+        Date expectedDate = SIMPLE_DATETIME_FORMAT.parse("2018-12-25 00:00:00");
+
+        assertEquals(expectedDate, MyDateTimeUtils.shiftDatetimeByPeriod(baseDate, -1, TimePeriodType.WEEK));
+    }
+
+    @Test
+    public void testShiftDatetimeByPeriodMonth() throws ParseException {
+        Date baseDate     = SIMPLE_DATETIME_FORMAT.parse("2019-01-01 00:00:00");
+        Date expectedDate = SIMPLE_DATETIME_FORMAT.parse("2018-12-01 00:00:00");
+
+        assertEquals(expectedDate, MyDateTimeUtils.shiftDatetimeByPeriod(baseDate, -1, TimePeriodType.MONTH));
+    }
+
+    @Test
+    public void testShiftDatetimeByPeriodQuarter() throws ParseException {
+        Date baseDate     = SIMPLE_DATETIME_FORMAT.parse("2019-01-01 00:00:00");
+        Date expectedDate = SIMPLE_DATETIME_FORMAT.parse("2018-10-01 00:00:00");
+
+        assertEquals(expectedDate, MyDateTimeUtils.shiftDatetimeByPeriod(baseDate, -1, TimePeriodType.QUARTER));
+    }
+
+    @Test
+    public void testShiftDatetimeByPeriodYear() throws ParseException {
+        Date baseDate     = SIMPLE_DATETIME_FORMAT.parse("2019-01-01 00:00:00");
+        Date expectedDate = SIMPLE_DATETIME_FORMAT.parse("2018-01-01 00:00:00");
+
+        assertEquals(expectedDate, MyDateTimeUtils.shiftDatetimeByPeriod(baseDate, -1, TimePeriodType.YEAR));
+    }
 
 }

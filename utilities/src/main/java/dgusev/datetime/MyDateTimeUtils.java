@@ -33,6 +33,7 @@ public final class MyDateTimeUtils {
     private MyDateTimeUtils() {}
 
     /** Check parameters and throw IllegalArgumentException in case of invalid parameters. */
+    /*
     private static void checkParameters(Date date, int count, SimpleDateFormat dateFormat) {
         // just reject null value for date/date format and MIN_INT value (we are using Math.abs())
         if (date == null || dateFormat == null || Integer.MIN_VALUE == count) { // fail-fast
@@ -40,6 +41,7 @@ public final class MyDateTimeUtils {
                     "Invalid date [%s], date format [%s] or counter [%s]!", date, dateFormat, count));
         }
     }
+    */
 
     /**
      * Rejects null values for Date/SimpleDateFormat and MIN_INT value for count (method uses Math.abs() that
@@ -221,7 +223,7 @@ public final class MyDateTimeUtils {
         LOGGER.debug("MyDateTimeUtils.getDatesListBack() is working.");
 
         switch (periodType) {
-            case HOUR:    return MyDateTimeUtils.getHoursList(date, count, dateFormat);
+            //case HOUR:    return MyDateTimeUtils.getHoursList(date, count, dateFormat);
             case DAY:     return MyDateTimeUtils.getDatesList(date, count, dateFormat);
             case WEEK:    return MyDateTimeUtils.getWeeksStartDatesList(date, count, dateFormat);
             case MONTH:   return MyDateTimeUtils.getMonthsStartDatesList(date, count, dateFormat);
@@ -230,6 +232,27 @@ public final class MyDateTimeUtils {
             default: throw new IllegalStateException(String.format("Invalid period specified: [%s]!", periodType));
         }
 
+    }
+
+    /***/
+    public static List<Date> getDatesList(@NonNull Date baseDate, long count, @NonNull TimePeriodType timePeriodType) {
+        LOG.debug("MyDateTimeUtils.getDatesList() is working.");
+
+        List<Date> datesList = new ArrayList<>();
+        int signum = Long.signum(count); // get sign value of count
+
+        // set specified date and shift to first day of month
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(baseDate);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+
+        // create list of days dates with specified date/time format
+        for (int i = 0; i <= Math.abs(count); i++) {
+            datesList.add(cal.getTime());
+            cal.add(Calendar.MONTH, signum); // shift calendar by months
+        }
+
+        return datesList;
     }
 
     /**
@@ -389,29 +412,19 @@ public final class MyDateTimeUtils {
         return new ImmutablePair<>(startCalendar.getTime(), endCalendar.getTime());
     }
 
-    /** Shift date to past/future by period units, specified by DatePeriod */
-    public static Date dateToPeriod(Date date, int period, MyCommonUtils.DatePeriod typePeriod) {
+    /** Shift date to past/future by period units, specified by DatePeriod. */
+    public static Date shiftDatetimeByPeriod(@NonNull Date date, int period, @NonNull TimePeriodType timePeriodType) {
+        LOG.debug("MyDateTimeUtils.shiftDatetimeByPeriod() is working.");
 
-        Date returnDate = null;
-
-        if (date != null) {
-            Calendar cal = new GregorianCalendar();
-            cal.setTime(date);
-
-            if (MyCommonUtils.DatePeriod.YEAR.equals(typePeriod)) {
-                cal.add(Calendar.YEAR, period);
-            } else if (MyCommonUtils.DatePeriod.MONTH.equals(typePeriod)) {
-                cal.add(Calendar.MONTH, period);
-            } else if (MyCommonUtils.DatePeriod.DAY.equals(typePeriod)) {
-                cal.add(Calendar.DATE, period);
-            }
-
-            returnDate = cal.getTime();
-
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        if (timePeriodType.getCalendarValue() == -1) {
+            cal.add(Calendar.MONTH, period * 3); // quarter = 3 months
         } else {
-            LOG.warn("Input data is NULL!");
+            cal.add(timePeriodType.getCalendarValue(), period);
         }
-        return returnDate;
+
+        return cal.getTime();
     }
 
     /***/

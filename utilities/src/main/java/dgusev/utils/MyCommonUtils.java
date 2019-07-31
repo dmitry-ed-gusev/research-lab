@@ -587,8 +587,6 @@ public final class MyCommonUtils {
         return result.toString();
     }
 
-    public enum DatePeriod {YEAR, MONTH, DAY}
-
     /***/
     public static String trans(String name) {
         StringBuilder name_trans = new StringBuilder();
