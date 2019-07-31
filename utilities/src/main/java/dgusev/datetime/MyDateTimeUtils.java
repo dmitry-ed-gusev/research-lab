@@ -1,6 +1,5 @@
 package dgusev.datetime;
 
-import dgusev.utils.MyCommonUtils;
 import lombok.NonNull;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.csv.CSVFormat;
@@ -47,6 +46,7 @@ public final class MyDateTimeUtils {
      * Rejects null values for Date/SimpleDateFormat and MIN_INT value for count (method uses Math.abs() that
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
+    /*
     public static List<String> getHoursList(Date date, int count, SimpleDateFormat dateFormat) {
         LOGGER.debug(String.format("MyDateTimeUtils.getHoursList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
@@ -69,16 +69,18 @@ public final class MyDateTimeUtils {
 
         return datesList;
     }
+    */
 
     /**
      * Rejects null values for Date/SimpleDateFormat and MIN_INT value for count (method uses Math.abs() that
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
+    /*
     public static List<String> getDatesList(Date date, int count, SimpleDateFormat dateFormat) {
         LOGGER.debug(String.format("MyDateTimeUtils.getDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
 
-        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+        //MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
 
         List<String> datesList = new ArrayList<>();
         // get sign of counter
@@ -96,16 +98,18 @@ public final class MyDateTimeUtils {
 
         return datesList;
     }
+    */
 
     /**
      * Rejects null values for Date/SimpleDateFormat and MIN_INT value for count (method uses Math.abs() that
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
+    /*
     public static List<String> getWeeksStartDatesList(Date date, int count, SimpleDateFormat dateFormat) {
         LOGGER.debug(String.format("MyDateTimeUtils.getWeeksStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
 
-        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+        //MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
 
         List<String> datesList = new ArrayList<>();
         // get sign of counter
@@ -127,6 +131,7 @@ public final class MyDateTimeUtils {
 
         return datesList;
     }
+    */
 
     /**
      * Rejects null values for Date/SimpleDateFormat and MIN_INT value for count (method uses Math.abs() that
@@ -136,7 +141,7 @@ public final class MyDateTimeUtils {
         LOGGER.debug(String.format("MyDateTimeUtils.getMonthStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
 
-        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+        //MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
 
         List<String> datesList = new ArrayList<>();
         // get sign of counter
@@ -164,7 +169,7 @@ public final class MyDateTimeUtils {
         LOGGER.debug(String.format("MyDateTimeUtils.getQuartersStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
 
-        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+        //MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
 
         List<String> datesList = new ArrayList<>();
         // get sign of counter
@@ -198,7 +203,7 @@ public final class MyDateTimeUtils {
         LOGGER.debug(String.format("MyDateTimeUtils.getDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
 
-        MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
+        //MyDateTimeUtils.checkParameters(date, count, dateFormat); // fail-fast check for input parameters
 
         List<String> datesList = new ArrayList<>();
         // get sign of counter
@@ -223,7 +228,7 @@ public final class MyDateTimeUtils {
         LOGGER.debug("MyDateTimeUtils.getDatesListBack() is working.");
 
         switch (periodType) {
-            //case HOUR:    return MyDateTimeUtils.getHoursList(date, count, dateFormat);
+            case HOUR:    return MyDateTimeUtils.getHoursList(date, count, dateFormat);
             case DAY:     return MyDateTimeUtils.getDatesList(date, count, dateFormat);
             case WEEK:    return MyDateTimeUtils.getWeeksStartDatesList(date, count, dateFormat);
             case MONTH:   return MyDateTimeUtils.getMonthsStartDatesList(date, count, dateFormat);
@@ -235,7 +240,7 @@ public final class MyDateTimeUtils {
     }
 
     /***/
-    public static List<Date> getDatesList(@NonNull Date baseDate, long count, @NonNull TimePeriodType timePeriodType) {
+    public static List<Date> getDatesList_NEW(@NonNull Date baseDate, long count, @NonNull TimePeriodType timePeriodType) {
         LOG.debug("MyDateTimeUtils.getDatesList() is working.");
 
         List<Date> datesList = new ArrayList<>();
@@ -244,19 +249,39 @@ public final class MyDateTimeUtils {
         // set specified date and shift to first day of month
         Calendar cal = Calendar.getInstance();
         cal.setTime(baseDate);
-        cal.set(Calendar.DAY_OF_MONTH, 1);
+
+        if (TimePeriodType.WEEK.equals(timePeriodType)) { // special setup for weeks
+            // get date for first day (Monday) of specified week
+            while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+                cal.add(Calendar.DATE, -1);
+            }
+        } else if (TimePeriodType.MONTH.equals(timePeriodType)) { // special setup for months
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+        } else if (TimePeriodType.QUARTER.equals(timePeriodType)) { // special setup for quarters
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+            // get first month of quarter
+            int month = cal.get(Calendar.MONTH);
+            while (month % 3 != 0) {
+                cal.add(Calendar.MONTH, -1);
+                month = cal.get(Calendar.MONTH);
+            }
+            // correct units value
+            signum = signum * 3;
+        } else if (TimePeriodType.YEAR.equals(timePeriodType)) { // special setup for years
+            cal.set(Calendar.DAY_OF_YEAR, 1);
+        }
 
         // create list of days dates with specified date/time format
         for (int i = 0; i <= Math.abs(count); i++) {
             datesList.add(cal.getTime());
-            cal.add(Calendar.MONTH, signum); // shift calendar by months
+            cal.add(timePeriodType.getCalendarValue(), signum); // shift calendar
         }
 
         return datesList;
     }
 
     /**
-     * Generates Map (hierarchical) with TimePeriods.
+     * Generates Map (hierarchical) with TimePeriods. Can be used for OLAP DBs/DWH.
      * Identification of objects (all identifiers are positive long numbers):
      *  (not implemented yet) - day     -> (len 7-8) -> DDMMYYYY, if day < 10, then DMMYYYY. Examples: 1012016 (1 Jan 2016), 12102005 (12 Oct 2006).
      *  - month   -> (len 5-6) -> MMYYYY, if month < 10, then MYYYY. Examples: 102019 (Oct 2019), 22017 (Feb 2017).
