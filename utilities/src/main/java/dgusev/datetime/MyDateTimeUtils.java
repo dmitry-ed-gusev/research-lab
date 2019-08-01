@@ -137,6 +137,7 @@ public final class MyDateTimeUtils {
      * Rejects null values for Date/SimpleDateFormat and MIN_INT value for count (method uses Math.abs() that
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
+    /*
     public static List<String> getMonthsStartDatesList(Date date, int count, SimpleDateFormat dateFormat) {
         LOGGER.debug(String.format("MyDateTimeUtils.getMonthStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
@@ -160,11 +161,13 @@ public final class MyDateTimeUtils {
 
         return datesList;
     }
+    */
 
     /**
      * Rejects null values for Date/SimpleDateFormat and MIN_INT value for count (method uses Math.abs() that
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
+    /*
     public static List<String> getQuartersStartDatesList(Date date, int count, SimpleDateFormat dateFormat) {
         LOGGER.debug(String.format("MyDateTimeUtils.getQuartersStartDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
@@ -194,11 +197,13 @@ public final class MyDateTimeUtils {
 
         return datesList;
     }
+    */
 
     /**
      * Rejects null values for Date/SimpleDateFormat and MIN_INT value for count (method uses Math.abs() that
      * has numeric overflow for such value: Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE (below zero)).
      */
+    /*
     public static List<String> getYearsStartDatesList(Date date, int count, SimpleDateFormat dateFormat) {
         LOGGER.debug(String.format("MyDateTimeUtils.getDatesList() is working. Date: [%s], count: [%s], format: [%s].",
                 date, count, dateFormat));
@@ -222,22 +227,27 @@ public final class MyDateTimeUtils {
 
         return datesList;
     }
+    */
 
     /***/
+    /*
     public static List<String> getDatesListBack(Date date, TimePeriodType periodType, int count, SimpleDateFormat dateFormat) {
         LOGGER.debug("MyDateTimeUtils.getDatesListBack() is working.");
 
         switch (periodType) {
-            case HOUR:    return MyDateTimeUtils.getHoursList(date, count, dateFormat);
-            case DAY:     return MyDateTimeUtils.getDatesList(date, count, dateFormat);
-            case WEEK:    return MyDateTimeUtils.getWeeksStartDatesList(date, count, dateFormat);
-            case MONTH:   return MyDateTimeUtils.getMonthsStartDatesList(date, count, dateFormat);
-            case QUARTER: return MyDateTimeUtils.getQuartersStartDatesList(date, count, dateFormat);
-            case YEAR:    return MyDateTimeUtils.getYearsStartDatesList(date, count, dateFormat);
-            default: throw new IllegalStateException(String.format("Invalid period specified: [%s]!", periodType));
+
+            //case HOUR:    return MyDateTimeUtils.getHoursList(date, count, dateFormat);
+            //case DAY:     return MyDateTimeUtils.getDatesList(date, count, dateFormat);
+            //case WEEK:    return MyDateTimeUtils.getWeeksStartDatesList(date, count, dateFormat);
+            //case MONTH:   return MyDateTimeUtils.getMonthsStartDatesList(date, count, dateFormat);
+            //case QUARTER: return MyDateTimeUtils.getQuartersStartDatesList(date, count, dateFormat);
+            //case YEAR:    return MyDateTimeUtils.getYearsStartDatesList(date, count, dateFormat);
+            //default: throw new IllegalStateException(String.format("Invalid period specified: [%s]!", periodType));
+
         }
 
     }
+    */
 
     /***/
     public static List<Date> getDatesList_NEW(@NonNull Date baseDate, long count, @NonNull TimePeriodType timePeriodType) {
@@ -249,6 +259,9 @@ public final class MyDateTimeUtils {
         // set specified date and shift to first day of month
         Calendar cal = Calendar.getInstance();
         cal.setTime(baseDate);
+
+        // units type for adding
+        int unitType = timePeriodType.getCalendarValue();
 
         if (TimePeriodType.WEEK.equals(timePeriodType)) { // special setup for weeks
             // get date for first day (Monday) of specified week
@@ -265,8 +278,9 @@ public final class MyDateTimeUtils {
                 cal.add(Calendar.MONTH, -1);
                 month = cal.get(Calendar.MONTH);
             }
-            // correct units value
+            // correct units/units type value
             signum = signum * 3;
+            unitType = Calendar.MONTH;
         } else if (TimePeriodType.YEAR.equals(timePeriodType)) { // special setup for years
             cal.set(Calendar.DAY_OF_YEAR, 1);
         }
@@ -274,7 +288,7 @@ public final class MyDateTimeUtils {
         // create list of days dates with specified date/time format
         for (int i = 0; i <= Math.abs(count); i++) {
             datesList.add(cal.getTime());
-            cal.add(timePeriodType.getCalendarValue(), signum); // shift calendar
+            cal.add(unitType, signum); // shift calendar
         }
 
         return datesList;
@@ -504,7 +518,8 @@ public final class MyDateTimeUtils {
             // get name (left value)
             name = entry.getLeft();
             // get list of dates (with middle and right values)
-            datesList = MyDateTimeUtils.getDatesListBack(baseDate, entry.getMiddle(), entry.getRight(), dateFormat);
+            //datesList = MyDateTimeUtils.getDatesListBack(baseDate, entry.getMiddle(), entry.getRight(), dateFormat);
+            datesList = MyDateTimeUtils.getDatesList_NEW(baseDate, entry.getRight(), entry.getMiddle());
 
             result.put(name, datesList);
 

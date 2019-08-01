@@ -121,110 +121,47 @@ public class MyDateTimeUtilsTest {
         assertEquals(expected2, MyDateTimeUtils.getDatesList_NEW(baseDate2, 2, TimePeriodType.WEEK));
     }
 
-    // --- tests for months start dates list
-
-    //@Test(expected = IllegalArgumentException.class)
-    //public void testGetMonthsStartDatesListNullDate() {
-    //    MyDateTimeUtils.getMonthsStartDatesList(null, -10, new SimpleDateFormat(""));
-    //}
-
-    //@Test(expected = IllegalArgumentException.class)
-    //public void testGetMonthsStartDatesListNullDateFormat() {
-    //    MyDateTimeUtils.getMonthsStartDatesList(new Date(), 9, null);
-    //}
-
-    //@Test(expected = IllegalArgumentException.class)
-    //public void testGetMonthsStartDatesListMinIntegerCount() {
-    //    MyDateTimeUtils.getMonthsStartDatesList(new Date(), Integer.MIN_VALUE, new SimpleDateFormat());
-    //}
-
     @Test
-    public void testGetMonthsStartDatesList1() throws ParseException {
-        List<String> expected = Arrays.asList("1980-03-01");
-        List<String> actual = MyDateTimeUtils.getMonthsStartDatesList(SIMPLE_DATE_FORMAT.parse("1980-03-11"), 0, SIMPLE_DATE_FORMAT);
+    public void testGetDatesList_NEWMonth() throws ParseException {
+        Date baseDate1 = SIMPLE_DATE_FORMAT.parse("1980-03-11");
+        List<Date> expected1 = Collections.singletonList(SIMPLE_DATE_FORMAT.parse("1980-03-01"));
 
-        assertEquals("Should be equals!", expected, actual);
+        Date baseDate2 = SIMPLE_DATE_FORMAT.parse("1980-03-10");
+        List<Date> expected2 = Arrays.asList(
+                SIMPLE_DATE_FORMAT.parse("1980-03-01"),
+                SIMPLE_DATE_FORMAT.parse("1980-02-01"),
+                SIMPLE_DATE_FORMAT.parse("1980-01-01"),
+                SIMPLE_DATE_FORMAT.parse("1979-12-01"));
+
+        assertEquals(expected1, MyDateTimeUtils.getDatesList_NEW(baseDate1, 0, TimePeriodType.MONTH));
+        assertEquals(expected2, MyDateTimeUtils.getDatesList_NEW(baseDate2, -3, TimePeriodType.MONTH));
     }
 
     @Test
-    public void testGetMonthsStartDatesList2() throws ParseException {
-        List<String> expected = Arrays.asList("1980-03-01", "1980-02-01", "1980-01-01", "1979-12-01");
-        List<String> actual = MyDateTimeUtils.getMonthsStartDatesList(SIMPLE_DATE_FORMAT.parse("1980-03-11"), -3, SIMPLE_DATE_FORMAT);
+    public void testGetDatesList_NEWQuarters() throws ParseException {
+        Date baseDate1 = SIMPLE_DATE_FORMAT.parse("2000-12-30");
+        List<Date> expected1 = Arrays.asList(
+                SIMPLE_DATE_FORMAT.parse("2000-10-01"),
+                SIMPLE_DATE_FORMAT.parse("2000-07-01"),
+                SIMPLE_DATE_FORMAT.parse("2000-04-01"),
+                SIMPLE_DATE_FORMAT.parse("2000-01-01"));
 
-        assertEquals("Should be equals!", expected, actual);
-    }
+        Date baseDate2 = SIMPLE_DATE_FORMAT.parse("1979-12-30");
+        List<Date> expected2 = Collections.singletonList(SIMPLE_DATE_FORMAT.parse("1979-10-01"));
 
-    // --- tests for quarters start dates list
-
-    //@Test(expected = IllegalArgumentException.class)
-    //public void testGetQuartersStartDatesListNullDate() {
-    //    MyDateTimeUtils.getQuartersStartDatesList(null, -10, new SimpleDateFormat(""));
-    //}
-
-    //@Test(expected = IllegalArgumentException.class)
-    //public void testGetQuartersStartDatesListNullDateFormat() {
-    //    MyDateTimeUtils.getQuartersStartDatesList(new Date(), 9, null);
-    //}
-
-    //@Test(expected = IllegalArgumentException.class)
-    //public void testGetQuartersStartDatesListMinIntegerCount() {
-    //    MyDateTimeUtils.getQuartersStartDatesList(new Date(), Integer.MIN_VALUE, new SimpleDateFormat());
-    //}
-
-    @Test
-    public void testGetQuartersStartDatesList1() throws ParseException {
-        List<String> expected = Arrays.asList("2000-10-01", "2000-07-01", "2000-04-01", "2000-01-01");
-        List<String> actual = MyDateTimeUtils.getQuartersStartDatesList(SIMPLE_DATE_FORMAT.parse("2000-12-30"), -3, SIMPLE_DATE_FORMAT);
-
-        assertEquals("Should be equals!", expected, actual);
+        assertEquals(expected1, MyDateTimeUtils.getDatesList_NEW(baseDate1, -3, TimePeriodType.QUARTER));
+        assertEquals(expected2, MyDateTimeUtils.getDatesList_NEW(baseDate2, 0, TimePeriodType.QUARTER));
     }
 
     @Test
-    public void testGetQuartersStartDatesList2() throws ParseException {
-        List<String> expected = Arrays.asList("1979-10-01");
-        List<String> actual = MyDateTimeUtils.getQuartersStartDatesList(SIMPLE_DATE_FORMAT.parse("1979-12-30"), 0, SIMPLE_DATE_FORMAT);
+    public void testGetDatesList_NEWYears() throws ParseException {
+        Date baseDate = SIMPLE_DATE_FORMAT.parse("2010-03-3");
 
-        assertEquals("Should be equals!", expected, actual);
-    }
+        List<Date> expected = Arrays.asList(
+                SIMPLE_DATE_FORMAT.parse("2010-01-01"),
+                SIMPLE_DATE_FORMAT.parse("2009-01-01"));
 
-    // --- tests for years start dates list
-
-    //@Test(expected = IllegalArgumentException.class)
-    //public void testGetYearsStartDatesListNullDate() {
-    //    MyDateTimeUtils.getYearsStartDatesList(null, -10, new SimpleDateFormat(""));
-    //}
-
-    //@Test(expected = IllegalArgumentException.class)
-    //public void testGetYearsStartDatesListNullDateFormat() {
-    //    MyDateTimeUtils.getYearsStartDatesList(new Date(), 9, null);
-    //}
-
-    //@Test(expected = IllegalArgumentException.class)
-    //public void testGetYearsStartDatesListMinIntegerCount() {
-    //    MyDateTimeUtils.getYearsStartDatesList(new Date(), Integer.MIN_VALUE, new SimpleDateFormat());
-    //}
-
-    @Test
-    public void testGetYearsStartDatesList() throws ParseException {
-        List<String> expected = Arrays.asList("2010-01-01", "2009-01-01");
-        List<String> actual = MyDateTimeUtils.getYearsStartDatesList(SIMPLE_DATE_FORMAT.parse("2010-03-3"), -1, SIMPLE_DATE_FORMAT);
-
-        assertEquals("Should be equals!", expected, actual);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testGetDatesListBackForHourPeriod() {
-        MyDateTimeUtils.getDatesListBack(new Date(), TimePeriodType.HOUR, 0, new SimpleDateFormat());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testGetDatesListBackForMinutePeriod() {
-        MyDateTimeUtils.getDatesListBack(new Date(), TimePeriodType.MINUTE, 0, new SimpleDateFormat());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testGetDatesListBackForSecondPeriod() {
-        MyDateTimeUtils.getDatesListBack(new Date(), TimePeriodType.SECOND, 0, new SimpleDateFormat());
+        assertEquals(expected, MyDateTimeUtils.getDatesList_NEW(baseDate, -1, TimePeriodType.YEAR));
     }
 
     @Test
