@@ -132,6 +132,11 @@
             <artifactId>commons-csv</artifactId>
             <version>${apache.commons.csv.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${apache.poi.version}</version>
+        </dependency>
 
         <!-- Logging libraries -->
         <dependency>

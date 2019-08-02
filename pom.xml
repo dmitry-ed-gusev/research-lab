@@ -41,6 +41,7 @@
         <apache.dbcp.version>1.4</apache.dbcp.version>
         <apache.commons.csv.version>1.5</apache.commons.csv.version>
         <apache.commons.configuration2.version>2.5</apache.commons.configuration2.version>
+        <apache.poi.version>4.1.0</apache.poi.version>
 
         <!-- Logging libraries -->
         <log4j.version>1.2.17</log4j.version>
