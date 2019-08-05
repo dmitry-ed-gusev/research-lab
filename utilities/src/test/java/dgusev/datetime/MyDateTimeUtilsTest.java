@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +28,9 @@ public class MyDateTimeUtilsTest {
     @Before
     public void beforeEach() {
         TimeZone gmtZone = TimeZone.getTimeZone("GMT");
-        TimeZone.setDefault(gmtZone); // set the general time zone before each test
+
+        // set the general time zone before each test
+        TimeZone.setDefault(gmtZone);
 
         // set the same time zone for all SDF instances
         SIMPLE_DATE_FORMAT.setTimeZone(gmtZone);
@@ -315,7 +318,6 @@ public class MyDateTimeUtilsTest {
         MyDateTimeUtils.readDatesPeriodsFromCSV("invalid file", new Date());
     }
 
-    /*
     @Test
     public void testReadDatesPeriodsFromCSV() throws IOException, ParseException {
 
@@ -323,22 +325,65 @@ public class MyDateTimeUtilsTest {
         Date baseDate = SIMPLE_DATE_FORMAT.parse("2018-08-10");
 
         // expected result
-        Map<String, List<String>> expected = new HashMap<String, List<String>>() {{
-            put("name1", Arrays.asList("2018-08-10", "2018-08-11", "2018-08-12", "2018-08-13"));
-            put("name2", Arrays.asList("2018-08-01", "2018-07-01", "2018-06-01", "2018-05-01"));
-            put("name3", Arrays.asList("2018-01-01", "2017-01-01"));
+        Map<String, List<Date>> expected = new HashMap<String, List<Date>>() {{
+            put("name1", Arrays.asList(
+                    SIMPLE_DATE_FORMAT.parse("2018-08-10"),
+                    SIMPLE_DATE_FORMAT.parse("2018-08-11"),
+                    SIMPLE_DATE_FORMAT.parse("2018-08-12"),
+                    SIMPLE_DATE_FORMAT.parse("2018-08-13")));
+            put("name2", Arrays.asList(
+                    SIMPLE_DATE_FORMAT.parse("2018-08-01"),
+                    SIMPLE_DATE_FORMAT.parse("2018-07-01"),
+                    SIMPLE_DATE_FORMAT.parse("2018-06-01"),
+                    SIMPLE_DATE_FORMAT.parse("2018-05-01")));
+            put("name3", Arrays.asList(
+                    SIMPLE_DATE_FORMAT.parse("2018-01-01"),
+                    SIMPLE_DATE_FORMAT.parse("2017-01-01")));
         }};
 
-        // get actual result
-        Map<String, List<String>> actual = MyDateTimeUtils.readDatesPeriodsFromCSV(CSV_DATES1, baseDate, SIMPLE_DATE_FORMAT);
-
         // test/assertion
-        assertEquals("Should be equals!", expected, actual);
+        assertEquals(expected, MyDateTimeUtils.readDatesPeriodsFromCSV(CSV_DATES1, baseDate));
     }
-     */
 
     @Test
-    public void testReadDatesPeriodsFromCSVWithHours() throws ParseException {
+    public void testReadDatesPeriodsFromCSVWithHours() throws ParseException, IOException {
+
+        TimeZone mskTimeZone = TimeZone.getTimeZone("Europe/Moscow");
+        TimeZone.setDefault(mskTimeZone);
+        DATETIME_FORMAT_WITH_TIMEZONE.setTimeZone(mskTimeZone);
+
+        // base date
+        Date baseDate = DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-08-10T12:01:28+03:00");
+
+        // expected result
+        Map<String, List<Date>> expected = new HashMap<String, List<Date>>() {{
+            put("name1", Arrays.asList(
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-08-10T12:01:28+03:00"),
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-08-11T12:01:28+03:00"),
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-08-12T12:01:28+03:00"),
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-08-13T12:01:28+03:00")));
+            put("name2", Arrays.asList(
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-08-01T12:01:28+03:00"),
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-07-01T12:01:28+03:00"),
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-06-01T12:01:28+03:00"),
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-05-01T12:01:28+03:00")));
+            put("name3", Arrays.asList(
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-01-01T12:01:28+03:00"),
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2017-01-01T12:01:28+03:00")));
+            put("name4", Arrays.asList(
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-08-10T12:01:28+03:00"),
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-08-10T11:01:28+03:00")));
+            put("name5", Arrays.asList(
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-08-10T12:01:28+03:00"),
+                    DATETIME_FORMAT_WITH_TIMEZONE.parse("2018-08-10T13:01:28+03:00")));
+        }};
+
+        // test/assertion
+        assertEquals(expected, MyDateTimeUtils.readDatesPeriodsFromCSV(CSV_DATES2, baseDate));
+    }
+
+    @Test
+    public void test() throws ParseException {
 
         // we use date in ISO 8601 format (https://ru.wikipedia.org/wiki/ISO_8601)
         // see also: https://stackoverflow.com/questions/19112357/java-simpledateformatyyyy-mm-ddthhmmssz-gives-timezone-as-ist
