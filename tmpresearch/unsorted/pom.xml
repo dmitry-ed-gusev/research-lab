@@ -15,11 +15,9 @@
 
     <dependencies>
 
-        <!-- my own library -->
         <dependency>
             <groupId>dgusev</groupId>
             <artifactId>utilities</artifactId>
-            <version>${dgusev.utilities.version}</version>
         </dependency>
         <dependency>
             <groupId>dgusev</groupId>
@@ -30,7 +28,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${commons.lang3.version}</version>
         </dependency>
 
         <!-- dependency for Oracle DBMS JDBC driver -->
@@ -51,13 +48,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.5</version>
         </dependency>
 
         <dependency>
@@ -93,12 +88,6 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>dgusev</groupId>
-            <artifactId>dbpilot</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
         </dependency>
 
     </dependencies>

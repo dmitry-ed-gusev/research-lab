@@ -84,6 +84,7 @@
         <org.jsoup.version>1.10.1</org.jsoup.version>
         <cglib.version>2.2.2</cglib.version>
         <lombok.version>1.18.4</lombok.version>
+        <jopt.simple.version>5.0.4</jopt.simple.version>
 
         <!-- Test frameworks versions (JUnit/Hamcrest/Mockito/etc) -->
         <junit.version>5.4.2</junit.version>
@@ -123,7 +124,7 @@
         <rawdata.dir>rawdata</rawdata.dir>
     </properties>
 
-    <!-- Additional Maven repositories for artifacts (for dependencies) -->
+    <!-- Additional Maven repositories for artifacts/dependencies -->
     <repositories>
         <repository>
             <id>alt-repo-1</id>
@@ -168,7 +169,7 @@
         </repository>
     </repositories>
 
-    <!-- Additional Maven repositories for Maven plugins -->
+    <!-- Additional Maven repositories for plugins -->
     <pluginRepositories>
         <pluginRepository>
             <id>central-msd-plugins-repo</id>
@@ -314,18 +315,8 @@
         </plugins>
     </reporting>
 
-    <!-- Here are common testing dependencies. All other dependencies should be put in child modules. -->
+    <!-- Here are common dependencies inherited by all child modules (mostly - testing). All other dependencies should be put in child modules. -->
     <dependencies>
-        <!-- JUnit 4 dependency -->
-        <!--
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        -->
-
         <!-- JUnit 5 dependency -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -339,7 +330,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
         <!-- Hamcrest dependencies -->
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -347,7 +337,6 @@
             <version>${hamcrest.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <!-- Mockito library dependency -->
         <dependency>
             <groupId>org.mockito</groupId>
@@ -355,14 +344,18 @@
             <version>${mockito.version}</version>
             <scope>compile</scope>
         </dependency>
-
+        <!-- Mock Server for WEB/REST integration testing -->
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>${mock.server.version}</version>
+        </dependency>
         <dependency>
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>
             <version>${xmlunit.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <!-- lombok framework - provided dependency -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -370,30 +363,54 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Mock Server for WEB/REST integration testing -->
-        <dependency>
-            <groupId>org.mock-server</groupId>
-            <artifactId>mockserver-netty</artifactId>
-            <version>${mock.server.version}</version>
-        </dependency>
-
     </dependencies>
 
+    <!-- Management of dependencies versions for all children POMs - we may use these dependencies without version specified -->
     <dependencyManagement>
         <dependencies>
-            <!-- Derby -->
+
+            <!-- Logging libraries -->
             <dependency>
-                <groupId>org.apache.derby</groupId>
-                <artifactId>derby</artifactId>
-                <version>${dbms.derby.version}</version>
-                <scope>test</scope>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.derby</groupId>
-                <artifactId>derbyclient</artifactId>
-                <version>${dbms.derby.version}</version>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging.version}</version>
+                <scope>compile</scope>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <!-- Common utility libraries -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3.version}</version>
+            </dependency>
+
+            <!-- Internal dependencies (proprietary libraries) -->
+            <dependency>
+                <groupId>dgusev</groupId>
+                <artifactId>utilities</artifactId>
+                <version>${dgusev.utilities.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dgusev</groupId>
+                <artifactId>dbpilot</artifactId>
+                <version>${dgusev.dbpilot.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

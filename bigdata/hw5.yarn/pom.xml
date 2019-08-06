@@ -69,7 +69,6 @@
         <dependency>
             <groupId>dgusev</groupId>
             <artifactId>utilities</artifactId>
-            <version>${dgusev.utilities.version}</version>
         </dependency>
     </dependencies>
 
