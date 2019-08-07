@@ -1,7 +1,10 @@
-package dgusev.utils;
+package dgusev.io;
 
 import lombok.NonNull;
 import lombok.extern.apachecommons.CommonsLog;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -178,6 +181,26 @@ public class MyCsvUtils {
             result = csv.toString();
         }
         return result;
+    }
+
+    /***/
+    public static List<CSVRecord> getCSVRecordsList(@NonNull String csvFile) throws IOException {
+        LOG.debug("MyCsvUtils.getCSVRecordsList() is working.");
+
+        // build CSV format (with specified file header)
+        CSVFormat csvFormat = CSVFormat.DEFAULT
+                .withIgnoreSurroundingSpaces()
+                .withTrim()              // trim leading/trailing spaces
+                .withIgnoreEmptyLines()  // ignore empty lines
+                .withCommentMarker('#'); // use # as a comment sign
+
+        // read and process CSV file
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), DEFAULT_ENCODING))) {
+            CSVParser csvParser = new CSVParser(fileReader, csvFormat);
+            List<CSVRecord> csvRecords = csvParser.getRecords();
+            LOG.info(String.format("Got [%s] record(s) from CSV [%s].", csvRecords.size(), csvFile));
+            return csvRecords;
+        }
     }
 
 }

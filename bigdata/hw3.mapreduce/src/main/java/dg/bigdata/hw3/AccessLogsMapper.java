@@ -1,6 +1,6 @@
 package dg.bigdata.hw3;
 
-import dgusev.utils.MyCsvUtils;
+import dgusev.io.MyCsvUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;

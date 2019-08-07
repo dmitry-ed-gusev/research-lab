@@ -1,10 +1,13 @@
 package dgusev.datetime;
 
+import dgusev.io.MyCsvUtils;
 import lombok.NonNull;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -179,33 +182,30 @@ public final class MyDateTimeUtils {
      * Commented lines should start with # (they will be ignored).
      */
     public static Map<String, List<Date>> readDatesPeriodsFromCSV(@NonNull String csvFile, @NonNull Date baseDate) throws IOException {
-
         LOG.debug("MyDateTimeUtils.readDatesPeriodsFromCSV() is working.");
-
         // resulting map -> <name, dates list>
         Map<String, List<Date>> result = new HashMap<>();
-
-        // build CSV format (with specified file header)
-        CSVFormat csvFormat = CSVFormat.DEFAULT
-                .withIgnoreSurroundingSpaces()
-                .withTrim()              // trim leading/trailing spaces
-                .withIgnoreEmptyLines()  // ignore empty lines
-                .withCommentMarker('#'); // use # as a comment sign
-
-        // read and process CSV file
-        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), DEFAULT_ENCODING))) {
-            CSVParser csvParser = new CSVParser(fileReader, csvFormat);
-            List<CSVRecord> csvRecords = csvParser.getRecords();
-            LOG.info(String.format("Got [%s] record(s) from CSV [%s].", csvRecords.size(), csvFile));
-
-            // iterate over records, create instances and fill in resulting list
-            csvRecords.forEach(record -> {
+        // process csv records list and build resulting map
+        MyCsvUtils.getCSVRecordsList(csvFile).forEach(record -> {
                 // 0 -> name, 1 -> period type, 2 -> units count
-                result.put(record.get(0), MyDateTimeUtils.getDatesList(baseDate, Integer.parseInt(record.get(2)),
-                        TimePeriodType.getTypeByName(record.get(1))));
+                result.put(record.get(0), MyDateTimeUtils.getDatesList(baseDate, Integer.parseInt(record.get(2)), TimePeriodType.getTypeByName(record.get(1))));
             });
+        return result;
+    }
 
-        }
+    /***/
+    // todo: add unit tests!!!
+    public static List<Triple<String, List<Date>, TimePeriodType>> readDatesPeriodsFromCSVWithTypes(@NonNull String csvFile, @NonNull Date baseDate) throws IOException {
+        LOG.debug("MyDateTimeUtils.readDatesPeriodsFromCSVWithTypes() is working.");
+        // resulting list of triples -> <name, dates list, period type>
+        List<Triple<String, List<Date>, TimePeriodType>> result = new ArrayList<>();
+        // process csv records list and build resulting list of triples
+        MyCsvUtils.getCSVRecordsList(csvFile).forEach(record -> {
+            // 0 -> name, 1 -> period type, 2 -> units count
+            result.add(new ImmutableTriple<>(record.get(0),
+                    MyDateTimeUtils.getDatesList(baseDate, Integer.parseInt(record.get(2)), TimePeriodType.getTypeByName(record.get(1))),
+                    TimePeriodType.getTypeByName(record.get(1))));
+        });
         return result;
     }
 

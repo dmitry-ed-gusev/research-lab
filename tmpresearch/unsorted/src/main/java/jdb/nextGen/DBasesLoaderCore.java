@@ -5,7 +5,7 @@ import dgusev.dbpilot.config.DBConfig;
 import dgusev.dbpilot.utils.DBUtilities;
 import dgusev.io.MyIOUtils;
 import dgusev.utils.MyCommonUtils;
-import dgusev.utils.MyCsvUtils;
+import dgusev.io.MyCsvUtils;
 import jdb.monitoring.DBProcessingMonitor;
 import jdb.nextGen.exceptions.JdbException;
 import jdb.nextGen.models.SimpleDBIntegrityModel;

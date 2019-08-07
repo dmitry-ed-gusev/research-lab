@@ -1,5 +1,6 @@
 package dgusev.utils;
 
+import dgusev.io.MyCsvUtils;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
 
