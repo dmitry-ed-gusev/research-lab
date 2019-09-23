@@ -1,8 +1,8 @@
 package gusev.dmitry.jtils;
 
-import gusev.dmitry.jtils.calc.Calculator;
-import gusev.dmitry.jtils.downloadManager.DownloadManager;
-import gusev.dmitry.jtils.watch.PresentationWatch;
+import dgusev.apps.calc.Calculator;
+import dgusev.apps.downloadManager.DownloadManager;
+import dgusev.apps.watch.PresentationWatch;
 
 /**
  * JTils main class - for starting some useful applications from this library.

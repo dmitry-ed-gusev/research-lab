@@ -1,15 +1,13 @@
 package jdb.processing.sql.generation;
 
-import jdb.DBConsts.DBType;
-import jdb.config.DBConfig;
+import dgusev.dbpilot.config.DBConfig;
+import dgusev.dbpilot.config.DBType;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModelException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.model.structure.DBStructureModel;
 import jdb.model.structure.TableStructureModel;
 import jdb.processing.DBEngineer;
-import jlib.logging.InitLogger;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -170,9 +168,7 @@ public class SQLGenerator
    * Метод только для тестирования данного класса.
    * @param args String[] аргументы метода main.
   */
-  public static void main(String[] args)
-   {
-    InitLogger.initLogger("jdb");
+  public static void main(String[] args) throws org.apache.commons.configuration2.ex.ConfigurationException, IllegalAccessException, ClassNotFoundException, InstantiationException {
     Logger logger = Logger.getLogger("jdb");
     
     try
@@ -183,7 +179,7 @@ public class SQLGenerator
       ifxConfig.setServerName("hercules");
       ifxConfig.setDbName("storm");
       ifxConfig.setUser("informix");
-      ifxConfig.setPassword("ifx_dba_019");
+      //ifxConfig.setPassword("ifx_dba_019");
 
       // Берем модель данных из Информикса
       DBEngineer ifxEngineer = new DBEngineer(ifxConfig);
@@ -193,14 +189,13 @@ public class SQLGenerator
 
       // Пытаемся создать аналогичную БД в Дерби
       DBConfig derbyConfig = new DBConfig();
-      derbyConfig.loadFromFile("derbyConfig.xml");
+      derbyConfig.loadFromFile("derbyConfig.xml", null, false);
       //DBEngineer derbyEngineer = new DBEngineer(derbyConfig);
       //SingleThreadSqlBatchExecutor.execute(derbyConfig, createSQL, true);
      }
 
     catch (SQLException e) {logger.error(e.getMessage());}
     catch (IOException e) {logger.error(e.getMessage());}
-    catch (ConfigurationException e) {logger.error(e.getMessage());}
     catch (DBModuleConfigException e) {logger.error(e.getMessage());}
     catch (DBConnectionException e) {logger.error(e.getMessage());}
     catch (DBModelException e) {logger.error(e.getMessage());}

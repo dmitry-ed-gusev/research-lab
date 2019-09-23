@@ -1,11 +1,9 @@
 package jdb.processing.tester;
 
-import jdb.config.DBConfig;
+import dgusev.dbpilot.config.DBConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.processing.spider.DBSpider;
-import jlib.logging.InitLogger;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -96,8 +94,7 @@ public class DBTester
    * @param dbName String имя искомой БД.
    * @return boolean ИСТИНА/ЛОЖЬ - существует ли указанная БД.
   */
-  public boolean isDBExists(String dbName)
-   {
+  public boolean isDBExists(String dbName) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
     boolean result = false;
     logger.debug("Checking existence DB [" + dbName + "] on current DBMS server.");
     try
@@ -131,52 +128,4 @@ public class DBTester
     return result;
    }
 
-  /**
-   * Метод предназначен только для тестирования данного класса.
-   * @param args String[] параметры метода main.
-  */
-  public static void main(String[] args)
-   {
-    InitLogger.initLogger("jlib");
-    //Logger logger = Logger.getLogger(DBTester.class.getName());
-
-    // Убираем отладочный вывод universalConnector
-    InitLogger.initLogger("jlib.db.universalConnector", Level.INFO);
-    // Убираем отладочный вывод universalConfig
-    InitLogger.initLogger("jlib.db.universalConfig", Level.INFO);
-
-    /**
-    ConnectionConfig mysqlServerConfig = new ConnectionConfig();
-    mysqlServerConfig.setDbConnectionType("direct");
-    mysqlServerConfig.setDbType("mysql");
-    mysqlServerConfig.setDbHost("localhost:3306");
-    mysqlServerConfig.setDbName("storm");
-    mysqlServerConfig.setDbUser("root");
-    mysqlServerConfig.setDbPassword("mysql");
-
-    ConnectionConfig mysqlClientConfig = new ConnectionConfig();
-    mysqlClientConfig.setDbConnectionType("direct");
-    mysqlClientConfig.setDbType("mysql");
-    mysqlClientConfig.setDbHost("localhost:3306");
-    mysqlClientConfig.setDbName("storm_client");
-    mysqlClientConfig.setDbUser("root");
-    mysqlClientConfig.setDbPassword("mysql");
-
-    ConnectionConfig ifxConfig = new ConnectionConfig();
-    ifxConfig.setDbConnectionType("direct");
-    ifxConfig.setDbType("informix");
-    ifxConfig.setDbHost("appserver:1526");
-    ifxConfig.setDbServerName("hercules");
-    ifxConfig.setDbName("storm_test");
-    ifxConfig.setDbUser("informix");
-    ifxConfig.setDbPassword("ifx_dba_019");
-
-    ConnectionConfig dbfConfig = new ConnectionConfig();
-    dbfConfig.setDbConnectionType("direct");
-    dbfConfig.setDbType("dbf");
-    dbfConfig.setDbName("q:/new/fleet");
-    */
-   
-   }
-
- }
+}

@@ -1,11 +1,7 @@
 package jdb.facade;
 
-import jdb.DBConsts;
-import jlib.common.Consts;
-import jlib.logging.InitLogger;
-import org.apache.log4j.ConsoleAppender;
+import dgusev.dbpilot.DBConsts;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -58,7 +54,6 @@ class ConnectionManager
   private ConnectionManager()
    {
     // Инициализация логгера
-    InitLogger.initLogger(getClass().getName());
     logger.debug("WORKING ConnectionManager constructor.");
    }
 
@@ -296,10 +291,10 @@ class ConnectionManager
   */
   public static void main(String[] args)
    {
-    Logger logger                   = Logger.getLogger(ConnectionManager.class.getName());
-    PatternLayout patternLayout     = new PatternLayout(Consts.LOGGER_LOG_FORMAT_DEFAULT);
-    ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
-    logger.addAppender(consoleAppender);
+    //Logger logger                   = Logger.getLogger(ConnectionManager.class.getName());
+    //PatternLayout patternLayout     = new PatternLayout(Consts.LOGGER_LOG_FORMAT_DEFAULT);
+    //ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
+    //logger.addAppender(consoleAppender);
 
     ConnectionManager conn = ConnectionManager.getInstance();
 

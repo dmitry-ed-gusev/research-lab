@@ -1,11 +1,8 @@
 package jdb.config.common;
 
-import jdb.DBConsts;
-import jdb.config.DBConfig;
-import jdb.exceptions.DBModuleConfigException;
+import dgusev.dbpilot.DBConsts;
+import dgusev.dbpilot.config.DBConfig;
 import jdb.monitoring.DBProcessingMonitor;
-import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.lang.StringUtils;
@@ -128,9 +125,8 @@ public class CommonModuleConfig implements ConfigInterface
    * @throws jdb.exceptions.DBModuleConfigException - ошибка конфигурационного файла - неверный тип СУБД, тип СУБД отсутствует
    * и т.п. ошибки (связанные с конфигурированием).
   */
-  public void loadFromFile(String fileName, String sectionName, boolean loadDBConfig)
-   throws IOException, ConfigurationException, DBModuleConfigException
-   {
+  public void loadFromFile(String fileName, String sectionName, boolean loadDBConfig) throws IOException, org.apache.commons.configuration2.ex.ConfigurationException, ConfigurationException {
+
     logger.debug("WORKING CommonModuleConfig.loadFromFile().");
     // Если имя файла пусто - ошибка!
     if (StringUtils.isBlank(fileName))
@@ -144,7 +140,7 @@ public class CommonModuleConfig implements ConfigInterface
      {
       logger.debug("MODE: loading DB connection config from xml-file.");
       this.dbConfig = new DBConfig();
-      this.dbConfig.loadFromFile(fileName, sectionName);
+      this.dbConfig.loadFromFile(fileName, sectionName, false);
      }
     else {logger.debug("MODE: skipping DB connection config loading.");}
 
@@ -171,27 +167,11 @@ public class CommonModuleConfig implements ConfigInterface
     this.isMultiThreads = Boolean.valueOf(config.getString(prefix + DBConsts.XML_MULTI_THREADS));
    }
 
-  /**
-   * Метод загружает несколько своих параметров из указанного конфига. Параметры загружаются только из раздела &lt;db&gt;.
-   * Данный раздел не должен быть корневым - он должен находиться внутри другого раздела (корневого или ROOT-раздела).
-   * Параметр LoadDBConfig указывает, надо ли загружать конфигурацию для соединения с СУБД из данного раздела конфига
-   * (ИСТИНА - загружаем, ЛОЖЬ - нет). Параметры для соединения с СУБД будут прочитаны из того же раздела &lt;db&gt;.
-   * @param fileName String xml-файл, из которого будем загружать конфигурацию.
-   * @param loadDBConfig boolean параметр указывает, необходимо ли читать из конфига параметры для соединения с СУБД.
-   * @throws java.io.IOException ИС - указано пустое имя файла, файл не существует и т.п.
-   * @throws org.apache.commons.configuration.ConfigurationException ИС - ошибка при загрузке конфигурации из xml-файла.
-   * @throws jdb.exceptions.DBModuleConfigException - ошибка конфигурационного файла - неверный тип СУБД, тип СУБД отсутствует
-   * и т.п. ошибки (связанные с конфигурированием).
-  */
-  public void loadFromFile(String fileName, boolean loadDBConfig)
-   throws DBModuleConfigException, IOException, ConfigurationException
-   {this.loadFromFile(fileName, null, loadDBConfig);}
-
   @Override
   public String getConfigErrors()
    {
     String result = null;
-    String dbConfigErrors = DBUtils.getConfigErrors(dbConfig);
+    String dbConfigErrors = null; //DBUtils.getConfigErrors(dbConfig);
     if (!StringUtils.isBlank(dbConfigErrors))      {result = dbConfigErrors;}
     return result;
    }
@@ -208,20 +188,4 @@ public class CommonModuleConfig implements ConfigInterface
            toString();
   }
 
- public static void main(String[] args)
-  {
-   InitLogger.initLoggers(new String[] {"jdb", "jlib", "org.apache.commons"});
-   Logger logger = Logger.getLogger("jdb");
-
-    try
-     {
-      CommonModuleConfig config = new CommonModuleConfig();
-      config.loadFromFile("stormConn.xml", null, false);
-      logger.info("->" + config);
-     }
-    catch (IOException e) {logger.error(e.getMessage());}
-    catch (ConfigurationException e) {logger.error(e.getMessage());}
-    catch (DBModuleConfigException e) {logger.error(e.getMessage());}
-   }
-
- }
+}

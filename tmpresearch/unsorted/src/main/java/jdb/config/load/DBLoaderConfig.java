@@ -1,13 +1,11 @@
 package jdb.config.load;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jdb.config.common.CommonModuleConfig;
 import jdb.config.common.ConfigInterface;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.model.integrity.DBIntegrityModel;
 import jdb.model.time.DBTimedModel;
-import jdb.utils.DBUtils;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -95,7 +93,7 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   */
   public DBLoaderConfig(DBLoaderConfig config)
    {
-    String configErrors = DBUtils.getConfigErrors(config);
+    String configErrors = null; // DBUtils.getConfigErrors(config);
     // Если с указанным конфигом все в порядке - работаем
     if (StringUtils.isBlank(configErrors))
      {
@@ -203,7 +201,7 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   public boolean isTableAllowed(String tableName) throws DBModuleConfigException
    {
     boolean result;
-    String configErrors = DBUtils.getConfigErrors(this.getDbConfig());
+    String configErrors = null; // DBUtils.getConfigErrors(this.getDbConfig());
     if (StringUtils.isBlank(configErrors)) {result = this.getDbConfig().isTableAllowed(tableName);}
     else {throw new DBModuleConfigException(configErrors);}
     return result;
@@ -217,7 +215,7 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   */
   public void addAllowedTable(String tableName) throws DBModuleConfigException
    {
-    String configErrors = DBUtils.getConfigErrors(this.getDbConfig());
+    String configErrors = null; // DBUtils.getConfigErrors(this.getDbConfig());
     if (StringUtils.isBlank(configErrors)) {this.getDbConfig().addAllowedTable(tableName);}
     else {throw new DBModuleConfigException(configErrors);}
    }
@@ -230,7 +228,7 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   */
   public void addDeprecatedTable(String tableName) throws DBModuleConfigException
    {
-    String configErrors = DBUtils.getConfigErrors(this.getDbConfig());
+    String configErrors = null; // DBUtils.getConfigErrors(this.getDbConfig());
     if (StringUtils.isBlank(configErrors)) {this.getDbConfig().addDeprecatedTable(tableName);}
     else {throw new DBModuleConfigException(configErrors);}
    }
@@ -241,8 +239,8 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   */
   public void resetAllowedTables() throws DBModuleConfigException
    {
-    String configErrors = DBUtils.getConfigErrors(this.getDbConfig());
-    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().resetAllowedTables();}
+    String configErrors = null; // DBUtils.getConfigErrors(this.getDbConfig());
+    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().setAllowedTables(null);}
     else {throw new DBModuleConfigException(configErrors);}
    }
 
@@ -252,8 +250,8 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   */
   public void resetDeprecatedTables() throws DBModuleConfigException
    {
-    String configErrors = DBUtils.getConfigErrors(this.getDbConfig());
-    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().resetDeprecatedTables();}
+    String configErrors = null; // DBUtils.getConfigErrors(this.getDbConfig());
+    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().setDeprecatedTables(null);}
     else {throw new DBModuleConfigException(configErrors);}
    }
 
@@ -263,8 +261,8 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   */
   public void resetConstraints() throws DBModuleConfigException
    {
-    String configErrors = DBUtils.getConfigErrors(this.getDbConfig());
-    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().resetConstraints();}
+    String configErrors = null; // DBUtils.getConfigErrors(this.getDbConfig());
+    if (StringUtils.isBlank(configErrors)) {this.getDbConfig().setConstraints(null, null);}
     else {throw new DBModuleConfigException(configErrors);}
    }
 
@@ -300,7 +298,6 @@ public class DBLoaderConfig extends CommonModuleConfig implements ConfigInterfac
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger("jdb");
     Logger logger = Logger.getLogger("jdb");
     DBLoaderConfig config = new DBLoaderConfig();
     logger.debug(config.toString());

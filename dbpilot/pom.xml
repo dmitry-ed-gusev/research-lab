@@ -25,6 +25,18 @@
     </build>
 
     <dependencies>
+
+        <dependency>
+            <groupId>dgusev</groupId>
+            <artifactId>utilities</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+            <version>${apache.commons.configuration2.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

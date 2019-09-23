@@ -1,6 +1,6 @@
 package dg.bigdata.hw2;
 
-import gusev.dmitry.jtils.utils.CmdLineOption;
+import dgusev.cmd.CmdLineOption;
 
 /**
  * Cmd line options enumeration for HDFS utility

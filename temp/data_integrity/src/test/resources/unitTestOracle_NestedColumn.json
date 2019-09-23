@@ -1,0 +1,41 @@
+{
+  "jdbcConnectionString": "jdbc:jtds:sqlserver://54.56.9.174:1325",
+  "tables": [
+    {"columns": [
+      {"sourceName": "LOT_ID",
+        "targetName": "LOT_ID",
+        "sourceType": "NUMBER(10,0)",
+        "targetType": "DECIMAL(10,0)"
+      },
+      {"sourceName": "PROTOCOL_NAME",
+        "targetName": "PROTOCOL_NAME",
+        "sourceType": "VARCHAR2(20)",
+        "targetType": "VARCHAR(20)"
+      },
+      {"sourceName": "REASSAY_DATE",
+        "targetName": "REASSAY_DATE",
+        "sourceType": "DATE",
+        "targetType": "STRING"
+      },
+      {"sourceName": "",
+        "targetName": "load_id",
+        "sourceType": "",
+        "targetType": "BIGINT"
+      },
+      {"sourceName": "",
+        "targetName": "extract_dttm",
+        "sourceType": "",
+        "targetType": "STRING"
+      },
+      {"sourceName": "",
+        "targetName": "load_dttm",
+        "sourceType": "",
+        "targetType": "STRING"
+      }],
+      "sourceName": "SQA_LOTS SQA_LOTS",
+      "targetName": "SQA_LOTS",
+      "primaryKeys": [],
+      "nestedTable": "false"
+    }
+  ]
+}

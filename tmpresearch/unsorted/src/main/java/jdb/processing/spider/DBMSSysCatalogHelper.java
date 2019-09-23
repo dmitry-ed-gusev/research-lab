@@ -1,6 +1,7 @@
 package jdb.processing.spider;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
+import dgusev.dbpilot.config.DBType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -12,7 +13,7 @@ import org.apache.log4j.Logger;
 public class DBMSSysCatalogHelper 
  {
 
-  public static boolean isInSysCatalog(DBConsts.DBType dbType, String tableSchema, String tableName)
+  public static boolean isInSysCatalog(DBType dbType, String tableSchema, String tableName)
    {
     Logger logger = Logger.getLogger(DBMSSysCatalogHelper.class.getName());
     logger.debug("DBMSSysCatalogHelper.isInSysCatalog() working.");
@@ -21,7 +22,7 @@ public class DBMSSysCatalogHelper
     // Если указанный тип СУБД не пуст - работаем
     if ((dbType != null) && !StringUtils.isBlank(tableName))
      {
-      logger.debug("DBMS type [" + dbType.strValue() + "] and table name [" + tableName + "] is OK! Processing.");
+      logger.debug("DBMS type [" + dbType.getStrValue() + "] and table name [" + tableName + "] is OK! Processing.");
       switch (dbType)
        {
         // Для СУБД Информикс схемы не используем
