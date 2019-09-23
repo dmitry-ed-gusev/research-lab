@@ -1,14 +1,18 @@
-# -- ignore maven output directory
-#target
-# -- ignore IntelliJ IDEA files
+# -- maven output directory
+target
+# -- IntelliJ IDEA files
 *.iml
 *.ipr
 *.iws
 .idea
 .ideaDataSources
-# -- ignore logs/output files
+# -- logs/output files
 *.log
 *.out
+
+# -- gradle temporary files
+.gradle
+
 # -- ignore [storm] module output/input file(s)
 storm-app-output.txt
 dummy.txt
@@ -36,22 +40,21 @@ eggs/
 __pycache__/
 *.pyc
 *$py.class
-# mypy
+# -- mypy
 .mypy_cache/
 .python-version
 # -- python credentials file
 credentials.py
 
 # -- deployable archives
-#*.jar
 *.war
 # -- PAnalyzer app output directory
 panalyzer/
 # -- DataTex connector
 dtex-conn-deploy/
 
-# C extensions
-# *.so
+# -- c/c++ extensions/libraries
+*.so
 
 # -- General distribution / packaging values
 build/
@@ -67,17 +70,17 @@ wheels/
 .installed.cfg
 MANIFEST
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+# -- PyInstaller
+#   - Usually these files are written by a python script from a template
+#   - before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
 
-# Installer logs
+# -- installer logs
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
+# -- unit test / coverage reports
 htmlcov/
 .tox/
 .coverage
@@ -120,19 +123,19 @@ celerybeat-schedule
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# -- environments
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
 
-# Spyder project settings
+# -- spyder project settings
 .spyderproject
 .spyproject
 
-# Rope project settings
+# --rRope project settings
 .ropeproject
 
-# mkdocs documentation
+# -- mkdocs documentation
 /site
