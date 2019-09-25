@@ -1,3 +1,14 @@
+apply plugin: 'java'
+
+description = "Research project: various research activities."
+println "$description"
+
+
 task helloWorld {
-    println 'Hello world!!'
+    println "helloWorld -> task config"
+
+    doLast {
+        println 'doLast() -> Hello world!!'
+    }
+
 }
