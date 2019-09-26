@@ -1,8 +1,12 @@
+// build script plugins
 apply plugin: 'java'
 
+// project description
 description = "Research project: various research activities."
 println "$description"
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 task helloWorld {
     println "helloWorld -> task config"
@@ -11,4 +15,37 @@ task helloWorld {
         println 'doLast() -> Hello world!!'
     }
 
+}
+
+// common properties for all related projects
+allprojects {
+
+}
+
+// sub-projects properties
+subprojects {
+
+}
+
+// project
+ext {
+    verCommonsLang3 = 3.6
+        <commons.logging.version>1.1.3</commons.logging.version>
+            <commons.io.version>2.5</commons.io.version>
+        <commons.cli.version>1.4</commons.cli.version>
+            <apache.httpclient.version>4.5.2</apache.httpclient.version>
+        <apache.dbcp.version>1.4</apache.dbcp.version>
+            <apache.commons.csv.version>1.5</apache.commons.csv.version>
+        <apache.commons.configuration2.version>2.5</apache.commons.configuration2.version>
+            <apache.poi.version>4.1.0</apache.poi.version>
+}
+
+// dependencies
+dependencies {
+    compile()
+}
+
+// repositories
+repositories {
+    mavenCentral()
 }
