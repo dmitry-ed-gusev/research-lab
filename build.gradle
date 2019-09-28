@@ -1,14 +1,32 @@
 // build script plugins
 apply plugin: 'java'
 
-// project description
-description = "Research project: various research activities."
-println "$description"
+version = '3.0.0' // project version
+description = "Research Development Project: various research activities." // project description
 
+// source and target sources compatability
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-task helloWorld {
+// gradle wrapper configuration
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+// common properties for all related projects
+allprojects {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+// sub-projects properties
+subprojects {
+    version = '1.0'
+}
+
+task helloWorld { // sample task
     println "helloWorld -> task config"
 
     doLast {
@@ -17,19 +35,12 @@ task helloWorld {
 
 }
 
-// common properties for all related projects
-allprojects {
-
-}
-
-// sub-projects properties
-subprojects {
-
-}
 
 // project
 ext {
-    verCommonsLang3 = 3.6
+    verJUnit = '5.4.2'
+    verCommonsLang3 = '3.6'
+    /*
         <commons.logging.version>1.1.3</commons.logging.version>
             <commons.io.version>2.5</commons.io.version>
         <commons.cli.version>1.4</commons.cli.version>
@@ -38,11 +49,13 @@ ext {
             <apache.commons.csv.version>1.5</apache.commons.csv.version>
         <apache.commons.configuration2.version>2.5</apache.commons.configuration2.version>
             <apache.poi.version>4.1.0</apache.poi.version>
+             */
 }
 
 // dependencies
 dependencies {
-    compile()
+    //compile ""
+    testCompile "org.junit.jupiter:junit-jupiter-engine:$verJUnit"
 }
 
 // repositories

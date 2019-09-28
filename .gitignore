@@ -12,7 +12,6 @@ target
 
 # -- gradle temporary files
 .gradle
-gradle
 
 # -- ignore [storm] module output/input file(s)
 storm-app-output.txt
