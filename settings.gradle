@@ -1,3 +1,5 @@
 rootProject.name = 'research-project'
 
-include 'dbpilot'
+include 'bigdata', 'dbpilot', 'j2ee', 'marklogic', 'nlp',
+        'pyutilities', 'scripts', 'socialnet', 'tmpresearch',
+        'utilities'
