@@ -1,64 +1,144 @@
-// build script plugins
-apply plugin: 'java'
+/*
+    Gradle build script for Reasearch application project.
 
-version = '3.0.0' // project version
-description = "Research Development Project: various research activities." // project description
+    Created:  Dmitrii Gusev, 29.09.2019
+    Modified:
+*/
 
-// source and target sources compatability
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+// project properties
+ext {
+    // testing versions
+    verJUnit          = '5.4.2'
+    verHamcrest       = '2.1'
+    verMockito        = '2.28.2'
+    verMockServer     = '5.5.4'
+    verXmlUnit        = '1.4'
+
+    // lombok library
+    verLombok         = '1.18.4'
+
+    // logging dependencies
+    verLog4j          = '1.2.17'
+    verCommonsLogging = '1.1.3'
+    verSlf4j          = '1.7.21'
+
+    // common libraries
+    verCommonsLnag3   = '3.6'
+}
+
+
 
 // gradle wrapper configuration
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-// common properties for all related projects
-allprojects {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-    }
-}
-
-// sub-projects properties
-subprojects {
-    version = '1.0'
-}
-
+// custom sample task
 task helloWorld { // sample task
     println "helloWorld -> task config"
-
     doLast {
         println 'doLast() -> Hello world!!'
     }
-
 }
 
+// properties for all projects (current + sub-projects)
+allprojects {
 
-// project
-ext {
-    verJUnit = '5.4.2'
-    verCommonsLang3 = '3.6'
-    /*
-        <commons.logging.version>1.1.3</commons.logging.version>
-            <commons.io.version>2.5</commons.io.version>
-        <commons.cli.version>1.4</commons.cli.version>
-            <apache.httpclient.version>4.5.2</apache.httpclient.version>
-        <apache.dbcp.version>1.4</apache.dbcp.version>
-            <apache.commons.csv.version>1.5</apache.commons.csv.version>
-        <apache.commons.configuration2.version>2.5</apache.commons.configuration2.version>
-            <apache.poi.version>4.1.0</apache.poi.version>
-             */
+
+    group = 'dgusev'
+    version = '3.0.0' // main project version
+    description = "Research Development Project:: various research activities."
 }
 
-// dependencies
-dependencies {
-    //compile ""
-    testCompile "org.junit.jupiter:junit-jupiter-engine:$verJUnit"
-}
+// settings for sub-projects only
+subprojects {
 
-// repositories
-repositories {
-    mavenCentral()
-}
+    plugins {
+        // project lombok + gradle -> https://projectlombok.org/setup/gradle
+        id "io.freefair.lombok" version "4.1.1"
+    }
+
+    // custom lombok version
+    lombok {
+        version = "$verLombok"
+    }
+
+
+    apply plugin: 'java'
+    apply plugin: 'application'
+    apply plugin: 'maven-publish'
+
+    // source and target sources compatibility
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    version = '1.0.0' // sub-projects version
+    
+    repositories {
+        mavenCentral()
+        mavenLocal()
+
+        /*
+        maven {
+            url = 'http://www.datanucleus.org/downloads/maven2/'
+        }
+
+        maven {
+            url = 'https://mvnrepository.com/artifact/org.apache.ant/ant-jsch'
+        }
+
+        maven {
+            url = 'http://repo1.maven.org/maven2'
+        }
+
+        maven {
+            url = 'https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin'
+        }
+
+        maven {
+            url = 'https://repo.spring.io/libs-release'
+        }
+
+        maven {
+            url = 'https://maven.java.net/content/repositories/releases/'
+        }
+
+        maven {
+            url = 'http://repository.primefaces.org/'
+        }
+
+        maven {
+            url = 'http://repo.maven.apache.org/maven2'
+        }
+        */
+    }
+
+    dependencies {
+        compile     "org.hamcrest:hamcrest:$verHamcrest"
+        compile     "org.mockito:mockito-core:$verMockito"
+        compile     "org.mock-server:mockserver-netty:$verMockServer"
+        compile     "xmlunit:xmlunit:$verXmlUnit"
+
+        //implementation platform("log4j:log4j:$verLog4j")
+        //implementation platform("commons-logging:commons-logging:$verCommonsLogging")
+        //implementation platform("org.slf4j:slf4j-api:$verSlf4j")
+        //implementation platform("org.slf4j:slf4j-log4j12:$verSlf4j")
+        //implementation platform("org.apache.commons:commons-lang3:$verCommonsLnag3")
+
+        testCompile "org.junit.jupiter:junit-jupiter-engine:$verJUnit"
+        testCompile "org.junit.vintage:junit-vintage-engine:$verJUnit"
+
+        compileOnly "org.projectlombok:lombok:$verLombok"
+    }
+
+/*
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from(components.java)
+            }
+        }
+    }
+ */
+
+} // end of subprojects section
