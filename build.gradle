@@ -5,6 +5,11 @@
     Modified:
 */
 
+//plugins {
+    // project lombok + gradle -> https://projectlombok.org/setup/gradle
+//    id "io.freefair.lombok" version "4.1.1"
+//}
+
 // project properties
 ext {
     // testing versions
@@ -26,7 +31,10 @@ ext {
     verCommonsLnag3   = '3.6'
 }
 
-
+// custom lombok version
+//lombok {
+//    version = "$verLombok"
+//}
 
 // gradle wrapper configuration
 wrapper {
@@ -43,8 +51,6 @@ task helloWorld { // sample task
 
 // properties for all projects (current + sub-projects)
 allprojects {
-
-
     group = 'dgusev'
     version = '3.0.0' // main project version
     description = "Research Development Project:: various research activities."
@@ -52,17 +58,6 @@ allprojects {
 
 // settings for sub-projects only
 subprojects {
-
-    plugins {
-        // project lombok + gradle -> https://projectlombok.org/setup/gradle
-        id "io.freefair.lombok" version "4.1.1"
-    }
-
-    // custom lombok version
-    lombok {
-        version = "$verLombok"
-    }
-
 
     apply plugin: 'java'
     apply plugin: 'application'
@@ -118,6 +113,9 @@ subprojects {
         compile     "org.mockito:mockito-core:$verMockito"
         compile     "org.mock-server:mockserver-netty:$verMockServer"
         compile     "xmlunit:xmlunit:$verXmlUnit"
+
+        compileOnly 'org.projectlombok:lombok:1.18.10'
+        annotationProcessor 'org.projectlombok:lombok:1.18.10'
 
         //implementation platform("log4j:log4j:$verLog4j")
         //implementation platform("commons-logging:commons-logging:$verCommonsLogging")
