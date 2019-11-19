@@ -1,6 +1,6 @@
 package jdb.config;
 
-import jdb.config.connection.BaseDBConfigTest;
+import jdb.config.connection.DBConfigTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -11,7 +11,7 @@ import org.junit.runners.Suite;
 */
 
 @RunWith(value= Suite.class)
-@Suite.SuiteClasses(value={BaseDBConfigTest.class})
+@Suite.SuiteClasses(value={DBConfigTest.class})
 public class JdbConfigTestSuite
  {
  }

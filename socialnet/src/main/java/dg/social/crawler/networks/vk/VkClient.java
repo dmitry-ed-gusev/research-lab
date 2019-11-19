@@ -2,8 +2,8 @@ package dg.social.crawler.networks.vk;
 
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.networks.AbstractClient;
-import gusev.dmitry.jtils.utils.HttpUtils;
-import gusev.dmitry.jtils.utils.MyIOUtils;
+import dgusev.web.MyHttpUtils;
+import dgusev.io.MyIOUtils;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -30,7 +30,7 @@ import java.util.Map;
 
 import static dg.social.crawler.SCrawlerDefaults.*;
 import static dg.social.crawler.SCrawlerDefaults.HttpFormType.*;
-import static gusev.dmitry.jtils.utils.HttpUtils.HTTP_GET_COOKIES_HEADER;
+import static dgusev.web.MyHttpUtils.HTTP_GET_COOKIES_HEADER;
 
 /**
  * VK (VKontakte) social network client.
@@ -105,10 +105,10 @@ public class VkClient extends AbstractClient {
 
                 httpEntity      = httpResponse.getEntity();                                   // get http entity
                 httpCookies     = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER);           // save cookies
-                httpPageContent = HttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING); // get html page content as string
+                httpPageContent = MyHttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING); // get html page content as string
 
                 if (LOG.isDebugEnabled()) { // just debug output
-                    LOG.debug(HttpUtils.httpResponseToString(httpResponse, httpPageContent));
+                    LOG.debug(MyHttpUtils.httpResponseToString(httpResponse, httpPageContent));
                 }
 
                 Document doc = Jsoup.parse(httpPageContent);  // parse returned page into Document object
@@ -248,12 +248,12 @@ public class VkClient extends AbstractClient {
         // get http entity
         HttpEntity httpEntity = httpResponse.getEntity();
 
-        return HttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
+        return MyHttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
 
         // get page content for parsing
-        //String httpPageContent = HttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
+        //String httpPageContent = MyHttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
         //if (LOG.isDebugEnabled()) { // just debug output <- too much output
-        //    LOG.debug(HttpUtils.httpResponseToString(httpResponse, httpPageContent));
+        //    LOG.debug(MyHttpUtils.httpResponseToString(httpResponse, httpPageContent));
         //}
         // return received JSON
         //return httpPageContent;
@@ -279,10 +279,10 @@ public class VkClient extends AbstractClient {
         // get http entity
         HttpEntity httpEntity = httpResponse.getEntity();
 
-        return HttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
+        return MyHttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
 
         // get page content for parsing
-        //String httpPageContent = HttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
+        //String httpPageContent = MyHttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
         //return httpPageContent;
     }
 

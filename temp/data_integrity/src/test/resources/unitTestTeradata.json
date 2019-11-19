@@ -1,0 +1,50 @@
+{
+  "jdbcConnectionString": "jdbc:jtds:sqlserver://54.56.9.174:1325",
+  "tables": [
+    {"columns": [
+      {"sourceName": "ID",
+        "targetName": "ID",
+        "sourceType": "DECIMAL(10,0)",
+        "targetType": "DECIMAL(10,0)"
+      },
+      {"sourceName": "PRODUCT_ID",
+        "targetName": "PRODUCT_ID",
+        "sourceType": "DECIMAL(10,0)",
+        "targetType": "DECIMAL(10,0)"
+      },
+      {"sourceName": "delete_dttm",
+        "targetName": "DELETE_DTTM",
+        "sourceType": "STRING",
+        "targetType": "TIMESTAMP(0)"
+      },
+      {"sourceName": "ACTIVE_FLAG",
+        "targetName": "ACTIVE_FLAG",
+        "sourceType": "CHAR(1)",
+        "targetType": "CHAR(1)"
+      },
+      {"sourceName": "HARD_DELETED_FLAG",
+        "targetName": "HARD_DELETED_FLAG",
+        "sourceType": "CHAR(1)",
+        "targetType": "CHAR(1)"
+      },
+      {"sourceName": "load_dttm",
+        "targetName": "SRC_LOAD_DTTM",
+        "sourceType": "STRING",
+        "targetType": "TIMESTAMP(0)"
+      },
+      {"sourceName": "",
+        "targetName": "LOAD_ID",
+        "sourceType": "",
+        "targetType": "BIGINT"
+      },
+      {"sourceName": "",
+        "targetName": "LOAD_DTTM",
+        "sourceType": "",
+        "targetType": "TIMESTAMP(0)"
+      }],
+      "sourceName": "HIVE_NAME",
+      "targetName": "teradata_name",
+      "numberOfRows": 249,
+      "primaryKeys": ["ID"]
+    }
+  ]}

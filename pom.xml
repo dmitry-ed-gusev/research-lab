@@ -27,7 +27,7 @@
         <maven.plugin.war>3.2.0</maven.plugin.war>
         <maven.plugin.help>2.2</maven.plugin.help>
         <maven.plugin.jaxws>2.2</maven.plugin.jaxws>
-        <maven.plugin.surefire>2.16</maven.plugin.surefire>
+        <maven.plugin.surefire>2.22.2</maven.plugin.surefire>
         <maven.plugin.failsafe>2.16</maven.plugin.failsafe>
         <maven.plugin.buildnumber>1.4</maven.plugin.buildnumber>
         <maven.plugin.sonar>3.6.0.1398</maven.plugin.sonar>
@@ -36,9 +36,12 @@
         <commons.lang3.version>3.6</commons.lang3.version>
         <commons.logging.version>1.1.3</commons.logging.version>
         <commons.io.version>2.5</commons.io.version>
+        <commons.cli.version>1.4</commons.cli.version>
         <apache.httpclient.version>4.5.2</apache.httpclient.version>
         <apache.dbcp.version>1.4</apache.dbcp.version>
-        <apache.commons.csv>1.5</apache.commons.csv>
+        <apache.commons.csv.version>1.5</apache.commons.csv.version>
+        <apache.commons.configuration2.version>2.5</apache.commons.configuration2.version>
+        <apache.poi.version>4.1.0</apache.poi.version>
 
         <!-- Logging libraries -->
         <log4j.version>1.2.17</log4j.version>
@@ -52,21 +55,28 @@
         <java.mail.version>1.4.5</java.mail.version>
         <marklogic.java.api.version>3.0.4</marklogic.java.api.version>
         <activemq.version>5.13.2</activemq.version>
-        <version.glassfish>4.1.1.162</version.glassfish>
+        <!--<version.glassfish>4.1.1.162</version.glassfish>-->
+        <version.glassfish>5.193.1</version.glassfish>
         <version.javaee>7.0</version.javaee>
         <version.weld>2.4.4.Final</version.weld>
 
         <!-- Jersey client/server libraries versions -->
         <!-- general jersey version - used for j2ee module -->
-        <version.jersey>2.22.2</version.jersey>
+<!--        <version.jersey>2.22.2</version.jersey>-->
+        <version.jersey>2.29.1</version.jersey>
         <!-- precise versions of jersey client -->
-        <version.jersey.client>1.19.4</version.jersey.client>
-        <version.jersey.server>2.28</version.jersey.server>
-        <version.jersey.common>2.28</version.jersey.common>
-        <version.jersey.containers>2.28</version.jersey.containers>
+<!--        <version.jersey.client>1.19.4</version.jersey.client>-->
+<!--        <version.jersey.server>2.28</version.jersey.server>-->
+<!--        <version.jersey.common>2.28</version.jersey.common>-->
+<!--        <version.jersey.containers>2.28</version.jersey.containers>-->
+        <version.jersey.client>2.29.1</version.jersey.client>
+        <version.jersey.server>2.29.1</version.jersey.server>
+        <version.jersey.common>2.29.1</version.jersey.common>
+        <version.jersey.containers>2.29.1</version.jersey.containers>
 
-        <eclipse.persistance.eclipselink.version>2.6.4</eclipse.persistance.eclipselink.version>
-        <eclipse.persistence.moxy.version>2.4.1</eclipse.persistence.moxy.version>
+        <!--<eclipse.persistance.eclipselink.version>2.6.4</eclipse.persistance.eclipselink.version>-->
+        <eclipse.persistance.eclipselink.version>2.7.5</eclipse.persistance.eclipselink.version>
+        <eclipse.persistence.moxy.version>2.7.5</eclipse.persistence.moxy.version>
         <version.el>3.0.1-b03</version.el>
         <version.json>1.0.4</version.json>
         <google.json-simple.version>1.1</google.json-simple.version>
@@ -81,13 +91,14 @@
         <org.jsoup.version>1.10.1</org.jsoup.version>
         <cglib.version>2.2.2</cglib.version>
         <lombok.version>1.18.4</lombok.version>
+        <jopt.simple.version>5.0.4</jopt.simple.version>
 
         <!-- Test frameworks versions (JUnit/Hamcrest/Mockito/etc) -->
         <junit.version>5.4.2</junit.version>
         <mockito.version>2.28.2</mockito.version>
         <hamcrest.version>2.1</hamcrest.version>
         <xmlunit.version>1.4</xmlunit.version>
-        <jacoco.plugin.version>0.8.1</jacoco.plugin.version>
+        <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
         <mock.server.version>5.5.4</mock.server.version>
 
         <!-- Spring framework components versions -->
@@ -106,7 +117,8 @@
         <dbms.c3p0.version>0.9.1.2</dbms.c3p0.version>
 
         <!-- my own (local) utilities library useful version -->
-        <dgusev.utilities.version>2.0</dgusev.utilities.version>
+        <dgusev.utilities.version>3.0</dgusev.utilities.version>
+        <dgusev.dbpilot.version>1.0</dgusev.dbpilot.version>
 
         <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
         <skipCoverageReport>false</skipCoverageReport>
@@ -119,7 +131,7 @@
         <rawdata.dir>rawdata</rawdata.dir>
     </properties>
 
-    <!-- Additional Maven repositories for artifacts (for dependencies) -->
+    <!-- Additional Maven repositories for artifacts/dependencies -->
     <repositories>
         <repository>
             <id>alt-repo-1</id>
@@ -142,11 +154,6 @@
             <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
         </repository>
         <repository>
-            <id>central-msd-repo</id>
-            <name>Alt repo #5</name>
-            <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
-        </repository>
-        <repository>
             <id>spring-releases</id>
             <url>https://repo.spring.io/libs-release</url>
         </repository>
@@ -164,12 +171,8 @@
         </repository>
     </repositories>
 
-    <!-- Additional Maven repositories for Maven plugins -->
+    <!-- Additional Maven repositories for plugins -->
     <pluginRepositories>
-        <pluginRepository>
-            <id>central-msd-plugins-repo</id>
-            <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
-        </pluginRepository>
         <pluginRepository>
             <id>alt-plugins-repo-1</id>
             <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
@@ -310,18 +313,8 @@
         </plugins>
     </reporting>
 
-    <!-- Here are common testing dependencies. All other dependencies should be put in child modules. -->
+    <!-- Here are common dependencies inherited by all child modules (mostly - testing). All other dependencies should be put in child modules. -->
     <dependencies>
-        <!-- JUnit 4 dependency -->
-        <!--
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        -->
-
         <!-- JUnit 5 dependency -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -335,7 +328,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
         <!-- Hamcrest dependencies -->
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -343,7 +335,6 @@
             <version>${hamcrest.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <!-- Mockito library dependency -->
         <dependency>
             <groupId>org.mockito</groupId>
@@ -351,14 +342,18 @@
             <version>${mockito.version}</version>
             <scope>compile</scope>
         </dependency>
-
+        <!-- Mock Server for WEB/REST integration testing -->
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>${mock.server.version}</version>
+        </dependency>
         <dependency>
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>
             <version>${xmlunit.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <!-- lombok framework - provided dependency -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -366,30 +361,54 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Mock Server for WEB/REST integration testing -->
-        <dependency>
-            <groupId>org.mock-server</groupId>
-            <artifactId>mockserver-netty</artifactId>
-            <version>${mock.server.version}</version>
-        </dependency>
-
     </dependencies>
 
+    <!-- Management of dependencies versions for all children POMs - we may use these dependencies without version specified -->
     <dependencyManagement>
         <dependencies>
-            <!-- Derby -->
+
+            <!-- Logging libraries -->
             <dependency>
-                <groupId>org.apache.derby</groupId>
-                <artifactId>derby</artifactId>
-                <version>${dbms.derby.version}</version>
-                <scope>test</scope>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.derby</groupId>
-                <artifactId>derbyclient</artifactId>
-                <version>${dbms.derby.version}</version>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging.version}</version>
+                <scope>compile</scope>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <!-- Common utility libraries -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3.version}</version>
+            </dependency>
+
+            <!-- Internal dependencies (proprietary libraries) -->
+            <dependency>
+                <groupId>dgusev</groupId>
+                <artifactId>utilities</artifactId>
+                <version>${dgusev.utilities.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dgusev</groupId>
+                <artifactId>dbpilot</artifactId>
+                <version>${dgusev.dbpilot.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -410,8 +429,9 @@
             <modules>
                 <module>pyutilities</module>
                 <module>scripts</module>
-                <module>marklogic</module>
                 <module>utilities</module>
+                <module>dbpilot</module>
+                <module>marklogic</module>
                 <module>tmpresearch</module>
                 <module>bigdata</module>
                 <module>socialnet</module>
@@ -435,8 +455,9 @@
             <modules>
                 <module>pyutilities</module>
                 <module>scripts</module>
-                <module>marklogic</module>
                 <module>utilities</module>
+                <module>dbpilot</module>
+                <module>marklogic</module>
                 <module>tmpresearch</module>
                 <module>bigdata</module>
                 <module>socialnet</module>
@@ -461,6 +482,7 @@
                 <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
                 <module>utilities</module>
+                <!--<module>dbpilot</module>-->
                 <!--<module>tmpresearch</module>-->
                 <!--<module>nlp</module>-->
                 <!--<module>bigdata</module>-->
@@ -485,8 +507,9 @@
             <modules>
                 <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
-                <!--<module>tmpresearch</module>-->
                 <module>utilities</module>
+                <!--<module>dbpilot</module>-->
+                <!--<module>tmpresearch</module>-->
                 <!--<module>bigdata</module>-->
                 <!--<module>j2ee</module>-->
                 <!--<module>nlp</module>-->

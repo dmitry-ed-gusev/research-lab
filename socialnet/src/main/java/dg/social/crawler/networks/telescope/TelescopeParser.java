@@ -3,7 +3,7 @@ package dg.social.crawler.networks.telescope;
 import dg.social.crawler.domain.EducationProfileValue;
 import dg.social.crawler.domain.PersonDto;
 import dg.social.crawler.networks.ParserInterface;
-import gusev.dmitry.jtils.utils.MyCommonUtils;
+import dgusev.utils.MyCommonUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;

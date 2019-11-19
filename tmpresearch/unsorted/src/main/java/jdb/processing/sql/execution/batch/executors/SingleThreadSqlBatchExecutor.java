@@ -1,13 +1,13 @@
 package jdb.processing.sql.execution.batch.executors;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
+import dgusev.dbpilot.utils.DBUtilities;
 import jdb.DBResources;
 import jdb.config.batch.BatchConfig;
 import jdb.exceptions.DBConnectionException;
 import jdb.exceptions.DBModuleConfigException;
 import jdb.filter.sql.SqlFilter;
 import jdb.monitoring.DBProcessingMonitor;
-import jdb.utils.DBUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -47,16 +47,15 @@ public class SingleThreadSqlBatchExecutor
    * @throws jdb.exceptions.DBModuleConfigException ошибки конфигурации соединения с СУБД.
    * @throws jdb.exceptions.DBConnectionException ошибки непосредственно соединения с СУБД.
   */
-  public static ArrayList<String> execute(BatchConfig config) throws SQLException, DBConnectionException, DBModuleConfigException
-   {
+  public static ArrayList<String> execute(BatchConfig config) throws SQLException, DBConnectionException, DBModuleConfigException, IllegalAccessException, InstantiationException, ClassNotFoundException {
     logger.debug("executeSqlBatch: executing!");
     // Результат выполнения батча - список возникших ошибок
     ArrayList<String> result = null;
 
     // Проверяем конфигурацию на ошибки, если они есть - ничего не делаем!
-    String configErrors = DBUtils.getConfigErrors(config);
-    if (!StringUtils.isBlank(configErrors)) {throw new DBModuleConfigException(configErrors);}
-    else                                    {logger.debug("Batch configuration is OK. Processing.");}
+    //String configErrors = DBUtils.getConfigErrors(config);
+    //if (!StringUtils.isBlank(configErrors)) {throw new DBModuleConfigException(configErrors);}
+    //else                                    {logger.debug("Batch configuration is OK. Processing.");}
     
     logger.debug("Processing batch. Size [" + config.getBatchSize() + "]");
     // Префиксное сообщение для сообщения монитора. Вычисляем один раз.
@@ -69,7 +68,7 @@ public class SingleThreadSqlBatchExecutor
      {
       // Соединяемся с указанной СУБД. Если соединение с СУБД установить не удалось - ничего больше не
       // выполняется (так как возбуждается ИС).
-      connection = DBUtils.getDBConn(config.getDbConfig());
+      connection = DBUtilities.getDBConn(config.getDbConfig());
       statement  = connection.createStatement();
       logger.debug("Connection to DBMS established. Statement object created.");
       // Получаем ссылку на экземпляр класса-монитора

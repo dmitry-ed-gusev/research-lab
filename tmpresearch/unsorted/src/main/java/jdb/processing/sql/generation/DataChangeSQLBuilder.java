@@ -1,6 +1,6 @@
 package jdb.processing.sql.generation;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jdb.filter.sql.SqlFilter;
 import jdb.model.dto.FieldDTOModel;
 import jdb.model.dto.RowDTOModel;

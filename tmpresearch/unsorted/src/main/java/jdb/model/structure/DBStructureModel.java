@@ -2,7 +2,6 @@ package jdb.model.structure;
 
 import jdb.exceptions.DBModelException;
 import jdb.model.DBModel;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -264,7 +263,6 @@ public class DBStructureModel extends DBModel implements Serializable
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger(DBStructureModel.class.getName());
     Logger logger = Logger.getLogger(DBStructureModel.class.getName());
 
     try

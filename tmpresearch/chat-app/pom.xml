@@ -26,23 +26,17 @@
     </properties>
 
     <dependencies>
-        <!-- Apache libraries dependencies -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${commons.lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>${commons.logging.version}</version>
-            <scope>compile</scope>
         </dependency>
-        <!-- Log4j framework dependency -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
         </dependency>
 
     </dependencies>

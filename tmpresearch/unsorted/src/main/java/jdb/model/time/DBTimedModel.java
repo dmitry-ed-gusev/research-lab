@@ -2,7 +2,6 @@ package jdb.model.time;
 
 import jdb.exceptions.DBModelException;
 import jdb.model.DBModel;
-import jlib.logging.InitLogger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -199,7 +198,6 @@ public class DBTimedModel extends DBModel implements Serializable
   */
   public static void main(String[] args)
    {
-    InitLogger.initLogger(DBTimedModel.class.getName());
     Logger logger = Logger.getLogger(DBTimedModel.class.getName());
     try
      {

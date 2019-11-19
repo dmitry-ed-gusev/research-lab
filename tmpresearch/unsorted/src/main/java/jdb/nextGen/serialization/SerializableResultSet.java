@@ -1,6 +1,6 @@
 package jdb.nextGen.serialization;
 
-import jdb.DBConsts;
+import dgusev.dbpilot.DBConsts;
 import jdb.nextGen.exceptions.JdbException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;

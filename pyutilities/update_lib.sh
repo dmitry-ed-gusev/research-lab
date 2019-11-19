@@ -8,8 +8,8 @@
 #   Update installed library [pyutilities].
 #
 #   Created:  Gusev Dmitry, 25.09.2018
-#   Modified:
+#   Modified: Dmitrii Gusev, 05.11.2019
 # =======================================================================================
 
 # upgrade version of library
-pip install --upgrade pyutilities
+pip3 install --upgrade pyutilities
