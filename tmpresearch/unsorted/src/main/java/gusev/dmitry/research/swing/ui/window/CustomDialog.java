@@ -1,6 +1,6 @@
 package gusev.dmitry.research.swing.ui.window;
 
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -99,7 +99,8 @@ public class CustomDialog {
                         AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
 
                 // Полигон для отрисовки формы окна (в виде тултипа)
-                GeneralPath gp = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+                //GeneralPath gp = new GeneralPath(WIND_EVEN_ODD);
+                GeneralPath gp = new GeneralPath();
                 gp.moveTo(5, 5);
                 gp.quadTo(5, 0, 10, 0);
                 gp.lineTo(getWidth() - 11, 0);
@@ -201,7 +202,7 @@ public class CustomDialog {
 
         // Для отмены стандартной декорации окна и его прозрачности
         dialog.setUndecorated(true);
-        AWTUtilities.setWindowOpaque(dialog, false);
+        //AWTUtilities.setWindowOpaque(dialog, false);
 
         // Устанавливаем размер и положения окна
         dialog.pack();
