@@ -15,7 +15,6 @@
 	
 	<modules>
 		<module>consumer</module>
-		<module>samples</module>
 		<module>service</module>
 	</modules>
 	

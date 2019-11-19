@@ -184,7 +184,8 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>${version.jersey.client}</version>
+            <!--<version>${version.jersey.client}</version>-->
+            <version>1.19.4</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>

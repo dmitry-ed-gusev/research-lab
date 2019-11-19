@@ -28,6 +28,9 @@ vk_token*
 ~$*.docx
 .DS_Store
 
+### Gradle files ###
+/.gradle/
+
 # ========== Python values ==========
 # -- python virtual environment
 .venv/
