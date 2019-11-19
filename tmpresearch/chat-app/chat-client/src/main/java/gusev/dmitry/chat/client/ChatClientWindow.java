@@ -1,12 +1,14 @@
 package gusev.dmitry.chat.client;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
+//import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -175,7 +177,9 @@ public class ChatClientWindow implements ChatClientConstants {
 
         // use windows look and feel (LAF)
         try {
-            UIManager.setLookAndFeel(new WindowsLookAndFeel());
+            // todo: fixed due to change JDK 8 -> JDK 11
+            //UIManager.setLookAndFeel(new WindowsLookAndFeel());
+            UIManager.setLookAndFeel(new MetalLookAndFeel());
         } catch (UnsupportedLookAndFeelException e) {
             log.error(e);
         }
