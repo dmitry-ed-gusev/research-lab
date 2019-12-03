@@ -17,56 +17,6 @@ target/
 # -- Gradle files
 /.gradle/
 
-# -- logs/output files
-*.log
-*.out
-
-# -- ignore [storm] module output/input file(s)
-storm-app-output.txt
-dummy.txt
-
-# -- some unversioned files
-dependency-reduced-pom.xml
-socialnet/.crawlerdb/
-socialnet/.db/
-vk_token*
-
-# -- ignore gzip archives
-*.gz
-# -- ignore temporary word files
-~$*.docx
-.DS_Store
-
-
-
-# ========== Python values ==========
-# -- python virtual environment
-.venv/
-# -- python egg files
-*.egg-info/
-eggs/
-.eggs/
-*.egg
-# -- Byte-compiled / optimized / DLL files
-__pycache__/
-*.pyc
-*$py.class
-# -- mypy
-.mypy_cache/
-.python-version
-# -- python credentials file
-credentials.py
-
-# -- deployable archives
-*.war
-# -- PAnalyzer app output directory
-panalyzer/
-# -- DataTex connector
-dtex-conn-deploy/
-
-# -- c/c++ extensions/libraries
-*.so
-
 # -- General distribution / packaging values
 build/
 develop-eggs/
@@ -81,13 +31,47 @@ wheels/
 .installed.cfg
 MANIFEST
 
-# -- PyInstaller / PIP files
-#   - Usually these files are written by a python script from a template
-#   - before PyInstaller builds the exe, so as to inject date/other infos into it.
+# -- Python / PyInstaller / PIP files
+.venv/
+*.egg-info/
+eggs/
+.eggs/
+*.egg
+__pycache__/
+*.pyc
+*$py.class
+.mypy_cache/
+.python-version
+credentials.py
 *.manifest
 *.spec
 pip-log.txt
 pip-delete-this-directory.txt
+.pydevproject
+
+# -- Django stuff:
+.static_storage/
+.media/
+local_settings.py
+
+# -- logs/output files
+*.log
+*.out
+
+# -- some unversioned files
+dependency-reduced-pom.xml
+socialnet/.crawlerdb/
+socialnet/.db/
+vk_token*
+panalyzer/
+dtex-conn-deploy/
+~$*.docx
+.DS_Store
+storm-app-output.txt
+dummy.txt
+*.gz
+*.war
+*.so
 
 # -- unit test / coverage reports
 htmlcov/
@@ -101,33 +85,15 @@ coverage.xml
 .hypothesis/
 nose2-junit.xml
 
-# Translations
+# -- Translations
 *.mo
 *.pot
-
-# Django stuff:
-.static_storage/
-.media/
-local_settings.py
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
 
 # Sphinx documentation
 docs/_build/
 
-# Jupyter Notebook
+# -- Jupyter Notebook
 .ipynb_checkpoints
-
-# celery beat schedule file
-celerybeat-schedule
-
-# SageMath parsed files
-*.sage.py
 
 # -- environments
 env/
@@ -135,13 +101,3 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
-# -- spyder project settings
-.spyderproject
-.spyproject
-
-# --rRope project settings
-.ropeproject
-
-# -- mkdocs documentation
-/site
