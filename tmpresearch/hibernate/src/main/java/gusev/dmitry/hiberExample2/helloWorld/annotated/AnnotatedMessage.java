@@ -23,7 +23,7 @@ public class AnnotatedMessage
   @JoinColumn(name = "NEXT_MESSAGE_ID")
   private AnnotatedMessage nextMessage;
 
-  private AnnotatedMessage() {}
+  protected AnnotatedMessage() {}
 
   public AnnotatedMessage(String text) {this.text = text;}
 
