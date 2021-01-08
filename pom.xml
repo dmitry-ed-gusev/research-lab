@@ -429,7 +429,6 @@
             </properties>
             <!-- All modules to build -->
             <modules>
-                <module>pyutilities</module>
                 <module>scripts</module>
                 <module>utilities</module>
                 <module>dbpilot</module>
@@ -455,7 +454,6 @@
             </properties>
             <!-- All modules to build -->
             <modules>
-                <module>pyutilities</module>
                 <module>scripts</module>
                 <module>utilities</module>
                 <module>dbpilot</module>
@@ -481,7 +479,6 @@
             </properties>
             <!-- Some of modules to build -->
             <modules>
-                <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
                 <module>utilities</module>
                 <!--<module>dbpilot</module>-->
@@ -507,7 +504,6 @@
             </properties>
             <!-- modules to build -->
             <modules>
-                <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
                 <module>utilities</module>
                 <!--<module>dbpilot</module>-->
