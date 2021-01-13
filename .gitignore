@@ -144,3 +144,6 @@ venv.bak/
 
 # mkdocs documentation
 /site
+
+## Gradle files
+.gradle
