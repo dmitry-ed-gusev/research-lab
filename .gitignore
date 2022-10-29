@@ -1,9 +1,30 @@
-# -- IDE: IntelliJ IDEA files
+# -- ignore maven output directory
+#target
+
+# IntelliJ IDEA files
 *.iml
 *.ipr
 *.iws
 .idea
 .ideaDataSources
+
+# Eclipse files
+.settings/
+.classpath
+.factorypath
+.project
+
+# -- ignore logs/output files
+*.log
+*.out
+# -- ignore [storm] module output/input file(s)
+storm-app-output.txt
+dummy.txt
+# -- some unversioned files
+dependency-reduced-pom.xml
+socialnet/.crawlerdb/
+socialnet/.db/
+vk_token*
 
 # -- IDE: Eclipse files
 .classpath
@@ -101,3 +122,16 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+## Gradle files
+.gradle
