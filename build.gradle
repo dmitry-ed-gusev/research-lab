@@ -1,0 +1,142 @@
+/*
+    Gradle build script for Reasearch application project.
+
+    Created:  Dmitrii Gusev, 29.09.2019
+    Modified:
+*/
+
+//plugins {
+    // project lombok + gradle -> https://projectlombok.org/setup/gradle
+//    id "io.freefair.lombok" version "4.1.1"
+//}
+
+// project properties
+ext {
+    // testing versions
+    verJUnit          = '5.4.2'
+    verHamcrest       = '2.1'
+    verMockito        = '2.28.2'
+    verMockServer     = '5.5.4'
+    verXmlUnit        = '1.4'
+
+    // lombok library
+    verLombok         = '1.18.4'
+
+    // logging dependencies
+    verLog4j          = '1.2.17'
+    verCommonsLogging = '1.1.3'
+    verSlf4j          = '1.7.21'
+
+    // common libraries
+    verCommonsLnag3   = '3.6'
+}
+
+// custom lombok version
+//lombok {
+//    version = "$verLombok"
+//}
+
+// gradle wrapper configuration
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+// custom sample task
+task helloWorld { // sample task
+    println "helloWorld -> task config"
+    doLast {
+        println 'doLast() -> Hello world!!'
+    }
+}
+
+// properties for all projects (current + sub-projects)
+allprojects {
+    group = 'dgusev'
+    version = '3.0.0' // main project version
+    description = "Research Development Project:: various research activities."
+}
+
+// settings for sub-projects only
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'application'
+    apply plugin: 'maven-publish'
+
+    // source and target sources compatibility
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    version = '1.0.0' // sub-projects version
+    
+    repositories {
+        mavenCentral()
+        mavenLocal()
+
+        /*
+        maven {
+            url = 'http://www.datanucleus.org/downloads/maven2/'
+        }
+
+        maven {
+            url = 'https://mvnrepository.com/artifact/org.apache.ant/ant-jsch'
+        }
+
+        maven {
+            url = 'http://repo1.maven.org/maven2'
+        }
+
+        maven {
+            url = 'https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin'
+        }
+
+        maven {
+            url = 'https://repo.spring.io/libs-release'
+        }
+
+        maven {
+            url = 'https://maven.java.net/content/repositories/releases/'
+        }
+
+        maven {
+            url = 'http://repository.primefaces.org/'
+        }
+
+        maven {
+            url = 'http://repo.maven.apache.org/maven2'
+        }
+        */
+    }
+
+    dependencies {
+        compile     "org.hamcrest:hamcrest:$verHamcrest"
+        compile     "org.mockito:mockito-core:$verMockito"
+        compile     "org.mock-server:mockserver-netty:$verMockServer"
+        compile     "xmlunit:xmlunit:$verXmlUnit"
+
+        compileOnly 'org.projectlombok:lombok:1.18.10'
+        annotationProcessor 'org.projectlombok:lombok:1.18.10'
+
+        //implementation platform("log4j:log4j:$verLog4j")
+        //implementation platform("commons-logging:commons-logging:$verCommonsLogging")
+        //implementation platform("org.slf4j:slf4j-api:$verSlf4j")
+        //implementation platform("org.slf4j:slf4j-log4j12:$verSlf4j")
+        //implementation platform("org.apache.commons:commons-lang3:$verCommonsLnag3")
+
+        testCompile "org.junit.jupiter:junit-jupiter-engine:$verJUnit"
+        testCompile "org.junit.vintage:junit-vintage-engine:$verJUnit"
+
+        compileOnly "org.projectlombok:lombok:$verLombok"
+    }
+
+/*
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from(components.java)
+            }
+        }
+    }
+ */
+
+} // end of subprojects section
