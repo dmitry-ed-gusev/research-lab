@@ -69,7 +69,7 @@
                 <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
                 <version>${eclipse.persistance.eclipselink.version}</version>
             </dependency>
-            <!-- JSOn-P -->
+            <!-- JSON-P -->
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.json</artifactId>
@@ -80,36 +80,85 @@
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-common</artifactId>
                 <version>${version.jersey}</version>
+<!--                <exclusions>-->
+<!--                    &lt;!&ndash; Not Java 10 compliant &ndash;&gt;-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.eclipse.persistence</groupId>-->
+<!--                        <artifactId>org.eclipse.persistence.moxy</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-server</artifactId>
                 <version>${version.jersey}</version>
+<!--                <exclusions>-->
+<!--                    &lt;!&ndash; Not Java 10 compliant &ndash;&gt;-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.eclipse.persistence</groupId>-->
+<!--                        <artifactId>org.eclipse.persistence.moxy</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-client</artifactId>
                 <version>${version.jersey}</version>
+<!--                <exclusions>-->
+<!--                    &lt;!&ndash; Not Java 10 compliant &ndash;&gt;-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.eclipse.persistence</groupId>-->
+<!--                        <artifactId>org.eclipse.persistence.moxy</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-grizzly2-http</artifactId>
                 <version>${version.jersey}</version>
+                <exclusions>
+                    <!-- Not Java 10 compliant -->
+                    <exclusion>
+                        <groupId>org.eclipse.persistence</groupId>
+                        <artifactId>org.eclipse.persistence.moxy</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-jdk-http</artifactId>
                 <version>${version.jersey}</version>
+                <exclusions>
+                    <!-- Not Java 10 compliant -->
+                    <exclusion>
+                        <groupId>org.eclipse.persistence</groupId>
+                        <artifactId>org.eclipse.persistence.moxy</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-servlet</artifactId>
                 <version>${version.jersey}</version>
+                <exclusions>
+                    <!-- Not Java 10 compliant -->
+                    <exclusion>
+                        <groupId>org.eclipse.persistence</groupId>
+                        <artifactId>org.eclipse.persistence.moxy</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-servlet-core</artifactId>
                 <version>${version.jersey}</version>
+                <exclusions>
+                    <!-- Not Java 10 compliant -->
+                    <exclusion>
+                        <groupId>org.eclipse.persistence</groupId>
+                        <artifactId>org.eclipse.persistence.moxy</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>

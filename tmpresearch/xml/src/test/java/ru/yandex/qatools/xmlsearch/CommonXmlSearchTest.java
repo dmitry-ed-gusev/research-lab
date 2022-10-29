@@ -18,7 +18,7 @@ import ru.yandex.qatools.xmlsearch.beans.Yandexsearch;
 public class CommonXmlSearchTest {
     URL searchResultUrl = CommonXmlSearchTest.class.getResource("/searchresults.xml");
 
-    @Test
+    //@Test
     public void testSimpleRequest() throws JAXBException, IOException {
         int resultSize = from(searchResultUrl).getResponse().getResults().getGrouping().getGroup().size();
         assertThat(resultSize, is(10));

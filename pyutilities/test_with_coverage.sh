@@ -10,7 +10,6 @@
 #
 ###############################################################################
 
-
 # install necessary requirements
 pip3 install -r requirements.txt
 
@@ -22,7 +21,7 @@ virtualenv --relocatable .venv
 source .venv/bin/activate
 
 # install necessary testing dependencies
-pip3 install nose2 pyyaml mock xlrd cov-core coverage jira prettytable bs4 pyutilities
+pip3 install nose2 pyyaml mock xlrd
 
 # setup PYTHONPATH variable (if necessary)
 #PYTHONPATH=${WORKSPACE}/target/dependency:$PYTHONPATH
@@ -30,7 +29,7 @@ pip3 install nose2 pyyaml mock xlrd cov-core coverage jira prettytable bs4 pyuti
 #export PYTHONPATH
 
 # run unit tests with coverage
-python3 -m nose2 -v -s scripts/pytests --plugin nose2.plugins.junitxml -X --with-coverage --coverage scripts \
+python3 -m nose2 -v -s pyutilities/tests --plugin nose2.plugins.junitxml -X --with-coverage --coverage pyutilities \
     --coverage-report xml --coverage-report html
 
 # deactivate virtual environment (exit)

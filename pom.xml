@@ -27,7 +27,7 @@
         <maven.plugin.war>3.2.0</maven.plugin.war>
         <maven.plugin.help>2.2</maven.plugin.help>
         <maven.plugin.jaxws>2.2</maven.plugin.jaxws>
-        <maven.plugin.surefire>2.16</maven.plugin.surefire>
+        <maven.plugin.surefire>2.22.2</maven.plugin.surefire>
         <maven.plugin.failsafe>2.16</maven.plugin.failsafe>
         <maven.plugin.buildnumber>1.4</maven.plugin.buildnumber>
         <maven.plugin.sonar>3.6.0.1398</maven.plugin.sonar>
@@ -55,21 +55,28 @@
         <java.mail.version>1.4.5</java.mail.version>
         <marklogic.java.api.version>3.0.4</marklogic.java.api.version>
         <activemq.version>5.13.2</activemq.version>
-        <version.glassfish>4.1.1.162</version.glassfish>
+        <!--<version.glassfish>4.1.1.162</version.glassfish>-->
+        <version.glassfish>5.193.1</version.glassfish>
         <version.javaee>7.0</version.javaee>
         <version.weld>2.4.4.Final</version.weld>
 
         <!-- Jersey client/server libraries versions -->
         <!-- general jersey version - used for j2ee module -->
-        <version.jersey>2.22.2</version.jersey>
+<!--        <version.jersey>2.22.2</version.jersey>-->
+        <version.jersey>2.29.1</version.jersey>
         <!-- precise versions of jersey client -->
-        <version.jersey.client>1.19.4</version.jersey.client>
-        <version.jersey.server>2.28</version.jersey.server>
-        <version.jersey.common>2.28</version.jersey.common>
-        <version.jersey.containers>2.28</version.jersey.containers>
+<!--        <version.jersey.client>1.19.4</version.jersey.client>-->
+<!--        <version.jersey.server>2.28</version.jersey.server>-->
+<!--        <version.jersey.common>2.28</version.jersey.common>-->
+<!--        <version.jersey.containers>2.28</version.jersey.containers>-->
+        <version.jersey.client>2.29.1</version.jersey.client>
+        <version.jersey.server>2.29.1</version.jersey.server>
+        <version.jersey.common>2.29.1</version.jersey.common>
+        <version.jersey.containers>2.29.1</version.jersey.containers>
 
-        <eclipse.persistance.eclipselink.version>2.6.4</eclipse.persistance.eclipselink.version>
-        <eclipse.persistence.moxy.version>2.4.1</eclipse.persistence.moxy.version>
+        <!--<eclipse.persistance.eclipselink.version>2.6.4</eclipse.persistance.eclipselink.version>-->
+        <eclipse.persistance.eclipselink.version>2.7.5</eclipse.persistance.eclipselink.version>
+        <eclipse.persistence.moxy.version>2.7.5</eclipse.persistence.moxy.version>
         <version.el>3.0.1-b03</version.el>
         <version.json>1.0.4</version.json>
         <google.json-simple.version>1.1</google.json-simple.version>
@@ -91,7 +98,7 @@
         <mockito.version>2.28.2</mockito.version>
         <hamcrest.version>2.1</hamcrest.version>
         <xmlunit.version>1.4</xmlunit.version>
-        <jacoco.plugin.version>0.8.1</jacoco.plugin.version>
+        <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
         <mock.server.version>5.5.4</mock.server.version>
 
         <!-- Spring framework components versions -->
@@ -147,11 +154,6 @@
             <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
         </repository>
         <repository>
-            <id>central-msd-repo</id>
-            <name>Alt repo #5</name>
-            <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
-        </repository>
-        <repository>
             <id>spring-releases</id>
             <url>https://repo.spring.io/libs-release</url>
         </repository>
@@ -171,10 +173,6 @@
 
     <!-- Additional Maven repositories for plugins -->
     <pluginRepositories>
-        <pluginRepository>
-            <id>central-msd-plugins-repo</id>
-            <url>https://artifacts.merck.com/artifactory/mvn-main-dev</url>
-        </pluginRepository>
         <pluginRepository>
             <id>alt-plugins-repo-1</id>
             <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
