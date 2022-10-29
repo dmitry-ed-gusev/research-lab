@@ -427,7 +427,6 @@
             </properties>
             <!-- All modules to build -->
             <modules>
-                <module>pyutilities</module>
                 <module>scripts</module>
                 <module>utilities</module>
                 <module>dbpilot</module>
@@ -439,7 +438,6 @@
                 <module>nlp</module>
                 <module>rest-springboot-docker</module>
                 <module>rest-j2ee-docker</module>
-                <module>elastic</module>
             </modules>
         </profile>
 
@@ -453,7 +451,6 @@
             </properties>
             <!-- All modules to build -->
             <modules>
-                <module>pyutilities</module>
                 <module>scripts</module>
                 <module>utilities</module>
                 <module>dbpilot</module>
@@ -465,7 +462,6 @@
                 <module>nlp</module>
                 <module>rest-springboot-docker</module>
                 <module>rest-j2ee-docker</module>
-                <module>elastic</module>
             </modules>
         </profile>
 
@@ -479,7 +475,6 @@
             </properties>
             <!-- Some of modules to build -->
             <modules>
-                <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
                 <module>utilities</module>
                 <!--<module>dbpilot</module>-->
@@ -490,7 +485,6 @@
                 <!--<module>j2ee</module>-->
                 <!--<module>rest-springboot-docker</module>-->
                 <!--<module>rest-j2ee-docker</module>-->
-                <!--<module>elastic</module>-->
             </modules>
         </profile>
 
@@ -505,7 +499,6 @@
             </properties>
             <!-- modules to build -->
             <modules>
-                <!--<module>pyutilities</module>-->
                 <!--<module>scripts</module>-->
                 <module>utilities</module>
                 <!--<module>dbpilot</module>-->
@@ -513,7 +506,6 @@
                 <!--<module>bigdata</module>-->
                 <!--<module>j2ee</module>-->
                 <!--<module>nlp</module>-->
-                <!--<module>elastic</module>-->
             </modules>
         </profile>
 

@@ -1,11 +1,19 @@
 # -- ignore maven output directory
 #target
-# -- ignore IntelliJ IDEA files
+
+# IntelliJ IDEA files
 *.iml
 *.ipr
 *.iws
 .idea
 .ideaDataSources
+
+# Eclipse files
+.settings/
+.classpath
+.factorypath
+.project
+
 # -- ignore logs/output files
 *.log
 *.out
@@ -139,3 +147,6 @@ venv.bak/
 
 # mkdocs documentation
 /site
+
+## Gradle files
+.gradle
