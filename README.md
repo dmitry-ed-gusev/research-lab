@@ -1,5 +1,7 @@
-# Project RESEARCH #
+# Project Research Laboratory
+
 This project intended for any kind of research, experiments, etc.
+*Dmitrii Gusev, 2014 - 2022*
 
 ## Repository contents ##
 Repository contains some modules:  
