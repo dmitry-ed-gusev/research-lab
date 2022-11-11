@@ -43,10 +43,27 @@ delete from customer where custno = 'D101';
 ---------- Module 05: Assignement Solution ---------- 
 
 -- #1
+select eventrequest.eventno, dateheld, count(planno) planscount from eventrequest
+  inner join eventplan on eventrequest.eventno = eventplan.eventno
+  where workdate between '1-Dec-2022' and '31-Dec-2022'
+  group by eventrequest.eventno, dateheld
+  having count(planno) > 1;
 
 -- #2
+select planno, eventplan.eventno, workdate, activity from eventplan
+  inner join eventrequest on eventplan.eventno = eventrequest.eventno
+  inner join facility on eventrequest.facno = facility.facno
+  where workdate between '1-Dec-2022' and '31-Dec-2022'
+  and facname = 'Basketball arena';
 
 -- #3
+select eventrequest.eventno, dateheld, status, estcost from eventrequest
+  inner join eventplan on eventrequest.eventno = eventplan.eventno 
+  inner join employee on eventplan.empno = employee.empno
+  inner join facility on eventrequest.facno = facility.facno
+  where empname = 'Mary Manager'
+  and facname = 'Basketball arena';
+  
 
 -- #4
 
