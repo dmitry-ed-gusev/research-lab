@@ -1,0 +1,82 @@
+-- Module 12 extra problems
+-- Oracle/PostgreSQL execution using the Order Entry tables
+-- Work problems before viewing solutions.
+-- Problem order does not match problem type. Problem types are mixed in the document.
+
+-- Problem 1
+-- List details of orders and employees in January 2021. Show an order even if no employee exists for the order.
+-- The result should contain the order number, order date, employee number, and employee name (first and last).
+-- Use LEFT JOIN keywords to refer to the table to preserve.
+
+-- Problem 2
+-- List details of orders and employees in January 2021. Show an order even if no employee exists for the order.
+-- The result should contain the order number, order date, employee number, and employee name (first and last).
+-- Use RIGHT JOIN keywords to refer to the table to preserve.
+
+-- Problem 3
+-- List the customer number and name of Washington state customers who have not 
+-- placed orders. For this problem, insert a new customer without orders.
+
+-- Insert a new customer without orders for this problem. 
+INSERT INTO customer
+	(CustNo, CustFirstName, CustLastName, CustStreet, CustCity,
+ 	CustState, CustZip, CustBal) 
+	VALUES('C9999999','Henry','Sanders','1500 S. Hill Rd.','Fife','WA','98222-2258',1000.00);
+
+-- After this problem, delete this customer.
+DELETE FROM Customer WHERE CustNo = 'C9999999'
+
+-- Problem 4
+-- List the customer number and name of Colorado customers who have not placed orders in February 2021.
+
+-- Problem 5
+-- Show details of order, employee, and customer of order. Show an order even if no employee exists for the order.
+-- The result should contain the order number, order date, employee number, and employee name (first and last),
+-- customer number, and customer name (first and last).
+
+-- Problem 6
+-- List the order number and order date of orders containing every product with the words Ink Jet in the 
+-- product description.
+
+-- Problem 7
+-- List order number, order date, employee number and name, order line number, product number, name, and
+-- manufacturer of orders placed in January 2021. Order the result by order number and product number.
+-- Show an order even if the employee does not exist.
+
+-- Problem 8
+-- For Colorado customers, compute the average amount of their orders and order count. The average amount of a 
+-- customer’s orders is the sum of the amount (quantity ordered times the product price) on each order divided by 
+-- the number of orders. The result should include the customer number, customer last name, average order amount, 
+-- and count of orders.
+
+-- Problem 9
+-- List the customer number and name (first and last) of customers who have ordered products only manufactured 
+-- by Connex. Only include customers who have ordered at least one product manufactured by Connex. Remove duplicate 
+-- rows from the result.
+
+-- Problem 10
+-- List the product number and name of products contained on every order placed on January 7, 2021 through 
+-- January 9, 2021.
+
+-- Problem 11
+-- List all the people in the database. The resulting table should have all columns of the Customer and Employee tables. 
+-- Match the Customer and Employee tables on first and last names. If a customer does not match any employees, 
+-- the columns pertaining to the Employee table will be blank. Similarly for an employee who does not match any 
+-- customers, the columns pertaining to the Customer table will be blank.
+
+-- Problem 12
+-- Show order number and date, employee number and name, total order amount, and 
+-- count of order lines of orders placed in January 2021. Total order amount computed as sum of quantity 
+-- times product price of products on lines of an order.
+- Show an order even if the employee does not exist.
+-- Order the result by order number.
+
+-- Problem 13
+-- List customer details and product number for ColorMeg products ordered in January 2021.
+-- Remove duplicate rows in the result.
+-- The result should contain customer number customer name (first and last), and product number.
+
+-- Problem 14
+-- List the customer number and name (first and last) of customers who have ordered EVERY product manufactured 
+-- by ColorMeg, Inc. in January 2021.
+
