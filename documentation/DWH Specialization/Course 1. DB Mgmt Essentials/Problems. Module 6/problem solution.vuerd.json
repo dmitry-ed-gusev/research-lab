@@ -1,0 +1,797 @@
+{
+  "canvas": {
+    "version": "2.2.11",
+    "width": 2000,
+    "height": 2000,
+    "scrollTop": -2,
+    "scrollLeft": -4,
+    "zoomLevel": 1,
+    "show": {
+      "tableComment": true,
+      "columnComment": true,
+      "columnDataType": true,
+      "columnDefault": true,
+      "columnAutoIncrement": true,
+      "columnPrimaryKey": true,
+      "columnUnique": true,
+      "columnNotNull": true,
+      "relationship": true
+    },
+    "database": "Oracle",
+    "databaseName": "Module 06 - Problem Solution",
+    "canvasType": "ERD",
+    "language": "GraphQL",
+    "tableCase": "pascalCase",
+    "columnCase": "camelCase",
+    "highlightTheme": "VS2015",
+    "bracketType": "none",
+    "setting": {
+      "relationshipDataTypeSync": true,
+      "relationshipOptimization": false,
+      "columnOrder": [
+        "columnName",
+        "columnDataType",
+        "columnNotNull",
+        "columnUnique",
+        "columnAutoIncrement",
+        "columnDefault",
+        "columnComment"
+      ]
+    },
+    "pluginSerializationMap": {}
+  },
+  "table": {
+    "tables": [
+      {
+        "name": "Student",
+        "comment": "",
+        "columns": [
+          {
+            "name": "StdNo",
+            "comment": "Primary Key",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": true,
+              "primaryKey": true,
+              "unique": true,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 72.7890625,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "aea64188-7e2d-439e-a21e-ea1e4c3c3fc9"
+          },
+          {
+            "name": "StdFirstName",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 81.4599609375,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "06b683d9-bf25-4b7f-8a34-fe6965185521"
+          },
+          {
+            "name": "StdLastName",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 80.76171875,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "5b750204-2a79-4343-a57f-8178c7bce608"
+          },
+          {
+            "name": "StdAdmitSemester",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 110.37353515625,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "a2b49ae8-e807-4192-85d0-f76fc2b44d94"
+          },
+          {
+            "name": "StdAdmitYear",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 81.00927734375,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "2ad1d52c-7379-484e-a4d3-6660cdf694c9"
+          },
+          {
+            "name": "StdEnrollStatus",
+            "comment": "Values: full, part-time",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 91.603515625,
+              "widthComment": 120,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "8f175b3c-27c4-49b7-a70e-58ffa0db998a"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 38,
+          "top": 39,
+          "zIndex": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "color": "#00BCD4"
+        },
+        "visible": true,
+        "id": "d8cf098f-5f4e-409b-9b89-7d3fa8bb16a2"
+      },
+      {
+        "name": "Paper",
+        "comment": "",
+        "columns": [
+          {
+            "name": "PaperNo",
+            "comment": "Primary Key",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": true,
+              "primaryKey": true,
+              "unique": true,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 72.7890625,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "16202269-a91f-4ca7-9518-073c64b41318"
+          },
+          {
+            "name": "PaperTitle",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60.77294921875,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "a00ce25b-075e-43fc-a5b9-cd53368e9f08"
+          },
+          {
+            "name": "PaperSubmitDate",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 104.60986328125,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "46b23894-4747-4b9e-b2ba-fea9ffb5aa91"
+          },
+          {
+            "name": "PaperAccepted",
+            "comment": "Values: yes, no",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 90.892578125,
+              "widthComment": 89.927734375,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "792beed5-1612-4b91-9eae-09813d9a4c0a"
+          },
+          {
+            "name": "PaperType",
+            "comment": "Value: first, second, proposal, dissertation",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 64.8798828125,
+              "widthComment": 120,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "78143ad5-448d-4296-96d9-644c945ca379"
+          },
+          {
+            "name": "StdNo",
+            "comment": "Foreign Key",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 72.0908203125,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "c523a004-c318-468d-936a-31e2eaf64f51"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 711,
+          "top": 23,
+          "zIndex": 2,
+          "widthName": 60,
+          "widthComment": 60,
+          "color": "#2196F3"
+        },
+        "visible": true,
+        "id": "579f7045-0a35-4afe-a0c0-ed2473853cdb"
+      },
+      {
+        "name": "Evaluator",
+        "comment": "",
+        "columns": [
+          {
+            "name": "EvalNo",
+            "comment": "Primary Key",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": true,
+              "primaryKey": true,
+              "unique": true,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 72.7890625,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "fe8d4e17-3bb0-4361-a604-e12851cb8711"
+          },
+          {
+            "name": "EvalFirstName",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 87.236328125,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "17140baf-a190-4a0d-b0b4-a1a5042054fb"
+          },
+          {
+            "name": "EvalLastName",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 86.5380859375,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "10386fcd-a4d0-4751-938e-41c47ce91a83"
+          },
+          {
+            "name": "EvalEmail",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "bc091d15-6244-4732-bc25-126f529ecd0f"
+          },
+          {
+            "name": "EvalOffice",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 61.24267578125,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "9d57ee95-aa55-4b75-9a85-0bf59e30804d"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 746,
+          "top": 750,
+          "zIndex": 4,
+          "widthName": 60,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "4b6cdcbd-a529-47f3-aa91-92c8e41ab33e"
+      },
+      {
+        "name": "Evaluation",
+        "comment": "",
+        "columns": [
+          {
+            "name": "EvalDate",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "0d62d1ea-1a87-4669-9e7f-d7b7663ed9b1"
+          },
+          {
+            "name": "EvalLitReview",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 83.6435546875,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "d9f5ff9d-8f55-4798-8cbe-ed7ca84bcf29"
+          },
+          {
+            "name": "EvalProbId",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 65.5908203125,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "bac59b47-0023-449a-9c03-a5213229bc53"
+          },
+          {
+            "name": "EvalTechWriting",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 94.9677734375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "2c0fe7f6-dc16-400e-aee4-d2867b3301d4"
+          },
+          {
+            "name": "EvalModelDev",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 85.814453125,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "5cab69d4-2e61-4d03-b2d7-8106387e34fd"
+          },
+          {
+            "name": "EvalOverall",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 68.46630859375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "8027046e-6636-4f30-a94f-15d323b4c352"
+          },
+          {
+            "name": "EvalComments",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 90.13720703125,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "28e89864-360e-4cd6-8b59-c5d4e2d7a3f7"
+          },
+          {
+            "name": "PaperNo",
+            "comment": "Foreign Key",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 72.0908203125,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "e05b15a2-216d-4356-b282-9850a14ab5e1"
+          },
+          {
+            "name": "EvalNo",
+            "comment": "Foreign Key",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 72.0908203125,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "c5533147-5573-4ac9-9ae2-3f4c4efbbb16"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 563,
+          "top": 338,
+          "zIndex": 3,
+          "widthName": 62.708984375,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "c243644a-1957-4544-92b1-68e37c6aff83"
+      }
+    ],
+    "indexes": []
+  },
+  "memo": {
+    "memos": []
+  },
+  "relationship": {
+    "relationships": [
+      {
+        "identification": false,
+        "relationshipType": "ZeroN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "d8cf098f-5f4e-409b-9b89-7d3fa8bb16a2",
+          "columnIds": [
+            "aea64188-7e2d-439e-a21e-ea1e4c3c3fc9"
+          ],
+          "x": 546.98046875,
+          "y": 135,
+          "direction": "right"
+        },
+        "end": {
+          "tableId": "579f7045-0a35-4afe-a0c0-ed2473853cdb",
+          "columnIds": [
+            "c523a004-c318-468d-936a-31e2eaf64f51"
+          ],
+          "x": 711,
+          "y": 119,
+          "direction": "left"
+        },
+        "constraintName": "fk_student_to_paper",
+        "visible": true,
+        "id": "35a5f171-f605-4159-957a-ace30632d6af"
+      },
+      {
+        "identification": false,
+        "relationshipType": "ZeroN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "579f7045-0a35-4afe-a0c0-ed2473853cdb",
+          "columnIds": [
+            "16202269-a91f-4ca7-9518-073c64b41318"
+          ],
+          "x": 962.6083984375,
+          "y": 215,
+          "direction": "bottom"
+        },
+        "end": {
+          "tableId": "c243644a-1957-4544-92b1-68e37c6aff83",
+          "columnIds": [
+            "e05b15a2-216d-4356-b282-9850a14ab5e1"
+          ],
+          "x": 783.529296875,
+          "y": 338,
+          "direction": "top"
+        },
+        "constraintName": "fk_paper_to_evaluation",
+        "visible": true,
+        "id": "8e4820d5-259b-483c-990b-373f037766b0"
+      },
+      {
+        "identification": false,
+        "relationshipType": "ZeroN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "4b6cdcbd-a529-47f3-aa91-92c8e41ab33e",
+          "columnIds": [
+            "fe8d4e17-3bb0-4361-a604-e12851cb8711"
+          ],
+          "x": 965.316162109375,
+          "y": 750,
+          "direction": "top"
+        },
+        "end": {
+          "tableId": "c243644a-1957-4544-92b1-68e37c6aff83",
+          "columnIds": [
+            "c5533147-5573-4ac9-9ae2-3f4c4efbbb16"
+          ],
+          "x": 783.529296875,
+          "y": 591.5,
+          "direction": "bottom"
+        },
+        "constraintName": "fk_evaluator_to_evaluation",
+        "visible": true,
+        "id": "c3b8cf29-32c6-490e-a5e2-827e81d7c345"
+      }
+    ]
+  }
+}

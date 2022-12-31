@@ -1,0 +1,104 @@
+http://stackoverflow.com/questions/4921843/managing-hdfs-in-psuedo-distributed-hadoop-mode
+
+============================================================================================
+For usage of Hadoop on windows PC:
+1. for running hadoop examples you have to install hadoop - download it,
+extract zip into any folder, create env variable HADOOP_HOME pointing to that directory
+2. download winutils.exe (http://public-repo-1.hortonworks.com/hdp-win-alpha/winutils.exe) and put to
+$HADOOP_HOME\bin
+
+============================================================================================
+Using HDFS
+1. If security is off on HDFS (SIMPLE), all write (not read!) operations on remote FS
+   (webhdfs:) should be performed as allowed user. Here is an example:
+
+        UserGroupInformation ugi = UserGroupInformation.createRemoteUser("myuser");
+        ugi.doAs((PrivilegedExceptionAction<Void>) () -> {
+            // <any HDFS operations (possible write)>
+            return null;
+        });
+2. You may turn off hdfs permissions check for SIMPLE auth by putting to hdfs-site.xml:
+        <property>
+            <name>dfs.permissions.enabled</name>
+            <value>false</value>
+          </property>
+
+3. If security is ON, you have to use Jerberos/keytab
+
+============================================================================================
+https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-common/core-default.xml
+https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml
+https://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-common/yarn-default.xml
+https://hadoop.apache.org/docs/r2.7.2/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml
+
+Using Virtual Box to setup virtual PC. If you setup virtual machine on PC with
+some restrictions/proxy server, you need setup 2 virtual network adapters for virtual PC:
+ 1. NAT, with ports forwarding (for interaction between host and virtual machine):
+    * SSH                          (TCP: 127.0.0.1:2022  -> virtual-ip:22)
+        - default port 22 may be already bind
+    * Hadoop History server        (TCP: 127.0.0.1:19888 -> virtual-ip:19888)
+
+    * HDFS NameNode web UI         (TCP: 127.0.0.1:50070 -> virtual-ip:50070)
+    * HDFS DataNode HTTP server    (TCP: 127.0.0.1:50075 -> virtual-ip:50075)
+        - forwarding both ports 50070/50075 allow to connect to remote/virtual HDFS and list catalogs,
+          read data, etc (all operations). See also config here:
+          https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml
+
+    * Hadoop YARN Resource Manager (TCP: 127.0.0.1:8088  -> virtual-ip:8088)
+    * Hadoop YARN Node Manager     (TCP: 127.0.0.1:8042  -> virtual-ip:8042)
+        - this is port for node manager/logs server for single node in a pseudo-distributed mode.
+          Node manager usually accessible by host name, in pseudo-distr mode they are located
+          on the same machine (both Resource/Node Managers). So on host PC (Win) it's usually
+          needed to add string [127.0.0.1 <virtual-host-name>] to <hosts> file.
+
+ 2. Host-only Adapter (for Internet connection)
+
+50070 -> HDFS NameNode
+8088  -> YARN Resource Manager
+19888 -> History Server
+8042  -> Hadoop cluster node
+
+For virtual machine:
+1. Put to /etc/hosts line: <virtual host name> -> 127.0.0.1
+2. Oracle VM -> NAT -> Port forwarding -> forward all ports
+   mentioned above, as: localhost:<port> -> <virtual ip>:<port>
+
+============================================================================================
+
+Hadoop 2.7.3 HDFS utility command line parameters
+Usage: hdfs [--config confdir] [--loglevel loglevel] COMMAND
+       where COMMAND is one of:
+  dfs                  run a filesystem command on the file systems supported in Hadoop.
+  classpath            prints the classpath
+  namenode -format     format the DFS filesystem
+  secondarynamenode    run the DFS secondary namenode
+  namenode             run the DFS namenode
+  journalnode          run the DFS journalnode
+  zkfc                 run the ZK Failover Controller daemon
+  datanode             run a DFS datanode
+  dfsadmin             run a DFS admin client
+  haadmin              run a DFS HA admin client
+  fsck                 run a DFS filesystem checking utility
+  balancer             run a cluster balancing utility
+  jmxget               get JMX exported values from NameNode or DataNode.
+  mover                run a utility to move block replicas across
+                       storage types
+  oiv                  apply the offline fsimage viewer to an fsimage
+  oiv_legacy           apply the offline fsimage viewer to an legacy fsimage
+  oev                  apply the offline edits viewer to an edits file
+  fetchdt              fetch a delegation token from the NameNode
+  getconf              get config values from configuration
+  groups               get the groups which users belong to
+  snapshotDiff         diff two snapshots of a directory or diff the
+                       current directory contents with a snapshot
+  lsSnapshottableDir   list all snapshottable dirs owned by the current user
+						Use -help to see options
+  portmap              run a portmap service
+  nfs3                 run an NFS version 3 gateway
+  cacheadmin           configure the HDFS cache
+  crypto               configure HDFS encryption zones
+  storagepolicies      list/get/set block storage policies
+  version              print the version
+
+Most commands print help when invoked w/o parameters.
+

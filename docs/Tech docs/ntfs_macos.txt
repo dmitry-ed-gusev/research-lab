@@ -1,39 +1,0 @@
-Установка хомбрю, каск, осхфьюз и нтфс 3г 
-
->/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
->brew tap caskroom/cask
->brew cask install osxfuse
->brew install ntfs-3g
-
-Да, нужно будет пару раз обновить Command Line Tools - во время выполнения первой строчки в Терминали у
-вас в AppStore сами вылезут обновления для 10.11 и 10.13
-
-Отключение системной целостности, прописывание монтирования
-Перезагружаем Mac удерживая Command+R из утилит открываем Терминал
-
->csrutil disable 
->reboot 
-
-Проверяем в терминале после перезагрузки
-
->csrutil status
-  
-Должен быть disabled
-
->sudo mv /sbin/mount_ntfs /sbin/mount_ntfs.original
->sudo ln -s /usr/local/sbin/mount_ntfs /sbin/mount_ntfs
- 
-Теперь надо включить системную целостность
-Повторяем 
-Перезагружаем Mac удерживая Command+R из утилит открываем Терминал
-
->csrutil enable 
->reboot
- Проверяем в терминале после перезагрузки
->csrutil status  
-Должен быть enabled  
-
-Так же после перезагрузки система выдаст предупреждение о том, что заблокировано расширение Benjamin Fleischer  - это имя разработчика osxfuse. Нужно зайти в системные «настройки» - «защита и безопасность» - и внизу где написано что-то типа «Benjamin Fleischer  … заблокировано» нажать кнопку чтоб разрешить его загрузку  
-
-чтоб brew не собирал о вас анонимную стату для передачи в гугл введите в терминал 
->brew analytics off

@@ -1,0 +1,657 @@
+{
+  "canvas": {
+    "version": "2.2.11",
+    "width": 2000,
+    "height": 2000,
+    "scrollTop": -11,
+    "scrollLeft": -23,
+    "zoomLevel": 1,
+    "show": {
+      "tableComment": true,
+      "columnComment": true,
+      "columnDataType": true,
+      "columnDefault": true,
+      "columnAutoIncrement": true,
+      "columnPrimaryKey": true,
+      "columnUnique": true,
+      "columnNotNull": true,
+      "relationship": true
+    },
+    "database": "MySQL",
+    "databaseName": "Module 06 - Assignment",
+    "canvasType": "ERD",
+    "language": "GraphQL",
+    "tableCase": "pascalCase",
+    "columnCase": "camelCase",
+    "highlightTheme": "VS2015",
+    "bracketType": "none",
+    "setting": {
+      "relationshipDataTypeSync": true,
+      "relationshipOptimization": false,
+      "columnOrder": [
+        "columnName",
+        "columnDataType",
+        "columnNotNull",
+        "columnUnique",
+        "columnAutoIncrement",
+        "columnDefault",
+        "columnComment"
+      ]
+    },
+    "pluginSerializationMap": {}
+  },
+  "table": {
+    "tables": [
+      {
+        "name": "Patient",
+        "comment": "",
+        "columns": [
+          {
+            "name": "PatNo",
+            "comment": "",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": true,
+              "primaryKey": true,
+              "unique": true,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "0ea6142b-23c1-45d3-b7b0-334770fb80b4"
+          },
+          {
+            "name": "PatLastName",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 80.76171875,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "52c7ac21-9916-4749-9ec9-1c327b7fd8b1"
+          },
+          {
+            "name": "PatFirstName",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 81.4599609375,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "54f15dab-e015-4453-91e2-828db353768f"
+          },
+          {
+            "name": "PatDOB",
+            "comment": "",
+            "dataType": "DATE",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "41302dca-882b-4828-9e52-e0ae399de012"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 201,
+          "top": 103,
+          "zIndex": 51,
+          "widthName": 60,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "2c0fa447-0e0e-4184-ba49-50077c17846a"
+      },
+      {
+        "name": "LabVisit",
+        "comment": "",
+        "columns": [
+          {
+            "name": "LVNo",
+            "comment": "",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": true,
+              "primaryKey": true,
+              "unique": true,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "d7fad864-7575-4bc5-b628-c5177a3714fb"
+          },
+          {
+            "name": "LVDate",
+            "comment": "",
+            "dataType": "DATE",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "d40f6616-f1a8-49bf-b311-5ca2e86570f6"
+          },
+          {
+            "name": "LVProvNo",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60.29052734375,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "319ef405-e003-4384-becd-84817b10f3b9"
+          },
+          {
+            "name": "LVOrdNo",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "1478cb21-531c-40b4-a82e-315824122ba2"
+          },
+          {
+            "name": "PatNo",
+            "comment": "",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "cd0c37ce-4873-40ab-a441-1f4c43586625"
+          },
+          {
+            "name": "LabNo",
+            "comment": "",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "de8069d9-8f3f-4c9d-a12d-a546b62ae0cc"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 892,
+          "top": 166,
+          "zIndex": 95,
+          "widthName": 60,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "af2e6ff6-34e3-42d6-a408-d70f7ee90842"
+      },
+      {
+        "name": "Lab",
+        "comment": "",
+        "columns": [
+          {
+            "name": "LabNo",
+            "comment": "",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": true,
+              "primaryKey": true,
+              "unique": true,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "2b8097eb-4f77-45dd-8de5-13bbaf3f45a9"
+          },
+          {
+            "name": "LabName",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "1862ca59-ac41-42d7-9663-47d4a5590381"
+          },
+          {
+            "name": "LabStreet",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "6e175cc6-2f3e-4524-ad55-91eeed34700f"
+          },
+          {
+            "name": "LabCity",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "2fdebe1d-4af7-4c1b-a045-a9941e070fb6"
+          },
+          {
+            "name": "LabState",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "dff4f053-12b5-4e27-b492-e79289fccccb"
+          },
+          {
+            "name": "LabZIP",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 64.60693359375,
+              "widthDefault": 60
+            },
+            "id": "5f1eb293-6492-4992-a44a-44a249f2a98b"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 266,
+          "top": 362,
+          "zIndex": 80,
+          "widthName": 60,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "2430e7d1-9167-4054-a9f7-cf761ecb1cdc"
+      },
+      {
+        "name": "Specimen",
+        "comment": "",
+        "columns": [
+          {
+            "name": "SpecNo",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": true,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "be05f41a-607d-40cf-a99c-2f438f7cdc75"
+          },
+          {
+            "name": "SpecArea",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": true,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "0f23514c-a971-401b-9351-0c9b3323d641"
+          },
+          {
+            "name": "SpecCollMethod",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": true,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 97.38623046875,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "53320665-8904-40b8-a977-3e2e043dfb1c"
+          },
+          {
+            "name": "LVNo",
+            "comment": "",
+            "dataType": "INTEGER",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "d27f1e4a-6ed9-49f4-bee9-3ed52980e237"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 693,
+          "top": 573,
+          "zIndex": 97,
+          "widthName": 60,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "39183f60-dcff-4695-931b-a0d6c9d4f9cf"
+      }
+    ],
+    "indexes": []
+  },
+  "memo": {
+    "memos": []
+  },
+  "relationship": {
+    "relationships": [
+      {
+        "identification": false,
+        "relationshipType": "ZeroN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "2c0fa447-0e0e-4184-ba49-50077c17846a",
+          "columnIds": [
+            "0ea6142b-23c1-45d3-b7b0-334770fb80b4"
+          ],
+          "x": 621.06689453125,
+          "y": 178.5,
+          "direction": "right"
+        },
+        "end": {
+          "tableId": "af2e6ff6-34e3-42d6-a408-d70f7ee90842",
+          "columnIds": [
+            "cd0c37ce-4873-40ab-a441-1f4c43586625"
+          ],
+          "x": 892,
+          "y": 214,
+          "direction": "left"
+        },
+        "constraintName": "fk_patient_to_labvisit",
+        "visible": true,
+        "id": "87355a4f-be05-4a61-96a4-7389ee15c774"
+      },
+      {
+        "identification": false,
+        "relationshipType": "ZeroN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "2430e7d1-9167-4054-a9f7-cf761ecb1cdc",
+          "columnIds": [
+            "2b8097eb-4f77-45dd-8de5-13bbaf3f45a9"
+          ],
+          "x": 664.60693359375,
+          "y": 458,
+          "direction": "right"
+        },
+        "end": {
+          "tableId": "af2e6ff6-34e3-42d6-a408-d70f7ee90842",
+          "columnIds": [
+            "de8069d9-8f3f-4c9d-a12d-a546b62ae0cc"
+          ],
+          "x": 892,
+          "y": 310,
+          "direction": "left"
+        },
+        "constraintName": "fk_lab_to_labvisit",
+        "visible": true,
+        "id": "be159835-8f16-4502-89a2-812849c04b4a"
+      },
+      {
+        "identification": false,
+        "relationshipType": "OneN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "af2e6ff6-34e3-42d6-a408-d70f7ee90842",
+          "columnIds": [
+            "d7fad864-7575-4bc5-b628-c5177a3714fb"
+          ],
+          "x": 1091.44873046875,
+          "y": 358,
+          "direction": "bottom"
+        },
+        "end": {
+          "tableId": "39183f60-dcff-4695-931b-a0d6c9d4f9cf",
+          "columnIds": [
+            "d27f1e4a-6ed9-49f4-bee9-3ed52980e237"
+          ],
+          "x": 908.693115234375,
+          "y": 573,
+          "direction": "top"
+        },
+        "constraintName": "fk_labvisit_to_specimen",
+        "visible": true,
+        "id": "d1d82589-c01e-4808-952c-122d465f411e"
+      }
+    ]
+  }
+}
