@@ -1,0 +1,77 @@
+###############################################################################
+#
+#     Docker Composer file for local PHP dev/test farm up and running. Farm
+#     contains apps: Mysql -> PHP-FPM -> Nginx.
+#
+#     Created:  Dmitrii Gusev, 06.04.2019
+#     Modified: Dmitrii Gusev, 09.04.2019
+#
+###############################################################################
+
+# more info here: http://geekyplatypus.com/dockerise-your-php-application-with-nginx-and-php7-fpm/
+
+version: '3.5'
+
+# docker services configuration
+services:
+
+  # mysql db service
+  mysql:
+    image: mysql:5.7
+    container_name: mysql.5.7
+    networks:
+      - mynetwork
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=cp23965_pult
+      - MYSQL_USER=cp23965_pult
+      - MYSQL_PASSWORD=dt38TyQy
+    volumes:
+      # map catalog [mysql_dump] in current working dir to container catalog [/docker-entrypoint-initdb.d].
+      # By default, all .sql/.sh scripts there will be executed on container build (first start!), not on
+      # simple start of existing container.
+      - ./mysql_dump:/docker-entrypoint-initdb.d
+    ports:
+      # map host port 3306 to container port 3306 (format -> host:container)
+      - "3306:3306"
+
+  # nginx web server service
+  web:
+    image: nginx:1.15
+    container_name: nginx.1.15
+    networks:
+      - mynetwork
+    volumes:
+      # map local folder [public_html] to server root folder [/public_html]
+      - .${SITE_HOME}:${SITE_HOME}
+      # add site.conf to the directory where Nginx is looking for configuration files to include
+      - ./site.conf:/etc/nginx/conf.d/site.conf
+    ports:
+      # map host port 80 (left) to container port 80 (expose container's default port)
+      - "80:80"
+      # map host port 8080 to container's port 8080 (expose our site port - see site.conf)
+      - "8080:8080"
+    # link to another container
+    links:
+      - php
+
+  # php fpm service
+  php:
+    #image: php:7-fpm
+    # build modified php-fpm image from original - add some extensions (mysqli)
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-fpm-7
+    networks:
+      - mynetwork
+    volumes:
+      - .${SITE_HOME}:${SITE_HOME}
+    links:
+      - mysql
+
+# docker networks configuration
+networks:
+  mynetwork:
+    driver: bridge
+    name: php_network
