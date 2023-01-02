@@ -11,6 +11,7 @@ As an example used servers:
 
 ## Useful Resources
 
+- [Red Hat docs source](https://www.redhat.com/sysadmin/)
 - [Add user](https://linuxize.com/post/how-to-create-users-in-linux-using-the-useradd-command/)
 - [USB mount/automount](https://linuxhint.com/automount-usb-ubuntu/)
 - [FSTAB options (1)](https://linuxopsys.com/topics/linux-fstab-options)
