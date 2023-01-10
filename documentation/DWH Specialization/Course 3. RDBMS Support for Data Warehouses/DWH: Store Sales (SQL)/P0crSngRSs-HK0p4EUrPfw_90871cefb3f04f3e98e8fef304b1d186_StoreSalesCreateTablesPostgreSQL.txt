@@ -1,0 +1,97 @@
+-- Note that these examples use SS prefixed before table names to avoid conflicts with
+-- other tables with the same Oracle schema.
+
+-- Drop tables
+
+DROP TABLE IF EXISTS SSSales;
+DROP TABLE IF EXISTS SSCustomer;
+DROP TABLE IF EXISTS SSItem;
+DROP TABLE IF EXISTS SSStore;
+DROP TABLE IF EXISTS SSDivision;
+DROP TABLE IF EXISTS SSTimeDim;
+
+DROP SEQUENCE IF EXISTS SSTimeNoSeq;
+DROP SEQUENCE IF EXISTS SSSalesNoSeq;
+
+CREATE TABLE SSCustomer(
+  CustId      CHAR(8) NOT NULL,
+  CustName    VARCHAR(30) NOT NULL,
+  CustPhone   VARCHAR(15) NOT NULL,
+  CustStreet  VARCHAR(50) NOT NULL,
+  CustCity    VARCHAR(30) NOT NULL,
+  CustState   VARCHAR(20) NOT NULL,
+  CustZip     VARCHAR(10) NOT NULL,
+  CustNation  VARCHAR(20) NOT NULL,
+  CONSTRAINT PKSSCustomer PRIMARY KEY (CustId)
+);
+
+CREATE TABLE SSDivision
+(
+  DivId       CHAR(8) NOT NULL,
+  DivName     VARCHAR(50) NOT NULL,
+  DivManager  VARCHAR(30) NOT NULL,
+  CONSTRAINT PKSSDivision PRIMARY KEY (DivId)
+);
+
+CREATE TABLE SSStore
+(
+  StoreId       CHAR(8) NOT NULL,
+  DivId         CHAR(8) NOT NULL,
+  StoreManager  VARCHAR(30) NOT NULL,
+  StoreStreet   VARCHAR(50) NOT NULL,
+  StoreCity     VARCHAR(30) NOT NULL,
+  StoreState    VARCHAR(20) NOT NULL,
+  StoreZip      VARCHAR(10) NOT NULL,
+  StoreNation   VARCHAR(20) NOT NULL,
+  CONSTRAINT PKSSStore PRIMARY KEY (StoreId),
+  CONSTRAINT FKSSDivId FOREIGN KEY (DivId) REFERENCES SSDivision (DivId)
+);
+
+
+CREATE TABLE SSItem
+( 
+  ItemId        CHAR(8) NOT NULL,
+  ItemName      VARCHAR(30) NOT NULL,
+  ItemBrand     VARCHAR(30) NOT NULL,
+  ItemCategory  VARCHAR(30) NOT NULL,
+  ItemUnitPrice DECIMAL(12,2) NOT NULL,
+  CONSTRAINT PKSSItem PRIMARY KEY (ItemId)
+);
+
+
+CREATE TABLE SSTimeDim
+(
+  TimeNo          INTEGER NOT NULL,
+  TimeDay         INTEGER NOT NULL,
+  TimeMonth       INTEGER NOT NULL,
+  TimeQuarter     INTEGER NOT NULL,
+  TimeYear        INTEGER NOT NULL,
+  TimeDayofWeek   INTEGER NOT NULL,
+  TimeFiscalYear  INTEGER NOT NULL,
+  CONSTRAINT PKSSTime PRIMARY KEY (TimeNo),
+  CONSTRAINT SSTimeDay1 CHECK (TimeDay BETWEEN 1 AND 31),
+  CONSTRAINT SSTimeMonth1 CHECK (TimeMonth BETWEEN 1 AND 12),
+  CONSTRAINT SSTimeQuarter1 CHECK (TimeQuarter BETWEEN 1 AND 4),
+  CONSTRAINT SSTimeDayOfWeek1 CHECK (TimeDayOfWeek BETWEEN 1 AND 7)
+);
+
+
+CREATE TABLE SSSales
+(
+  SalesNo     INTEGER NOT NULL,
+  SalesUnits  INTEGER NOT NULL,
+  SalesDollar DECIMAL(12,2) NOT NULL,
+  SalesCost   DECIMAL(12,2) NOT NULL,
+  CustId      CHAR(8) NOT NULL,
+  ItemId      CHAR(8) NOT NULL,
+  StoreId     CHAR(8) NOT NULL,
+  TimeNo      INTEGER NOT NULL,
+  CONSTRAINT PKSSSales PRIMARY KEY (SalesNo),
+  CONSTRAINT FKSSCustId FOREIGN KEY (CustId) REFERENCES SSCustomer (CustId),
+  CONSTRAINT FKSSItemId FOREIGN KEY (ItemId) REFERENCES SSItem (ItemId),
+  CONSTRAINT FKSSStoreId FOREIGN KEY (StoreId) REFERENCES SSStore (StoreId),
+  CONSTRAINT FKSSTimeId FOREIGN KEY (TimeNo) REFERENCES SSTimeDim (TimeNo)
+);
+
+CREATE SEQUENCE SSSalesNoSeq MINVALUE 1 START WITH 1;
+CREATE SEQUENCE SSTimeNoSeq MINVALUE 1 START WITH 1;
