@@ -1,6 +1,6 @@
 package edu.dmgusev.hello;
 
-import edu.duke.*;
+import edu.duke.FileResource;
 
 public class HelloWorld {
 

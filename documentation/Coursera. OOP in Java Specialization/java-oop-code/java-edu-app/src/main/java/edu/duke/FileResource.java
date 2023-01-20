@@ -1,19 +1,22 @@
 package edu.duke;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.net.URL;
 import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+
+import lombok.Getter;
 
 
 /**
@@ -54,6 +57,8 @@ import org.apache.commons.csv.CSVParser;
  * 
  * @author Duke Software Team
  */
+
+@Getter
 public class FileResource {
     private String myPath;
     private String mySource;

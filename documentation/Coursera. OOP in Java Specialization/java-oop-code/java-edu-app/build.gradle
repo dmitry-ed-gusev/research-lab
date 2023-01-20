@@ -16,22 +16,50 @@ repositories {
     mavenCentral()
 }
 
+ext {
+
+    defaultEncoding       = 'UTF-8'
+    lombokVersion         = '1.18.24'
+    junit5Version         = '5.9.1'
+    //junit5PlatformVersion = '1.8.1'
+    commonsLang3Version   = '3.12.0'
+    commonsCsvVersion     = '1.9.0'
+    commonsIOVersion      = '2.11.0'
+
+}
+
+sourceCompatibility = JavaVersion.VERSION_15
+targetCompatibility = JavaVersion.VERSION_15
+
 dependencies {
-    // Use JUnit Jupiter for testing.
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
 
-    // This dependency is used by the application.
-    implementation 'com.google.guava:guava:31.1-jre'
+    // -- implementation/compile dependencies
 
-    implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.9.0'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    implementation "com.google.guava:guava:31.1-jre"
+    implementation group: "org.apache.commons", name: "commons-csv", version: "${commonsCsvVersion}"
+    implementation group: "org.apache.commons", name: "commons-lang3", version: "${commonsLang3Version}"
+
+    // -- testing dependencies
+
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter:${junit5Version}"
+
 }
 
 application {
     // Define the main class for the application.
-    mainClass = 'edu.dmgusev.App'
+    mainClass = "edu.dmgusev.App"
 }
 
-tasks.named('test') {
+tasks.named("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "${defaultEncoding}"
 }
