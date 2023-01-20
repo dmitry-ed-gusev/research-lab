@@ -40,7 +40,7 @@ public class BookRestServiceIT {
     // =             Attributes             =
     // ======================================
 
-    private static URI uri = UriBuilder.fromUri("http://localhost/service-1.0/rs/book").port(8080).build();
+    private static URI uri = UriBuilder.fromUri("http://localhost/service-1.0/rs/book").port(8181).build();
     private static Client client = ClientBuilder.newClient();
 
     private static final String XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><book><description>Science fiction comedy book</description><illustrations>false</illustrations><isbn>1-84023-742-2</isbn><nbOfPage>354</nbOfPage><price>12.5</price><title>The Hitchhiker's Guide to the Galaxy</title></book>";
@@ -53,7 +53,7 @@ public class BookRestServiceIT {
         // https://docs.oracle.com/cd/E18930_01/html/821-2424/gjldt.html#
         runtime = GlassFishRuntime.bootstrap();
         GlassFishProperties prop = new GlassFishProperties();
-        prop.setPort("http-listener", 8080);
+        prop.setPort("http-listener", 8181);
         gf = runtime.newGlassFish(prop);
         gf.start();
 

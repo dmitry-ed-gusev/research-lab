@@ -43,7 +43,7 @@ import static org.mockserver.model.HttpResponse.response;
 public class RestClientTest {
 
     // mock REST server parameters (headers, answers, etc.)
-    private static final int                         MOCK_REST_SERVER_PORT            = 3000;
+    private static final int                         MOCK_REST_SERVER_PORT            = 3030;
     private static final String                      MOCK_REST_SERVER_HOST            = "localhost";
     private static final String                      MOCK_REST_SERVER_FULL_HTTP_HOST  =
             String.format("http://%s:%s", MOCK_REST_SERVER_HOST, MOCK_REST_SERVER_PORT);

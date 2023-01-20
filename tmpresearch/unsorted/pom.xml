@@ -33,8 +33,11 @@
         <!-- dependency for Oracle DBMS JDBC driver -->
         <dependency>
             <groupId>oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <version>11.2.0.3</version>
+            <artifactId>ojdbc8</artifactId>
+            <!-- <version>11.2.0.3</version> -->
+            <version>12.2.0.1.0</version>
+            <scope>system</scope>
+            <systemPath>${maven.multiModuleProjectDirectory}/oracle.jdbc/ojdbc8.jar</systemPath>
         </dependency>
 
 
