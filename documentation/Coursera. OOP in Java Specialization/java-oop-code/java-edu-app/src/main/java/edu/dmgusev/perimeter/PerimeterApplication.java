@@ -10,7 +10,9 @@ import edu.duke.FileResource;
 import edu.duke.Point;
 import edu.duke.Shape;
 
-public class PerimeterAssignmentRunner {
+/** Assignment I. Perimeter assignment application. */
+
+public class PerimeterApplication {
 
     public double getPerimeter (Shape s) {
         // Start with totalPerim = 0
@@ -191,7 +193,7 @@ public class PerimeterAssignmentRunner {
     }
 
     public static void main (String[] args) {
-        PerimeterAssignmentRunner pr = new PerimeterAssignmentRunner();
+        PerimeterApplication pr = new PerimeterApplication();
         pr.testPerimeterForAllData();
     }
 

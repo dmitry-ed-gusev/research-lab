@@ -1,12 +1,13 @@
 package dgusev.dbpilot;
 
-import lombok.extern.apachecommons.CommonsLog;
-import org.apache.commons.lang3.StringUtils;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 public class DBPilot {
@@ -21,7 +22,7 @@ public class DBPilot {
      * эквивалентны: table1 и TabLE1 (имена таблиц переводятся в ВЕРХНИЙ регистр символов для сравнения).
      */
     public static boolean isTableExists(Connection conn, String tableName) throws SQLException {
-        LOG.debug("DBPilot: isTableExists().");
+        log.debug("DBPilot: isTableExists().");
 
         boolean result = false;
         // Проверяем соединение с СУБД
@@ -47,7 +48,7 @@ public class DBPilot {
                             tablesRS.close();
                         }
                     } catch (SQLException e) {
-                        LOG.error("Can't free resources! Reason [" + e.getMessage() + "].");
+                        log.error("Can't free resources! Reason [" + e.getMessage() + "].");
                     }
                 }
             }

@@ -1,22 +1,25 @@
 package edu.dmgusev.utils;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 // todo: see: https://www.baeldung.com/java-list-directory-files
+// todo: see: https://www.logicbig.com/how-to/java/list-all-files-in-resouce-folder.html
 
 @NoArgsConstructor (access = AccessLevel.PRIVATE)
 public class Utilities {
 
+    /***/
     public static Set<String> listFilesUsingJavaIO(String dir) {
         return Stream.of(new File(dir).listFiles())
           .filter(file -> !file.isDirectory())
@@ -24,6 +27,7 @@ public class Utilities {
           .collect(Collectors.toSet()); 
     }
 
+    /***/
     public static Set<String> listFilesUsingFilesList(String dir) throws IOException {
         try (Stream<Path> stream = Files.list(Paths.get(dir))) {
             return stream
@@ -33,5 +37,13 @@ public class Utilities {
               .collect(Collectors.toSet());
         }
     }
+
+    /** This method should be qble to show [resources] folder content (list of files). */
+    public static File[] getResourceFolderFiles (String folder) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        URL url = loader.getResource(folder);
+        String path = url.getPath();
+        return new File(path).listFiles();
+      }
 
 }

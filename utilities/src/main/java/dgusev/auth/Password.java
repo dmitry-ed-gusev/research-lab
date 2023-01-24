@@ -1,10 +1,11 @@
 package dgusev.auth;
 
-import lombok.NonNull;
-import lombok.extern.apachecommons.CommonsLog;
+import java.io.Serializable;
+
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.Serializable;
+import lombok.NonNull;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * Password storage class (from ancient time :)).
@@ -22,7 +23,7 @@ public class Password implements Serializable {
 
     /***/
     public Password(@NonNull String password) {
-        LOG.debug("Password constructor() is working.");
+        log.debug("Password constructor() is working.");
         if (StringUtils.isBlank(password)) {
             throw new IllegalArgumentException("Provided empty source password!");
         }

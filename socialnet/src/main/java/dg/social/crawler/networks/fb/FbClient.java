@@ -1,9 +1,24 @@
 package dg.social.crawler.networks.fb;
 
-import dg.social.crawler.networks.AbstractClient;
-import dgusev.web.MyHttpUtils;
-import dgusev.io.MyIOUtils;
-import lombok.extern.apachecommons.CommonsLog;
+import static dg.social.crawler.SCrawlerDefaults.DATE_TIME_FORMAT;
+import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
+import static dg.social.crawler.networks.fb.FbFormType.ACCESS_TOKEN_FORM;
+import static dg.social.crawler.networks.fb.FbFormType.APPROVE_ACCESS_RIGHTS_FORM;
+import static dg.social.crawler.networks.fb.FbFormType.FB_OP_INFO_CLASS_NAME;
+import static dg.social.crawler.networks.fb.FbFormType.LOGIN_FORM;
+import static dgusev.web.MyHttpUtils.HTTP_DEFAULT_HEADERS;
+import static dgusev.web.MyHttpUtils.HTTP_FORM_TAG;
+import static dgusev.web.MyHttpUtils.HTTP_GET_COOKIES_HEADER;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -26,19 +41,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static dg.social.crawler.SCrawlerDefaults.DATE_TIME_FORMAT;
-import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
-import static dg.social.crawler.networks.fb.FbFormType.*;
-import static dgusev.web.MyHttpUtils.*;
+import dg.social.crawler.networks.AbstractClient;
+import dgusev.io.MyIOUtils;
+import dgusev.web.MyHttpUtils;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * FB social network client. Implemented: - receiving access token -
@@ -80,7 +86,7 @@ public class FbClient extends AbstractClient {
 	public FbClient(FbClientConfig config) throws IOException {
 		super(config, null);
 
-		LOG.debug("FBClient constructor() working.");
+		log.debug("FBClient constructor() working.");
 
 		// init http request config (through builder)
 		RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
@@ -113,7 +119,7 @@ public class FbClient extends AbstractClient {
 				this.accessToken = token;
 			}
 		} catch (IOException | ParseException e) {
-			LOG.warn(String.format("Can't read access token from file: [%s]. Reason: [%s].", config.getTokenFileName(),
+			log.warn(String.format("Can't read access token from file: [%s]. Reason: [%s].", config.getTokenFileName(),
 					e.getMessage()));
 		}
 
@@ -128,21 +134,21 @@ public class FbClient extends AbstractClient {
 
 	/***/
 	private static FbFormType getFbFormType(Document doc) {
-		LOG.debug("FbClient.getFbFormType() working.");
+		log.debug("FbClient.getFbFormType() working.");
 
 		if (doc == null) { // quick check
-			LOG.warn("Received document is null!");
+			log.warn("Received document is null!");
 			return FbFormType.UNKNOWN_FORM;
 		}
 
 		// get form page <title> value
 		String formTitle = doc.title();
-		LOG.debug(String.format("Form title: [%s].", formTitle));
+		log.debug(String.format("Form title: [%s].", formTitle));
 
 		// get text from first element with op_info class
 		Element firstOpInfo = doc.body().getElementsByClass(FB_OP_INFO_CLASS_NAME).first();
 		String opInfoText = (firstOpInfo == null ? "" : firstOpInfo.text());
-		LOG.debug(String.format("DIV by class [%s] text: [%s].", FB_OP_INFO_CLASS_NAME, opInfoText));
+		log.debug(String.format("DIV by class [%s] text: [%s].", FB_OP_INFO_CLASS_NAME, opInfoText));
 
 		// if title match and there is div with specified class - we've found
 		if (LOGIN_FORM.getFormTitle().equalsIgnoreCase(formTitle)
@@ -172,12 +178,12 @@ public class FbClient extends AbstractClient {
 	 * method returns date/time, when token received.
 	 */
 	private Pair<Date, String> getAccessToken() throws IOException {
-		LOG.debug("FBClient.getAccessToken() working. [PRIVATE]");
+		log.debug("FBClient.getAccessToken() working. [PRIVATE]");
 
 		// generate and execute ACCESS_TOKEN request
 		//String FBTokenRequest = this.getConfig().getAccessTokenRequest();
 		String FBTokenRequest = null;
-		LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", FBTokenRequest));
+		log.debug(String.format("Http request for ACCESS_TOKEN: [%s].", FBTokenRequest));
 
 		// some tech variables
 		CloseableHttpResponse httpResponse; // store the whole http response
@@ -202,7 +208,7 @@ public class FbClient extends AbstractClient {
 				// buffer initial received entity into memory
 				httpEntity = httpResponse.getEntity();
 				if (httpEntity != null) {
-					LOG.debug("Buffering received HTTP Entity.");
+					log.debug("Buffering received HTTP Entity.");
 					httpEntity = new BufferedHttpEntity(httpEntity);
 				}
 
@@ -214,8 +220,8 @@ public class FbClient extends AbstractClient {
 				// httpStringResponse =
 				// MyHttpUtils.httpResponseToString(httpResponse,
 				// httpPageContent);
-				if (LOG.isDebugEnabled()) { // just debug output
-					LOG.debug(MyHttpUtils.httpResponseToString(httpResponse, httpPageContent));
+				if (log.isDebugEnabled()) { // just debug output
+					log.debug(MyHttpUtils.httpResponseToString(httpResponse, httpPageContent));
 				}
 
 				Document doc = Jsoup.parse(httpPageContent); // parse returned
@@ -224,18 +230,18 @@ public class FbClient extends AbstractClient {
 																// object
 				// check received form type
 				receivedFormType = FbClient.getFbFormType(doc);
-				LOG.debug(String.format("Got FB form: [%s].", receivedFormType));
+				log.debug(String.format("Got FB form: [%s].", receivedFormType));
 
 				switch (receivedFormType) { // select action, based on form type
 
 				case LOGIN_FORM: // FB Login form
-					LOG.debug(String.format("Processing [%s].", LOGIN_FORM));
+					log.debug(String.format("Processing [%s].", LOGIN_FORM));
 
 					actionUrl = MyHttpUtils.getFirstFormActionURL(doc); // gets
 																			// form
 																			// action
 																			// URL
-					LOG.debug(String.format("Form action: [%s].", actionUrl));
+					log.debug(String.format("Form action: [%s].", actionUrl));
 
 					formParamsList = MyHttpUtils.getFirstFormParams(doc, FB_LOGIN_FORM_CREDENTIALS); // get
 																										// from
@@ -243,11 +249,11 @@ public class FbClient extends AbstractClient {
 																										// fill
 																										// it
 																										// in
-					if (LOG.isDebugEnabled()) { // just a debug
+					if (log.isDebugEnabled()) { // just a debug
 						StringBuilder pairs = new StringBuilder();
 						formParamsList.forEach(pair -> pairs.append(
 								String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
-						LOG.debug(String.format("Found name-value pairs in FB login form:%n%s", pairs.toString()));
+						log.debug(String.format("Found name-value pairs in FB login form:%n%s", pairs.toString()));
 					}
 
 					// prepare and execute next http request (send form)
@@ -257,13 +263,13 @@ public class FbClient extends AbstractClient {
 
 				case APPROVE_ACCESS_RIGHTS_FORM: // FB approve application
 													// rights
-					LOG.debug(String.format("Processing [%s].", APPROVE_ACCESS_RIGHTS_FORM));
+					log.debug(String.format("Processing [%s].", APPROVE_ACCESS_RIGHTS_FORM));
 
 					actionUrl = MyHttpUtils.getFirstFormActionURL(doc); // get
 																			// form
 																			// action
 																			// URL
-					LOG.debug(String.format("Form action: [%s].", actionUrl));
+					log.debug(String.format("Form action: [%s].", actionUrl));
 
 					formParamsList = MyHttpUtils.getFirstFormParams(doc, null); // get
 																					// from
@@ -271,11 +277,11 @@ public class FbClient extends AbstractClient {
 																					// fill
 																					// it
 																					// in
-					if (LOG.isDebugEnabled()) { // just a debug
+					if (log.isDebugEnabled()) { // just a debug
 						StringBuilder pairs = new StringBuilder();
 						formParamsList.forEach(pair -> pairs.append(
 								String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
-						LOG.debug(String.format("Found name-value pairs in FB login form:%n%s", pairs.toString()));
+						log.debug(String.format("Found name-value pairs in FB login form:%n%s", pairs.toString()));
 					}
 
 					// prepare and execute next http request (send form)
@@ -284,7 +290,7 @@ public class FbClient extends AbstractClient {
 					break;
 
 				case ACCESS_TOKEN_FORM: // FB
-					LOG.debug(String.format("Processing [%s].", ACCESS_TOKEN_FORM));
+					log.debug(String.format("Processing [%s].", ACCESS_TOKEN_FORM));
 
 					// parse redirect and get access token from URL
 					RedirectLocations locations = (RedirectLocations) HTTP_CONTEXT
@@ -295,15 +301,15 @@ public class FbClient extends AbstractClient {
 						URI finalUri = locations.getAll().get(locations.getAll().size() - 1);
 						String accessToken = StringUtils.split(StringUtils.split(finalUri.getFragment(), "&")[0],
 								"=")[1];
-						LOG.debug(String.format("Received ACCESS_TOKEN: [%s].", accessToken));
+						log.debug(String.format("Received ACCESS_TOKEN: [%s].", accessToken));
 						return new ImmutablePair<>(new Date(), accessToken);
 					} else { //
-						LOG.error("Can't find last redirect locations (list is null)!");
+						log.error("Can't find last redirect locations (list is null)!");
 					}
 					break;
 
 				default: // default case - unknown form
-					LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
+					log.error(String.format("Got unknown type of form: [%s].", receivedFormType));
 				}
 
 			} // end of FOR cycle
@@ -331,7 +337,7 @@ public class FbClient extends AbstractClient {
 	 */
 	public String usersSearch(String userString, String fieldsList, int count)
 			throws IOException, org.json.simple.parser.ParseException, URISyntaxException {
-		LOG.debug(String.format("FBClient.usersSearch() working. Search string: [%s].", userString));
+		log.debug(String.format("FBClient.usersSearch() working. Search string: [%s].", userString));
 
 		if (StringUtils.isBlank(userString)) { // fail-fast
 			throw new IllegalArgumentException("Cant' search users with empty search string!");
@@ -345,7 +351,7 @@ public class FbClient extends AbstractClient {
 				.addParameter("fields", (StringUtils.isBlank(fieldsList) ? "" : fieldsList))
 				.addParameter("access_token", this.accessToken.getRight())
 				.addParameter("v", this.getConfig().getApiVersion()).toString());
-		LOG.debug(String.format("Generated URI: [%s].", uri));
+		log.debug(String.format("Generated URI: [%s].", uri));
 */
 
 		// execute http GET query
@@ -358,14 +364,14 @@ public class FbClient extends AbstractClient {
 		// buffer initial received entity into memory
 		HttpEntity httpEntity = httpResponse.getEntity();
 		if (httpEntity != null) {
-			LOG.debug("Buffering received HTTP Entity.");
+			log.debug("Buffering received HTTP Entity.");
 			httpEntity = new BufferedHttpEntity(httpEntity);
 		}
 
 		// get page content for parsing
 		String httpPageContent = MyHttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
-		if (LOG.isDebugEnabled()) { // just debug output
-			LOG.debug(MyHttpUtils.httpResponseToString(httpResponse, httpPageContent));
+		if (log.isDebugEnabled()) { // just debug output
+			log.debug(MyHttpUtils.httpResponseToString(httpResponse, httpPageContent));
 		}
 
 		// return received JSON

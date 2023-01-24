@@ -1,22 +1,23 @@
 package dgusev.dbpilot.config;
 
-import dgusev.auth.Password;
-import dgusev.dbpilot.DBConsts;
-import dgusev.utils.MyCommonUtils;
-import dgusev.io.MyIOUtils;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.extern.apachecommons.CommonsLog;
-import org.apache.commons.configuration2.XMLConfiguration;
-import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
+
+import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.lang3.StringUtils;
+
+import dgusev.auth.Password;
+import dgusev.dbpilot.DBConsts;
+import dgusev.io.MyIOUtils;
+import dgusev.utils.MyCommonUtils;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * Данный класс реализует простое хранение конфигурации для соединения с СУБД. В классе есть значимые поля, методы доступа
@@ -106,7 +107,7 @@ public class DBConfig {
 
     /***/
     public String getConfigErrors() {
-        LOG.debug("DBConfig.getConfigErrors() is working.");
+        log.debug("DBConfig.getConfigErrors() is working.");
 
         String result = null;
 
@@ -161,7 +162,7 @@ public class DBConfig {
      * @throws java.io.IOException                                     ИС - указано пустое имя файла, файл не существует и т.п.
      */
     public void loadFromFile(String fileName, String sectionName, boolean usePlainPass) throws IOException, ConfigurationException {
-        LOG.debug("WORKING ExtendedDBConfig.loadFromFile().");
+        log.debug("WORKING ExtendedDBConfig.loadFromFile().");
 
         // Если имя файла пусто - ошибка!
         if (StringUtils.isBlank(fileName)) {
@@ -270,7 +271,7 @@ public class DBConfig {
      * @return XMLConfiguration созданный объект на основании состояния данного экземпляра класса.
      */
     private XMLConfiguration getXMLConfig(String rootName, String sectionName) {
-        LOG.debug("getXMLConfig(): generating XMLConfiguration object.");
+        log.debug("getXMLConfig(): generating XMLConfiguration object.");
         // Создаем экземпляр класса XML-конфигурации
         XMLConfiguration config = new XMLConfiguration();
         // Корневой элемент (выбираем в зависимости от параметра rootName). Если корневой элемнт указан - берем
@@ -290,12 +291,12 @@ public class DBConfig {
 
         // Добавляем данные. Если в конфиге указано имя источника данных (поле dataSource), то сохраняем только его.
         if (!StringUtils.isBlank(this.getDataSource())) {
-            LOG.debug("Adding JNDI data source name to XML config object.");
+            log.debug("Adding JNDI data source name to XML config object.");
             config.addProperty(prefix + DBConsts.DB_DATA_SOURCE, this.getDataSource());
         }
         // Если же поле "имя источника данных" пусто, то сохраняем параметры для соединения через JDBC-драйвер.
         else {
-            LOG.debug("Adding JDBC parameters to XML config object.");
+            log.debug("Adding JDBC parameters to XML config object.");
             // Непосредственно добавляем параметры
             config.addProperty(prefix + DBConsts.DB_TYPE, this.getDbType());
             config.addProperty(prefix + DBConsts.DB_HOST, this.getHost());
@@ -304,7 +305,7 @@ public class DBConfig {
             config.addProperty(prefix + DBConsts.DB_USER, this.getUser());
             // При сохранении пароля он всегда сохраняется в файл (если пароль не пуст)
             if (this.getPassword() != null) {
-                LOG.debug("Password is not empty. Processing.");
+                log.debug("Password is not empty. Processing.");
                 try {
 
                     // todo: fix!!!
@@ -314,12 +315,12 @@ public class DBConfig {
                     String passFileName = passFilePath.substring(passFilePath.lastIndexOf("/") + 1);
                     config.addProperty(prefix + DBConsts.DB_PWD, passFileName);
                 } catch (/*IOException e*/ Exception e) {
-                    LOG.error("Can't save password file! Reason: " + e.getMessage());
+                    log.error("Can't save password file! Reason: " + e.getMessage());
                 }
             }
             // Если пароль пуст - сообщим об этом
             else {
-                LOG.warn("Empty password! Can't process it.");
+                log.warn("Empty password! Can't process it.");
             }
             // Дополнительный параметры соединения
             config.addProperty(prefix + DBConsts.DB_CONN_PARAMS, this.getConnParams());
@@ -333,7 +334,7 @@ public class DBConfig {
      * Save current configuration to XML file.
      */
     public void saveToFile(String fileName, String rootName, String sectionName) throws ConfigurationException {
-        LOG.debug("saveToFile(): trying to save to [" + fileName + "].");
+        log.debug("saveToFile(): trying to save to [" + fileName + "].");
         // Непосредственно сохранение файла
         // todo: use -> https://commons.apache.org/proper/commons-configuration/userguide/quick_start.html
         //this.getXMLConfig(rootName, sectionName).save(fileName);
@@ -346,7 +347,7 @@ public class DBConfig {
             }
             this.deprecatedTables.add(tableName.toUpperCase());
         } else {
-            LOG.warn("addDeprecatedTable(): can't add empty deprecated name!");
+            log.warn("addDeprecatedTable(): can't add empty deprecated name!");
         }
     }
 
@@ -357,7 +358,7 @@ public class DBConfig {
             }
             this.deprecatedTables.addAll(Arrays.asList(tablesNames));
         } else {
-            LOG.warn("addDeprecatedTables(): can't add empty deprecated list!");
+            log.warn("addDeprecatedTables(): can't add empty deprecated list!");
         }
     }
 
@@ -368,7 +369,7 @@ public class DBConfig {
             }
             this.allowedTables.add(tableName.toUpperCase());
         } else {
-            LOG.warn("addAllowedTable(): can't add empty allowed name!");
+            log.warn("addAllowedTable(): can't add empty allowed name!");
         }
     }
 
@@ -379,7 +380,7 @@ public class DBConfig {
             }
             this.allowedTables.addAll(Arrays.asList(tablesNames));
         } else {
-            LOG.warn("addAllowedTables(): can't add empty allowed list!");
+            log.warn("addAllowedTables(): can't add empty allowed list!");
         }
     }
 
@@ -416,12 +417,12 @@ public class DBConfig {
                         ((allowedTables == null) || (allowedTables.contains(tableName.toUpperCase()))))
                 // Результат положителен
                 {
-                    LOG.debug("isTableAllowed(): table [" + tableName + "] is allowed.");
+                    log.debug("isTableAllowed(): table [" + tableName + "] is allowed.");
                     result = true;
                 }
             }
         } else {
-            LOG.warn("isTableAllowed: empty table name!");
+            log.warn("isTableAllowed: empty table name!");
         }
 
         return result;

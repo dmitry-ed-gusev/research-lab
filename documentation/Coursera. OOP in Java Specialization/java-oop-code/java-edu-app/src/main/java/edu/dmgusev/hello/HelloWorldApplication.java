@@ -2,7 +2,9 @@ package edu.dmgusev.hello;
 
 import edu.duke.FileResource;
 
-public class HelloWorld {
+/** Simple Hello World application :) */
+
+public class HelloWorldApplication {
 
     public void runHello () {
         FileResource res = new FileResource("hello/hello_unicode.txt");
@@ -12,7 +14,7 @@ public class HelloWorld {
     }
 
     public static void main(String[] args) {
-        new HelloWorld().runHello();
+        new HelloWorldApplication().runHello();
     }
 
 }

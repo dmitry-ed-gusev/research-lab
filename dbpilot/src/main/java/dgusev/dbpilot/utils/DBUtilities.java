@@ -1,17 +1,15 @@
 package dgusev.dbpilot.utils;
 
-import dgusev.dbpilot.config.DBConfig;
-import lombok.extern.apachecommons.CommonsLog;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+
+import org.apache.commons.lang3.StringUtils;
+
+import dgusev.dbpilot.config.DBConfig;
+import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 public final class DBUtilities {
@@ -20,7 +18,7 @@ public final class DBUtilities {
 
     /***/
     public static String getStringResultSet(ResultSet rs, int width) {
-        LOG.debug("DBUtilities.getStringResultSet() is working.");
+        log.debug("DBUtilities.getStringResultSet() is working.");
 
         StringBuilder rows = new StringBuilder();
         // process result set
@@ -53,20 +51,20 @@ public final class DBUtilities {
                     // add footer horizontal line
                     rows.append(horizontalLine).append("Total record(s): ").append(counter).append("\n");
                 } else {
-                    LOG.warn("ResultSet is not NULL, but is EMPTY!");
+                    log.warn("ResultSet is not NULL, but is EMPTY!");
                 }
             } // end of TRY
             catch (SQLException e) {
-                LOG.error("SQL error occured: " + e.getMessage());
+                log.error("SQL error occured: " + e.getMessage());
             }
-        } else LOG.warn("ResultSet is NULL!");
+        } else log.warn("ResultSet is NULL!");
 
         return rows.toString();
     }
 
     /** Метод, в зависимости от параметров соединения с СУБД, формирует конфигурационный JDBC URL для соединения с СУБД.  */
     public static String getJDBCUrl(DBConfig config) {
-        LOG.debug("DBUtilities.getJDBCUrl() is working.");
+        log.debug("DBUtilities.getJDBCUrl() is working.");
         switch (config.getDbType()) {
             case MYSQL:        return JdbcUrlHelper.getMysqlJdbcUrl(config);
             case ODBC:         return JdbcUrlHelper.getOdbcJdbcUrl(config);
@@ -86,7 +84,7 @@ public final class DBUtilities {
      * указанной СУБД.
      */
     public static Connection getDBConn(DBConfig config) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {
-        LOG.debug("DBUtilities.getDBConn() is working..");
+        log.debug("DBUtilities.getDBConn() is working..");
 
         Connection connection;
 
@@ -107,28 +105,28 @@ public final class DBUtilities {
         //}
         // Имя источника данных JNDI не указано - коннектимся через JDBC
         //else {
-            LOG.debug("Connecting to DBMS over JDBC driver.");
+            log.debug("Connecting to DBMS over JDBC driver.");
             //try {
                 // Получаем драйвер
                 String dbDriver = config.getDbType().getDriver();
                 // Если драйвер не пуст - работаем дальше
                 if (!StringUtils.isBlank(dbDriver)) {
-                    LOG.debug("Database driver OK. Processing. Driver: [" + dbDriver + "].");
+                    log.debug("Database driver OK. Processing. Driver: [" + dbDriver + "].");
                     // Загрузка класса драйвера (для драйверов типа JDBC 4 не нужна - ???)
                     // todo: необходима ли прямая загрузка драйвера?
                     Class.forName(dbDriver).newInstance();
-                    LOG.debug("Driver [" + dbDriver + "] loaded!");
+                    log.debug("Driver [" + dbDriver + "] loaded!");
                     // Дополнительные параметры для соединения с СУБД
                     Properties connectionInfo = config.getConnInfo();
                     // Непосредственно подключение к СУБД
                     if ((connectionInfo != null) && (!connectionInfo.isEmpty())) {
-                        LOG.debug("Using getConnection() with [CONNECTION INFO].");
+                        log.debug("Using getConnection() with [CONNECTION INFO].");
                         connection = DriverManager.getConnection(DBUtilities.getJDBCUrl(config), config.getConnInfo());
-                        //LOG.debug("Connection ok.");
+                        //log.debug("Connection ok.");
                     } else {
-                        LOG.debug("Using getConnection() without [CONNECTION INFO].");
+                        log.debug("Using getConnection() without [CONNECTION INFO].");
                         connection = DriverManager.getConnection(DBUtilities.getJDBCUrl(config));
-                        //LOG.debug("Connection ok.");
+                        //log.debug("Connection ok.");
                     }
                 }
                 // Если драйвер (класс драйвера) не указан - возбуждаем ИС и сообщаем об этом
