@@ -1,11 +1,33 @@
 package dgusev.web.rest;
 
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-import lombok.extern.apachecommons.CommonsLog;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.matchers.Times.exactly;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -16,22 +38,9 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Delay;
 import org.mockserver.model.Header;
 
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.matchers.Times.exactly;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import lombok.extern.apachecommons.CommonsLog;
 
 // parameterized unit test example (junit 4) -> https://www.mkyong.com/unittest/junit-4-tutorial-6-parameterized-test/
 // junit 5 parameterized test -> https://stackoverflow.com/questions/14082004/create-multiple-parameter-sets-in-one-parameterized-class-junit
@@ -127,12 +136,12 @@ public class RestClientTest {
 
     @Before
     public void beforeEach() {
-        LOG.debug("RestClientTest.beforeEach() is working.");
+        log.debug("RestClientTest.beforeEach() is working.");
     }
 
     @After
     public void afterEach() {
-        LOG.debug("RestClientTest.afterEach() is working.");
+        log.debug("RestClientTest.afterEach() is working.");
     }
 
     private static void createRestServerClientExpectations() {

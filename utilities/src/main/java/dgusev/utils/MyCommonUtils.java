@@ -1,26 +1,38 @@
 package dgusev.utils;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.extern.apachecommons.CommonsLog;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import static dgusev.utils.MyCommonUtils.MapSortType.ASC;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static dgusev.utils.MyCommonUtils.MapSortType.ASC;
+import javax.imageio.ImageIO;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * Some useful common utils for whole application. Utils for different cases - counting, work with dbases etc.
@@ -145,7 +157,7 @@ public final class MyCommonUtils {
             if (str.length() <= length) {
                 result = StringUtils.rightPad(str, length);  // fit answer with spaces (rigth)
             } else {
-                LOG.debug("String is to long [" + str + "]! Cutting.");
+                log.debug("String is to long [" + str + "]! Cutting.");
                 result = str.substring(0, length); // cut right part of message
             }
         } else {
@@ -162,7 +174,7 @@ public final class MyCommonUtils {
      * @return String latin string
      */
     public static Pair<String, String> getShortAndTranslit(String str) {
-        //LOG.debug("MyCommonUtils.getShortAndTranslit() working."); // -> too much output
+        //log.debug("MyCommonUtils.getShortAndTranslit() working."); // -> too much output
 
         Pair<String, String> result;
         StringBuilder shortRusName = new StringBuilder();
@@ -249,7 +261,7 @@ public final class MyCommonUtils {
      * If count <= 0 or >= input map size - return a whole map.
      */
     public static <K, V> String getTopFromMap(Map<K, V> map, int topCount) {
-        LOG.debug("IPinYou.getTopFromMap() is working.");
+        log.debug("IPinYou.getTopFromMap() is working.");
 
         if (map == null || map.isEmpty()) { // fast checks for map (and return)
             return null;
@@ -404,7 +416,7 @@ public final class MyCommonUtils {
 
     /***/
     public static <K, V> Map<K, V> removeFromMapByValue(Map<K, V> map, V value) {
-        LOG.debug("MapUtils.removeFromMapByValue() is working.");
+        log.debug("MapUtils.removeFromMapByValue() is working.");
 
         if (map == null) { // fast check and return null
             return null;
@@ -455,7 +467,7 @@ public final class MyCommonUtils {
      * @throws IllegalArgumentException if at least one of the system properties is invalid
      */
     public static void validateEnvironment(@NonNull Map<String, String> environment, @NonNull List<String> mandatoryProperties) {
-        LOG.debug("ConnectorUtilities.validateEnvironment() is working.");
+        log.debug("ConnectorUtilities.validateEnvironment() is working.");
 
         // check presence of all required properties
         for (String property : mandatoryProperties) {
@@ -463,7 +475,7 @@ public final class MyCommonUtils {
             MyCommonUtils.validateSingleProperty(property, String.valueOf(environment.getOrDefault(property, null)));
         }
 
-        LOG.debug(String.format("Presence of all mandatory properties [%s] checked. All OK.", mandatoryProperties));
+        log.debug(String.format("Presence of all mandatory properties [%s] checked. All OK.", mandatoryProperties));
     }
 
     /***/
@@ -489,7 +501,7 @@ public final class MyCommonUtils {
      * Deviations like: [name1=name2=name3=value1] or [name1=value1=value2] are processed correctly.
      */
     public static Properties getPropsFromString(String str, String pairsDelim, String keyValueDelim) {
-        LOG.debug("MyCommonUtils.getPropsFromString() is working.");
+        log.debug("MyCommonUtils.getPropsFromString() is working.");
         Properties result = null;
 
         // Если строка не пустая - работаем дальше
@@ -497,7 +509,7 @@ public final class MyCommonUtils {
 
             String localPairsDelim = MyCommonUtils.getPairsDelimiter(pairsDelim);
             String localKeyValueDelim = MyCommonUtils.getKeyValueDelimeter(keyValueDelim);
-            LOG.debug("USED: pairsDelim: [" + localPairsDelim + "]; keyValuesDelim: [" + localKeyValueDelim + "].");
+            log.debug("USED: pairsDelim: [" + localPairsDelim + "]; keyValuesDelim: [" + localKeyValueDelim + "].");
 
             String[] keyValueArray, keyValueSplitted;
             result = new Properties();
@@ -533,7 +545,7 @@ public final class MyCommonUtils {
 
         } // end of if
         else {
-            LOG.debug("Source string is empty!");
+            log.debug("Source string is empty!");
         }
 
         return result;
@@ -552,7 +564,7 @@ public final class MyCommonUtils {
      * @return String строка, сформированная из полученного набора свойств.
      */
     public static String getStringFromProps(Properties props, String pairsDelim, String keyValueDelim) {
-        LOG.debug("MyCommonUtils.getStringFromProps() is working.");
+        log.debug("MyCommonUtils.getStringFromProps() is working.");
 
         StringBuilder result = null;
 
@@ -563,7 +575,7 @@ public final class MyCommonUtils {
 
             String localPairsDelim = MyCommonUtils.getPairsDelimiter(pairsDelim);
             String localKeyValueDelim = MyCommonUtils.getKeyValueDelimeter(keyValueDelim);
-            LOG.debug("USED PARAMS: pairsDelim: [" + localPairsDelim + "]; keyValuesDelim: [" + localKeyValueDelim + "].");
+            log.debug("USED PARAMS: pairsDelim: [" + localPairsDelim + "]; keyValuesDelim: [" + localKeyValueDelim + "].");
 
             // Проходим по всем парам имя/значение в наборе и формируем строку
             Enumeration e = props.keys();
@@ -575,9 +587,9 @@ public final class MyCommonUtils {
                 }
             }
 
-            LOG.debug("RESULT: [" + result.toString() + "].");
+            log.debug("RESULT: [" + result.toString() + "].");
         } else {
-            LOG.debug("Received Properties object is empty!");
+            log.debug("Received Properties object is empty!");
         }
 
         if (result == null) {
@@ -626,10 +638,10 @@ public final class MyCommonUtils {
         String result = null;
         // Проверяем параметр name
         if (!StringUtils.isBlank(name)) {
-            LOG.debug("Name parameter is OK. Processing name [" + name + "].");
+            log.debug("Name parameter is OK. Processing name [" + name + "].");
             // Проверяем параметр lenght (он должен быть положителен и не равен 0)
             if (lenght > 0) {
-                LOG.debug("Lenght [" + lenght + "] is OK. Processing.");
+                log.debug("Lenght [" + lenght + "] is OK. Processing.");
                 // Действия выполняем только при значении lenght > name.lenght
                 if (lenght > name.length()) {
                     StringBuilder resultName = new StringBuilder();
@@ -647,12 +659,12 @@ public final class MyCommonUtils {
             }
             // Параметр lenght не подошел
             else {
-                LOG.error("Wrong lenght [" + lenght + "]!");
+                log.error("Wrong lenght [" + lenght + "]!");
             }
         }
         // Параметр name пуст - сообщим об ошибке!
         else {
-            LOG.error("Name parameter is empty!");
+            log.error("Name parameter is empty!");
         }
         // Возвращаем результат
         return result;
@@ -719,7 +731,7 @@ public final class MyCommonUtils {
             // Получаем размеры исходного изображения
             int sourceWidth = sourceImage.getWidth();
             int sourceHeight = sourceImage.getHeight();
-            LOG.debug("SOURCE: width=" + sourceWidth + "; height=" + sourceHeight);
+            log.debug("SOURCE: width=" + sourceWidth + "; height=" + sourceHeight);
 
             // Вычисляем масштаб (пропорцию) изменения исходного изображения (ориентируясь на данные параметры результирующего
             // изображения). При этом, если высота результирующего изображения не указана, то масштаб берем по ширине.
@@ -733,7 +745,7 @@ public final class MyCommonUtils {
             // Размеры масштабированного (изменнного) изображения
             int destinationWidth = (int) (sourceWidth * scale);
             int destinationHeight = (int) (sourceHeight * scale);
-            LOG.debug("DESTINATION: width=" + destinationWidth + "; height=" + destinationHeight);
+            log.debug("DESTINATION: width=" + destinationWidth + "; height=" + destinationHeight);
 
             // Вычисляем координаты (необходимо только если конечное изображение будет такого размера, как указано во входных
             // параметрах данного метода, но тогда могут появиться лишние поля по краям. При масштабировании изображения

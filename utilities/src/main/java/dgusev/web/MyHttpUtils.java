@@ -1,11 +1,31 @@
 package dgusev.web;
 
-import lombok.extern.apachecommons.CommonsLog;
+import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HeaderIterator;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,17 +40,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * Some useful HTTP-related utilities.
@@ -77,7 +87,7 @@ public final class MyHttpUtils {
 
     /** Return content of http response as string. */
     public static String getPageContent(HttpEntity httpEntity, String encoding) throws IOException {
-        LOG.debug("MyHttpUtils.getPageContent() working.");
+        log.debug("MyHttpUtils.getPageContent() working.");
 
         if (httpEntity == null) { // return empty string for null entity
             return "";
@@ -93,7 +103,7 @@ public final class MyHttpUtils {
      * Page content passed separately, because entity in http response could be consumed only once.
      */
     public static String httpResponseToString(HttpResponse response, String pageContent) throws IOException {
-        LOG.debug("MyHttpUtils.httpResponseToString() working.");
+        log.debug("MyHttpUtils.httpResponseToString() working.");
 
         if (response == null) { // check - is it null?
             return "[http request is null!]";
@@ -133,7 +143,7 @@ public final class MyHttpUtils {
      */
     public static CloseableHttpResponse sendHttpGet(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
                                                     URI uri) throws IOException {
-        LOG.debug("MyHttpUtils.sendHttpGet");
+        log.debug("MyHttpUtils.sendHttpGet");
 
         if (httpClient == null || uri == null) { // fail-fast
             throw new IllegalArgumentException(
@@ -152,10 +162,10 @@ public final class MyHttpUtils {
         // buffer initial received entity into memory
         HttpEntity httpEntity = response.getEntity();
         if (httpEntity != null) {
-            LOG.debug("HTTP Entity isn't null. Buffering received HTTP Entity.");
+            log.debug("HTTP Entity isn't null. Buffering received HTTP Entity.");
             response.setEntity(new BufferedHttpEntity(httpEntity));
         } else {
-            LOG.warn("Received HTTP Entity is NULL!");
+            log.warn("Received HTTP Entity is NULL!");
             //response.setEntity(httpEntity); // <- // todo: do we need it??? check...
         }
 
@@ -177,7 +187,7 @@ public final class MyHttpUtils {
      */
     public static CloseableHttpResponse sendHttpPost(CloseableHttpClient httpClient, HttpContext httpContext, RequestConfig requestConfig,
                                                      URI uri, List<NameValuePair> postParams, Header[] cookies) throws IOException {
-        LOG.debug("MyHttpUtils.sendHttpPost() working.");
+        log.debug("MyHttpUtils.sendHttpPost() working.");
 
         if (httpClient == null || uri == null) { // fail-fast
             throw new IllegalArgumentException(
@@ -206,10 +216,10 @@ public final class MyHttpUtils {
         // buffer initial received entity into memory
         HttpEntity httpEntity = response.getEntity();
         if (httpEntity != null) {
-            LOG.debug("HTTP Entity isn't null. Buffering received HTTP Entity.");
+            log.debug("HTTP Entity isn't null. Buffering received HTTP Entity.");
             response.setEntity(new BufferedHttpEntity(httpEntity));
         } else {
-            LOG.warn("Received HTTP Entity is NULL!");
+            log.warn("Received HTTP Entity is NULL!");
             //response.setEntity(httpEntity); // <- // todo: do we need it??? check...
         }
 
@@ -230,7 +240,7 @@ public final class MyHttpUtils {
      * If fixPrefix isn't null/empty and calculated URL starts with "/" - prefix will be added.
      */
     public static String getFirstFormActionURL(Document document, String fixPrefix) {
-        LOG.debug("MyHttpUtils.getFirstFormActionURL() working.");
+        log.debug("MyHttpUtils.getFirstFormActionURL() working.");
 
         if (document == null) { // fail-fast
             throw new IllegalArgumentException("Can't extract action URL from null html document!");
@@ -238,12 +248,12 @@ public final class MyHttpUtils {
 
         // extract form action URL
         String actionUrl = document.getElementsByTag(HTTP_FORM_TAG).first().attr(HTTP_FORM_ACTION_ATTR);
-        LOG.debug(String.format("Found form action URL: [%s].", actionUrl));
+        log.debug(String.format("Found form action URL: [%s].", actionUrl));
 
         // fix extracted URL (if necessary)
         if (actionUrl.startsWith("/") && !StringUtils.isBlank(fixPrefix)) {
             actionUrl = fixPrefix + actionUrl;
-            LOG.debug(String.format("Fixed extracted action URL: [%s].", actionUrl));
+            log.debug(String.format("Fixed extracted action URL: [%s].", actionUrl));
         }
 
         return actionUrl;
@@ -256,7 +266,7 @@ public final class MyHttpUtils {
 
     /** Return all parameters from VK login form (with email/pass added). */
     public static List<NameValuePair> getFirstFormParams(Document document, Map<String, String> formItems) {
-        LOG.debug("MyHttpUtils.getFirstFormParams() working.");
+        log.debug("MyHttpUtils.getFirstFormParams() working.");
 
         if (document == null) { // fail-fast
             throw new IllegalArgumentException("Can't extract form parameters from null html document!");
@@ -287,10 +297,10 @@ public final class MyHttpUtils {
             //}
         } // end of FOR
 
-        if (LOG.isDebugEnabled()) { // just a debug
+        if (log.isDebugEnabled()) { // just a debug
             StringBuilder pairs = new StringBuilder();
             paramsList.forEach(pair -> pairs.append(String.format("pair -> key = [%s], value = [%s]%n", pair.getName(), pair.getValue())));
-            LOG.debug(String.format("Found name-value pairs in html form:%n%s", pairs.toString()));
+            log.debug(String.format("Found name-value pairs in html form:%n%s", pairs.toString()));
         }
 
         return paramsList;
@@ -305,7 +315,7 @@ public final class MyHttpUtils {
 
     /** Sending simple HTTP GET request. */
     public static Pair<Integer, String> sendGet(String url) throws IOException {
-        LOG.debug(String.format("GeneralUtils.sendGet() is working. URL: [%s].", url));
+        log.debug(String.format("GeneralUtils.sendGet() is working. URL: [%s].", url));
 
         // build URL and open connection
         URL obj = new URL(url);
@@ -332,7 +342,7 @@ public final class MyHttpUtils {
     // HTTP POST request
     // todo: method for future usage...
     private static void sendPost(String url) throws Exception {
-        LOG.debug(String.format("GeneralUtils.sendPost() is working. URL: [%s].", url));
+        log.debug(String.format("GeneralUtils.sendPost() is working. URL: [%s].", url));
 
         //String url = "https://selfsolve.apple.com/wcResults.do";
         URL obj = new URL(url);

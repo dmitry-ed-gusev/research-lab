@@ -1,20 +1,20 @@
 package dgusev.io;
 
-import lombok.NonNull;
-import lombok.extern.apachecommons.CommonsLog;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import javax.annotation.concurrent.NotThreadSafe;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InvalidClassException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -27,7 +27,27 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.zip.*;
+import java.util.zip.CRC32;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
+import javax.annotation.concurrent.NotThreadSafe;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import lombok.NonNull;
+import lombok.extern.apachecommons.CommonsLog;
 
 /** Some useful IO utilities. */
 
@@ -52,27 +72,27 @@ public final class MyIOUtils {
      * @param failOnDelete boolean if true - throws IOException if file can't be deleted
      */
     public static void deleteFileIfExists(@NonNull String fileName, boolean failOnDelete) throws IOException {
-        LOG.debug(String.format("MyIOUtils.deleteFileIfExist() is working. File [%s].", fileName));
+        log.debug(String.format("MyIOUtils.deleteFileIfExist() is working. File [%s].", fileName));
 
         File file = new File(fileName);
         if (file.exists()) {
             boolean isDeleteOK = file.delete();
-            LOG.info(String.format("File [%s] exists. Remove it -> [%s].", fileName, isDeleteOK ? "OK" : "Fail"));
+            log.info(String.format("File [%s] exists. Remove it -> [%s].", fileName, isDeleteOK ? "OK" : "Fail"));
             if (!isDeleteOK) { // if can't delete - throw an exception or write a log message
                 if (failOnDelete) {
                     throw new IOException(String.format("Cant't delete file [%s] by unknown reason!", fileName));
                 } else {
-                    LOG.error(String.format("Cant't delete file [%s] by unknown reason!", fileName));
+                    log.error(String.format("Cant't delete file [%s] by unknown reason!", fileName));
                 }
             } // end of IF - fail on deletion
         } else {
-            LOG.debug(String.format("File [%s] doesn't exist.", fileName));
+            log.debug(String.format("File [%s] doesn't exist.", fileName));
         } // end of main IF statement
     }
 
     /** Read simple long value from file (file can be edited with with any editor). */
     public static long readLongFromFile(@NonNull String filePath) throws IOException {
-        LOG.info(String.format("MyIOUtils.readLongFromFile() is working. Read long from [%s].", filePath));
+        log.info(String.format("MyIOUtils.readLongFromFile() is working. Read long from [%s].", filePath));
         // reading from file
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             return Long.parseLong(br.readLine());
@@ -81,7 +101,7 @@ public final class MyIOUtils {
 
     /** Write simple long value to file (file can be edited with with any editor). */
     public static void writeLongToFile(long value, @NonNull String fileName, boolean overwrite) throws IOException {
-        LOG.info(String.format("MyIOUtils.writeLongToFile() is working. Write long [%s] to file [%s].", value, fileName));
+        log.info(String.format("MyIOUtils.writeLongToFile() is working. Write long [%s] to file [%s].", value, fileName));
 
         // overwrite file (if specified) - and fail on deletion error
         if (overwrite) {
@@ -97,7 +117,7 @@ public final class MyIOUtils {
     /** Reads access token and its date from specified file. If file doesn't exist throw exception. */
     public static Pair<Date, String> readDatePairFromFile(@NonNull String tokenFile, @NonNull SimpleDateFormat format)
             throws IOException, ParseException {
-        LOG.debug(String.format("MyIOUtils.readDatePairFromFile() working. Read from [%s].", tokenFile));
+        log.debug(String.format("MyIOUtils.readDatePairFromFile() working. Read from [%s].", tokenFile));
 
         // todo: remove this unnecessary code??? check!
         if (StringUtils.isBlank(tokenFile)) { // fail-fast
@@ -118,7 +138,7 @@ public final class MyIOUtils {
      */
     public static void writeDatePairToFile(@NonNull Pair<Date, String> token, @NonNull SimpleDateFormat format,
                                     @NonNull String fileName, boolean overwrite) throws IOException {
-        LOG.debug(String.format("MyIOUtils.writeDatePairToFile() is working. " +
+        log.debug(String.format("MyIOUtils.writeDatePairToFile() is working. " +
                 "Pair: [%s], file: [%s], overwrite: [%s].", token, fileName, overwrite));
 
         // check input parameters - fail-fast
@@ -144,7 +164,7 @@ public final class MyIOUtils {
      * If received string is empty throws run-time exception.
      */
     public static void writeStringToFile(@NonNull String string, @NonNull String fileName, boolean overwrite) throws IOException {
-        LOG.debug(String.format("MyIOUtils.writeStringToFile() is working. Write to [%s].", fileName));
+        log.debug(String.format("MyIOUtils.writeStringToFile() is working. Write to [%s].", fileName));
 
         if (StringUtils.isBlank(string) || StringUtils.isBlank(fileName)) {
             throw new IllegalArgumentException(
@@ -164,7 +184,7 @@ public final class MyIOUtils {
     /***/
     // todo: https://howtodoinjava.com/java/io/java-read-file-to-string-examples/
     public static String readStringFromFile(@NonNull String filePath) throws IOException {
-        LOG.debug(String.format("MyIOUtils.readStringFromFile() is working. Read from [%s].", filePath));
+        log.debug(String.format("MyIOUtils.readStringFromFile() is working. Read from [%s].", filePath));
 
         StringBuilder strBuilder = new StringBuilder();
         try (BufferedReader strReader = new BufferedReader(new FileReader(filePath))) {
@@ -180,7 +200,7 @@ public final class MyIOUtils {
     /** Dump sql ResultSet to CSV. Reworked original implementation with intermediate progress output. */
     // todo: move to some dbpilot module
     public static void dumpResultSetToCSV(String csvFile, int reportStep, ResultSet rs, String tableName) throws IOException, SQLException {
-        LOG.debug(String.format("MyIOUtils.dumpResultSetToCSV() is working. CSV file [%s].", csvFile));
+        log.debug(String.format("MyIOUtils.dumpResultSetToCSV() is working. CSV file [%s].", csvFile));
 
         // with commons-csv. write CSV from ResultSet with header from ResultSet
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(csvFile));
@@ -199,38 +219,38 @@ public final class MyIOUtils {
 
                 counter++; // records counter
                 if (counter % reportStep == 0) { // log progress
-                    LOG.info(String.format("[%s] -> %s records exported.", StringUtils.trimToNull(tableName), counter));
+                    log.info(String.format("[%s] -> %s records exported.", StringUtils.trimToNull(tableName), counter));
                 }
 
             } // end of while for the whole ResultSet
 
             csvPrinter.flush();
-            LOG.info(String.format("[%s] -> %s records exported in total.", StringUtils.trimToNull(tableName), counter));
+            log.info(String.format("[%s] -> %s records exported in total.", StringUtils.trimToNull(tableName), counter));
         }
 
-        LOG.info(String.format("[%s] -> successfully exported.", StringUtils.trimToNull(tableName)));
+        log.info(String.format("[%s] -> successfully exported.", StringUtils.trimToNull(tableName)));
     }
 
     /***/
     // todo: move to some dbpilot module
     public static void dumpDBToCSV(@NonNull Connection connection, int fetchSize, int reportStep,
                                    @NonNull String[] tablesList, @NonNull String dumpDir) throws SQLException, IOException {
-        LOG.debug("MyIOUtils.dumpDBToCSV() is working.");
+        log.debug("MyIOUtils.dumpDBToCSV() is working.");
 
         try (Statement stmt = connection.createStatement()) {
             stmt.setFetchSize(fetchSize); // mandatory parameter to speed up dumping db
 
             String csvFile;
             for (String table : tablesList) {  // iterate over tables to export
-                LOG.info(String.format("[%s] -> export started.", StringUtils.trimToNull(table)));
+                log.info(String.format("[%s] -> export started.", StringUtils.trimToNull(table)));
 
                 try (ResultSet rs = stmt.executeQuery(String.format(SELECT_SQL, StringUtils.trimToNull(table)))) {
-                    LOG.debug("Got ResultSet, starting output to CSV.");
+                    log.debug("Got ResultSet, starting output to CSV.");
                     // write one CSV for one table
                     csvFile = dumpDir + "/" + StringUtils.trimToNull(table) + ".csv";
                     MyIOUtils.dumpResultSetToCSV(csvFile, reportStep, rs, table); // dump ResultSet to CSV file
                 } catch (SQLException e) {
-                    LOG.error(String.format("Can't export table [%s]! Skipped.", table), e);
+                    log.error(String.format("Can't export table [%s]! Skipped.", table), e);
                 } // end of internal TRY statement (with result set)
 
             } // end of FOR
@@ -241,13 +261,13 @@ public final class MyIOUtils {
 
     /***/
     public static JSONObject readJsonObjectFromFile(@NonNull String jsonFile) throws IOException, org.json.simple.parser.ParseException {
-        LOG.debug(String.format("MyIOUtils.readJsonObjectFromFile() is working. Read from [%s].", jsonFile));
+        log.debug(String.format("MyIOUtils.readJsonObjectFromFile() is working. Read from [%s].", jsonFile));
         return (JSONObject) JSON_PARSER.parse(new FileReader(jsonFile));
     }
 
     /***/
     public static JSONArray readJsonArrayFromFile(@NonNull String jsonFile) throws IOException, org.json.simple.parser.ParseException {
-        LOG.debug(String.format("MyIOUtils.readJsonObjectFromFile() is working. Read from [%s].", jsonFile));
+        log.debug(String.format("MyIOUtils.readJsonObjectFromFile() is working. Read from [%s].", jsonFile));
         return (JSONArray) JSON_PARSER.parse(new FileReader(jsonFile));
     }
 
@@ -271,8 +291,8 @@ public final class MyIOUtils {
                 String[] fileNames = pathName.list();
                 // Если список файлов пуст - удаляем каталог
                 if ((fileNames == null) || (fileNames.length <= 0)) {
-                    LOG.debug("DELTREE: deleting dir [" + pathName.getPath() + "].");
-                    if (!pathName.delete()) LOG.error("Can't delete dir [" + pathName.getPath() + "]!");
+                    log.debug("DELTREE: deleting dir [" + pathName.getPath() + "].");
+                    if (!pathName.delete()) log.error("Can't delete dir [" + pathName.getPath() + "]!");
                 } else {
                     // В цикле проходим по всему списку полученных файлов
                     for (String fileName : fileNames) {
@@ -282,16 +302,16 @@ public final class MyIOUtils {
                         if (file.isDirectory()) MyIOUtils.delTree(file.getPath());
                             // Если же полученный объект "файл" - файл, то удаляем его
                         else if (file.isFile())
-                            if (!file.delete()) LOG.error("Can't delete file [" + file.getPath() + "]!");
+                            if (!file.delete()) log.error("Can't delete file [" + file.getPath() + "]!");
                     }
                     // Удаляем текущий каталог после удаления из него всех файлов
-                    LOG.debug("DELTREE: deleting dir [" + pathName.getPath() + "].");
-                    if (!pathName.delete()) LOG.error("Can't delete dir [" + pathName.getPath() + "]!");
+                    log.debug("DELTREE: deleting dir [" + pathName.getPath() + "].");
+                    if (!pathName.delete()) log.error("Can't delete dir [" + pathName.getPath() + "]!");
                 }
             }
             // Если же "файл" - просто файл - удаляем его
-            else if (!pathName.delete()) LOG.error("Can't delete file [" + pathName.getPath() + "]!");
-        } else LOG.warn("Specifyed path [" + dir + "] doesn't exists!");
+            else if (!pathName.delete()) log.error("Can't delete file [" + pathName.getPath() + "]!");
+        } else log.warn("Specifyed path [" + dir + "] doesn't exists!");
     }
 
     /**
@@ -302,14 +322,14 @@ public final class MyIOUtils {
      * @param dir String каталог, очищаемый от содержимого.
      */
     public static void clearDir(String dir) {
-        LOG.info("Clearing catalog [" + dir + "].");
+        log.info("Clearing catalog [" + dir + "].");
         // Если каталог не существует или это файл - ничего не делаем
         if ((new File(dir).exists()) && (new File(dir).isDirectory())) {
             // Удаление полностью дерева каталогов вместе с родительским
             MyIOUtils.delTree(dir);
             // Воссоздание удаленного родительского каталога
-            if (!new File(dir).mkdirs()) LOG.error("Can't re-create catalog [" + dir + "]!");
-        } else LOG.warn("Path [" + dir + "] doesn't exists or not a directory!");
+            if (!new File(dir).mkdirs()) log.error("Can't re-create catalog [" + dir + "]!");
+        } else log.warn("Path [" + dir + "] doesn't exists or not a directory!");
     }
 
     /**
@@ -368,7 +388,7 @@ public final class MyIOUtils {
                 result += String.valueOf(DEFAULT_DIR_DELIMITER);
             }
         }
-        //LOG.debug("WORKING FSUtils.fixFPath(). RESULT: " + result);
+        //log.debug("WORKING FSUtils.fixFPath(). RESULT: " + result);
         return result;
     }
 
@@ -393,7 +413,7 @@ public final class MyIOUtils {
      */
     public static String serializeObject(@NonNull Object object, String fullPath, String fileName,
                                          String fileExt, boolean useFilePathCorrection) throws IOException {
-        LOG.debug("WORKING FSUtils.serializeObject().");
+        log.debug("WORKING FSUtils.serializeObject().");
 
         // Проверка полученного имени файла для сохранения объекта. Если имя файла не указано, вместо него будет
         // использовано имя класса(объекта).
@@ -421,7 +441,7 @@ public final class MyIOUtils {
 
         // Если указанный каталог для сериализации не существует - создаем его
         if (!new File(localFullPath).exists()) {
-            LOG.debug("Creating catalog [" + localFullPath + "].");
+            log.debug("Creating catalog [" + localFullPath + "].");
             boolean result = new File(localFullPath).mkdirs();
             // Если не удалось создать каталог для сериализации - ошибка!
             if (!result) {
@@ -482,22 +502,22 @@ public final class MyIOUtils {
         ObjectOutputStream out = null;
         try {
             // Запись объекта в файл (сериализация)
-            LOG.debug("Writing object to disk.");
+            log.debug("Writing object to disk.");
             out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fullPathSerialized.toString())));
             out.writeObject(object);
         }
         // ИС - что-то не так с сериализуемым классом
         catch (InvalidClassException e) {
-            LOG.error("Something is wrong with a class " + object.getClass().getName() + " [" + e.getMessage() + "]");
+            log.error("Something is wrong with a class " + object.getClass().getName() + " [" + e.getMessage() + "]");
         }
         // ИС - сериализуемый класс не реализует интерфейс Serializable
         catch (NotSerializableException e) {
-            LOG.error("Class " + object.getClass().getName() + " doesn't implement the java.io.Serializable " +
+            log.error("Class " + object.getClass().getName() + " doesn't implement the java.io.Serializable " +
                     "interface! [" + e.getMessage() + "]");
         } catch (IOException e) {
-            LOG.error("I/O error! [" + e.getMessage() + "]");
+            log.error("I/O error! [" + e.getMessage() + "]");
         } finally {
-            LOG.debug("Trying to close ObjectOutputStream...");
+            log.debug("Trying to close ObjectOutputStream...");
             if (out != null) out.close();
         }
 
@@ -523,7 +543,7 @@ public final class MyIOUtils {
             }
             zout.closeEntry();
         } finally {
-            LOG.debug("Trying to close zip and file streams...");
+            log.debug("Trying to close zip and file streams...");
             if (fin != null) fin.close();
             if (zout != null) zout.close();
             if (fout != null) fout.close();
@@ -531,7 +551,7 @@ public final class MyIOUtils {
 
         // Удаление исходного файла с данными
         if (!new File(fullPathSerialized.toString()).delete())
-            LOG.warn("Can't delete source file [" + fullPathSerialized + "]!");
+            log.warn("Can't delete source file [" + fullPathSerialized + "]!");
 
         return fullPathZipped.toString();
     }
@@ -551,7 +571,7 @@ public final class MyIOUtils {
      */
     public static Object deserializeObject(String filePath, boolean deleteSource, boolean useFilePathCorrection)
             throws IOException, ClassNotFoundException {
-        LOG.debug("WORKING FSUtils.deserializeObject().");
+        log.debug("WORKING FSUtils.deserializeObject().");
 
         // Десериализованный и распакованный объект
         Object object = null;
@@ -590,7 +610,7 @@ public final class MyIOUtils {
             ZipEntry entry;
             int counter = 0;
             while (((entry = zin.getNextEntry()) != null) && (counter < 1)) {
-                LOG.debug("Extracting from archive -> " + entry.getName());
+                log.debug("Extracting from archive -> " + entry.getName());
                 unpackedFileName = entry.getName();
                 int count;
                 byte data[] = new byte[FILE_BUFFER];
@@ -645,23 +665,23 @@ public final class MyIOUtils {
             if (!StringUtils.isBlank(unpackedFileName)) // <- защита от NullPointerException
             {
                 if (!new File(tempFilePath + unpackedFileName).delete()) {
-                    LOG.warn("Can't delete file [" + (tempFilePath + unpackedFileName) + "]!");
+                    log.warn("Can't delete file [" + (tempFilePath + unpackedFileName) + "]!");
                 } else {
-                    LOG.debug("Deleted unpacked file [" + (tempFilePath + unpackedFileName) + "].");
+                    log.debug("Deleted unpacked file [" + (tempFilePath + unpackedFileName) + "].");
                 }
             }
         }
 
         // Если указано удаление исходного архивного файла с сериализованным объектом - удаляем
         if (deleteSource) {
-            LOG.debug("Trying to delete source file [" + filePath + "].");
+            log.debug("Trying to delete source file [" + filePath + "].");
             if (!new File(filePath).delete()) {
-                LOG.warn("Can't delete source file [" + filePath + "]!");
+                log.warn("Can't delete source file [" + filePath + "]!");
             } else {
-                LOG.debug("Source file [" + filePath + "] deleted successfully.");
+                log.debug("Source file [" + filePath + "] deleted successfully.");
             }
         } else {
-            LOG.debug("No deleting source file [" + filePath + "].");
+            log.debug("No deleting source file [" + filePath + "].");
         }
         // Возвращаем результат
         return object;
@@ -678,7 +698,7 @@ public final class MyIOUtils {
      * @return boolean ИСТИНА/ЛОЖЬ - в зависимости от наличия файлов в указанном каталоге.
      */
     public static boolean containFiles(String path) {
-        LOG.debug("FSUtils.containFiles(). Checking path [" + path + "].");
+        log.debug("FSUtils.containFiles(). Checking path [" + path + "].");
         boolean result = false;
         // Если указанный путь не пуст - работаем
         if (!StringUtils.isBlank(path)) {
@@ -697,12 +717,12 @@ public final class MyIOUtils {
             }
             // Ошибку - в лог!
             else {
-                LOG.error("Path [" + path + "] doesn't exists or not a directory!");
+                log.error("Path [" + path + "] doesn't exists or not a directory!");
             }
         }
         // Если же путь пуст - сообщим об этом в лог
         else {
-            LOG.error("Empty path!");
+            log.error("Empty path!");
         }
         return result;
     }
@@ -714,7 +734,7 @@ public final class MyIOUtils {
      * возвращает значение ИСТИНА.
      */
     public static boolean isEmptyDir(String path) {
-        LOG.debug("FSUtils.isEmptyDir(). Checking path [" + path + "].");
+        log.debug("FSUtils.isEmptyDir(). Checking path [" + path + "].");
         boolean result = true;
         // Если указанный путь не пуст - работаем
         if (!StringUtils.isBlank(path)) {
@@ -730,12 +750,12 @@ public final class MyIOUtils {
             }
             // Ошибку - в лог!
             else {
-                LOG.error("Path [" + path + "] doesn't exists or not a directory!");
+                log.error("Path [" + path + "] doesn't exists or not a directory!");
             }
         }
         // Если же путь пуст - сообщим об этом в лог
         else {
-            LOG.error("Empty path!");
+            log.error("Empty path!");
         }
         return result;
     }
@@ -805,7 +825,7 @@ public final class MyIOUtils {
     /** Метод возвращает контрольную сумму CRC32 для файла fileName. */
     // todo: duplicate for getCRC()!!!
     public static long getChecksum(@NonNull String fileName) throws IOException {
-        LOG.debug("MyIOUtils.getChecksum() is working.");
+        log.debug("MyIOUtils.getChecksum() is working.");
 
         if (StringUtils.isBlank(fileName)) {
             throw new IllegalArgumentException("Provided empty file name for checksum calculating!");
@@ -822,7 +842,7 @@ public final class MyIOUtils {
             }
 
             result = crc.getValue();
-            LOG.info(String.format("CRC for file [%s]: %s", fileName, result));
+            log.info(String.format("CRC for file [%s]: %s", fileName, result));
             return result;
         }
 
@@ -861,12 +881,12 @@ public final class MyIOUtils {
      * Если не указано расширение, то будет найдено уникальное имя для файла без расширения.
      */
     public static String findUniqueFileName(String catalogPath, String fileExtension, boolean usePathCorrection) {
-        LOG.debug("MyIOUtils.findUniqueFileName() is working.");
+        log.debug("MyIOUtils.findUniqueFileName() is working.");
 
         String result = null;
         // Если указанный каталог для поиска имени существует - работаемс
         if ((!StringUtils.isBlank(catalogPath)) && (new File(catalogPath).exists())) {
-            LOG.debug("Path [" + catalogPath + "] exists! Processing.");
+            log.debug("Path [" + catalogPath + "] exists! Processing.");
             // Если используется коррекция имени файла - выполняем ее
             String localPath;
             if (usePathCorrection) {
@@ -898,13 +918,13 @@ public final class MyIOUtils {
                 }
             }
             while (!nameFound);
-            LOG.debug("Found random file name [" + randomFileName + "].");
+            log.debug("Found random file name [" + randomFileName + "].");
             // Сохраняем результат
             result = String.valueOf(randomFileName);
         }
         // Если же указан пустой каталог или каталог просто не существует - сообщим об этом в лог
         else {
-            LOG.warn("Path [" + catalogPath + "] is empty or doesn't exists!");
+            log.warn("Path [" + catalogPath + "] is empty or doesn't exists!");
         }
         // Возвращаем результат
         return result;

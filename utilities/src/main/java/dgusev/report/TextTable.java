@@ -1,14 +1,21 @@
 package dgusev.report;
 
-import lombok.extern.apachecommons.CommonsLog;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * Simple text grid draw component for reports.
@@ -189,9 +196,9 @@ public final class TextTable {
 
     /***/
     public void exportToExcelFile(String fileName, String dataSheetName) throws IOException {
-        LOG.debug("TextTable.getExcelFile() working.");
+        log.debug("TextTable.getExcelFile() working.");
         if (!StringUtils.isBlank(fileName)) { // file name is OK
-            LOG.debug(String.format("File name [%s] is OK.", fileName));
+            log.debug(String.format("File name [%s] is OK.", fileName));
 
             // table model data
             String[]   header = this.tableModel.getHeader(); // table header row
@@ -234,18 +241,18 @@ public final class TextTable {
                     }
                     rowsCounter++;
                     if (rowsCounter > 0 && rowsCounter % DEBUG_INFO_STEP == 0) {
-                        LOG.debug("Excel export: processed -> " + rowsCounter);
+                        log.debug("Excel export: processed -> " + rowsCounter);
                     }
 
                 } // end of FOR -> rows processing
-                LOG.debug(String.format("Excel export: processed -> %s. Processing finished.", rowsCounter));
+                log.debug(String.format("Excel export: processed -> %s. Processing finished.", rowsCounter));
             }
 
             // write excel model to file on disk
             FileOutputStream fileOut = new FileOutputStream(fileName);
             wb.write(fileOut);
             fileOut.close();
-            LOG.debug(String.format("File [%s] created ok.", fileName));
+            log.debug(String.format("File [%s] created ok.", fileName));
 
         } else { // file name isn't OK!
             throw new IOException(String.format("File [%s]: name is empty!", fileName));
@@ -254,7 +261,7 @@ public final class TextTable {
 
     /***/
     public static void main(String[] args) throws IOException {
-        LOG.info("Text grid main method starts.");
+        log.info("Text grid main method starts.");
 
         String[]   header = new String[] {"Header1\n*****Subheader1*****", "Header2", "Header3"};
         String[][] data   = new String[][] {new String[] {"1-1", "1-2", "1-3"}, new String[] {"2-1", "2-2", "2-3", "2-4"},

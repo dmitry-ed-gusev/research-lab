@@ -9,6 +9,7 @@ package edu.dmgusev.dna;
  */
 
 import java.io.File;
+import java.io.IOException;
 
 import edu.duke.DirectoryResource;
 import edu.duke.FileResource;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 /** Assignment II. Tag Finder assignment application. */
 
 @Slf4j
-public class TagFinder {
+public class TagFinderApplication {
 
     public String findProtein(String dna) {
         int start = dna.indexOf("atg");
@@ -60,8 +61,9 @@ public class TagFinder {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         log.info("Tag Finder is starting...");
+
     }
 
 }
