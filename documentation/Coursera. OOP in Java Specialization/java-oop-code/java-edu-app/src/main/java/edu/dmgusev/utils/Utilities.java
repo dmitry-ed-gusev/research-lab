@@ -41,10 +41,7 @@ public class Utilities {
         }
     }
 
-    /**
-     * This method should be qble to show [resources] folder content (list of
-     * files).
-     */
+    /** This method should be qble to show [resources] folder content (list of files). */
     public static File[] getResourceFolderFiles(String folder) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         URL url = loader.getResource(folder);
@@ -52,6 +49,7 @@ public class Utilities {
         return new File(path).listFiles();
     }
 
+    /***/
     public List<File> getAllFilesFromResource(String folder) throws URISyntaxException, IOException {
 
         ClassLoader classLoader = getClass().getClassLoader();
@@ -62,7 +60,6 @@ public class Utilities {
                 .filter(Files::isRegularFile)
                 .map(Path::toFile)
                 .collect(Collectors.toList());
-
     }
 
     // print a file
