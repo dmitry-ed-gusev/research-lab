@@ -6,8 +6,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+
+import lombok.Getter;
 
 
 /**
@@ -49,7 +52,9 @@ import org.apache.commons.csv.CSVParser;
  * 
  * @author Duke Software Team
  */
-public class URLResource {
+
+@Getter
+public class URLResource implements IResource {
     private String myPath;
     private String mySource;
 
@@ -82,6 +87,7 @@ public class URLResource {
      * 
      * @return an <code>Iterable</code> that allows access one line at a time
      */
+    @Override
     public Iterable<String> lines () {
         return new TextIterable(mySource, "\\n");
     }
@@ -92,6 +98,7 @@ public class URLResource {
      * 
      * @return an <code>Iterable</code> that allows access one word at a time
      */
+    @Override
     public Iterable<String> words () {
         return new TextIterable(mySource, "\\s+");
     }

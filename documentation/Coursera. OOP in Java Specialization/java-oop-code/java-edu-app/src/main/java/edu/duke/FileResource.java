@@ -59,10 +59,10 @@ import lombok.Getter;
  */
 
 @Getter
-public class FileResource {
+public class FileResource implements IResource {
     private String myPath;
     private String mySource;
-    private File mySaveFile;
+    private File   mySaveFile;
 
     /**
      * Create a <code>FileResource</code> object that opens the file chosen by the user using a file
@@ -172,6 +172,7 @@ public class FileResource {
      * @return an <code>Iterable</code> that will allow access to contents of opened file one line
      *         at a time.
      */
+    @Override
     public Iterable<String> lines () {
         return new TextIterable(mySource, "\\n");
     }
@@ -183,6 +184,7 @@ public class FileResource {
      * @return an <code>Iterable</code> that will allow access to contents of opened file one word
      *         at a time.
      */
+    @Override
     public Iterable<String> words () {
         return new TextIterable(mySource, "\\s+");
     }
