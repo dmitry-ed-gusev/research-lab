@@ -1,4 +1,4 @@
-package edu.dmgusev.dna;
+package edu.dmgusev.finders.dna;
 
 import java.io.IOException;
 import java.util.ArrayList;
