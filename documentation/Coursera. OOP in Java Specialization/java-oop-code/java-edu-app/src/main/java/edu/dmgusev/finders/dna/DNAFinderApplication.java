@@ -22,11 +22,10 @@ public class DNAFinderApplication {
 
         var currentIndex = dna.toLowerCase().indexOf(stopCodon.toLowerCase(), startIndex);
         while (currentIndex != -1) {
-            if (currentIndex - startIndex % 3 == 0) {
+            if ((currentIndex - startIndex) % 3 == 0) {
                 return currentIndex;
             }
-
-            currentIndex = dna.toLowerCase().indexOf(stopCodon.toLowerCase(), currentIndex);
+            currentIndex = dna.toLowerCase().indexOf(stopCodon.toLowerCase(), currentIndex + 1);
         }
 
         return dna.length();
@@ -54,7 +53,7 @@ public class DNAFinderApplication {
             int stopCodonIndex = this.findStopCodon(entry.getKey(), 0, stopCodon);
             System.out.println(
                 String.format(
-                    "For the string [%s] the stop codon [%s] was [%s]! Status: [%s].",
+                    "For the string [%s] the proper stop codon [%s] was [%s]! Status: [%s].",
                         entry.getKey(), stopCodon, 
                         (stopCodonIndex == entry.getKey().length() ? "NOT FOUND" : 
                             String.format("FOUND at %s", stopCodonIndex)), 
