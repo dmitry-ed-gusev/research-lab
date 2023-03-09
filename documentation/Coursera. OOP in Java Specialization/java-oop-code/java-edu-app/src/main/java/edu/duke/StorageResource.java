@@ -44,14 +44,14 @@ public class StorageResource {
      * Create an empty <code>StorageResource</code> object
      */
     public StorageResource () {
-        myStrings = new ArrayList<String>();
+        myStrings = new ArrayList<>();
     }
 
     /**
      * Create a <code>StorageResource</code> object, loaded with the Strings passed as parameters.
      */
     StorageResource (String... data) {
-        myStrings = new ArrayList<String>(Arrays.asList(data));
+        myStrings = new ArrayList<>(Arrays.asList(data));
     }
 
     /**
@@ -60,7 +60,7 @@ public class StorageResource {
      * @param other the original list being copied
      */
     public StorageResource (StorageResource other) {
-        myStrings = new ArrayList<String>(other.myStrings);
+        myStrings = new ArrayList<>(other.myStrings);
     }
 
     /**

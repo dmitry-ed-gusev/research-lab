@@ -7,6 +7,7 @@ package edu.dmgusev;
 import edu.duke.FileResource;
 
 public class WisdomApplication {
+
     public void findWisdom() {
         FileResource fr = new FileResource("wisdom/confucius.txt");
         for (String l : fr.lines()) {
@@ -16,4 +17,5 @@ public class WisdomApplication {
             }
         }
     }
+
 }
