@@ -106,4 +106,5 @@ public class StorageResource {
     public Iterable<String> data () {
         return myStrings;
     }
+
 }

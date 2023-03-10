@@ -121,6 +121,34 @@ public class DNAFinderApplication {
         return dna.substring(startCodonIndex, stopCodonIndex + 3); // todo: move 3 - to constants
     }
 
+    // todo: merge with the first findGene() method
+    public String findGene(String dna, int where){
+        int startIndex = dna.indexOf("ATG", where);
+        System.out.println("Start Index is: " + startIndex);
+        if (startIndex == -1){
+            return "";
+        }
+        int stopIndexTAA = findStopCodon(dna, startIndex, "TAA");
+        System.out.println("stopIndexTAA: " + stopIndexTAA);
+        int stopIndexTAG = findStopCodon(dna, startIndex, "TAG");
+        System.out.println("stopIndexTAG: " + stopIndexTAG);
+        int stopIndexTGA = findStopCodon(dna, startIndex, "TGA");
+        System.out.println("stopIndexTGA " + stopIndexTGA);
+        
+        int minStopIndex1 = Math.min(stopIndexTAA, stopIndexTAG);
+        int minStopIndex2 = Math.min(minStopIndex1, stopIndexTGA);
+        
+        if (minStopIndex2 == dna.length()){
+            return "";
+        }
+        else
+        {
+        //System.out.println("Gene Stop index is: " + minStopIndex2);
+        String gene = dna.substring(startIndex, minStopIndex2+3);
+       // System.out.println("Gene is " + gene);
+        return gene;   
+    }
+}
     // Write the void method testFindGene that has no parameters. You should create five DNA strings. 
     // The strings should have specific test cases such as DNA with no “ATG”, DNA with “ATG” and one valid 
     // stop codon, DNA with “ATG” and multiple valid stop codons, DNA with “ATG” and no valid stop codons. 
@@ -150,181 +178,9 @@ public class DNAFinderApplication {
 
     }
 
-    // Write the void method printAllGenes that has one String parameter dna, representing a string of DNA. 
-    // In this method you should repeatedly find genes and print each one until there are no more genes. 
-    // Hint: remember you learned a while(true) loop and break.
-    public void printAllGenes() {
-        // todo: implementation
-    }
+    // 
+    public StorageResource getAllGenes(String dna) {
 
-    // Write the method cgRatio that has one String parameter dna, and returns the ratio of C’s and G’s in 
-    // dna as a fraction of the entire strand of DNA. For example if the String were “ATGCCATAG,” then 
-    // cgRatio would return 4/9 or .4444444.
-    // ----------
-    // Hint: 9/2 uses integer division because you are dividing an integer by an integer and thus Java 
-    //       thinks you want the result to be an integer. If you want the result to be a decimal number, 
-    //       then make sure you convert one of the integers to a decimal number by changing it to a float. 
-    //       For example, (float) 9/2 is interpreted by Java as 9.0/2 and if one of the numbers is a decimal, 
-    //       then Java assumes you want the result to be a decimal number. Thus (float) 9/2 is 4.5.
-    public void cgRatio() {
-        // todo: implementation
-    }
-
-    // Write a method countCTG that has one String parameter dna, and returns the number of times the codon 
-    // CTG appears in dna.
-    public void countCTG(){
-        // todo: implementation
-    }
-
-    // Write the void method processGenes that has one parameter sr, which is a StorageResource of strings. 
-    // This method processes all the strings in sr to find out information about them. 
-    // Specifically, it should: 
-    //      * print all the Strings in sr that are longer than 9 characters
-    //      * print the number of Strings in sr that are longer than 9 characters
-    //      * print the Strings in sr whose C-G-ratio is higher than 0.35
-    //      * print the number of strings in sr whose C-G-ratio is higher than 0.35
-    //      * print the length of the longest gene in sr
-    public void processGenes() {
-        // todo: implementation
-    }
-
-    // Write a method testProcessGenes. This method will call your processGenes method on different test 
-    // cases. Think of five DNA strings to use as test cases. These should include: one DNA string that has 
-    // some genes longer than 9 characters, one DNA string that has no genes longer than 9 characters, one 
-    // DNA string that has some genes whose C-G-ratio is higher than 0.35, and one DNA string that has some 
-    // genes whose C-G-ratio is lower than 0.35. Write code in testProcessGenes to call processGenes five 
-    // times with StorageResources made from each of your five DNA string test cases.
-    public void testProcessGenes() {
-        // todo: implementation
-    }
-
-    public void processGenes(StorageResource sr){
-        //print strings longer than 9 characters
-        
-        int geneCount = 0;
-        int geneCountAbove60 = 0;
-        int cgRatioCount = 0;
-        int geneLength = 0;
-        String longestGene = "";
-        
-        for (String s: sr.data()){
-            geneCount++;
-           // if (s.length() > 9){
-              if (s.length() > 60){ //modified for second test case
-                //System.out.println("This string has a length greater than 60: " + s);
-                geneCountAbove60 = geneCountAbove60 + 1;           
-            }
-            
-            double out = cgRatio(s);
-            
-            if (out > 0.35){
-               // System.out.println("This string has a C-G-ratio greater than .35: " + s);
-                cgRatioCount = cgRatioCount + 1;
-            }
-            
-            if (s.length() > geneLength){
-                geneLength = s.length();
-                longestGene = s;
-            }
-        }
-        
-        System.out.println("The number of strings in sr longer than 60 characters: " + geneCountAbove60);
-        System.out.println("The number of strings in sr with C-G-ratio higher than 0.35: " + cgRatioCount);
-        System.out.println("Length of longest gene: " + geneLength);
-        System.out.println("Longest gene is: " + longestGene);
-        System.out.println("Number of genes in the storage list is: " + geneCount);
-    }
-    
-    public void testProcessGenes(){
-        String dna2 = "ATGTTAATAGTGATTTAAATGTAA";//multiple stop codons
-        System.out.println("Dna 2 is " + dna2);
-        StorageResource dnaList = getAllGenes(dna2);
-        
-        for (String s: dnaList.data()){
-            System.out.println("Gene is " + s);
-        }
-        
-        processGenes(dnaList);   
-    }
-    public void testProcessGenesFromFile(){
-        FileResource fr = new FileResource("brca1line.fa");
-        String dna = fr.asString().toUpperCase();
-        
-        System.out.println("dna is " + dna);
-        StorageResource geneList = getAllGenes(dna);    
-        //for (String s: geneList.data()){
-         //   System.out.println("Gene is " + s);
-       // }
-       processGenes(geneList);
-    }
-        
-        
-    public double cgRatio(String dna){
-       int startIndex = 0;
-       int num = 0;
-       int denom = dna.length();
-       int currIndex = 0;
-       
-       while (true){
-           int cIndex = dna.indexOf("C", startIndex);
-           //System.out.println("cIndex is " + cIndex);
-           int gIndex = dna.indexOf("G", startIndex);
-           //System.out.println("gIndex is " + gIndex);
-           
-            if (cIndex == -1){
-                currIndex = gIndex;
-                //System.out.println("currIndex is " + currIndex);
-            }
-            else if (gIndex == -1){
-                currIndex = cIndex;
-               // System.out.println("currIndex is " + currIndex);
-            }
-            else {
-                currIndex = Math.min(cIndex, gIndex);
-                //System.out.println("currIndex is " + currIndex);
-            }
-              
-           if (currIndex == -1){
-               break;
-            }
-            else
-            {
-                num = num + 1;
-                startIndex = currIndex + 1;
-            }
-        }
-        return ((double) num)/denom ;  
-    }
-           
-    
-    public String findGene(String dna, int where){
-            int startIndex = dna.indexOf("ATG", where);
-            System.out.println("Start Index is: " + startIndex);
-            if (startIndex == -1){
-                return "";
-            }
-            int stopIndexTAA = findStopCodon(dna, startIndex, "TAA");
-            System.out.println("stopIndexTAA: " + stopIndexTAA);
-            int stopIndexTAG = findStopCodon(dna, startIndex, "TAG");
-            System.out.println("stopIndexTAG: " + stopIndexTAG);
-            int stopIndexTGA = findStopCodon(dna, startIndex, "TGA");
-            System.out.println("stopIndexTGA " + stopIndexTGA);
-            
-            int minStopIndex1 = Math.min(stopIndexTAA, stopIndexTAG);
-            int minStopIndex2 = Math.min(minStopIndex1, stopIndexTGA);
-            
-            if (minStopIndex2 == dna.length()){
-                return "";
-            }
-            else
-            {
-            //System.out.println("Gene Stop index is: " + minStopIndex2);
-            String gene = dna.substring(startIndex, minStopIndex2+3);
-           // System.out.println("Gene is " + gene);
-            return gene;   
-        }
-    }
-    public StorageResource getAllGenes(String dna){
         StorageResource geneList = new StorageResource();
         int startIndex = dna.indexOf("ATG");
         //System.out.println("start Index is " + startIndex);
@@ -350,28 +206,190 @@ public class DNAFinderApplication {
         }
         return geneList;
     }
-    
+
+    // Write the void method printAllGenes that has one String parameter dna, representing a string of DNA. 
+    // In this method you should repeatedly find genes and print each one until there are no more genes. 
+    // Hint: remember you learned a while(true) loop and break.
+    public void printAllGenes() {
+        // todo: implementation
+    }
+
+    // Write the method cgRatio that has one String parameter dna, and returns the ratio of C’s and G’s in 
+    // dna as a fraction of the entire strand of DNA. For example if the String were “ATGCCATAG,” then 
+    // cgRatio would return 4/9 or .4444444.
+    // ----------
+    // Hint: 9/2 uses integer division because you are dividing an integer by an integer and thus Java 
+    //       thinks you want the result to be an integer. If you want the result to be a decimal number, 
+    //       then make sure you convert one of the integers to a decimal number by changing it to a float. 
+    //       For example, (float) 9/2 is interpreted by Java as 9.0/2 and if one of the numbers is a decimal, 
+    //       then Java assumes you want the result to be a decimal number. Thus (float) 9/2 is 4.5.
+    public double cgRatio(@NonNull String dna) {
+
+        // counter variables
+        int startIndex = 0;
+        int num        = 0;
+        int denom      = dna.length();
+        int currIndex  = 0;
+        
+        while (true) {
+
+            int cIndex = dna.toUpperCase().indexOf("C", startIndex);
+            int gIndex = dna.toUpperCase().indexOf("G", startIndex);
+
+            // calculating index
+            if (cIndex == -1) {
+                currIndex = gIndex;
+            } else if (gIndex == -1) {
+                currIndex = cIndex;
+            } else {
+                currIndex = Math.min(cIndex, gIndex);
+            }
+               
+            if (currIndex == -1) { // nothing found
+               break;
+            } else { // calculating further
+                num = num + 1;
+                startIndex = currIndex + 1;
+            }
+
+        } // end of WHILE
+
+        return ((double) num)/denom;
+
+    }
+
+    // Write a method countCTG that has one String parameter dna, and returns the number of times the codon 
+    // CTG appears in dna.
+    public void countCTG(){
+        // todo: implementation
+    }
+
+    // Write the void method processGenes that has one parameter sr, which is a StorageResource of strings. 
+    // This method processes all the strings in sr to find out information about them. 
+    // Specifically, it should: 
+    //      * print all the Strings in sr that are longer than 9 characters
+    //      * print the number of Strings in sr that are longer than 9 characters
+    //      * print the Strings in sr whose C-G-ratio is higher than 0.35
+    //      * print the number of strings in sr whose C-G-ratio is higher than 0.35
+    //      * print the length of the longest gene in sr
+    public void processGenes(@NonNull StorageResource sr) {
+
+        if (sr.size() <= 0) { // fail-fast - storage is empty, immediate return
+            log.warn("Storage resource with strings is empty!");
+            return;
+        }
+        
+        // constants/boundaries
+        double BOUNDARY_CG_RATIO      = 0.35;
+        int    BOUNDARY_PRINT_STR_LEN = 9;
+        int    BOUNDARY_COUNT_STR_LEN = 60;
+
+        // counter/resulting variables
+        int genesCountAbove9  = 0;
+        int genesCountAbove60 = 0;
+        int cgRatioCount      = 0;
+        String longestGene    = "";
+        
+        for (String gene: sr.data()) { // processing genes and perform counting
+
+            if (gene.length() > BOUNDARY_PRINT_STR_LEN) { // print strings longer than 9 characters
+                System.out.println(String.format("Gene longer than %s characters: %s",
+                    BOUNDARY_PRINT_STR_LEN, gene));
+                genesCountAbove9++;
+            }
+
+            if (gene.length() > BOUNDARY_COUNT_STR_LEN){ // count genes longer 60 symbols
+                System.out.println(String.format("Gene longer than %s characters: %s",
+                    BOUNDARY_COUNT_STR_LEN, gene));
+                genesCountAbove60++;
+            }
+
+            // calculate C-G ratio and count if applicable
+            double ratio = cgRatio(gene);
+            if (ratio > BOUNDARY_CG_RATIO) {
+                System.out.println(String.format("Gene with C-G-ratio higher than %s: %s",
+                    BOUNDARY_CG_RATIO, gene));
+                cgRatioCount++;
+            }
+
+            if (gene.length() > longestGene.length()) { // check for the longest gene
+                longestGene = gene;
+            }
+
+        } // end of FOR cycle
+
+        // output of the counted parameters
+        System.out.println("\n\nAnalisys Report for the provided data:");
+        System.out.println(String.format("  The # of strings longer than %s characters: %s",
+            BOUNDARY_PRINT_STR_LEN, genesCountAbove9));
+        System.out.println(String.format("  The # of strings longer than %s characters: %s", 
+            BOUNDARY_COUNT_STR_LEN, genesCountAbove60));
+        System.out.println(String.format("  The # of strings with C-G-ratio higher than %s ratio: %s", 
+            BOUNDARY_CG_RATIO, cgRatioCount));
+        System.out.println(String.format("  The length of the longest gene: %s",
+            longestGene.length()));
+        System.out.println(String.format("  The longest gene is: %s", longestGene));
+        System.out.println(String.format("  # of genes in the storage is: %s", sr.size()));
+
+    }
+
+    // Write a method testProcessGenes. This method will call your processGenes method on different test 
+    // cases. Think of five DNA strings to use as test cases. These should include: one DNA string that has 
+    // some genes longer than 9 characters, one DNA string that has no genes longer than 9 characters, one 
+    // DNA string that has some genes whose C-G-ratio is higher than 0.35, and one DNA string that has some 
+    // genes whose C-G-ratio is lower than 0.35. Write code in testProcessGenes to call processGenes five 
+    // times with StorageResources made from each of your five DNA string test cases.
+    public void testProcessGenes() {
+
+        String dna2 = "ATGTTAATAGTGATTTAAATGTAA"; //multiple stop codons
+        System.out.println("Dna 2 is " + dna2);
+
+        StorageResource dnaList = getAllGenes(dna2);
+        
+        for (String s: dnaList.data()){
+            System.out.println("Gene is " + s);
+        }
+        
+        processGenes(dnaList);   
+    }
+
+    // 
+    public void testProcessGenesFromFile() {
+
+        FileResource fr = new FileResource("dna/brca1line.fa");
+        String dna = fr.asString().toUpperCase();
+        
+        System.out.println("dna is " + dna);
+        StorageResource geneList = getAllGenes(dna);    
+        //for (String s: geneList.data()){
+         //   System.out.println("Gene is " + s);
+       // }
+       processGenes(geneList);
+    }
+
     public static void main(String[] args) throws IOException {
         log.info("Tag Finder application is starting...");
 
         var application = new DNAFinderApplication();
 
-        // test the first method
-        System.out.println("\n");
-        log.info("Testing: findStopCodon()...");
-        application.testFindStopCodon();
+        // // test the first method
+        // System.out.println("\n");
+        // log.info("Testing: findStopCodon()...");
+        // application.testFindStopCodon();
 
-        // test the first method
-        System.out.println("\n");
-        log.info("Testing: findGene()...");
-        application.testFindGene();
+        // // test the first method
+        // System.out.println("\n");
+        // log.info("Testing: findGene()...");
+        // application.testFindGene();
 
-        // test the first method
-        System.out.println("\n");
-        log.info("Testing: printAllGenes()...");
-        application.printAllGenes();
+        // // test the first method
+        // System.out.println("\n");
+        // log.info("Testing: printAllGenes()...");
+        // application.printAllGenes();
 
-        System.out.println("\n");
+        // System.out.println("\n");
+        
+        application.testProcessGenesFromFile();
 
     }
 
