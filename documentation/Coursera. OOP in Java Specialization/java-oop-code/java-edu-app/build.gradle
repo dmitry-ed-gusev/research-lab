@@ -26,6 +26,7 @@ ext {
     commonsIOVersion      = '2.11.0'
     slf4jVersion          = '2.0.6'
     logbackVersion        = '1.4.5'
+    commonsCSVVersion     = '1.10.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_15
@@ -44,6 +45,7 @@ dependencies {
     implementation "ch.qos.logback:logback-classic:${logbackVersion}"
     implementation "ch.qos.logback:logback-core:${logbackVersion}"
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "org.apache.commons:commons-csv:${commonsCSVVersion}"
 
     // -- testing dependencies
 
