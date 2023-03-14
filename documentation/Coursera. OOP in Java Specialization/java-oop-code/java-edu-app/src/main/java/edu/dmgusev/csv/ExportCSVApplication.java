@@ -10,7 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ExportCSVApplication {
 
-    public static final String CSV_EXPORT_FILE = "csv/exports_sample.csv";
+    // sample CSV files
+    public static final String CSV_EXPORTDATA       = "csv/exportdata.csv";
+    public static final String CSV_EXPORTS_SAMPLE   = "csv/exports_sample.csv";
+    public static final String CSV_EXPORTS_SMALL_MS = "csv/exports_small_ms.csv";
+    public static final String CSV_EXPORTS_SMALL    = "csv/exports_small.csv";
 
     /** Print content of the CSV file (record by record). */
     public void tester(@NonNull String csvFile) {
@@ -35,9 +39,15 @@ public class ExportCSVApplication {
         For example, using the file exports_small.csv and the country Germany, the program returns the 
         string: [Germany: motor vehicles, machinery, chemicals: $1,547,000,000,000]
     */
-    public void countryInfo(@NonNull CSVParser parser, @NonNull String country) {
-        log.debug("countryInfo() is working.");
+    public void countryInfo(@NonNull String csvFile, @NonNull String country) {
+        log.debug(String.format("countryInfo(): CSV file [%s], country [%s].", 
+            csvFile, country));
 
+        // read CSV file
+        FileResource fr = new FileResource(csvFile);
+        CSVParser parser = fr.getCSVParser();
+
+        // iterate over CSV file record by record and process
         for (CSVRecord csvRecord: parser) {
 
             String csvCountry = csvRecord.get("Country"); // get country value
@@ -48,8 +58,7 @@ public class ExportCSVApplication {
                 String csvValue   = csvRecord.get("Value (dollars)");
 
                 // print the result
-                System.out.println(
-                    String.format("%s: %s: %s", csvCountry, csvExports, csvValue));
+                System.out.println(String.format("%s: %s: %s", csvCountry, csvExports, csvValue));
 
                 return; // when we've found a country - immediate exit
             }
@@ -66,9 +75,9 @@ public class ExportCSVApplication {
         names of all the countries that have both exportItem1 and exportItem2 as export items. 
 
         For example, using the file exports_small.csv, this method called with the items “gold” 
-        and “diamonds” would print the countries.
+        and “diamonds” would print the countries: Namibia, South Africa.
     */
-    public void listExportersTwoProducts() {
+    public void listExportersTwoProducts(@NonNull String csvFile, String exportItem1, String exportItem2) {
         log.debug("listExportersTwoProducts() is working.");
     }
 
@@ -113,8 +122,21 @@ public class ExportCSVApplication {
 
         var application = new ExportCSVApplication();
 
-        log.info(String.format("Printing content of the file: [%s]%n", CSV_EXPORT_FILE));
-        application.tester(CSV_EXPORT_FILE);
+        // printing content of the provided CSV file
+        //log.info(String.format("Printing content of the file: [%s]%n", CSV_EXPORTS_SAMPLE));
+        //application.tester(CSV_EXPORTS_SAMPLE);
+
+        // testing method countryInfo()
+        application.countryInfo(CSV_EXPORTS_SMALL, "Germany");
+
+        // testing method listExportersTwoProducts()
+        //application.listExportersTwoProducts();
+
+        // testing method numberOfExporters()
+        //application.numberOfExporters();
+
+        // testing method bigExporters()
+        //application.bigExporters();
 
     }
 
