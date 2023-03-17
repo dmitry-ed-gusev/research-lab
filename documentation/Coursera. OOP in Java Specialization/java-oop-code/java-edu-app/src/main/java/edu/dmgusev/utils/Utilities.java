@@ -12,6 +12,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.csv.CSVParser;
+
+import edu.duke.FileResource;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -89,9 +92,19 @@ public class Utilities {
 
     }
 
-    public static void main(String[] args) throws IOException {
+    /** Get CSV Reader from string file path. */
+    public static CSVParser getCSVParser(@NonNull String csvFile) {
+        log.debug(String.format("Preparing CSV Parser for [%s].", csvFile));
+        return new FileResource(csvFile).getCSVParser();
+    }
 
-        // todo: implement tests for all methods
+    /** Get CSV Reader from File object. */
+    public static CSVParser getCSVParser(@NonNull File file) {
+        log.debug(String.format("Preparing CSV Parser for [%s].", file));
+        return new FileResource(file).getCSVParser();
+    }
+
+    public static void main(String[] args) throws IOException {
 
         var app = new Utilities();
 

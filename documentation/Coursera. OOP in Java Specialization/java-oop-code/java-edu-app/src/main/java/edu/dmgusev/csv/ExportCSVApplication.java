@@ -6,10 +6,9 @@ import java.text.ParseException;
 import java.util.Currency;
 import java.util.Locale;
 
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import edu.duke.FileResource;
+import edu.dmgusev.utils.Utilities;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,17 +21,11 @@ public class ExportCSVApplication {
     public static final String CSV_EXPORTS_SMALL_MS = "csv/exports_small_ms.csv";
     public static final String CSV_EXPORTS_SMALL    = "csv/exports_small.csv";
 
-    /** */
-    private static CSVParser getCSVParser(@NonNull String csvFile) {
-        log.debug(String.format("Preparing CSV Parser for [%s].", csvFile));
-        return new FileResource(csvFile).getCSVParser();
-    }
-
     /** Print content of the CSV file (record by record). */
     public void tester(@NonNull String csvFile) throws IOException {
         log.debug("tester() method is working.");
 
-        try (var parser = getCSVParser(csvFile)) {
+        try (var parser = Utilities.getCSVParser(csvFile)) {
             for (CSVRecord csvRecord: parser) {
                 System.out.println(csvRecord);
             }
@@ -54,7 +47,7 @@ public class ExportCSVApplication {
         log.debug(String.format("countryInfo(): CSV file [%s], country [%s].", 
             csvFile, country));
 
-        try (var parser = getCSVParser(csvFile)) {
+        try (var parser = Utilities.getCSVParser(csvFile)) {
             for (CSVRecord csvRecord: parser) { // iterate over CSV file records and process
 
                 String csvCountry = csvRecord.get("Country"); // get country value
@@ -90,7 +83,7 @@ public class ExportCSVApplication {
         log.debug("listExportersTwoProducts() is working.");
 
         boolean found = false;
-        try (var parser = getCSVParser(csvFile)) {
+        try (var parser = Utilities.getCSVParser(csvFile)) {
 
             for (CSVRecord csvRecord: parser) {
                 String exports = csvRecord.get("Exports").toUpperCase();
@@ -127,7 +120,7 @@ public class ExportCSVApplication {
         log.debug("numberOfExporters() is working.");
 
         var counter = 0;
-        try (var parser = getCSVParser(csvFile)) {
+        try (var parser = Utilities.getCSVParser(csvFile)) {
 
             for (CSVRecord csvRecord: parser) {
                 String exports = csvRecord.get("Exports").toUpperCase();
@@ -181,7 +174,7 @@ public class ExportCSVApplication {
         Number providedAmount = dollarFormat.parse(usDollarsAmount);
 
         boolean found = false;
-        try (var parser = getCSVParser(csvFile)) {
+        try (var parser = Utilities.getCSVParser(csvFile)) {
 
             for (CSVRecord csvRecord: parser) {
                 String amount = csvRecord.get("Value (dollars)");
