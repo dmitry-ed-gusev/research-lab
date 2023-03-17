@@ -23,15 +23,17 @@ import lombok.extern.slf4j.Slf4j;
 public class WeatherCSVApplication {
 
     // some useful constants
-    public static final String           BASE_CSV_FOLDER = "weather";
+    public static final String           BASE_CSV_FOLDER   = "weather";
     // format used for weather files
-    public static final SimpleDateFormat DATE_FORMAT_US  = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat DATE_FORMAT_US    = new SimpleDateFormat("yyyy-MM-dd");
     // input dates formats (EU, but various formats)
-    public static final String[]         DATE_FORMATS    = 
+    public static final String[]         DATE_FORMATS      =
         {"dd.MM.yyyy", "dd.MM.yy", "dd/MM/yyyy", "dd/MM/yy"};
     // years that are valid for dataset
-    public static final Set<Integer>     VALID_YEARS     = 
+    public static final Set<Integer>     VALID_YEARS       =
         Stream.of(2012, 2013, 2014, 2015).collect(Collectors.toSet());
+    // dataset file name template
+    public static final String           FILENAME_TEMPLATE = "weather-%s.csv";
 
     /** Parse provided string into Date object applying several formats - until match or throws exception. */
     private static Date parseDate(@NonNull String strDate) throws ParseException {
@@ -62,12 +64,21 @@ public class WeatherCSVApplication {
     }
 
     /** Get set of files from the dataset by the provided dates. */
-    private Set<File> getCSVFilesByDates(@NonNull String... strDates) 
+    private Set<File> getCSVFilesByDates(String... strDates) 
         throws ParseException, URISyntaxException, IOException {
 
         log.debug(String.format("getCSVFilesByDates(): processing dates [%s].",
             Arrays.toString(strDates)));
+        
+        // get all files in a dataset
+        Set<File> datasetFiles = new Utilities().getAllFilesFromResource(BASE_CSV_FOLDER);
 
+        // if provided list of dates is null or empty - return all files in a dataset
+        if (strDates == null || strDates.length <= 0) {
+            return datasetFiles;
+        }
+
+        // provided list of dates isn't null or empty - processing further
         Set<File> resultFiles = new HashSet<>(); // resulting set of files from dataset
 
         // Part I: process provided list of dates and convert them to US format
@@ -84,13 +95,14 @@ public class WeatherCSVApplication {
         } // end of FOR
 
         // Part II: iterate over dataset files and pick up necessary files
-        for (File file: new Utilities().getAllFilesFromResource(BASE_CSV_FOLDER)) {
+        // todo: use stream and filtering + collctor into set
+        for (File file: datasetFiles) {
             for (String tmpStrDate: strUsDates) {
                 if (file.getAbsolutePath().contains(tmpStrDate)) {
                     resultFiles.add(file);
                 }
             }
-        }
+        } // end of FOR processing of dataset files
     
         return resultFiles;
     }
@@ -110,6 +122,11 @@ public class WeatherCSVApplication {
         }
 
         return files.iterator().next(); // return one file from dataset
+    }
+
+    /** */
+    private static double getTemperatureFromCSVRecord(@NonNull CSVRecord csvRecord) {
+        return Double.parseDouble(csvRecord.get("TemperatureF"));
     }
 
     /**
@@ -165,13 +182,18 @@ public class WeatherCSVApplication {
     }
 
     /** 
-        Write the method fileWithColdestTemperature that has no parameters. This method should return a 
+        Write the method fileWithColdestTemperature() that has no parameters. This method should return a 
         string that is the name of the file from selected files that has the coldest temperature.
 
         Note: my own implementation will perform action based on specified dates, not using file chooser.
     */
     public void fileWithColdestTemperature(@NonNull String... strDates) {
+        log.debug(String.format("fileWithColdestTemperature(): looking for dates [%s].", strDates));
 
+        CSVRecord currentRecord = null;
+        for (String strDate: strDates) {
+            
+        }
     }
 
     /** 
