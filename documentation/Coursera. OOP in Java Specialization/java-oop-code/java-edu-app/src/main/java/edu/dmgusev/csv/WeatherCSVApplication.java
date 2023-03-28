@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import edu.dmgusev.utils.Utilities;
 import lombok.NonNull;
@@ -125,8 +127,13 @@ public class WeatherCSVApplication {
     }
 
     /** */
-    private static double getTemperatureFromCSVRecord(@NonNull CSVRecord csvRecord) {
+    private static double getTempFromCSVRecord(@NonNull CSVRecord csvRecord) {
         return Double.parseDouble(csvRecord.get("TemperatureF"));
+    }
+
+    /** */
+    private static String getTimeFromCSVRecord(@NonNull CSVRecord csvRecord) {
+        return csvRecord.get("TimeEST");
     }
 
     /**
@@ -137,7 +144,7 @@ public class WeatherCSVApplication {
         NOTE: Sometimes there was not a valid reading at a specific hour, so the temperature field 
         says -9999. You should ignore these bogus temperature values when calculating the lowest temperature.
     */
-    public CSVRecord coldestHourInFile(@NonNull String strDate) 
+    public Pair<File, CSVRecord> coldestHourInFile(@NonNull String strDate) 
         throws URISyntaxException, IOException, ParseException {
 
         log.debug(String.format("coldestHourInFile(): looking for date [%s].", strDate));
@@ -148,25 +155,23 @@ public class WeatherCSVApplication {
         try (var parser = Utilities.getCSVParser(file)) {
 
             for (CSVRecord csvRecord: parser) {
-                double temperature = Double.parseDouble(csvRecord.get("TemperatureF"));
+                double temperature = getTempFromCSVRecord(csvRecord);
 
                 // update the existing resulting CSV Record in case case matched
                 if (result == null || 
-                    (temperature > -9999 && 
-                        temperature < Double.parseDouble(result.get("TemperatureF")))) {
+                    (temperature > -9999 && temperature < getTempFromCSVRecord(result))) {
 
                     // updating the current result record
                     result = csvRecord;
                     log.debug(String.format("The current record [%s] updated with [%s].",
                         result, csvRecord));
-
-                }
+                } // end of IF
 
             } // end of FOR
 
         } // end of TRY-WITH-RESOURCES
 
-        return result;
+        return new ImmutablePair<>(file, result);
     }
 
     /** 
@@ -177,8 +182,18 @@ public class WeatherCSVApplication {
         throws URISyntaxException, IOException, ParseException {
 
         log.debug("testColdestHourInFile() is working.");
-        System.out.println("-> " + this.coldestHourInFile(strDate));
 
+        var result = this.coldestHourInFile(strDate); // get result from the method under test
+
+        // extract data from the result
+        var file = result.getLeft();
+        var temp = getTempFromCSVRecord(result.getRight());
+        var hour = getTimeFromCSVRecord(result.getRight());
+
+        // print output
+        System.out.println(
+            String.format("%n%nThe coldest hour in file [%s] is [%s] with the temperature [%s].",
+                file, hour, temp));
     }
 
     /** 
@@ -187,13 +202,27 @@ public class WeatherCSVApplication {
 
         Note: my own implementation will perform action based on specified dates, not using file chooser.
     */
-    public void fileWithColdestTemperature(@NonNull String... strDates) {
-        log.debug(String.format("fileWithColdestTemperature(): looking for dates [%s].", strDates));
+    public Pair<File, CSVRecord> fileWithColdestTemperature(@NonNull String... strDates)
+        throws URISyntaxException, IOException, ParseException {
 
-        CSVRecord currentRecord = null;
+        log.debug(String.format("fileWithColdestTemperature(): looking for dates [%s].", 
+            Arrays.toString(strDates)));
+
+        Pair<File, CSVRecord> resultFileTempData = null;
         for (String strDate: strDates) {
-            
-        }
+            var currentFileTempData = coldestHourInFile(strDate);
+            var currentTemperature = getTempFromCSVRecord(currentFileTempData.getRight());
+
+            if (resultFileTempData == null ||
+                (currentTemperature > -999 &&
+                    currentTemperature < getTempFromCSVRecord(resultFileTempData.getRight()))) {
+                resultFileTempData = currentFileTempData;
+            } // end of IF
+
+        } // end of FOR
+
+        return resultFileTempData; // todo: may return null - fix?
+
     }
 
     /** 
