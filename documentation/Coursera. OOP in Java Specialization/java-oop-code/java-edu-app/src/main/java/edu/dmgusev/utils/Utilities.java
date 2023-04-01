@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -80,7 +81,7 @@ public class Utilities {
 
     }
 
-    // print a file
+    /** Print content of a file to std output, all lines. */
     public static void printFile(@NonNull File file) {
 
         try {
@@ -104,6 +105,15 @@ public class Utilities {
         return new FileResource(file).getCSVParser();
     }
 
+    /** */
+    public static List<String> getColumnValuesFromCSVFIle(@NonNull String csvFile, @NonNull String columnName) {
+        log.debug(String.format("Getting value of the column [%s] from the CSV file [%s].",
+            columnName, csvFile));
+
+
+    }
+
+    /** */
     public static void main(String[] args) throws IOException {
 
         var app = new Utilities();

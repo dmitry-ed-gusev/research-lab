@@ -97,7 +97,7 @@ public class WeatherCSVApplication {
         } // end of FOR
 
         // Part II: iterate over dataset files and pick up necessary files
-        // todo: use stream and filtering + collctor into set
+        // todo: use stream and filtering + collector into set
         for (File file: datasetFiles) {
             for (String tmpStrDate: strUsDates) {
                 if (file.getAbsolutePath().contains(tmpStrDate)) {
@@ -134,6 +134,11 @@ public class WeatherCSVApplication {
     /** */
     private static String getTimeFromCSVRecord(@NonNull CSVRecord csvRecord) {
         return csvRecord.get("TimeEST");
+    }
+
+    /** */
+    private static int getHumidityFromCSVRecord(@NonNull CSVRecord csvRecord) {
+        return Integer.parseInt(csvRecord.get("Humidity"));
     }
 
     /**
@@ -238,7 +243,12 @@ public class WeatherCSVApplication {
                 <list of the all temperatures on the found date>
     */
     public void testFileWithColdestTemperature() {
+        log.debug("testFileWithColdestTemperature() is working.");
 
+        String.format("Coldest day was in file [%s]%n" +
+            "Coldest temperature on that day was [%s]%n" +
+            "All the Temperatures on the coldest day were:%n" +
+                "<list of the all temperatures on the found date>");
     }
 
     /** 
@@ -308,11 +318,17 @@ NOTE: If you look at the data for January 20, 2014, you will note that the Humid
 
     }
 
+    /** */
     public static void main(String[] args) throws URISyntaxException, IOException, ParseException {
         log.info("Weather Analisys CSV Application is starting...");
 
+        // create instance of this class
         var application = new WeatherCSVApplication();
-        application.testColdestHourInFile("04.01.2012");
+
+        application.testColdestHourInFile("04.01.2012"); // test method #1
+        application.testFileWithColdestTemperature(); // test method #2
+        application.testLowestHumidityInFile(); // test method #3
+
     }
 
 }
