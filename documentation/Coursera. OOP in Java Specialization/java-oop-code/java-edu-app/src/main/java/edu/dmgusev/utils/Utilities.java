@@ -8,12 +8,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 
 import edu.duke.FileResource;
 import lombok.NoArgsConstructor;
@@ -105,12 +107,28 @@ public class Utilities {
         return new FileResource(file).getCSVParser();
     }
 
+    /** Return column value as list of string, from CSV Parser object. */
+    private static List<String> getColumnValuesFromCSV(@NonNull CSVParser csvParser, 
+        @NonNull String columnName) {
+
+        log.debug(String.format("Getting value of the column [%s] from the CSV Parser.", columnName));
+
+        List<String> result = new ArrayList<>();
+        for (CSVRecord csvRecord: csvParser) {
+            result.add(csvRecord.get(columnName));
+        } // end of FOR
+
+        return result;
+    }
+
     /** */
-    public static List<String> getColumnValuesFromCSVFIle(@NonNull String csvFile, @NonNull String columnName) {
-        log.debug(String.format("Getting value of the column [%s] from the CSV file [%s].",
-            columnName, csvFile));
+    public static List<String> getColumnValuesFromCSVFile(@NonNull String csvFile, @NonNull String columnName) {
+        return getColumnValuesFromCSV(getCSVParser(csvFile), columnName);
+    }
 
-
+    /** */
+    public static List<String> getColumnValuesFromCSVFile(@NonNull File csvFile, @NonNull String columnName) {
+        return getColumnValuesFromCSV(getCSVParser(csvFile), columnName);
     }
 
     /** */
