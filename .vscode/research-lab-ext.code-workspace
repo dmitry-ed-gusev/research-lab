@@ -12,6 +12,7 @@
 		"java.compile.nullAnalysis.mode": "automatic",
 		"java.project.sourcePaths": [],
 		"java.dependency.packagePresentation": "flat",
-		"java.saveActions.organizeImports": true
+		"java.saveActions.organizeImports": true,
+		"java.dependency.syncWithFolderExplorer": true
 	}
 }

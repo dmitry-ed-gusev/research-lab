@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -137,7 +138,7 @@ public class WeatherCSVApplication {
     }
 
     /** */
-    private static int getHumidityFromCSVRecord(@NonNull CSVRecord csvRecord) {
+    private static Optional getHumidityFromCSVRecord(@NonNull CSVRecord csvRecord) {
         return Integer.parseInt(csvRecord.get("Humidity"));
     }
 
@@ -183,12 +184,11 @@ public class WeatherCSVApplication {
         Write a void method named testColdestHourInFile() to test this method and print out information 
         about that coldest temperature, such as the time of its occurrence.
     */
-    public void testColdestHourInFile(@NonNull String strDate) 
-        throws URISyntaxException, IOException, ParseException {
+    public void testColdestHourInFile() throws URISyntaxException, IOException, ParseException {
 
         log.debug("testColdestHourInFile() is working.");
 
-        var result = this.coldestHourInFile(strDate); // get result from the method under test
+        var result = this.coldestHourInFile("04.01.2012"); // get result from the method under test
 
         // extract data from the result
         var file = result.getLeft();
@@ -242,17 +242,20 @@ public class WeatherCSVApplication {
             All the Temperatures on the coldest day were:
                 <list of the all temperatures on the found date>
     */
-    public void testFileWithColdestTemperature() {
+    public void testFileWithColdestTemperature() throws URISyntaxException, IOException, ParseException {
         log.debug("testFileWithColdestTemperature() is working.");
+        
+        var result = fileWithColdestTemperature("01.01.2014", "02.01.2014", "03.01.2014");
 
-        String.format("Coldest day was in file [%s]%n" +
+        System.out.println(String.format("%nColdest day was in file [%s]%n" +
             "Coldest temperature on that day was [%s]%n" +
-            "All the Temperatures on the coldest day were:%n" +
-                "<list of the all temperatures on the found date>");
+            "All the Temperatures on the coldest day were:%n\t%s%n",
+            result.getLeft().getName(), getTempFromCSVRecord(result.getRight()),
+                Utilities.getColumnValuesFromCSVFile(result.getLeft(), "TemperatureF")));
     }
 
     /** 
-        Write a method named lowestHumidityInFile that has one parameter, a CSVParser named parser. 
+        Write a method named lowestHumidityInFile() that has one parameter, a CSVParser named parser. 
         This method returns the CSVRecord that has the lowest humidity. If there is a tie, then return 
         the first such record that was found.
 
@@ -264,22 +267,50 @@ public class WeatherCSVApplication {
         You will instead use the DateUTC field at the right end of the data file to  get both the date and 
         time of a temperature reading.
     */
-    public void lowestHumidityInFile() {
+    public Pair<File, CSVRecord> lowestHumidityInFile(@NonNull String strDate) 
+        throws ParseException, URISyntaxException, IOException {
+
+        log.debug(String.format("lowestHumidityInFile(): looking for date: [%s].", strDate));
+
+        // processing the found file (the first one/the only one)
+        CSVRecord result = null;
+        File file = this.getCSVFileByDate(strDate);
+        try (var parser = Utilities.getCSVParser(file)) {
+
+            for (CSVRecord csvRecord: parser) {
+                double temperature = getTempFromCSVRecord(csvRecord);
+
+                // update the existing resulting CSV Record in case case matched
+                if (result == null || 
+                    (temperature > -9999 && temperature < getTempFromCSVRecord(result))) {
+
+                    // updating the current result record
+                    result = csvRecord;
+                    log.debug(String.format("The current record [%s] updated with [%s].",
+                        result, csvRecord));
+                } // end of IF
+
+            } // end of FOR
+
+        } // end of TRY-WITH-RESOURCES
+
+        return new ImmutablePair<>(file, result);
 
     }
 
     /** 
-        You should also write a void method named testLowestHumidityInFile() to test this method that starts with these lines:
+        You should also write a void method named testLowestHumidityInFile() to test the method 
+        lowestHumidityInFile() that starts with these lines:
+            FileResource fr = new FileResource();
+            CSVParser parser = fr.getCSVParser();
+            CSVRecord csv = lowestHumidityInFile(parser);
+        and then prints the lowest humidity AND the time the lowest humidity occurred.
 
-123
-FileResource fr = new FileResource();
-CSVParser parser = fr.getCSVParser();
-CSVRecord csv = lowestHumidityInFile(parser);
-and then prints the lowest humidity AND the time the lowest humidity occurred. For example, for the file weather-2014-01-20.csv, the output should be:
+        For example, for the file weather-2014-01-20.csv, the output should be:
+            Lowest Humidity was 24 at 2014-01-20 19:51:00
 
-1
-Lowest Humidity was 24 at 2014-01-20 19:51:00
-NOTE: If you look at the data for January 20, 2014, you will note that the Humidity was also 24 at 3:51pm, but you are supposed to return the first such record that was found.
+        NOTE: If you look at the data for January 20, 2014, you will note that the Humidity was 
+            also 24 at 3:51pm, but you are supposed to return the first such record that was found.
     */
     public void testLowestHumidityInFile() {
 
@@ -325,9 +356,9 @@ NOTE: If you look at the data for January 20, 2014, you will note that the Humid
         // create instance of this class
         var application = new WeatherCSVApplication();
 
-        application.testColdestHourInFile("04.01.2012"); // test method #1
+        // application.testColdestHourInFile();          // test method #1
         application.testFileWithColdestTemperature(); // test method #2
-        application.testLowestHumidityInFile(); // test method #3
+        // application.testLowestHumidityInFile();       // test method #3
 
     }
 
