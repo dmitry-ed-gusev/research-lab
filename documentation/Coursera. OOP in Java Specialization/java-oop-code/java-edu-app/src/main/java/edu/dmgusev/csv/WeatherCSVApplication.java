@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -138,8 +138,18 @@ public class WeatherCSVApplication {
     }
 
     /** */
-    private static Optional getHumidityFromCSVRecord(@NonNull CSVRecord csvRecord) {
-        return Integer.parseInt(csvRecord.get("Humidity"));
+    private static OptionalInt getHumidityFromCSVRecord(@NonNull CSVRecord csvRecord) {
+        var result = csvRecord.get("Humidity");
+        if ("N/A".equalsIgnoreCase(result)) {
+            return OptionalInt.empty();
+        } else {
+            return OptionalInt.of(Integer.parseInt(result));
+        }
+    }
+
+    /** */
+    private static String getUTCTimestampFromCSVRecord(@NonNull CSVRecord csvRecord) {
+        return csvRecord.get("DateUTC");
     }
 
     /**
@@ -197,7 +207,7 @@ public class WeatherCSVApplication {
 
         // print output
         System.out.println(
-            String.format("%n%nThe coldest hour in file [%s] is [%s] with the temperature [%s].",
+            String.format("%nThe coldest hour in file [%s] is [%s] with the temperature [%s].",
                 file, hour, temp));
     }
 
@@ -278,16 +288,19 @@ public class WeatherCSVApplication {
         try (var parser = Utilities.getCSVParser(file)) {
 
             for (CSVRecord csvRecord: parser) {
-                double temperature = getTempFromCSVRecord(csvRecord);
+                var humidity = getHumidityFromCSVRecord(csvRecord);
 
                 // update the existing resulting CSV Record in case case matched
-                if (result == null || 
-                    (temperature > -9999 && temperature < getTempFromCSVRecord(result))) {
+                if (humidity.isPresent() && // process only if humidity is not "N/A"
+                    (result == null || 
+                        (getHumidityFromCSVRecord(result).getAsInt() > 
+                            getHumidityFromCSVRecord(csvRecord).getAsInt()))) {
 
                     // updating the current result record
                     result = csvRecord;
                     log.debug(String.format("The current record [%s] updated with [%s].",
                         result, csvRecord));
+
                 } // end of IF
 
             } // end of FOR
@@ -312,40 +325,100 @@ public class WeatherCSVApplication {
         NOTE: If you look at the data for January 20, 2014, you will note that the Humidity was 
             also 24 at 3:51pm, but you are supposed to return the first such record that was found.
     */
-    public void testLowestHumidityInFile() {
+    public void testLowestHumidityInFile() throws ParseException, URISyntaxException, IOException {
+        log.debug("testLowestHumidityInFile() is working.");
+        
+        var result = lowestHumidityInFile("20.01.2014");
+
+        System.out.println(String.format("%nThe lowest humidity in the file [%s] was [%s] at [%s].",
+            result.getLeft().getName(), getHumidityFromCSVRecord(result.getRight()).getAsInt(),
+                getUTCTimestampFromCSVRecord(result.getRight())));
 
     }
 
     /** 
-        Write the method lowestHumidityInManyFiles that has no parameters. This method returns a CSVRecord that has the lowest humidity over all the files. If there is a tie, then return the first such record that was found. You should also write a void method named testLowestHumidityInManyFiles() to test this method and to print the lowest humidity AND the time the lowest humidity occurred. Be sure to test this method on two files so you can check if it is working correctly. If you run this program and select the files for January 19, 2014 and January 20, 2014, you should get
-
-        Lowest Humidity was 24 at 2014-01-20 19:51:00
+        Write the method lowestHumidityInManyFiles() that has no parameters. This method returns a 
+        CSVRecord that has the lowest humidity over all the files. If there is a tie, then return the first 
+        such record that was found.
     */
-    public void lowestHumidityInManyFiles() {
+    public Pair<File, CSVRecord> lowestHumidityInManyFiles(@NonNull String... strDates) 
+        throws ParseException, URISyntaxException, IOException {
+        
+        log.debug(String.format("lowestHumidityInManyFiles(): looking for dates [%s].", 
+            Arrays.toString(strDates)));
 
+        Pair<File, CSVRecord> resultFileHumidityData = null;
+        for (String strDate: strDates) {
+            var currentFileHumidityData = lowestHumidityInFile(strDate); // Pair<File, CSVRecord>
+            var currentHumidity = getHumidityFromCSVRecord(currentFileHumidityData.getRight())
+                .getAsInt(); // int
+
+            if (resultFileHumidityData == null ||
+                (currentHumidity < getHumidityFromCSVRecord(resultFileHumidityData.getRight()).getAsInt())) {
+                resultFileHumidityData = currentFileHumidityData;
+            } // end of IF
+
+        } // end of FOR
+
+        return resultFileHumidityData; // todo: may return null - fix?
     }
 
     /** 
-        Write the method averageTemperatureInFile that has one parameter, a CSVParser named parser. This method returns a double that represents the average temperature in the file. You should also write a void method named testAverageTemperatureInFile() to test this method. When this method runs and selects the file for January 20, 2014, the method should print out
+        You should also write a void method named testLowestHumidityInManyFiles() to test the method 
+        lowestHumidityInManyFiles() and to print the lowest humidity AND the time the lowest humidity 
+        occurred. Be sure to test this method on two files so you can check if it is working correctly. 
 
-1
-    Average temperature in file is 44.93333333333334
+        If you run this program and select the files for January 19, 2014 and January 20, 2014, 
+        you should get:
+            Lowest Humidity was 24 at 2014-01-20 19:51:00
+    */
+    public void testLowestHumidityInManyFiles() throws ParseException, URISyntaxException, IOException {
+        log.debug("testLowestHumidityInManyFiles() is working.");
+        
+        var result = lowestHumidityInManyFiles("19.01.2014", "20.01.2014");
+
+        System.out.println(String.format("%nThe lowest humidity was in the " + 
+            "file [%s],it was [%s] at [%s].",
+                result.getLeft().getName(), getHumidityFromCSVRecord(result.getRight()).getAsInt(),
+                    getUTCTimestampFromCSVRecord(result.getRight())));
+    }
+
+    /** 
+        Write the method averageTemperatureInFile() that has one parameter, a CSVParser named parser. 
+        This method returns a double that represents the average temperature in the file. 
     */
     public void averageTemperatureInFile() {
 
     }
 
+    /** 
+        You should also write a void method named testAverageTemperatureInFile() to test this method. When this method runs and selects the file for January 20, 2014, the method should print out
+
+1
+    Average temperature in file is 44.93333333333334
+    */
+    public void testAverageTemperatureInFile() {
+
+    }
+
     /**
-        Write the method averageTemperatureWithHighHumidityInFile that has two parameters, a CSVParser named parser and an integer named value. This method returns a double that represents the average temperature of only those temperatures when the humidity was greater than or equal to value. You should also write a void method named testAverageTemperatureWithHighHumidityInFile() to test this method. When this method runs checking for humidity greater than or equal to 80 and selects the file for January 20, 2014, the method should print out
+        Write the method averageTemperatureWithHighHumidityInFile that has two parameters, a CSVParser named 
+        parser and an integer named value. This method returns a double that represents the average 
+        temperature of only those temperatures when the humidity was greater than or equal to value. 
+    */
+    public void averageTemperatureWithHighHumidityInFile() {
+
+    }
+
+    /** 
+        You should also write a void method named testAverageTemperatureWithHighHumidityInFile() to test this method. When this method runs checking for humidity greater than or equal to 80 and selects the file for January 20, 2014, the method should print out
 
 1   No temperatures with that humidity
     If you run the method checking for humidity greater than or equal to 80 and select the file March 20, 2014, a wetter day, the method should print out
 
     Average Temp when high Humidity is 41.78666666666667
-     * @throws IOException
-     * @throws URISyntaxException
-     */
-    public void averageTemperatureWithHighHumidityInFile() {
+    */
+    public void testAverageTemperatureWithHighHumidityInFile() {
 
     }
 
@@ -356,10 +429,12 @@ public class WeatherCSVApplication {
         // create instance of this class
         var application = new WeatherCSVApplication();
 
-        // application.testColdestHourInFile();          // test method #1
-        application.testFileWithColdestTemperature(); // test method #2
-        // application.testLowestHumidityInFile();       // test method #3
-
+        // application.testColdestHourInFile();                        // test method #1
+        // application.testFileWithColdestTemperature();               // test method #2
+        // application.testLowestHumidityInFile();                     // test method #3
+        application.testLowestHumidityInManyFiles();                // test method #4
+        // application.testAverageTemperatureInFile();                 // test method #5
+        // application.testAverageTemperatureWithHighHumidityInFile(); // test method #6
     }
 
 }
