@@ -63,7 +63,6 @@ public class WeatherCSVApplication {
         var calendar = Calendar.getInstance();
         calendar.setTime(date);
         return VALID_YEARS.contains(calendar.get(Calendar.YEAR));
-
     }
 
     /** Get set of files from the dataset by the provided dates. */
@@ -237,7 +236,6 @@ public class WeatherCSVApplication {
         } // end of FOR
 
         return resultFileTempData; // todo: may return null - fix?
-
     }
 
     /** 
@@ -308,7 +306,6 @@ public class WeatherCSVApplication {
         } // end of TRY-WITH-RESOURCES
 
         return new ImmutablePair<>(file, result);
-
     }
 
     /** 
@@ -333,7 +330,6 @@ public class WeatherCSVApplication {
         System.out.println(String.format("%nThe lowest humidity in the file [%s] was [%s] at [%s].",
             result.getLeft().getName(), getHumidityFromCSVRecord(result.getRight()).getAsInt(),
                 getUTCTimestampFromCSVRecord(result.getRight())));
-
     }
 
     /** 
@@ -387,18 +383,43 @@ public class WeatherCSVApplication {
         Write the method averageTemperatureInFile() that has one parameter, a CSVParser named parser. 
         This method returns a double that represents the average temperature in the file. 
     */
-    public void averageTemperatureInFile() {
+    public double averageTemperatureInFile(@NonNull String strDate) 
+        throws ParseException, URISyntaxException, IOException {
 
+        log.debug(String.format("averageTemperatureInFile(): looking for avg temp in date: [%s].",
+            strDate));
+
+        // processing the found file (the first one/the only one)
+        double result = 0.0;
+        File file = this.getCSVFileByDate(strDate);
+        try (var parser = Utilities.getCSVParser(file)) {
+
+            var counter = 0;
+            for (CSVRecord csvRecord: parser) {
+                result = result + getTempFromCSVRecord(csvRecord);
+                counter++;
+            } // end of FOR
+
+            if (counter == 0) { // no CSV records in CSV file
+                return 0.0;
+            } else {
+                return result / counter;
+            }
+
+        } // end of TRY-WITH-RESOURCES
     }
 
     /** 
-        You should also write a void method named testAverageTemperatureInFile() to test this method. When this method runs and selects the file for January 20, 2014, the method should print out
-
-1
-    Average temperature in file is 44.93333333333334
+        You should also write a void method named testAverageTemperatureInFile() to test the method
+        averageTemperatureInFile(). When this method runs and selects the file for January 20, 2014,
+        the method should print out:
+            Average temperature in file is 44.93333333333334
     */
-    public void testAverageTemperatureInFile() {
+    public void testAverageTemperatureInFile() throws ParseException, URISyntaxException, IOException {
+        log.debug("testAverageTemperatureInFile() is working.");
 
+        System.out.println(String.format("Average temperature in file is [%s].",
+            averageTemperatureInFile("20.01.2014")));
     }
 
     /**
@@ -406,20 +427,22 @@ public class WeatherCSVApplication {
         parser and an integer named value. This method returns a double that represents the average 
         temperature of only those temperatures when the humidity was greater than or equal to value. 
     */
-    public void averageTemperatureWithHighHumidityInFile() {
+    public void averageTemperatureWithHighHumidityInFile(@NonNull String strDate) {
 
     }
 
     /** 
-        You should also write a void method named testAverageTemperatureWithHighHumidityInFile() to test this method. When this method runs checking for humidity greater than or equal to 80 and selects the file for January 20, 2014, the method should print out
-
-1   No temperatures with that humidity
-    If you run the method checking for humidity greater than or equal to 80 and select the file March 20, 2014, a wetter day, the method should print out
-
-    Average Temp when high Humidity is 41.78666666666667
+        You should also write a void method named testAverageTemperatureWithHighHumidityInFile() to test 
+        the method averageTemperatureWithHighHumidityInFile(). When this method runs checking for humidity 
+        greater than or equal to 80 and selects the file for January 20, 2014, the method should print out:
+            No temperatures with that humidity
+        
+        If you run the method checking for humidity greater than or equal to 80 and select the file 
+        March 20, 2014, a wetter day, the method should print out:
+            Average Temp when high Humidity is 41.78666666666667
     */
     public void testAverageTemperatureWithHighHumidityInFile() {
-
+        log.debug("testAverageTemperatureWithHighHumidityInFile() is working.");
     }
 
     /** */
@@ -432,8 +455,8 @@ public class WeatherCSVApplication {
         // application.testColdestHourInFile();                        // test method #1
         // application.testFileWithColdestTemperature();               // test method #2
         // application.testLowestHumidityInFile();                     // test method #3
-        application.testLowestHumidityInManyFiles();                // test method #4
-        // application.testAverageTemperatureInFile();                 // test method #5
+        // application.testLowestHumidityInManyFiles();                // test method #4
+        application.testAverageTemperatureInFile();                 // test method #5
         // application.testAverageTemperatureWithHighHumidityInFile(); // test method #6
     }
 
