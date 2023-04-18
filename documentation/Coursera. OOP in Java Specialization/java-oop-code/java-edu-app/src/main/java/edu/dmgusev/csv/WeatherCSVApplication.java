@@ -423,11 +423,40 @@ public class WeatherCSVApplication {
     }
 
     /**
-        Write the method averageTemperatureWithHighHumidityInFile that has two parameters, a CSVParser named 
-        parser and an integer named value. This method returns a double that represents the average 
+        Write the method averageTemperatureWithHighHumidityInFile() that has two parameters, a CSVParser 
+        named parser and an integer named value. This method returns a double that represents the average 
         temperature of only those temperatures when the humidity was greater than or equal to value. 
     */
-    public void averageTemperatureWithHighHumidityInFile(@NonNull String strDate) {
+    public double averageTemperatureWithHighHumidityInFile(@NonNull String strDate, int humidityThreshold) 
+        throws ParseException, URISyntaxException, IOException {
+
+        log.debug(String.format("averageTemperatureWithHighHumidityInFile(): " + 
+            "looking for avg temp in date: [%s] with humidity threshold: [%s].",
+                strDate, humidityThreshold));
+
+        // processing the found file (the first one/the only one)
+        var result = 0.0;
+        var counter = 0;
+
+        File file = this.getCSVFileByDate(strDate);
+        try (var parser = Utilities.getCSVParser(file)) {
+
+            for (CSVRecord csvRecord: parser) {
+                var humidity = getHumidityFromCSVRecord(csvRecord).orElse(0);
+
+                if (humidityThreshold > 0 && humidity >= humidityThreshold) {
+                    result = result + getTempFromCSVRecord(csvRecord);
+                    counter++;
+                }
+
+            } // end of FOR
+
+            if (counter == 0) { // no CSV records with humidity > threshold in CSV file
+                return 0.0;
+            } else {
+                return result / counter;
+            }
+        } // end of TRY-WITH-RESOURCES
 
     }
 
@@ -441,8 +470,27 @@ public class WeatherCSVApplication {
         March 20, 2014, a wetter day, the method should print out:
             Average Temp when high Humidity is 41.78666666666667
     */
-    public void testAverageTemperatureWithHighHumidityInFile() {
+    public void testAverageTemperatureWithHighHumidityInFile() 
+        throws ParseException, URISyntaxException, IOException {
+
         log.debug("testAverageTemperatureWithHighHumidityInFile() is working.");
+        
+        var result1 = averageTemperatureWithHighHumidityInFile("20.01.2014", 80);
+        if (result1 > 0) {
+            System.out.println(String.format("Average temperature when high Humidity is [%s].", 
+                result1));
+        } else {
+            System.out.println("No temperatures with that humidity!");
+        }
+
+        var result2 = averageTemperatureWithHighHumidityInFile("20.03.2014", 80);
+        if (result2 > 0) {
+            System.out.println(String.format("Average temperature when high Humidity is [%s].", 
+                result2));
+        } else {
+            System.out.println("No temperatures with that humidity!");
+        }
+
     }
 
     /** */
@@ -452,12 +500,12 @@ public class WeatherCSVApplication {
         // create instance of this class
         var application = new WeatherCSVApplication();
 
-        // application.testColdestHourInFile();                        // test method #1
-        // application.testFileWithColdestTemperature();               // test method #2
-        // application.testLowestHumidityInFile();                     // test method #3
-        // application.testLowestHumidityInManyFiles();                // test method #4
+        application.testColdestHourInFile();                        // test method #1
+        application.testFileWithColdestTemperature();               // test method #2
+        application.testLowestHumidityInFile();                     // test method #3
+        application.testLowestHumidityInManyFiles();                // test method #4
         application.testAverageTemperatureInFile();                 // test method #5
-        // application.testAverageTemperatureWithHighHumidityInFile(); // test method #6
+        application.testAverageTemperatureWithHighHumidityInFile(); // test method #6
     }
 
 }
