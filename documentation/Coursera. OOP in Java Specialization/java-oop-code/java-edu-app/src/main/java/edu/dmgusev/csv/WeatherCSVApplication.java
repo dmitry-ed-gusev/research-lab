@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,34 +29,102 @@ import lombok.extern.slf4j.Slf4j;
 public class WeatherCSVApplication {
 
     // some useful constants
-    public static final String           BASE_CSV_FOLDER   = "weather";
+    public static final String           BASE_CSV_FOLDER    = "weather";
     // format used for weather files
-    public static final SimpleDateFormat DATE_FORMAT_US    = new SimpleDateFormat("yyyy-MM-dd");
-    // input dates formats (EU, but various formats)
-    public static final String[]         DATE_FORMATS      =
+    public static final SimpleDateFormat DATE_FORMAT_US     = new SimpleDateFormat("yyyy-MM-dd");
+    
+    // DATEs: input dates formats (EU, but various formats)
+    public static final String[]         DATE_FORMATS       =
         {"dd.MM.yyyy", "dd.MM.yy", "dd/MM/yyyy", "dd/MM/yy"};
+    // MONTHs + YEARs: input formats
+    public static final String[]         MONTH_YEAR_FORMATS = 
+        {"MM.yyyy", "MM.yy", "MM/yyyy", "MM/yy"};
+    // YEARs: input formats
+    public static final String[]         YEAR_FORMATS       = 
+        {"yyyy", "yy"};
+
     // years that are valid for dataset
     public static final Set<Integer>     VALID_YEARS       =
         Stream.of(2012, 2013, 2014, 2015).collect(Collectors.toSet());
+
     // dataset file name template
     public static final String           FILENAME_TEMPLATE = "weather-%s.csv";
 
-    /** Parse provided string into Date object applying several formats - until match or throws exception. */
-    private static Date parseDate(@NonNull String strDate) throws ParseException {
-        log.debug(String.format("parseDate(): parsing date [%s].", strDate));
+    // todo: move code working with dates to a separate module...
 
-        for (String format: DATE_FORMATS) {
+    /** */
+    private static Optional<Date> parseDateByFormats(@NonNull String strDate, @NonNull String... formats) {
+        log.debug("parseDateByFormats(): parse {} using formats[{}].", 
+            strDate, Arrays.toString(formats));
+
+        Date parsedDate = null;
+        for (String format: formats) { // iterate over formats and try to parse a date
             try {
-                return new SimpleDateFormat(format).parse(strDate);
+                parsedDate = new SimpleDateFormat(format).parse(strDate);
+                break; // if we parsed the date - get out from the cycle
             } catch (ParseException e) {
-                log.warn(String.format("Format [%s] doesn't match the value [%s]!",
-                    format, strDate));
+                log.debug("Format [{}] doesn't match the value [{}]!", format, strDate);
             }
         } // end of FOR
 
-        // no matching format for the date
-        throw new ParseException(String.format(
-            "Can't find the matching format for the given date [%s]!", strDate), 0);
+        return Optional.ofNullable(parsedDate);
+    }
+
+    /** Get list of all dates for the concrete month from the specified date. */
+    private static List<Date> getMonthDates(@NonNull String strMonthYear, @NonNull String... formats) 
+        throws ParseException {
+
+        log.debug("getMonthDates(): parsing date [{}].", strMonthYear);
+
+        // --- Part I. Parse month and year into a date.
+        var parsedDate = parseDateByFormats(strMonthYear, formats);
+        if (parsedDate.isEmpty()) { // if we can't find the matching format - throw an exception
+            throw new ParseException(String.format(
+            "Can't find the matching format for the given date [%s]!", strMonthYear), 0);
+        }
+
+        // --- Part II. Generate list of dates for the month (all days).
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(parsedDate.get());
+        cal.set(Calendar.DAY_OF_MONTH, 1); 
+        int myMonth = cal.get(Calendar.MONTH);
+
+        var list = new ArrayList<Date>();
+        while (myMonth == cal.get(Calendar.MONTH)) { // until we are in a current month - iterate
+            list.add(cal.getTime());
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+        } // end of WHILE
+
+        return list;
+    }
+
+    /** */
+    private static List<Date> getYearDates(@NonNull String strYear, @NonNull String... formats) 
+        throws ParseException {
+
+        log.debug("getYearDates(): parsing date [{}].", strYear);
+
+        // --- Part I. Parse month and year into a date.
+        var parsedDate = parseDateByFormats(strYear, formats);
+        if (parsedDate.isEmpty()) { // if we can't find the matching format - throw an exception
+            throw new ParseException(String.format(
+            "Can't find the matching format for the given date [%s]!", strYear), 0);
+        }
+
+        // --- Part II. Generate list of dates for the month (all days).
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(parsedDate.get());
+        cal.set(Calendar.MONTH, 0); // months numbers start from 0
+        cal.set(Calendar.DAY_OF_MONTH, 1); 
+        int myYear = cal.get(Calendar.YEAR);
+
+        var list = new ArrayList<Date>();
+        while (myYear == cal.get(Calendar.YEAR)) { // until we are in a current month - iterate
+            list.add(cal.getTime());
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+        } // end of WHILE
+
+        return list;
     }
 
     /** Check the validity of the year in the provided Date object. */
@@ -72,7 +143,7 @@ public class WeatherCSVApplication {
         log.debug(String.format("getCSVFilesByDates(): processing dates [%s].",
             Arrays.toString(strDates)));
         
-        // get all files in a dataset
+        // get all files in a dataset (no filtering now)
         Set<File> datasetFiles = new Utilities().getAllFilesFromResource(BASE_CSV_FOLDER);
 
         // if provided list of dates is null or empty - return all files in a dataset
@@ -86,14 +157,19 @@ public class WeatherCSVApplication {
         // Part I: process provided list of dates and convert them to US format
         Set<String> strUsDates = new HashSet<>();
         for (String strDate: strDates) {
-            var localDate = WeatherCSVApplication.parseDate(strDate);
-
-            if (!WeatherCSVApplication.isYearValid(localDate)) { // check validity of the year
-                throw new IllegalArgumentException(String.format(
-                    "Provided invalid year in the date [%s]!", strDate));
+            var localDate = WeatherCSVApplication.parseDateByFormats(strDate, DATE_FORMATS);
+            
+            if (localDate.isEmpty()) {
+                throw new ParseException("Can't parse!", 0);
             }
 
-            strUsDates.add(DATE_FORMAT_US.format(localDate)); // add converted date to the set
+            // todo: uncomment and fix!
+            // if (!WeatherCSVApplication.isYearValid(localDate)) { // check validity of the year
+            //     throw new IllegalArgumentException(String.format(
+            //         "Provided invalid year in the date [%s]!", strDate));
+            // }
+
+            strUsDates.add(DATE_FORMAT_US.format(localDate.get())); // add converted date to the set
         } // end of FOR
 
         // Part II: iterate over dataset files and pick up necessary files
@@ -133,7 +209,12 @@ public class WeatherCSVApplication {
 
     /** */
     private static String getTimeFromCSVRecord(@NonNull CSVRecord csvRecord) {
-        return csvRecord.get("TimeEST");
+        try {
+            return csvRecord.get("TimeEST"); // try to get value from "TimeEST" column
+        } catch (IllegalArgumentException e) {
+            log.warn("Column \"TimeEST\" not found!", e);
+            return csvRecord.get("TimeEDT"); // try to get value from "TimeEDT" column
+        }
     }
 
     /** */
@@ -197,7 +278,9 @@ public class WeatherCSVApplication {
 
         log.debug("testColdestHourInFile() is working.");
 
-        var result = this.coldestHourInFile("04.01.2012"); // get result from the method under test
+        //var result = this.coldestHourInFile("04.01.2012"); // get result from the method under test
+        var result = this.coldestHourInFile("01.05.2014"); // get result from the method under test
+
 
         // extract data from the result
         var file = result.getLeft();
@@ -253,7 +336,18 @@ public class WeatherCSVApplication {
     public void testFileWithColdestTemperature() throws URISyntaxException, IOException, ParseException {
         log.debug("testFileWithColdestTemperature() is working.");
         
-        var result = fileWithColdestTemperature("01.01.2014", "02.01.2014", "03.01.2014");
+        var listDates = getYearDates("2014", YEAR_FORMATS);
+        var listStrDates = new String[listDates.size()];
+        var sdf = new SimpleDateFormat("dd.MM.yyyy");
+        var counter = 0;
+        for (Date date: listDates) {
+            var strDate = sdf.format(date);
+            listStrDates[counter] = strDate;
+            counter++;
+        }
+
+        // var result = fileWithColdestTemperature("01.01.2014", "02.01.2014", "03.01.2014");
+        var result = fileWithColdestTemperature(listStrDates);
 
         System.out.println(String.format("%nColdest day was in file [%s]%n" +
             "Coldest temperature on that day was [%s]%n" +
@@ -325,7 +419,8 @@ public class WeatherCSVApplication {
     public void testLowestHumidityInFile() throws ParseException, URISyntaxException, IOException {
         log.debug("testLowestHumidityInFile() is working.");
         
-        var result = lowestHumidityInFile("20.01.2014");
+        // var result = lowestHumidityInFile("20.01.2014");
+        var result = lowestHumidityInFile("01.04.2014");
 
         System.out.println(String.format("%nThe lowest humidity in the file [%s] was [%s] at [%s].",
             result.getLeft().getName(), getHumidityFromCSVRecord(result.getRight()).getAsInt(),
@@ -370,8 +465,19 @@ public class WeatherCSVApplication {
     */
     public void testLowestHumidityInManyFiles() throws ParseException, URISyntaxException, IOException {
         log.debug("testLowestHumidityInManyFiles() is working.");
-        
-        var result = lowestHumidityInManyFiles("19.01.2014", "20.01.2014");
+
+        var listDates = getYearDates("2014", YEAR_FORMATS);
+        var listStrDates = new String[listDates.size()];
+        var sdf = new SimpleDateFormat("dd.MM.yyyy");
+        var counter = 0;
+        for (Date date: listDates) {
+            var strDate = sdf.format(date);
+            listStrDates[counter] = strDate;
+            counter++;
+        }
+
+        // var result = lowestHumidityInManyFiles("19.01.2014", "20.01.2014");
+        var result = lowestHumidityInManyFiles(listStrDates);
 
         System.out.println(String.format("%nThe lowest humidity was in the " + 
             "file [%s],it was [%s] at [%s].",
@@ -419,7 +525,7 @@ public class WeatherCSVApplication {
         log.debug("testAverageTemperatureInFile() is working.");
 
         System.out.println(String.format("Average temperature in file is [%s].",
-            averageTemperatureInFile("20.01.2014")));
+            averageTemperatureInFile("01.06.2014")));
     }
 
     /**
@@ -475,15 +581,15 @@ public class WeatherCSVApplication {
 
         log.debug("testAverageTemperatureWithHighHumidityInFile() is working.");
         
-        var result1 = averageTemperatureWithHighHumidityInFile("20.01.2014", 80);
-        if (result1 > 0) {
-            System.out.println(String.format("Average temperature when high Humidity is [%s].", 
-                result1));
-        } else {
-            System.out.println("No temperatures with that humidity!");
-        }
+        // var result1 = averageTemperatureWithHighHumidityInFile("20.01.2014", 80);
+        // if (result1 > 0) {
+        //     System.out.println(String.format("Average temperature when high Humidity is [%s].", 
+        //         result1));
+        // } else {
+        //     System.out.println("No temperatures with that humidity!");
+        // }
 
-        var result2 = averageTemperatureWithHighHumidityInFile("20.03.2014", 80);
+        var result2 = averageTemperatureWithHighHumidityInFile("30.03.2014", 80);
         if (result2 > 0) {
             System.out.println(String.format("Average temperature when high Humidity is [%s].", 
                 result2));
@@ -500,12 +606,16 @@ public class WeatherCSVApplication {
         // create instance of this class
         var application = new WeatherCSVApplication();
 
-        application.testColdestHourInFile();                        // test method #1
-        application.testFileWithColdestTemperature();               // test method #2
-        application.testLowestHumidityInFile();                     // test method #3
-        application.testLowestHumidityInManyFiles();                // test method #4
-        application.testAverageTemperatureInFile();                 // test method #5
+        // application.testColdestHourInFile();                        // test method #1
+        // application.testFileWithColdestTemperature();               // test method #2
+        // application.testLowestHumidityInFile();                     // test method #3
+        // application.testLowestHumidityInManyFiles();                // test method #4
+        // application.testAverageTemperatureInFile();                 // test method #5
         application.testAverageTemperatureWithHighHumidityInFile(); // test method #6
+
+        // System.out.println("-> " + WeatherCSVApplication.parseDate("02/10/2022"));
+        //System.out.println("\n" + WeatherCSVApplication.parseMonth("10/2022"));
+
     }
 
 }
