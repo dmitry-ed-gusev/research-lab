@@ -336,7 +336,7 @@ public class WeatherCSVApplication {
     public void testFileWithColdestTemperature() throws URISyntaxException, IOException, ParseException {
         log.debug("testFileWithColdestTemperature() is working.");
         
-        var listDates = getYearDates("2014", YEAR_FORMATS);
+        var listDates = getYearDates("2013", YEAR_FORMATS);
         var listStrDates = new String[listDates.size()];
         var sdf = new SimpleDateFormat("dd.MM.yyyy");
         var counter = 0;
@@ -420,7 +420,7 @@ public class WeatherCSVApplication {
         log.debug("testLowestHumidityInFile() is working.");
         
         // var result = lowestHumidityInFile("20.01.2014");
-        var result = lowestHumidityInFile("01.04.2014");
+        var result = lowestHumidityInFile("22.07.2014");
 
         System.out.println(String.format("%nThe lowest humidity in the file [%s] was [%s] at [%s].",
             result.getLeft().getName(), getHumidityFromCSVRecord(result.getRight()).getAsInt(),
@@ -466,7 +466,7 @@ public class WeatherCSVApplication {
     public void testLowestHumidityInManyFiles() throws ParseException, URISyntaxException, IOException {
         log.debug("testLowestHumidityInManyFiles() is working.");
 
-        var listDates = getYearDates("2014", YEAR_FORMATS);
+        var listDates = getYearDates("2013", YEAR_FORMATS);
         var listStrDates = new String[listDates.size()];
         var sdf = new SimpleDateFormat("dd.MM.yyyy");
         var counter = 0;
@@ -525,7 +525,7 @@ public class WeatherCSVApplication {
         log.debug("testAverageTemperatureInFile() is working.");
 
         System.out.println(String.format("Average temperature in file is [%s].",
-            averageTemperatureInFile("01.06.2014")));
+            averageTemperatureInFile("10.08.2013")));
     }
 
     /**
@@ -589,7 +589,7 @@ public class WeatherCSVApplication {
         //     System.out.println("No temperatures with that humidity!");
         // }
 
-        var result2 = averageTemperatureWithHighHumidityInFile("30.03.2014", 80);
+        var result2 = averageTemperatureWithHighHumidityInFile("02.09.2013", 80);
         if (result2 > 0) {
             System.out.println(String.format("Average temperature when high Humidity is [%s].", 
                 result2));
@@ -607,11 +607,11 @@ public class WeatherCSVApplication {
         var application = new WeatherCSVApplication();
 
         // application.testColdestHourInFile();                        // test method #1
-        // application.testFileWithColdestTemperature();               // test method #2
+        application.testFileWithColdestTemperature();               // test method #2
         // application.testLowestHumidityInFile();                     // test method #3
         // application.testLowestHumidityInManyFiles();                // test method #4
         // application.testAverageTemperatureInFile();                 // test method #5
-        application.testAverageTemperatureWithHighHumidityInFile(); // test method #6
+        // application.testAverageTemperatureWithHighHumidityInFile(); // test method #6
 
         // System.out.println("-> " + WeatherCSVApplication.parseDate("02/10/2022"));
         //System.out.println("\n" + WeatherCSVApplication.parseMonth("10/2022"));

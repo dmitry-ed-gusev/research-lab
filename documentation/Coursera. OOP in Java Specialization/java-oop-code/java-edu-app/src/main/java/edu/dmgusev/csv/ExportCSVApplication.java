@@ -213,11 +213,11 @@ public class ExportCSVApplication {
 
         // testing method listExportersTwoProducts()
         // application.listExportersTwoProducts(CSV_EXPORTS_SMALL, "gold", "diamonds");
-        // application.listExportersTwoProducts(CSV_EXPORTDATA, "gold", "diamonds");
+        //application.listExportersTwoProducts(CSV_EXPORTDATA, "cotton", "flowers");
 
         // testing method numberOfExporters()
         //application.numberOfExporters(CSV_EXPORTS_SMALL, "gold");
-        //application.numberOfExporters(CSV_EXPORTDATA, "sugar");
+        //application.numberOfExporters(CSV_EXPORTDATA, "cocoa");
 
         // testing method bigExporters()
         // application.bigExporters(CSV_EXPORTS_SMALL, "$999,999,999");
