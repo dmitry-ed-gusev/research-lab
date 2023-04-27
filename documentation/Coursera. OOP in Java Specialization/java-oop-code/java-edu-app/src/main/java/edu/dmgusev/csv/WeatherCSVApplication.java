@@ -21,7 +21,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import edu.dmgusev.utils.Utilities;
+import edu.dmgusev.utils.Utils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -144,7 +144,7 @@ public class WeatherCSVApplication {
             Arrays.toString(strDates)));
         
         // get all files in a dataset (no filtering now)
-        Set<File> datasetFiles = new Utilities().getAllFilesFromResource(BASE_CSV_FOLDER);
+        Set<File> datasetFiles = Utils.getAllFilesFromResources(BASE_CSV_FOLDER);
 
         // if provided list of dates is null or empty - return all files in a dataset
         if (strDates == null || strDates.length <= 0) {
@@ -248,7 +248,7 @@ public class WeatherCSVApplication {
         // processing the found file (the first one/the only one)
         CSVRecord result = null;
         File file = this.getCSVFileByDate(strDate);
-        try (var parser = Utilities.getCSVParser(file)) {
+        try (var parser = Utils.getCSVParser(file)) {
 
             for (CSVRecord csvRecord: parser) {
                 double temperature = getTempFromCSVRecord(csvRecord);
@@ -353,7 +353,7 @@ public class WeatherCSVApplication {
             "Coldest temperature on that day was [%s]%n" +
             "All the Temperatures on the coldest day were:%n\t%s%n",
             result.getLeft().getName(), getTempFromCSVRecord(result.getRight()),
-                Utilities.getColumnValuesFromCSVFile(result.getLeft(), "TemperatureF")));
+                Utils.getColumnValuesFromCSVFile(result.getLeft(), "TemperatureF")));
     }
 
     /** 
@@ -377,7 +377,7 @@ public class WeatherCSVApplication {
         // processing the found file (the first one/the only one)
         CSVRecord result = null;
         File file = this.getCSVFileByDate(strDate);
-        try (var parser = Utilities.getCSVParser(file)) {
+        try (var parser = Utils.getCSVParser(file)) {
 
             for (CSVRecord csvRecord: parser) {
                 var humidity = getHumidityFromCSVRecord(csvRecord);
@@ -498,7 +498,7 @@ public class WeatherCSVApplication {
         // processing the found file (the first one/the only one)
         double result = 0.0;
         File file = this.getCSVFileByDate(strDate);
-        try (var parser = Utilities.getCSVParser(file)) {
+        try (var parser = Utils.getCSVParser(file)) {
 
             var counter = 0;
             for (CSVRecord csvRecord: parser) {
@@ -545,7 +545,7 @@ public class WeatherCSVApplication {
         var counter = 0;
 
         File file = this.getCSVFileByDate(strDate);
-        try (var parser = Utilities.getCSVParser(file)) {
+        try (var parser = Utils.getCSVParser(file)) {
 
             for (CSVRecord csvRecord: parser) {
                 var humidity = getHumidityFromCSVRecord(csvRecord).orElse(0);

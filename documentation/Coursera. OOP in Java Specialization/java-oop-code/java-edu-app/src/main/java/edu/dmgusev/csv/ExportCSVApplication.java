@@ -8,7 +8,7 @@ import java.util.Locale;
 
 import org.apache.commons.csv.CSVRecord;
 
-import edu.dmgusev.utils.Utilities;
+import edu.dmgusev.utils.Utils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +25,7 @@ public class ExportCSVApplication {
     public void tester(@NonNull String csvFile) throws IOException {
         log.debug("tester() method is working.");
 
-        try (var parser = Utilities.getCSVParser(csvFile)) {
+        try (var parser = Utils.getCSVParser(csvFile)) {
             for (CSVRecord csvRecord: parser) {
                 System.out.println(csvRecord);
             }
@@ -47,7 +47,7 @@ public class ExportCSVApplication {
         log.debug(String.format("countryInfo(): CSV file [%s], country [%s].", 
             csvFile, country));
 
-        try (var parser = Utilities.getCSVParser(csvFile)) {
+        try (var parser = Utils.getCSVParser(csvFile)) {
             for (CSVRecord csvRecord: parser) { // iterate over CSV file records and process
 
                 String csvCountry = csvRecord.get("Country"); // get country value
@@ -83,7 +83,7 @@ public class ExportCSVApplication {
         log.debug("listExportersTwoProducts() is working.");
 
         boolean found = false;
-        try (var parser = Utilities.getCSVParser(csvFile)) {
+        try (var parser = Utils.getCSVParser(csvFile)) {
 
             for (CSVRecord csvRecord: parser) {
                 String exports = csvRecord.get("Exports").toUpperCase();
@@ -120,7 +120,7 @@ public class ExportCSVApplication {
         log.debug("numberOfExporters() is working.");
 
         var counter = 0;
-        try (var parser = Utilities.getCSVParser(csvFile)) {
+        try (var parser = Utils.getCSVParser(csvFile)) {
 
             for (CSVRecord csvRecord: parser) {
                 String exports = csvRecord.get("Exports").toUpperCase();
@@ -174,7 +174,7 @@ public class ExportCSVApplication {
         Number providedAmount = dollarFormat.parse(usDollarsAmount);
 
         boolean found = false;
-        try (var parser = Utilities.getCSVParser(csvFile)) {
+        try (var parser = Utils.getCSVParser(csvFile)) {
 
             for (CSVRecord csvRecord: parser) {
                 String amount = csvRecord.get("Value (dollars)");
