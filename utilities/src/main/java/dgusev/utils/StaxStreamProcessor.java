@@ -1,12 +1,13 @@
 package dgusev.utils;
 
-import lombok.extern.apachecommons.CommonsLog;
+import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
-import java.io.InputStream;
+
+import lombok.extern.apachecommons.CommonsLog;
 
 /** XML Processor for Connector. */
 @CommonsLog
@@ -17,7 +18,7 @@ public class StaxStreamProcessor implements AutoCloseable {
     private final XMLStreamReader reader;
 
     public StaxStreamProcessor(InputStream is) throws XMLStreamException {
-        LOG.debug("StaxStreamProcessor constructor() is working.");
+        log.debug("StaxStreamProcessor constructor() is working.");
         reader = FACTORY.createXMLStreamReader(is);
     }
 

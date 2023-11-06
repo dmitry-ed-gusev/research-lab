@@ -1,10 +1,20 @@
 package dgusev.io;
 
-import lombok.extern.apachecommons.CommonsLog;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.*;
-import java.util.zip.*;
+import lombok.extern.apachecommons.CommonsLog;
 
 /** ZIP/GZIP methods */
 
@@ -81,9 +91,9 @@ public class MyZippo {
                 //create output directory if not exists
                 File folder = new File(outputFolder);
                 if (!folder.exists()) {
-                    LOG.info(String.format("Destination output path [%s] doesn't exists! Creating...", outputFolder));
+                    log.info(String.format("Destination output path [%s] doesn't exists! Creating...", outputFolder));
                     if (folder.mkdirs()) {
-                        LOG.info(String.format("Destination output path [%s] created successfully!", outputFolder));
+                        log.info(String.format("Destination output path [%s] created successfully!", outputFolder));
                     } else {
                         throw new IllegalStateException(String.format("Can't create zip output folder [%s]!", outputFolder));
                     }
@@ -95,14 +105,14 @@ public class MyZippo {
                 String fileName = ze.getName();
                 File newFile = new File((StringUtils.isBlank(outputFolder) ? "" : (outputFolder + File.separator)) + fileName);
 
-                LOG.debug(String.format("Processing -> name: %s | size: %s | compressed size: %s \n\t" +
+                log.debug(String.format("Processing -> name: %s | size: %s | compressed size: %s \n\t" +
                                 "absolute name: %s",
                         fileName, ze.getSize(), ze.getCompressedSize(), newFile.getAbsoluteFile()));
 
                 // if entry is a directory - create it and continue (skip the rest of cycle body)
                 if (fileName.endsWith("/") || fileName.endsWith("\\")) {
                     if (newFile.mkdirs()) {
-                        LOG.debug(String.format("Created dir: [%s].", newFile.getAbsoluteFile()));
+                        log.debug(String.format("Created dir: [%s].", newFile.getAbsoluteFile()));
                     } else {
                         throw new IllegalStateException(String.format("Can't create dir [%s]!", newFile.getAbsoluteFile()));
                     }
@@ -128,10 +138,10 @@ public class MyZippo {
 
             //zis.closeEntry();
             //zis.close();
-            LOG.info(String.format("Archive [%s] unzipped successfully.", zipFile));
+            log.info(String.format("Archive [%s] unzipped successfully.", zipFile));
 
         } catch (IOException ex) {
-            LOG.error(ex);
+            log.error(ex);
         }
 
     } // end of unZipIt

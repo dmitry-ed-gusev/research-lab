@@ -81,8 +81,8 @@
         <version.json>1.0.4</version.json>
         <google.json-simple.version>1.1</google.json-simple.version>
         <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
-        <primefaces.version>3.1.1</primefaces.version>
-        <primefaces.themes.version>1.0.4</primefaces.themes.version>
+        <primefaces.version>4.0</primefaces.version>
+        <primefaces.themes.version>1.0.10</primefaces.themes.version>
         <javax.faces.version>2.0</javax.faces.version>
 
         <!-- 3rd party libraries versions -->
@@ -90,7 +90,7 @@
         <ant.jsch.version>1.10.1</ant.jsch.version>
         <org.jsoup.version>1.10.1</org.jsoup.version>
         <cglib.version>2.2.2</cglib.version>
-        <lombok.version>1.18.4</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <jopt.simple.version>5.0.4</jopt.simple.version>
 
         <!-- Test frameworks versions (JUnit/Hamcrest/Mockito/etc) -->
@@ -98,7 +98,7 @@
         <mockito.version>2.28.2</mockito.version>
         <hamcrest.version>2.1</hamcrest.version>
         <xmlunit.version>1.4</xmlunit.version>
-        <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
+        <jacoco.plugin.version>0.8.8</jacoco.plugin.version>
         <mock.server.version>5.5.4</mock.server.version>
 
         <!-- Spring framework components versions -->
@@ -167,7 +167,7 @@
         <repository>
             <id>primefaces-themes</id>
             <name>primefaces-themes</name>
-            <url>http://repository.primefaces.org/</url>
+            <url>https://repository.primefaces.org/</url>
         </repository>
     </repositories>
 

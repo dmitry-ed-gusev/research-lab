@@ -35,6 +35,14 @@
             <artifactId>blitzer</artifactId>
             <version>${primefaces.themes.version}</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.primefaces.themes/blitzer -->
+<dependency>
+    <groupId>org.primefaces.themes</groupId>
+    <artifactId>blitzer</artifactId>
+    <version>1.0.10</version>
+</dependency>
+
         <dependency>
             <groupId>javax.faces</groupId>
             <artifactId>jsf-api</artifactId>

@@ -1,10 +1,23 @@
 package dg.social.crawler.networks.vk;
 
-import dg.social.crawler.domain.PersonDto;
-import dg.social.crawler.networks.AbstractClient;
-import dgusev.web.MyHttpUtils;
-import dgusev.io.MyIOUtils;
-import lombok.extern.apachecommons.CommonsLog;
+import static dg.social.crawler.SCrawlerDefaults.DATE_TIME_FORMAT;
+import static dg.social.crawler.SCrawlerDefaults.DEFAULT_ENCODING;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ACCESS_TOKEN_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.ADD_MISSED_DIGITS_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.APPROVE_ACCESS_RIGHTS_FORM;
+import static dg.social.crawler.SCrawlerDefaults.HttpFormType.LOGIN_FORM;
+import static dgusev.web.MyHttpUtils.HTTP_GET_COOKIES_HEADER;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,19 +31,12 @@ import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static dg.social.crawler.SCrawlerDefaults.*;
-import static dg.social.crawler.SCrawlerDefaults.HttpFormType.*;
-import static dgusev.web.MyHttpUtils.HTTP_GET_COOKIES_HEADER;
+import dg.social.crawler.SCrawlerDefaults.HttpFormType;
+import dg.social.crawler.domain.PersonDto;
+import dg.social.crawler.networks.AbstractClient;
+import dgusev.io.MyIOUtils;
+import dgusev.web.MyHttpUtils;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * VK (VKontakte) social network client.
@@ -64,30 +70,30 @@ public class VkClient extends AbstractClient {
     public VkClient(VkClientConfig config, VkFormsRecognizer formsRecognizer) throws IOException {
         super(config, formsRecognizer);
 
-        LOG.debug("VkClient constructor() working.");
+        log.debug("VkClient constructor() working.");
 
         // init vk login form credentials
         this.VK_LOGIN_FORM_CREDENTIALS = new HashMap<String, String>() {{
             put(LOGIN_FORM_EMAIL_KEY, VkClient.this.getUsername());
             put(LOGIN_FORM_PASS_KEY,  VkClient.this.getPassword());
         }};
-        LOG.debug("VK Login Form credentials have been initialized.");
+        log.debug("VK Login Form credentials have been initialized.");
 
         // init missed phone digits field
         String username = this.getUsername();
         this.VK_MISSED_DIGITS_FORM_CREDENTIALS = new HashMap<String, String>() {{
             put(MISSED_DIGITS_FORM_CODE_KEY, username.substring(username.startsWith("+") ? 2 : 1, username.length() - 2));
         }};
-        LOG.debug(String.format("Calculated missed phone digits: [%s].", this.VK_MISSED_DIGITS_FORM_CREDENTIALS));
+        log.debug(String.format("Calculated missed phone digits: [%s].", this.VK_MISSED_DIGITS_FORM_CREDENTIALS));
     }
 
     /** Request and get VK access token (for using with API calls). With token method returns date/time, when token received. */
     private Pair<Date, String> requestAccessToken() throws IOException {
-        LOG.debug("VkClient.getAccessToken() working. [PRIVATE]");
+        log.debug("VkClient.getAccessToken() working. [PRIVATE]");
 
         // generate and execute ACCESS_TOKEN request
         String vkTokenRequest = this.getAccessTokenRequest();
-        LOG.debug(String.format("Http request for ACCESS_TOKEN: [%s].", vkTokenRequest));
+        log.debug(String.format("Http request for ACCESS_TOKEN: [%s].", vkTokenRequest));
 
         // some tech variables
         CloseableHttpResponse httpResponse;     // store the whole http response
@@ -107,49 +113,49 @@ public class VkClient extends AbstractClient {
                 httpCookies     = httpResponse.getHeaders(HTTP_GET_COOKIES_HEADER);           // save cookies
                 httpPageContent = MyHttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING); // get html page content as string
 
-                if (LOG.isDebugEnabled()) { // just debug output
-                    LOG.debug(MyHttpUtils.httpResponseToString(httpResponse, httpPageContent));
+                if (log.isDebugEnabled()) { // just debug output
+                    log.debug(MyHttpUtils.httpResponseToString(httpResponse, httpPageContent));
                 }
 
                 Document doc = Jsoup.parse(httpPageContent);  // parse returned page into Document object
                 receivedFormType = this.getHttpFormType(doc); // check received form type
-                LOG.debug(String.format("Got VK form: [%s].", receivedFormType));
+                log.debug(String.format("Got VK form: [%s].", receivedFormType));
 
                 // todo: extract method for some actions
                 switch (receivedFormType) { // select action, based on form type
 
                     case LOGIN_FORM: // VK -> simple login form
-                        LOG.debug(String.format("Processing [%s].", LOGIN_FORM));
+                        log.debug(String.format("Processing [%s].", LOGIN_FORM));
                         httpResponse = this.submitForm(doc, VK_LOGIN_FORM_CREDENTIALS, httpCookies);
                         break;
 
                     case APPROVE_ACCESS_RIGHTS_FORM: // VK approve application rights
-                        LOG.debug(String.format("Processing [%s].", APPROVE_ACCESS_RIGHTS_FORM));
+                        log.debug(String.format("Processing [%s].", APPROVE_ACCESS_RIGHTS_FORM));
                         httpResponse = this.submitForm(doc, httpCookies);
                         break;
 
                     case ADD_MISSED_DIGITS_FORM: // VK add missed phone number digits form
-                        LOG.debug(String.format("Processing [%s].", ADD_MISSED_DIGITS_FORM));
+                        log.debug(String.format("Processing [%s].", ADD_MISSED_DIGITS_FORM));
                         httpResponse = this.submitForm(doc, "https://vk.com", VK_MISSED_DIGITS_FORM_CREDENTIALS, httpCookies);
                         break;
 
                     case ACCESS_TOKEN_FORM: // VK token page/form
-                        LOG.debug(String.format("Processing [%s].", ACCESS_TOKEN_FORM));
+                        log.debug(String.format("Processing [%s].", ACCESS_TOKEN_FORM));
 
                         // parse redirect and get access token from URL
                         RedirectLocations locations = this.getContextRedirectLocations();
                         if (locations != null) { // parse last redirect locations and get access token
                             URI finalUri = locations.getAll().get(locations.getAll().size() - 1); // get the last redirect URI - it's what we need
                             String accessToken = StringUtils.split(StringUtils.split(finalUri.getFragment(), "&")[0], "=")[1];
-                            LOG.debug(String.format("Received ACCESS_TOKEN: [%s].", accessToken));
+                            log.debug(String.format("Received ACCESS_TOKEN: [%s].", accessToken));
                             return new ImmutablePair<>(new Date(), accessToken);
                         } else { // last redirect locations is empty
-                            LOG.error("Can't find last redirect locations (list is null)!");
+                            log.error("Can't find last redirect locations (list is null)!");
                         }
                         break;
 
                     default: // default case - unknown form
-                        LOG.error(String.format("Got unknown type of form: [%s].", receivedFormType));
+                        log.error(String.format("Got unknown type of form: [%s].", receivedFormType));
                         String fileName = String.valueOf(System.currentTimeMillis()) + "_data_file.tmp";
                         MyIOUtils.writeStringToFile(httpPageContent, fileName, false); // save unknown form to file (for analysis)
                         return null; // no access token!
@@ -168,7 +174,7 @@ public class VkClient extends AbstractClient {
 
     /***/
     static boolean isVKAccessTokenValid(Pair<Date, String> accessToken) {
-        LOG.debug(String.format("VkClient.isVKAccessTokenValid() is working [PRIVATE]. Token to check [%s].", accessToken));
+        log.debug(String.format("VkClient.isVKAccessTokenValid() is working [PRIVATE]. Token to check [%s].", accessToken));
         // check access token time validity period
         return (accessToken != null) && (!StringUtils.isBlank(accessToken.getValue())) &&
                 ((System.currentTimeMillis() - accessToken.getKey().getTime()) / 1000 < TOKEN_VALIDITY_SECONDS);
@@ -176,17 +182,17 @@ public class VkClient extends AbstractClient {
 
     /***/
     private Pair<Date, String> getAccessToken() throws IOException {
-        LOG.debug("VkClient.getAccessToken() is working.");
+        log.debug("VkClient.getAccessToken() is working.");
 
 
         // fast check for existing token
-        LOG.debug(String.format("Checking internal token [%s].", this.accessToken));
+        log.debug(String.format("Checking internal token [%s].", this.accessToken));
         if (VkClient.isVKAccessTokenValid(this.accessToken)) {
             return this.accessToken;
         }
 
         // existing token isn't valid, trying to load token from file (if it exists)
-        LOG.debug(String.format("Checking token temporary file [%s].", this.getTokenFileName()));
+        log.debug(String.format("Checking token temporary file [%s].", this.getTokenFileName()));
         if (!StringUtils.isBlank(this.getTokenFileName())) {
             File tokenFile = new File(this.getTokenFileName());
             if (tokenFile.exists() && tokenFile.isFile()) {
@@ -197,18 +203,18 @@ public class VkClient extends AbstractClient {
                         return this.accessToken;
                     }
                 } catch (ParseException e) {
-                    LOG.error("Can't parse Date in token's temporary file!", e);
+                    log.error("Can't parse Date in token's temporary file!", e);
                 }
             } else {
-                LOG.warn(String.format("Token's temporary file [%s] doesn't exists or not a file!",
+                log.warn(String.format("Token's temporary file [%s] doesn't exists or not a file!",
                         this.getTokenFileName()));
             }
         } else {
-            LOG.warn("Token's temporary file name is empty!");
+            log.warn("Token's temporary file name is empty!");
         }
 
         // both existing token and token from file are not valid, requesting new
-        LOG.debug("Requesting new access token from VK.");
+        log.debug("Requesting new access token from VK.");
         this.accessToken = this.requestAccessToken();
         // fail-fast -> check that we've really got token
         if (this.accessToken == null) {
@@ -227,7 +233,7 @@ public class VkClient extends AbstractClient {
      * @param count int results count, if negative or equals to zero or greater, than 1000 - will be returned 1000 results
      */
     public String usersSearch(String userString, String fieldsList, int count) throws IOException, URISyntaxException {
-        LOG.debug(String.format("VkClient.usersSearch() working. Search string: [%s].", userString));
+        log.debug(String.format("VkClient.usersSearch() working. Search string: [%s].", userString));
 
         if (StringUtils.isBlank(userString)) { // fail-fast
             throw new IllegalArgumentException("Cant' search users with empty search string!");
@@ -241,7 +247,7 @@ public class VkClient extends AbstractClient {
                 .addParameter("access_token", this.getAccessToken().getRight())
                 .addParameter("v", this.getApiVersion())
                 .toString());
-        LOG.debug(String.format("Generated URI: [%s].", uri));
+        log.debug(String.format("Generated URI: [%s].", uri));
 
         // execute search query
         CloseableHttpResponse httpResponse = this.sendHttpGet(uri);
@@ -252,8 +258,8 @@ public class VkClient extends AbstractClient {
 
         // get page content for parsing
         //String httpPageContent = MyHttpUtils.getPageContent(httpEntity, DEFAULT_ENCODING);
-        //if (LOG.isDebugEnabled()) { // just debug output <- too much output
-        //    LOG.debug(MyHttpUtils.httpResponseToString(httpResponse, httpPageContent));
+        //if (log.isDebugEnabled()) { // just debug output <- too much output
+        //    log.debug(MyHttpUtils.httpResponseToString(httpResponse, httpPageContent));
         //}
         // return received JSON
         //return httpPageContent;
@@ -263,7 +269,7 @@ public class VkClient extends AbstractClient {
      * Get all Countries list from VK. Uses API method [database.getCountries].
      */
     public String getCountries() throws URISyntaxException, IOException {
-        LOG.debug("VkClient.getCountries() is working.");
+        log.debug("VkClient.getCountries() is working.");
 
         // generate query URI
         URI uri = new URI(new URIBuilder(String.format(this.getBaseApiRequest(), "database.getCountries"))
@@ -272,7 +278,7 @@ public class VkClient extends AbstractClient {
                 .addParameter("access_token", this.getAccessToken().getRight())
                 .addParameter("v",            this.getApiVersion())
                 .toString());
-        LOG.debug(String.format("Generated URI: [%s].", uri));
+        log.debug(String.format("Generated URI: [%s].", uri));
 
         // execute search query
         CloseableHttpResponse httpResponse = this.sendHttpGet(uri);

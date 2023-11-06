@@ -1,15 +1,17 @@
 package dgusev.web.rest;
 
-import lombok.Getter;
-import lombok.ToString;
-import lombok.extern.apachecommons.CommonsLog;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import java.util.List;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.NewCookie;
-import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import lombok.Getter;
+import lombok.ToString;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * REST response object.
@@ -31,7 +33,7 @@ public class RestResponse {
 
     /** REST response object constructor with JSON object. */
     public RestResponse(int status, JSONObject bodyObject, List<NewCookie> cookies, MultivaluedMap<String, String> headers) {
-        LOG.debug("RestResponse constructor(JSONObject) is working.");
+        log.debug("RestResponse constructor(JSONObject) is working.");
         this.status     = status;
         this.bodyObject = bodyObject;
         this.bodyArray  = null;

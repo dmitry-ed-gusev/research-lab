@@ -1,20 +1,25 @@
 package dgusev.io;
 
-import lombok.NonNull;
-import lombok.extern.apachecommons.CommonsLog;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang3.StringUtils;
+import static dgusev.utils.MyCommonUtils.not;
+import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static dgusev.utils.MyCommonUtils.not;
-import static gusev.dmitry.jtils.UtilitiesDefaults.DEFAULT_ENCODING;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.NonNull;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * Reading/parsing CSV files and other useful utilities.
@@ -135,7 +140,7 @@ public class MyCsvUtils {
 
     /***/
     public static List<String> readCSVFile(@NonNull InputStream fileStream, @NonNull String encoding) throws IOException {
-        LOG.debug("MyIOUtils.readCSVFile(Stream) is working.");
+        log.debug("MyIOUtils.readCSVFile(Stream) is working.");
 
         List<String> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -155,7 +160,7 @@ public class MyCsvUtils {
     // todo: add variable separator
     // todo: read file from input stream
     public static List<String> readCSVFile(@NonNull String fileName, @NonNull String encoding) throws IOException {
-        LOG.debug("MyIOUtils.readCSVFile(String) is working.");
+        log.debug("MyIOUtils.readCSVFile(String) is working.");
 
         if (StringUtils.isBlank(fileName)) { // fail-fast
             throw new IOException("Empty file name!");
@@ -185,7 +190,7 @@ public class MyCsvUtils {
 
     /***/
     public static List<CSVRecord> getCSVRecordsList(@NonNull String csvFile) throws IOException {
-        LOG.debug("MyCsvUtils.getCSVRecordsList() is working.");
+        log.debug("MyCsvUtils.getCSVRecordsList() is working.");
 
         // build CSV format (with specified file header)
         CSVFormat csvFormat = CSVFormat.DEFAULT
@@ -198,7 +203,7 @@ public class MyCsvUtils {
         try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), DEFAULT_ENCODING))) {
             CSVParser csvParser = new CSVParser(fileReader, csvFormat);
             List<CSVRecord> csvRecords = csvParser.getRecords();
-            LOG.info(String.format("Got [%s] record(s) from CSV [%s].", csvRecords.size(), csvFile));
+            log.info(String.format("Got [%s] record(s) from CSV [%s].", csvRecords.size(), csvFile));
             return csvRecords;
         }
     }

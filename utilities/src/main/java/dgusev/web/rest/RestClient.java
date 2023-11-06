@@ -1,31 +1,34 @@
 package dgusev.web.rest;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.client.urlconnection.HTTPSProperties;
-import dgusev.web.rest.security.SSLContextUtil;
-import dgusev.web.rest.security.SpecifiedHostnameVerifier;
-import lombok.NonNull;
-import lombok.extern.apachecommons.CommonsLog;
+import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
+
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.List;
+
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.NewCookie;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.NewCookie;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.List;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.client.urlconnection.HTTPSProperties;
 
-import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
+import dgusev.web.rest.security.SSLContextUtil;
+import dgusev.web.rest.security.SpecifiedHostnameVerifier;
+import lombok.NonNull;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * Basic HTTP/HTTPS REST Client. For HTTPS requests should be specified "trusted" host - it
@@ -60,7 +63,7 @@ public class RestClient {
     /** Constructor with specified host path and "do trust host" (boolean) option. */
     public RestClient(@NonNull String path, boolean trustHost) throws NoSuchAlgorithmException, KeyManagementException {
 
-        LOG.debug("RestClient constructor() is working.");
+        log.debug("RestClient constructor() is working.");
 
         // pre-process provided url and extract host (also check its validity)
         this.path   = RestClient.processUrl(path);
@@ -71,7 +74,7 @@ public class RestClient {
 
         // if we should blindly trust the host - provide hostname verifier and insecure SSL context
         if (this.path.startsWith(HTTPS_URL_PREFIX) && trustHost) {
-            LOG.info(String.format("REST trusted host [%s].", host));
+            log.info(String.format("REST trusted host [%s].", host));
 
             // todo: add unit tests for created config for client
 
@@ -86,7 +89,7 @@ public class RestClient {
             // init jersey client with trusted host (and specified config)
             this.jerseyClient = Client.create(config);
         } else {
-            LOG.info("REST: no trusted hosts specified.");
+            log.info("REST: no trusted hosts specified.");
             this.jerseyClient = Client.create();
         }
 
@@ -94,42 +97,42 @@ public class RestClient {
 
     /***/
     public RestResponse executeGet(String resource) {
-        LOG.debug("RestClient.executeGet(String) is working.");
+        log.debug("RestClient.executeGet(String) is working.");
         return this.executeGet(resource, null, null);
     }
 
     /***/
     public RestResponse executeGet(String resource, Cookie cookie) {
-        LOG.debug("RestClient.executeGet(String, Cookie) is working.");
+        log.debug("RestClient.executeGet(String, Cookie) is working.");
         return this.executeGet(resource, cookie, null);
     }
 
     /***/
     public RestResponse executeGet(String resource, Cookie cookie, MultivaluedMap<String, String> headers) {
-        LOG.debug("RestClient.executeGet(String, Cookie) is working.");
-        LOG.debug(String.format("GET request parameters:%n\tresource [%s],%n\tcookie [%s].", resource, cookie));
+        log.debug("RestClient.executeGet(String, Cookie) is working.");
+        log.debug(String.format("GET request parameters:%n\tresource [%s],%n\tcookie [%s].", resource, cookie));
 
         ClientResponse response = this.buildClient(resource, MediaType.APPLICATION_JSON_TYPE, cookie, headers)
                 .get(ClientResponse.class);
-        LOG.info(String.format(SERVER_RESPONSE_MSG, response));
+        log.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(null, response);
     }
 
     public RestResponse executePost(JSONObject entity) {
-        LOG.debug("RestClient.executePost(JSONObject) is working.");
+        log.debug("RestClient.executePost(JSONObject) is working.");
         return executePost(null, entity);
     }
 
     public RestResponse executePost(String resource, JSONObject entity) {
-        LOG.debug("RestClient.executePost(String, JSONObject) is working.");
+        log.debug("RestClient.executePost(String, JSONObject) is working.");
         return executePost(resource, entity, (List<Cookie>) null, null);
     }
 
     /** Execute POST request with JSON entity. */
     public RestResponse executePost(String resource, JSONObject entity, List<Cookie> cookies,
                                      MultivaluedMap<String, String> headers) {
-        LOG.debug("RestClient.executePost(String, JSONObject, Cookie, Headers) is working.");
-        LOG.debug(
+        log.debug("RestClient.executePost(String, JSONObject, Cookie, Headers) is working.");
+        log.debug(
                 String.format("POST request parameters:%n\tresource [%s],%n\tentity [%s]," +
                                 "%n\tcookies [%s],%n\theaders [%s]",
                         resource, entity, cookies, headers));
@@ -141,7 +144,7 @@ public class RestClient {
                 .entity(entityString, MediaType.APPLICATION_JSON_TYPE)
                 .post(ClientResponse.class);
 
-        LOG.info(String.format(SERVER_RESPONSE_MSG, response));
+        log.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(entity, response);
     }
 
@@ -154,8 +157,8 @@ public class RestClient {
     /** Execute simple configurable POST request. */
     public RestResponse executePost(String resource, String entity, MediaType mediaType, List<Cookie> cookies,
                                    MultivaluedMap<String, String> headers) {
-        LOG.debug("RestClient.executeSimplePost(String, String, MediaType, Cookie, Headers) is working.");
-        LOG.debug(
+        log.debug("RestClient.executeSimplePost(String, String, MediaType, Cookie, Headers) is working.");
+        log.debug(
                 String.format("POST request parameters:%n\tresource [%s],%n\tentity [%s]," +
                                 "%n\tmedia type [%s],%n\tcookies [%s],%n\theaders [%s]",
                         resource, entity, mediaType, cookies, headers));
@@ -165,7 +168,7 @@ public class RestClient {
                 .entity(entity, mediaType)
                 .post(ClientResponse.class);
 
-        LOG.info(String.format(SERVER_RESPONSE_MSG, response));
+        log.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(null, response);
     }
 
@@ -176,14 +179,14 @@ public class RestClient {
     }
 
     public RestResponse executePut(String resource, JSONObject entity) {
-        LOG.debug("RestClient.executePut(String, JSONObject) is working.");
+        log.debug("RestClient.executePut(String, JSONObject) is working.");
         return executePut(resource, entity, null, null);
     }
 
     public RestResponse executePut(String resource, JSONObject entity, Cookie cookie,
                             MultivaluedMap<String, String> headers) {
-        LOG.debug("RestClient.executePut(String, JSONObject, Cookie) is working.");
-        LOG.debug(
+        log.debug("RestClient.executePut(String, JSONObject, Cookie) is working.");
+        log.debug(
                 String.format("PUT request parameters:%n\tresource [%s],%n\tentity [%s],%n\tcookie [%s].",
                         resource, entity, cookie));
 
@@ -192,15 +195,15 @@ public class RestClient {
                 .entity(entityString, MediaType.APPLICATION_JSON_TYPE)
                 .put(ClientResponse.class);
 
-        LOG.info(String.format(SERVER_RESPONSE_MSG, response));
+        log.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(entity, response);
     }
 
     /** Execute DELETE HTTP method. */
     public RestResponse executeDelete(String resource, JSONObject entity, Cookie cookie,
                                MultivaluedMap<String, String> headers) {
-        LOG.debug("RestClient.executeDelete(String, JSONObject, Cookie) is working.");
-        LOG.debug(
+        log.debug("RestClient.executeDelete(String, JSONObject, Cookie) is working.");
+        log.debug(
                 String.format("DELETE request parameters:%n\tresource [%s],%n\tentity [%s],%n\tcookie [%s].",
                         resource, entity, cookie));
 
@@ -214,7 +217,7 @@ public class RestClient {
 
         // execute request
         ClientResponse response = builder.delete(ClientResponse.class);
-        LOG.info(String.format(SERVER_RESPONSE_MSG, response));
+        log.info(String.format(SERVER_RESPONSE_MSG, response));
         return this.buildResponse(entity, response);
     }
 
@@ -222,7 +225,7 @@ public class RestClient {
     // todo: cover with unit tests (all buildClient() methods) !!!
     WebResource.Builder buildClient(String resource, MediaType mediaType, List<Cookie> cookies,
                                               MultivaluedMap<String, String> headers) {
-        LOG.debug("RestClient.buildClient() is working.");
+        log.debug("RestClient.buildClient() is working.");
 
         // build full path
         String pathWithResource = this.path;
@@ -230,7 +233,7 @@ public class RestClient {
             pathWithResource = pathWithResource + resource;
         }
 
-        LOG.debug(String.format("Building client. Path: [%s], media type: [%s].", pathWithResource, mediaType));
+        log.debug(String.format("Building client. Path: [%s], media type: [%s].", pathWithResource, mediaType));
 
         // build jersey client
         WebResource.Builder builder = this.jerseyClient.resource(pathWithResource).accept(mediaType);
@@ -239,10 +242,10 @@ public class RestClient {
         if (cookies != null && !cookies.isEmpty()) { // process all cookies from list
             cookies.forEach(cookie -> {
                 builder.cookie(cookie);
-                LOG.debug(String.format("Added cookie: %s", cookie));
+                log.debug(String.format("Added cookie: %s", cookie));
             });
         } else {
-            LOG.debug("No cookies for this request!");
+            log.debug("No cookies for this request!");
         }
 
         // add headers
@@ -250,11 +253,11 @@ public class RestClient {
             headers.forEach((key, values) -> {  // BiConsumer
                 values.forEach(value -> {  // Consumer
                     builder.header(key, value);
-                    LOG.debug(String.format("Added header: %s = %s", key, value));
+                    log.debug(String.format("Added header: %s = %s", key, value));
                 });
             });
         } else {
-            LOG.debug("No headers for this request!");
+            log.debug("No headers for this request!");
         }
 
         return builder;
@@ -272,13 +275,13 @@ public class RestClient {
      */
     // todo: implement unit tests (with mocks)
     RestResponse buildResponse(JSONObject request, ClientResponse response) {
-        LOG.debug("RestClient.buildResponse() is working.");
+        log.debug("RestClient.buildResponse() is working.");
 
         // get response entity (body) and status code
         String entity = response.getEntity(String.class);
         int status = response.getStatus();
-        LOG.info(String.format("Response status: [%s].", status));
-        LOG.debug(String.format("Response body:%n%s", entity));
+        log.info(String.format("Response status: [%s].", status));
+        log.debug(String.format("Response body:%n%s", entity));
 
         // server returned error code
         if (response.getClientResponseStatus().getFamily() != SUCCESSFUL) {
@@ -287,11 +290,11 @@ public class RestClient {
 
         // get response cookies
         List<NewCookie> cookies = response.getCookies();
-        LOG.debug(String.format("Response cookies:%n[%s]%n", cookies));
+        log.debug(String.format("Response cookies:%n[%s]%n", cookies));
 
         // get response headers
         MultivaluedMap<String, String> headers = response.getHeaders();
-        LOG.debug(String.format("Response headers:%n[%s]%n", headers));
+        log.debug(String.format("Response headers:%n[%s]%n", headers));
 
         // depending on response body type (JSONObject/JSONArray) return RestResponse instance
         try {
@@ -311,7 +314,7 @@ public class RestClient {
 
     /***/
     static String processUrl(@NonNull String url) {
-        LOG.debug("RestClient.processUrl() is working.");
+        log.debug("RestClient.processUrl() is working.");
 
         // trim provided url and cast it to lower case
         String processedUrl = StringUtils.trimToEmpty(url).toLowerCase();
@@ -328,7 +331,7 @@ public class RestClient {
 
     /***/
     static String extractHost(@NonNull String url) {
-        LOG.debug("RestClient.extractHost() is working.");
+        log.debug("RestClient.extractHost() is working.");
 
         // pre-process url
         String processedUrl = RestClient.processUrl(url);
@@ -341,7 +344,7 @@ public class RestClient {
         } else {
             prefixIndex = processedUrl.indexOf(HTTPS_URL_PREFIX) + HTTPS_URL_PREFIX.length();
         }
-        LOG.debug(String.format("For url [%s] prefix index [%s].", processedUrl, prefixIndex));
+        log.debug(String.format("For url [%s] prefix index [%s].", processedUrl, prefixIndex));
 
         // calculate postfix index for url
         int postfixIndex;
@@ -354,7 +357,7 @@ public class RestClient {
         } else { // doesn't contain both - / and ? -> no postfix, hostname lasts till end of url string
             postfixIndex = processedUrl.length();
         }
-        LOG.debug(String.format("For url [%s] postfix index [%s].", processedUrl, postfixIndex));
+        log.debug(String.format("For url [%s] postfix index [%s].", processedUrl, postfixIndex));
 
         // extract hostname from url
         String result = processedUrl.substring(prefixIndex, postfixIndex);
@@ -363,7 +366,7 @@ public class RestClient {
             throw new IllegalStateException("Extracted empty url!");
         }
 
-        LOG.debug(String.format("For url [%s] extracted host [%s].", processedUrl, result));
+        log.debug(String.format("For url [%s] extracted host [%s].", processedUrl, result));
 
         return result;
 

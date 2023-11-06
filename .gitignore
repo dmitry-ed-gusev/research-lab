@@ -135,3 +135,10 @@ venv.bak/
 
 ## Gradle files
 .gradle
+build
+
+# java compiled files
+*.class
+
+# binary files from gradle build
+bin

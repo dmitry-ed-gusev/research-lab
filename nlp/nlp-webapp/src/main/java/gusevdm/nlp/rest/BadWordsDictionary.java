@@ -1,15 +1,16 @@
 package gusevdm.nlp.rest;
 
-import dgusev.io.MyCsvUtils;
-import lombok.extern.apachecommons.CommonsLog;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
+
+import dgusev.io.MyCsvUtils;
+import lombok.extern.apachecommons.CommonsLog;
 
 /** Dictionary with bad words. Initialized on application start. */
 
@@ -25,7 +26,7 @@ public class BadWordsDictionary {
      * Initialize bad words dictionary (on application start) with predefined file.
      */
     public static void initDictionary(@Observes @Initialized(ApplicationScoped.class) Object o) {
-        LOG.debug("Starting dictionary initialization.");
+        log.debug("Starting dictionary initialization.");
 
         try {
             InputStream input = Thread.currentThread().getContextClassLoader()
@@ -34,13 +35,13 @@ public class BadWordsDictionary {
             badwords = Collections.unmodifiableList(MyCsvUtils.readCSVFile(input, DEFAULT_ENCODING));
 
             // some debug
-            LOG.debug(String.format("Initialized bad words list:\n%s", badwords));
+            log.debug(String.format("Initialized bad words list:\n%s", badwords));
 
         } catch (IOException e) {
-            LOG.error(e);
+            log.error(e);
         }
 
-        LOG.debug("Dictionary initialized!");
+        log.debug("Dictionary initialized!");
     }
 
     public List<String> getBadwords() {
