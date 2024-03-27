@@ -14,7 +14,7 @@
     <name>Hibernate research :: some Hibernate examples</name>
 
     <properties>
-        <hibernate.version>3.6.0.Final</hibernate.version>
+        <hibernate.version>5.3.20.Final</hibernate.version>
         <hibernate.search.version>3.4.2.Final</hibernate.search.version>
     </properties>
 
