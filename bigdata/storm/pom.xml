@@ -14,7 +14,7 @@
     <name>Apache Storm :: example application</name>
 
     <properties>
-        <apache.storm.version>0.10.0</apache.storm.version>
+        <apache.storm.version>1.2.3</apache.storm.version>
         <storm.app.main.class>dmitry.gusev.storm.StormAppStarter</storm.app.main.class>
         <storm.app.assembly.directory>storm-app</storm.app.assembly.directory>
         <storm.app.libraries.prefix>libs</storm.app.libraries.prefix>
