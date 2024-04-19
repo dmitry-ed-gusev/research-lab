@@ -59,6 +59,7 @@ eggs/
 .eggs/
 *.egg
 __pycache__/
+.pytest_cache
 *.pyc
 *$py.class
 .mypy_cache/
