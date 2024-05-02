@@ -427,7 +427,6 @@
             </properties>
             <!-- All modules to build -->
             <modules>
-                <module>scripts</module>
                 <module>utilities</module>
                 <module>dbpilot</module>
                 <module>marklogic</module>
@@ -451,7 +450,6 @@
             </properties>
             <!-- All modules to build -->
             <modules>
-                <module>scripts</module>
                 <module>utilities</module>
                 <module>dbpilot</module>
                 <module>marklogic</module>
