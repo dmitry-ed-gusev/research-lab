@@ -1,0 +1,22 @@
+JVM/JMM
+https://www.geeksforgeeks.org/atomicreference-setrelease-method-in-java-with-examples/?ref=ml_lbp
+https://www.geeksforgeeks.org/happens-before-relationship-in-java/
+https://timmson.github.io/java-interview/009-concurrency.html
+https://javarush.com/quests/lectures/questservlets.level18.lecture02?ysclid=lvdsavilit897353103
+https://habr.com/ru/articles/685518/
+https://habr.com/ru/companies/otus/articles/353414/
+https://habr.com/ru/articles/440590/
+https://dzen.ru/a/ZcUfTao98R0scDSP
+
+Kafka etc
+https://habr.com/ru/companies/slurm/articles/550934/
+https://habr.com/ru/articles/496182/
+https://habr.com/ru/companies/sbermarket/articles/738634/
+https://slurm.io/blog/tpost/pnyjznpvr1-apache-kafka-osnovi-tehnologii?ysclid=lvcbtzxknf524233193
+https://vc.ru/u/1333744-sergey-olkov/701433-kak-obrabotat-million-soobshcheniy-iz-kafka-i-ne-zhdat-vechnost?ysclid=lvcbu0l5rf601813896
+https://practicum.yandex.ru/blog/broker-soobsheniy-apache-kafka/
+https://selectel.ru/blog/apache-kafka-2/?ysclid=lvcbu356f7713681084
+https://bigdataschool.ru/blog/kafka-big-data-use-cases.html?ysclid=lvcbu3w5ip569262372
+https://www.baeldung.com/apache-kafka
+https://kafka-school.ru/blog/kafka-message-system/?ysclid=lvcbu5ewqn437256885
+https://prohoster.info/blog/administrirovanie/apache-kafka-i-potokovaya-obrabotka-dannyh-s-pomoshhyu-spark-streaming-2?ysclid=lvcbu68fxf445390932
