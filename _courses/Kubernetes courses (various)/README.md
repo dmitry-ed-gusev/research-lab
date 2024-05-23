@@ -29,14 +29,17 @@ For this course we  will use OS Windows 10/11 + gitbash terminal emulator (MinGW
    `docker version` or `docker status`
 10. Start/init your new minikube cluster:
     `minikube start`
-    and watch the output. It should say that cluster initialized and up (running).
+    and watch the output. It should say that cluster initialized and up (running)
 11. Check your new shiny bright cluster:
     `minikube cluster-info` also check output of `minikube status`
-12. With the command `docker ps` check running containers and find your **minikube** container (it should be running!).
-13. Execute command `kubectl cluster-info` and check its output.
-14. Looks like we're done with environment!
+12. With the command `docker ps` check running containers and find your **minikube** container (it should be running!)
+13. Execute command `kubectl cluster-info` and check its output
+14. You can get k8s dashboard, by executing `minikube dashboard`
+15. Looks like we're done with environment!
 
 ## Basic and Advanced Actions
+
+Here you can find some useful commands and working scenarios.
 
 ### Discover your cluster
 
@@ -45,8 +48,10 @@ The following commands are shown in the idea, that you've done with alias creati
 - `minikube ip` - get IP address of your cluster
 - `k get nodes` - list of nodes
 - `k get pods`  - list of pods in the default namespace
-- `` 
-- ``
+- `k get pods -A -o wide` - list of all pods in all namespaces (in a cluster) with wide representation on the screen (with additional info)
+- `k get pods --namespace=<name space name>` - list of the pods in a namespace
+- `k get namespaces` - list of namespaces
+- ???
 
 ### Simple Actions #1
 
