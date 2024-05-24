@@ -53,10 +53,26 @@ The following commands are shown in the idea, that you've done with alias creati
 - `k get namespaces` - list of namespaces
 - ???
 
-### Simple Actions #1
+### Creating simple pod with nginx
 
 TBD
 
-### Simple Actions #2
+### Creating deployment
+
+TBD
+
+### Creating service
+
+TBD
+
+### Creating and updating application
+
+TBD
+
+### Using YAMLs for deployments
+
+TBD
+
+### Creating two deployments of related apps
 
 TBD
