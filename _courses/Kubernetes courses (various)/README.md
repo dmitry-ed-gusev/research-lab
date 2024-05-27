@@ -21,29 +21,31 @@ For this course we  will use OS Windows 10/11 + gitbash terminal emulator (MinGW
 5. Install minikube: [tools installation](https://kubernetes.io/docs/tasks/tools/)
 6. Check installed minikube version:
    `minikube version`
-7. Warning! In case while using minikube command you'll get the following error:
+7. Hint: for convenience, you may create alial for the minikube command (as it was done for the kubectl command above):
+   `alias m-minikube` - put this alias to your profile file (in case of gitbash put it to *~/.bashrc*)
+8. Warning! In case while using minikube command you'll get the following error:
    <pre>Unable to resolve the current Docker CLI context "default": context "default": context not found: open ...</pre>
     try to fix it with the command: `docker context use default`
-8. Install Docker Desktop (as an engine for a cluster), distro you can easily find in the internet...
-9. Check installed docker version:
+9.  Install Docker Desktop (as an engine for a cluster), distro you can easily find in the internet...
+10. Check installed docker version:
    `docker version` or `docker status`
-10. Start/init your new minikube cluster:
+11. Start/init your new minikube cluster:
     `minikube start`
     and watch the output. It should say that cluster initialized and up (running)
-11. Check your new shiny bright cluster:
+12. Check your new shiny bright cluster:
     `minikube cluster-info` also check output of `minikube status`
-12. With the command `docker ps` check running containers and find your **minikube** container (it should be running!)
-13. Execute command `kubectl cluster-info` and check its output
-14. You can get k8s dashboard, by executing `minikube dashboard`
-15. Looks like we're done with environment!
+13. With the command `docker ps` check running containers and find your **minikube** container (it should be running!)
+14. Execute command `kubectl cluster-info` and check its output
+15. You can get k8s dashboard, by executing `minikube dashboard`
+16. Looks like we're done with environment!
 
 ## Basic and Advanced Actions
 
 Here you can find some useful commands and working scenarios.
 
-### Discover your cluster
+The following commands are shown in the idea, that you've done with aliases creating (as it was explained above (see hints)): `alias k=kubectl` and `alias m=minikube`
 
-The following commands are shown in the idea, that you've done with alias creating `alias k=kubectl`.
+### Discover your cluster
 
 - `minikube ip` - get IP address of your cluster
 - `k get nodes` - list of nodes
@@ -55,7 +57,8 @@ The following commands are shown in the idea, that you've done with alias creati
 
 ### Creating simple pod with nginx
 
-TBD
+- `k create <namespace|ns> <namespace_name>` - create your own namespace with the provided name
+- `k run my-nginx-pod --image=nginx --namespace=dmgusev` - create one pod from the image nginx (from docker hub) in the namespace 'dmgusev', if you omit the --namespace key with the value, the pod will be created in the default namespace.
 
 ### Creating deployment
 
