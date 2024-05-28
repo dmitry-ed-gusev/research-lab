@@ -47,22 +47,40 @@ The following commands are shown in the idea, that you've done with aliases crea
 
 ### Discover your cluster
 
-- `minikube ip` - get IP address of your cluster
+- `m ip` - get IP address of your cluster
+- `m ssh` -- ssh into the cluster
 - `k get nodes` - list of nodes
 - `k get pods`  - list of pods in the default namespace
-- `k get pods -A -o wide` - list of all pods in all namespaces (in a cluster) with wide representation on the screen (with additional info)
+- `k describe pod <name>` - get detailed info about pod
+- `k get pods -A -o wide` - list of all pods in all namespaces (in a cluster) with wide representation on the screen (with additional info), option -A may be used separately
 - `k get pods --namespace=<name space name>` - list of the pods in a namespace
 - `k get namespaces` - list of namespaces
-- ???
 
 ### Creating simple pod with nginx
 
 - `k create <namespace|ns> <namespace_name>` - create your own namespace with the provided name
 - `k run my-nginx-pod --image=nginx --namespace=dmgusev` - create one pod from the image nginx (from docker hub) in the namespace 'dmgusev', if you omit the --namespace key with the value, the pod will be created in the default namespace.
+- `k describe pod my-nginx-pod` - show detailed info about pod with the specified name
+- `k delete pod <name>` - deleting pod
 
-### Creating deployment
+### Connecting to the pod with nginx inside cluster
 
-TBD
+- `m ssh` - ssh into minikube cluster
+- `curl <IP>` - we can do inside the cluster to the pod with nginx - it should return hello page from nginx server (pod IP address we can get by `k describe pod <name>`)
+- `docker ps | grep nginx` - list of containers with nginx - here you can get container id or name
+- `docker exec -it <container id|container name> sh` - before executing this cmd you have to get container ID or name (see previous step)
+- `hostname` - inside the pod we will see the pod hostname - the same name what we see when we create pod or execute the command `k get pods`
+- `hostname -I` - get the current machine (pod) IP address
+
+### Creating and scaling deployment with nginx
+
+Pod name in a deployment: <code>{deployment-name-specified}-{replica set id}-{pod id}</code>
+
+- `k create <deploy|deployment> <name>` - creating deployment with the specified image
+- `k create deploy my-nginx-deploy --image=nginx` - create real deployment with nginx
+- `k describe deploy my-nginx-deploy` - get detailed info about deployment
+- `k delete deploy <name>` - delete deployment with the specified name
+- `k describe pod <pod-name-in-a-deployment>` - get detailed info about pod in a deployment
 
 ### Creating service
 
