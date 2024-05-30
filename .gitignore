@@ -1,14 +1,11 @@
-# -- ignore maven output directory
-#target
-
-# IntelliJ IDEA files
+### IntelliJ IDEA files ###
 *.iml
 *.ipr
 *.iws
 .idea
 .ideaDataSources
 
-# Eclipse files
+### Eclipse files ###
 .settings/
 .classpath
 .factorypath
@@ -17,26 +14,17 @@
 # -- ignore logs/output files
 *.log
 *.out
+
 # -- ignore [storm] module output/input file(s)
 storm-app-output.txt
 dummy.txt
-# -- some unversioned files
-dependency-reduced-pom.xml
-socialnet/.crawlerdb/
-socialnet/.db/
-vk_token*
 
-# -- IDE: Eclipse files
-.classpath
-.project
-.settings
-.factorypath
-
-# -- Maven output directory
+### Maven and Gradle files/directories ###
 target/
-
-# -- Gradle files
-/.gradle/
+.gradle/
+build
+.class
+bin
 
 # -- General distribution / packaging values
 build/
@@ -52,8 +40,13 @@ wheels/
 .installed.cfg
 MANIFEST
 
-# -- Python / PyInstaller / PIP files
+### Python and tools related files ###
 .venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 *.egg-info/
 eggs/
 .eggs/
@@ -71,14 +64,10 @@ pip-log.txt
 pip-delete-this-directory.txt
 .pydevproject
 
-# -- Django stuff:
+###  Django stuff ###
 .static_storage/
 .media/
 local_settings.py
-
-# -- logs/output files
-*.log
-*.out
 
 # -- some unversioned files
 dependency-reduced-pom.xml
@@ -117,13 +106,6 @@ docs/_build/
 # -- Jupyter Notebook
 .ipynb_checkpoints
 
-# -- environments
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -134,12 +116,5 @@ venv.bak/
 # mkdocs documentation
 /site
 
-## Gradle files
-.gradle
-build
-
-# java compiled files
-*.class
-
-# binary files from gradle build
-bin
+### Vagrant files ###
+.vagrant
