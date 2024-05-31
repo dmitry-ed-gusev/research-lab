@@ -78,11 +78,13 @@ Pod name in a deployment: <code>{deployment-name-specified}-{replica set id}-{po
 
 - `k create <deploy|deployment> <name>` - creating deployment with the specified image
 - `k create deploy my-nginx-deploy --image=nginx` - create real deployment with nginx
-- `k describe deploy my-nginx-deploy` - get detailed info about deployment
+- `k describe deploy my-nginx-deploy` - get detailed info about deployment, including size in pods (sizing of the replica set)
 - `k delete deploy <name>` - delete deployment with the specified name
 - `k describe pod <pod-name-in-a-deployment>` - get detailed info about pod in a deployment
+- `k scale deploy <name> --replicas=<NUMBER>` - scale deployment to the specified number of pods. for example to scale our deployment to 3 replicas, we can use: `k scale deploy my-nginx-deploy --replicas=3`
+- 
 
-### Creating service
+### Creating and managing service
 
 TBD
 
