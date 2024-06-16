@@ -49,3 +49,4 @@ sudo apt upgrade
 sudo apt dist-upgrade
 
 sudo apt install libffi-dev libssl-dev -y
+pip install pywinrm docker

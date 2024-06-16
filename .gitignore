@@ -42,6 +42,7 @@ MANIFEST
 
 ### Python and tools related files ###
 .venv/
+.venv*/
 env/
 venv/
 ENV/
