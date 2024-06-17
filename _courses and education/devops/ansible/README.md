@@ -26,8 +26,8 @@ In order to add locally downloaded boxes to vagrant and start the vm, just perfo
 After executing the command `vagrant init ...` the Vagrantfile will be created in the current folder. All further commands should be executed from the folder containing Vagrantfile.
 After some time (approx. several minutes) you should see the output like below:
 
-```sh
-$ vagrant up 
+```bash
+$ vagrant up
 Bringing machine 'default' up with 'virtualbox' provider...
 ==> default: Importing base box 'ubuntu-focal64'...
 ==> default: Matching MAC address for NAT networking...
