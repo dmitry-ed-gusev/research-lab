@@ -1,17 +1,26 @@
-# Project Research Laboratory
+# Dmitrii Gusev's Virtual Research Laboratory (VRL)
 
-This project intended for any kind of research, experiments, etc.
-*Dmitrii Gusev, 2014 - 2022*
+This project intended for any kind of research, experiments, tries... *Dmitrii Gusev, 2014-2024*
 
-## Repository contents ##
-Repository contains some modules:  
+## VRL - High Level Overview
+
+TBD
+
+## Repository contents
+
+Repository contains some modules:
+
 * **[bigdata]**
-    * [hw1.mapreduce]
-    * [hw2.hdfs]
-    * [storm]
+
+  * [hw1.mapreduce]
+  * [hw2.hdfs]
+  * [storm]
+
 * [chat-app]
-    * [chat-client]
-    * [chat-server]
+
+  * [chat-client]
+  * [chat-server]
+
 * [docs]
 * [j2ee]
 * [marklogic]
@@ -40,17 +49,21 @@ Repository contains some modules:
     * [xml]
 * [utilities]
 
-## Some technical details ##
-### Module [bigdata]. Deploy to cluster (by scp) ###
+## Some technical details
+
+### Module [bigdata]. Deploy to cluster (by scp)
+
 For deploy to remote/local server (via ssh/scp) specify cmd line parameters for maven:
+
 * -DskipDeploy=false - deploy to remote host is off by default, turn it on
 * -Dhost=\<host value> - remote host
-* -Dport=\<port value> - remote port 
+* -Dport=\<port value> - remote port
 * -Duser=\<user value> - user for remote host
 * -Dpass=\<pass value> - remote host user's password
 * -Dpath=\<path value> - path for deploy on remote host
 
-### Build on MSD-tuned Maven  ###
+### Build on MSD-tuned Maven
+
 Create empty settings.xml file (with just empty settings tag), put it somewhere and, when build, just
 specify: mvn [goals] -s [abs path to your custom (empty) settings.xml file]
 
@@ -58,13 +71,13 @@ specify: mvn [goals] -s [abs path to your custom (empty) settings.xml file]
 
 mvn clean install -DskipDeploy=false -Duser=myuser -Dpass=mypass -Dhost=myhost -Dpath=/home/user
 
-### What is this repository for? ###
+### What is this repository for?
 
 * Quick summary
 * Version
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
-### How do I get set up? ###
+### How do I get set up?
 
 * Summary of set up
 * Configuration
@@ -73,13 +86,13 @@ mvn clean install -DskipDeploy=false -Duser=myuser -Dpass=mypass -Dhost=myhost -
 * How to run tests
 * Deployment instructions
 
-### Contribution guidelines ###
+### Contribution guidelines
 
 * Writing tests
 * Code review
 * Other guidelines
 
-### Who do I talk to? ###
+### Who do I talk to?
 
 * Repo owner or admin
 * Other community or team contact
