@@ -12,6 +12,10 @@
 
 ## Vagrant: usage and restrictions
 
+### Virtual Box Note
+
+Check Virtual Box kernel drivers with command `sudo /sbin/rcvboxdrv <status|restart|...>` - sometimes after kernel upgrade Virtual Box needs to rebuild some modules with the provided kernel-dev modules (new dev modules with new kernel).
+
 Since vagrant is closed for Russia, here is additional repository for it (russian vagrant): [ru vagrant](http://vagrant.elab.pro/).
 Also see downloaded vagrant boxes on Yandex Cloud. It is worth to read also [this article](https://habr.com/ru/articles/735700/).
 
@@ -76,12 +80,45 @@ Below you can see some useful vagrant commands (you should be in the catalog wit
 - `vagrant resume` - start previously suspended VM
 - `vagrant box list` - list of all imported boxes (images)
 - `vagrant status` - status of the vagrant machine state (for the current Vagrantfile)
+- `vagrant destroy -f` - destroy your virtual machine
 
-### Connect to VM
+### Connect to VM over SSH
 
 - `vagrant ssh` - connect to the currently running VM from th current Vagrant file (over SSH)
 - `ssh vagrant@127.0.0.1 -p 2222 -i .vagrant/machines/default/virtualbox/private_key` - connect using auto generated private key
 
 ## Using Ansible
+
+See below some useful commands for Ansible:
+
+```bash
+    # ping the host from inventory, flag -vvvv - for verbosity
+    ansible testserver -i inventory/vagrant.ini -m ping -vvvv
+
+    # with ansible.cfg even simpler
+    ansible testserver -m ping
+
+    # uptime command on the remote server
+    ansible testserver -m command -a uptime
+    # same (as command is default module)
+    ansible testserver -a uptime
+
+    # execute command and return result
+    ansible netbook -a "tail /var/log/dmesg"
+
+    # run with root privileges -b/--become or settings in ansible.cfg (see there)
+    ansible testserver -b -a "tail /var/log/dmesg"
+
+    # install nginx on ubuntu (update_cache=yes - run 'apt update' before)
+    ansible testserver -b -m package -a "name=nginx update_cache=yes"
+    # restart nginx service
+    ansible testserver -b -m service -a "name=nginx state=restarted"
+```
+
+## Advanced Ansible
+
+TBD
+
+## ???
 
 TBD
