@@ -14,10 +14,13 @@
 
 ### Virtual Box Note
 
-Check Virtual Box kernel drivers with command `sudo /sbin/rcvboxdrv <status|restart|...>` - sometimes after kernel upgrade Virtual Box needs to rebuild some modules with the provided kernel-dev modules (new dev modules with new kernel).
+Check Virtual Box kernel drivers with command `sudo /sbin/rcvboxdrv <status|restart|...>` - sometimes after kernel upgrade Virtual Box needs to rebuild some modules with the provided kernel-dev modules (new dev modules with new kernel). If you need to install new dev modules - this command can help you with the necessary modules names (for installation).
 
-Since vagrant is closed for Russia, here is additional repository for it (russian vagrant): [ru vagrant](http://vagrant.elab.pro/).
-Also see downloaded vagrant boxes on Yandex Cloud. It is worth to read also [this article](https://habr.com/ru/articles/735700/).
+Also after building you may need to run: `sudo /sbin/rcvboxdrv setup`
+
+### Vagrant Usage
+
+Since vagrant is closed for Russia, here is additional repository for it (russian vagrant): [ru vagrant](http://vagrant.elab.pro/). Also see downloaded vagrant boxes on Yandex Cloud. It is worth to read also [this article](https://habr.com/ru/articles/735700/).
 
 In order to add locally downloaded boxes to vagrant and start the vm, just perform:
 
