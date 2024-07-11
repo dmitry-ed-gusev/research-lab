@@ -1,0 +1,15 @@
+---
+
+# .ansible-lint
+
+profile: production
+
+skip_list:
+  - fqcn[action-core]
+  - fqcn[action]
+  - fqcn[keyword]
+  - fqcn[package]
+  - no-free-form
+
+warn_list:
+  - fqcn[action-core]

@@ -6,7 +6,7 @@
 #   Warning: script must be used (run) from shell, not from the any virtual environment!
 #
 #   Created:  Dmitrii Gusev, 16.06.2024
-#   Modified: Dmitrii Gusev, 10.07.2024
+#   Modified: Dmitrii Gusev, 11.07.2024
 #
 ###################################################################################################
 
@@ -20,7 +20,7 @@ export LANG='en_US.UTF-8'
 VENV_NAME=".venv-ansible"
 VENV_PROMPT=".venv-ansible"
 REQUIREMENTS_FILE="requirements.txt"
-MSG_NO_PYTHON="\nWARNING: no installed python 3 in the system!\n"
+MSG_NO_PYTHON="\nWARNING: no installed python/python3 in the system!\n"
 MSG_NO_PIP="\nWARNING: no installed pip/pip3 in the system!\n"
 
 clear
@@ -50,31 +50,32 @@ printf "\t\t%s\n" "$(${CMD_PYTHON} --version)" || { printf "%s" "${MSG_NO_PYTHON
 printf "\t\t%s\n" "$(${CMD_PIP} --version)" || { printf "%s" "${MSG_NO_PIP}" ; sleep 5 ; exit ; }
 sleep 4
 
-# -- Step I. Upgrading pip (just for the case)
-printf "\n--- Upgrading PIP ---\n\n"
-${CMD_PYTHON} -m pip --no-cache-dir install --upgrade pip
-printf "\n ** upgrading pip - done **\n\n"
-sleep 2
-
-# -- Step II. Create virtual environment and activate it
+# -- Create virtual environment and activate it
 printf "\n--- Creating virtual environment ---\n\n"
 # - if dir with virtual environment exists - skip it, otherwise - create
 if [ -d "${VENV_NAME}" ]; then
-    printf "\nVirtual environment exists: %s\n" "${VENV_NAME}"
+    printf "\nVirtual environment already exists: %s\n" "${VENV_NAME}"
 else
     printf "\nCreating virtual environment: %s\n" "${VENV_NAME}"
     ${CMD_PYTHON} -m venv ${VENV_NAME} --prompt ${VENV_PROMPT}
 fi
 # - activating virtual environment
-# TODO: check activation for gitbash
 printf "\nActivating virtual environment\n"
+# shellcheck source=/dev/null
+# (details see here: https://www.shellcheck.net/wiki/SC1091)
 source ${VENV_NAME}/bin/activate || { printf "Can't activate virtual environment!" ; exit ; }
 printf "\n ** creating environment - done **\n\n"
 sleep 2
 
-# -- Step III. Install all dependencies to the virtual environment
+# -- Install/re-install all dependencies to the virtual environment
 printf "\n--- Installing dependencies in the virtual environment ---\n\n"
-python -m pip install --upgrade pip
+python -m pip --no-cache-dir install --upgrade pip
+printf "\n ** upgrading pip - done **\n\n"
 pip install --upgrade --force-reinstall --no-cache-dir -r ${REQUIREMENTS_FILE}
 printf "\n ** installation - done **\n\n"
 sleep 2
+
+# -- Deactivating virtual environment
+deactivate
+printf "\n ** virtual environment deactivated **\n\n"
+sleep 5
