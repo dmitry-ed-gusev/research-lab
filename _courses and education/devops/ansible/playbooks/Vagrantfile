@@ -10,8 +10,8 @@ VAGRANT_API_VERSION = "2"
 # you're doing.
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
 
-  # use the same key for all machines
-  config.ssh.insert_key = false
+  # - use the same key for all machines (multi vms config)
+  # config.ssh.insert_key = false
 
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -25,23 +25,23 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
   # `vagrant box outdated`. This is not recommended.
   # config.vm.box_check_update = false
 
-  # - configuring the single host in vagrant
-  # config.vm.box = "ubuntu-22"
-  # config.vm.hostname = "testserver"
-
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # NOTE: This will enable public access to the opened port
   # config.vm.network "forwarded_port", guest: 80, host: 8080
 
+  # - configuring the single host in vagrant
+  config.vm.box = "ubuntu-22"
+  config.vm.hostname = "testserver"
+
   # - network for single host
-  # config.vm.network "forwarded_port",
-  #   id: 'ssh', guest: 22, host: 2202, host_ip: "127.0.0.1", auto_correct: false
-  # config.vm.network "forwarded_port",
-  #   id: 'http', guest: 80, host: 8080, host_ip: "127.0.0.1"
-  # config.vm.network "forwarded_port",
-  #   id: 'https', guest: 443, host: 8443, host_ip: "127.0.0.1"
+  config.vm.network "forwarded_port",
+    id: 'ssh', guest: 22, host: 2202, host_ip: "127.0.0.1", auto_correct: false
+  config.vm.network "forwarded_port",
+    id: 'http', guest: 80, host: 8080, host_ip: "127.0.0.1"
+  config.vm.network "forwarded_port",
+    id: 'https', guest: 443, host: 8443, host_ip: "127.0.0.1"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
@@ -59,21 +59,21 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
   # config.vm.network "public_network"
 
   # - multiple hosts configuration
-  config.vm.define "vagrant1" do |vagrant1|
-    vagrant1.vm.box = "ubuntu-22"
-    vagrant1.vm.network "forwarded_port", guest: 80, host: 8080
-    vagrant1.vm.network "forwarded_port", guest: 443, host: 8443
-  end
-  config.vm.define "vagrant2" do |vagrant2|
-    vagrant2.vm.box = "ubuntu-22"
-    vagrant2.vm.network "forwarded_port", guest: 80, host: 8081
-    vagrant2.vm.network "forwarded_port", guest: 443, host: 8444
-  end
-  config.vm.define "vagrant3" do |vagrant3|
-    vagrant3.vm.box = "centos-8"
-    vagrant3.vm.network "forwarded_port", guest: 80, host: 8082
-    vagrant3.vm.network "forwarded_port", guest: 443, host: 8445
-  end
+  # config.vm.define "vagrant1" do |vagrant1|
+  #   vagrant1.vm.box = "ubuntu-22"
+  #   vagrant1.vm.network "forwarded_port", guest: 80, host: 8080
+  #   vagrant1.vm.network "forwarded_port", guest: 443, host: 8443
+  # end
+  # config.vm.define "vagrant2" do |vagrant2|
+  #   vagrant2.vm.box = "ubuntu-22"
+  #   vagrant2.vm.network "forwarded_port", guest: 80, host: 8081
+  #   vagrant2.vm.network "forwarded_port", guest: 443, host: 8444
+  # end
+  # config.vm.define "vagrant3" do |vagrant3|
+  #   vagrant3.vm.box = "centos-8"
+  #   vagrant3.vm.network "forwarded_port", guest: 80, host: 8082
+  #   vagrant3.vm.network "forwarded_port", guest: 443, host: 8445
+  # end
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -99,8 +99,9 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
   #   # Customize the amount of memory on the VM:
   #   vb.memory = "1024"
   # end
+
   config.vm.provider "virtualbox" do |vb|
-    # vb.name = "ubuntu-22-vagrant-server"
+    vb.name = "ubuntu-22-vagrant-server"
     vb.gui = true
     vb.cpus = 2 # 2 CPU's per host
     vb.memory = "1024" # 1Gb memory per host
