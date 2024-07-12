@@ -1,3 +1,4 @@
-vagrant1 ansible_port=2222
+[vagrant]
+# vagrant1 ansible_port=2222
 vagrant2 ansible_port=2200
-vagrant3 ansible_port=2201
+# vagrant3 ansible_port=2201

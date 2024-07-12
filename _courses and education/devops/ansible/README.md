@@ -90,6 +90,8 @@ Below you can see some useful vagrant commands (you should be in the catalog wit
 - `vagrant ssh` - connect to the currently running VM from th current Vagrant file (over SSH)
 - `ssh vagrant@127.0.0.1 -p 2222 -i .vagrant/machines/default/virtualbox/private_key` - connect using auto generated private key
 
+For 3 vagrant vms configuration, this key was suitable: **~/.vagrant.d/insecure_private_keys/vagrant.key.rsa**, also check the keys here: ~/.vagrant.d/insecure_private_keys/ and the key: ~/.vagrant.d/insecure_private_key.
+
 ## Using Ansible
 
 See below some useful commands for Ansible:
