@@ -1,4 +1,4 @@
-<!-- cspell:ignore pywinrm -->
+<!-- cspell:ignore pywinrm testserver keypair newkey keyout rcvboxdrv -->
 
 # Ansible Education Module
 
@@ -7,8 +7,8 @@
 1. First of all: create and activate the virtual environment: `python -m venv .venv --prompt .venv-ansible`
 2. Activate it: `source .venv/bin/activate`
 3. Optionally, you may upgrade pip in the virtual environment: `python.exe -m pip install --upgrade pip`
-4. Install ansible with additional dependencies (for managing windows and docker): `pip install ansible pywinrm docker`
-5. ???
+4. Install ansible with additional dependencies (for managing windows and docker): `pip install ansible pywinrm docker` - this step is optional
+5. Install ansible and (I would recommend) ansible-lint: `pip install ansible==2.9.7 ansible-lint=5.4.0`. In case you need more recent version of ansible/ansible-lint - do not specify exact versions.
 
 ## Vagrant: usage and restrictions
 
@@ -129,6 +129,6 @@ TBD
 1. Creating self-signed SSL/TLS certificate (for nginx):
    `openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj /CN=localhost -keyout files/nginx.key -out files/nginx.crt`
 
-2. ffsdf
+2. ???
 
 TBD

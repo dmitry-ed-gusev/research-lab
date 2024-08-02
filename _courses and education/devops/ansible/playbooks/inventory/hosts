@@ -1,9 +1,17 @@
-[vagrant]
-vagrant1 ansible_port=2222
-vagrant2 ansible_port=2200
+[vagrant-single]
+testserver ansible_port=2202
+
+[vagrant-group]
+# vagrant1 ansible_port=2222
+# vagrant2 ansible_port=2200
 # vagrant3 ansible_port=2201
 
-[vagrant:vars]
+[vagrant-single]
+ansible_host=127.0.0.1
+ansible_user=vagrant
+ansible_private_key_file=~/.vagrant.d/insecure_private_keys/vagrant.key.rsa
+
+[vagrant-group:vars]
 ansible_host=127.0.0.1
 ansible_user=vagrant
 ansible_private_key_file=~/.vagrant.d/insecure_private_keys/vagrant.key.rsa
