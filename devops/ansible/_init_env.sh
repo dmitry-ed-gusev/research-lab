@@ -6,7 +6,7 @@
 #   Warning: script must be used (run) from shell, not from the any virtual environment!
 #
 #   Created:  Dmitrii Gusev, 16.06.2024
-#   Modified: Dmitrii Gusev, 11.07.2024
+#   Modified: Dmitrii Gusev, 05.08.2024
 #
 ###################################################################################################
 
@@ -19,7 +19,7 @@ export LANG='en_US.UTF-8'
 # -- some useful variables
 VENV_NAME=".venv-ansible"
 VENV_PROMPT=".venv-ansible"
-REQUIREMENTS_FILE="requirements.txt"
+REQUIREMENTS_FILE="req-ansible-2.9.txt"
 MSG_NO_PYTHON="\nWARNING: no installed python/python3 in the system!\n"
 MSG_NO_PIP="\nWARNING: no installed pip/pip3 in the system!\n"
 
