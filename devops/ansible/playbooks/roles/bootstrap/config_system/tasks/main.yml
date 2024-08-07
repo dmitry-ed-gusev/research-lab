@@ -1,0 +1,50 @@
+---
+- name: Patch ssh configuration
+  block:
+    - name: Disable SSH-Root Login
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '(?i)^(#*)(\s*)(PermitRootLogin.*)$'
+        line: 'PermitRootLogin no'
+        state: present
+        backrefs: no
+        backup: no
+
+    - name: Mitigate OpenSSH vulnerability CVE-2024-6387, (CHG3042458, needed only when openssh-server bersin is lower than 9.8)
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '(?i)^(#*)(\s*)(LoginGraceTime.*)$'
+        line: 'LoginGraceTime 0'
+        state: present
+        backrefs: no
+        backup: no
+
+    - name: Disable input password
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/ssh_config
+        regexp: '^#.*PasswordAuthentication yes$'
+        insertbefore: BOF
+        line: PasswordAuthentication no
+
+    - name: Enable RSA-key login
+      copy:
+        content: |
+          HostKeyAlgorithms +ssh-rsa
+          PubkeyAcceptedKeyTypes +ssh-rsa
+        dest: /etc/ssh/ssh_config.d/enable_rsa_keys.conf
+        mode: "0644"
+        owner: root
+        group: root
+        force: yes
+
+    - name: Change root password
+      user:
+        name: root
+        password: "{{ local_root_pswd }}"
+
+    - name: Install Time Zone
+      timezone:
+        name: "{{ timezone }}"
+      notify:
+        - restart sshd
+  tags: config_system
