@@ -2,6 +2,15 @@
 
 # Ansible Education Module
 
+*Last updated: 11.08.2024*
+
+## Ansible version + python
+
+**Important Note!**
+
+- for ansible 2.9.xx you need python 3.10.xx and older, the newer versions are not compatible with ansible
+- for ansible 10 (latest versions) the python version - the newer = the better
+
 ## Prepare Environment
 
 1. First of all: create and activate the virtual environment: `python -m venv .venv --prompt .venv-ansible`
@@ -87,8 +96,22 @@ Below you can see some useful vagrant commands (you should be in the catalog wit
 
 ### Connect to VM over SSH
 
-- `vagrant ssh` - connect to the currently running VM from th current Vagrant file (over SSH)
-- `ssh vagrant@127.0.0.1 -p 2222 -i .vagrant/machines/default/virtualbox/private_key` - connect using auto generated private key
+## Single Vagrant VM
+
+Firstly, run `vagrant ssh-config` in order to check ssh config for vagrant, the most important lines in the output are:
+
+```yaml
+  Host default
+    HostName 127.0.0.1
+    User vagrant
+    Port 2202
+    IdentityFile /home/dmitrii/projects/research-lab/devops/ansible/playbooks/.vagrant/machines/default/virtualbox/private_key
+```
+
+- `vagrant ssh` - connect to the currently running VM from the current Vagrant file (over SSH)
+- `ssh vagrant@127.0.0.1 -p 2202 -i .vagrant/machines/default/virtualbox/private_key` - connect using auto generated private key
+
+## Multiple Vagrant VMs
 
 For 3 vagrant vms configuration, this key was suitable: **~/.vagrant.d/insecure_private_keys/vagrant.key.rsa**, also check the keys here: ~/.vagrant.d/insecure_private_keys/ and the key: ~/.vagrant.d/insecure_private_key.
 
