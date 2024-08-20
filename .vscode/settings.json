@@ -4,8 +4,8 @@
     "java.project.sourcePaths": [],
     "java.dependency.packagePresentation": "hierarchical",
     "java.dependency.syncWithFolderExplorer": true,
-    "ansible.python.interpreterPath": "/home/dmitrii/projects/research-lab/_courses and education/devops/ansible/.venv-ansible/bin/python",
     "yaml.schemas": {
         "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible-lint-config.json": "file:///home/dmitrii/projects/research-lab/_courses%20and%20education/devops/ansible/playbooks/.ansible-lint"
-    }
+    },
+    "ansible.python.interpreterPath": "/home/dmitrii/.pyenv/shims/python3"
 }

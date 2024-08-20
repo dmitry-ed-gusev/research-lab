@@ -2,9 +2,14 @@
 
 # Ansible Education Module
 
-*Last updated: 11.08.2024*
+Ansible learning and education module. Used for learning purposes + various sources.
+**Last updated: 11.08.2024**
 
-## Ansible version + python
+Table Of Contents
+
+[TOC]
+
+## Ansible Version / Python Version
 
 **Important Note!**
 
@@ -31,6 +36,8 @@ Also after building you may need to run: `sudo /sbin/rcvboxdrv setup`
 
 Since vagrant is closed for Russia, here is additional repository for it (russian vagrant): [ru vagrant](http://vagrant.elab.pro/). Also see downloaded vagrant boxes on Yandex Cloud. It is worth to read also [this article](https://habr.com/ru/articles/735700/).
 
+#### Add Locally Downloaded Boxes to Vagrant
+
 In order to add locally downloaded boxes to vagrant and start the vm, just perform:
 
 ```bash
@@ -39,8 +46,9 @@ In order to add locally downloaded boxes to vagrant and start the vm, just perfo
     vagrant up [default]
 ```
 
-After executing the command `vagrant init ...` the Vagrantfile will be created in the current folder. All further commands should be executed from the folder containing Vagrantfile.
-After some time (approx. several minutes) you should see the output like below:
+#### Start Vagrant Machine
+
+After executing the command `vagrant init ...` the Vagrantfile will be created in the current folder. All further commands should be executed from the folder containing Vagrantfile. After some time (approx. several minutes) you should see the output like below:
 
 ```bash
 $ vagrant up
@@ -84,6 +92,8 @@ Bringing machine 'default' up with 'virtualbox' provider...
 
 **Note!** In some cases the VM is not able to start, so you can 'reset' the state - just delete the **Vagrantfile** and directory **.vagrant**.
 
+#### Vagrant: Useful Commands
+
 Below you can see some useful vagrant commands (you should be in the catalog with the Vagrantfile in order to execute below commands):
 
 - `vagrant up` - power on the VM (you should be in a catalog with the Vagrantfile)
@@ -95,6 +105,8 @@ Below you can see some useful vagrant commands (you should be in the catalog wit
 - `vagrant destroy -f` - destroy your virtual machine
 
 ### Connect to VM over SSH
+
+TBD
 
 ## Single Vagrant VM
 

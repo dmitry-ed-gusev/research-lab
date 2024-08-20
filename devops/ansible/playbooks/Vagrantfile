@@ -34,7 +34,6 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
   # - configuring the single host in vagrant
   config.vm.box = "ubuntu-22"
   config.vm.hostname = "testserver"
-
   # - network for single host
   config.vm.network "forwarded_port",
     id: 'ssh', guest: 22, host: 2202, host_ip: "127.0.0.1", auto_correct: false
@@ -52,6 +51,9 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
   # using a specific IP.
   # config.vm.network "private_network", ip: "192.168.33.10"
   # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # - private network for single host machine
+  #config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
