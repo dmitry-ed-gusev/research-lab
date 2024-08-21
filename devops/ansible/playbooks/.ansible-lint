@@ -5,6 +5,8 @@
 profile: production
 
 skip_list:
+  - experimental
+  - fqcn-builtins
   - fqcn[action-core]
 #  - fqcn[action]
 #  - fqcn[keyword]
