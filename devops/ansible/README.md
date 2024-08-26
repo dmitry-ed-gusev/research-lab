@@ -2,6 +2,20 @@
 
 # Ansible Education Module
 
+Ansible learning and education module. Used for learning purposes + various sources.
+**Last updated: 11.08.2024**
+
+Table Of Contents
+
+[TOC]
+
+## Ansible Version / Python Version
+
+**Important Note!**
+
+- for ansible 2.9.xx you need python 3.10.xx and older, the newer versions are not compatible with ansible
+- for ansible 10 (latest versions) the python version - the newer = the better
+
 ## Prepare Environment
 
 1. First of all: create and activate the virtual environment: `python -m venv .venv --prompt .venv-ansible`
@@ -22,6 +36,8 @@ Also after building you may need to run: `sudo /sbin/rcvboxdrv setup`
 
 Since vagrant is closed for Russia, here is additional repository for it (russian vagrant): [ru vagrant](http://vagrant.elab.pro/). Also see downloaded vagrant boxes on Yandex Cloud. It is worth to read also [this article](https://habr.com/ru/articles/735700/).
 
+#### Add Locally Downloaded Boxes to Vagrant
+
 In order to add locally downloaded boxes to vagrant and start the vm, just perform:
 
 ```bash
@@ -30,8 +46,9 @@ In order to add locally downloaded boxes to vagrant and start the vm, just perfo
     vagrant up [default]
 ```
 
-After executing the command `vagrant init ...` the Vagrantfile will be created in the current folder. All further commands should be executed from the folder containing Vagrantfile.
-After some time (approx. several minutes) you should see the output like below:
+#### Start Vagrant Machine
+
+After executing the command `vagrant init ...` the Vagrantfile will be created in the current folder. All further commands should be executed from the folder containing Vagrantfile. After some time (approx. several minutes) you should see the output like below:
 
 ```bash
 $ vagrant up
@@ -75,6 +92,8 @@ Bringing machine 'default' up with 'virtualbox' provider...
 
 **Note!** In some cases the VM is not able to start, so you can 'reset' the state - just delete the **Vagrantfile** and directory **.vagrant**.
 
+#### Vagrant: Useful Commands
+
 Below you can see some useful vagrant commands (you should be in the catalog with the Vagrantfile in order to execute below commands):
 
 - `vagrant up` - power on the VM (you should be in a catalog with the Vagrantfile)
@@ -87,8 +106,24 @@ Below you can see some useful vagrant commands (you should be in the catalog wit
 
 ### Connect to VM over SSH
 
-- `vagrant ssh` - connect to the currently running VM from th current Vagrant file (over SSH)
-- `ssh vagrant@127.0.0.1 -p 2222 -i .vagrant/machines/default/virtualbox/private_key` - connect using auto generated private key
+TBD
+
+## Single Vagrant VM
+
+Firstly, run `vagrant ssh-config` in order to check ssh config for vagrant, the most important lines in the output are:
+
+```yaml
+  Host default
+    HostName 127.0.0.1
+    User vagrant
+    Port 2202
+    IdentityFile /home/dmitrii/projects/research-lab/devops/ansible/playbooks/.vagrant/machines/default/virtualbox/private_key
+```
+
+- `vagrant ssh` - connect to the currently running VM from the current Vagrant file (over SSH)
+- `ssh vagrant@127.0.0.1 -p 2202 -i .vagrant/machines/default/virtualbox/private_key` - connect using auto generated private key
+
+## Multiple Vagrant VMs
 
 For 3 vagrant vms configuration, this key was suitable: **~/.vagrant.d/insecure_private_keys/vagrant.key.rsa**, also check the keys here: ~/.vagrant.d/insecure_private_keys/ and the key: ~/.vagrant.d/insecure_private_key.
 
