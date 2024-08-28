@@ -34,7 +34,11 @@ Also after building you may need to run: `sudo /sbin/rcvboxdrv setup`
 
 ### Vagrant Usage
 
-Since vagrant is closed for Russia, here is additional repository for it (russian vagrant): [ru vagrant](http://vagrant.elab.pro/). Also see downloaded vagrant boxes on Yandex Cloud. It is worth to read also [this article](https://habr.com/ru/articles/735700/).
+Since vagrant is closed for Russia, below is the additional repository for vagrant (russian vagrant). Also see the downloaded vagrant boxes on Yandex Cloud. It is worth to read also the article - see below.
+
+- [ru vagrant I - boxes](http://vagrant.elab.pro/)
+- [ru vagrant II](https://yamadharma.github.io/ru/post/2021/11/12/using-vagrant/)
+- [habr article](https://habr.com/ru/articles/735700/)
 
 #### Add Locally Downloaded Boxes to Vagrant
 
