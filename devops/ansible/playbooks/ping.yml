@@ -1,0 +1,11 @@
+---
+
+- name: Ping all servers
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Ping host
+      ping:
+
+...

@@ -1,0 +1,8 @@
+---
+
+- hosts:
+  gather_facts: true
+  become: true
+  roles:
+    - role: bootstrap/config_system
+    - 

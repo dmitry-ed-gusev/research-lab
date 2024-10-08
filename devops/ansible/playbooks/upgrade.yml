@@ -1,0 +1,29 @@
+---
+
+- name: Upgrade the system
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Update all packages to their latest version
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+
+    - name: Update and then upgrade the OS
+      ansible.builtin.apt:
+        autoremove: true
+        update_cache: true
+        upgrade: full
+        cache_valid_time: 3600
+      register: result
+
+    - name: Debug output
+      ansible.builtin.debug:
+        var: result.failed
+
+    - name: Reboot server
+      ansible.builtin.reboot:
+      when: not result.failed
+
+...

@@ -1,0 +1,81 @@
+Vagrant.require_version ">= 2.0.0"
+
+# Require JSON module
+require 'json'
+
+# Read JSON file with config details
+f = JSON.parse(File.read(File.join(File.dirname(__FILE__), 'vms-config.json')))
+# Local PATH_SRC for mounting
+$PathSrc = ENV['PATH_SRC'] || "."
+
+# -- start of the vagrant configuration
+Vagrant.configure(2) do |config|
+
+  config.vagrant.plugins = ["vagrant-hostmanager", "vagrant-vbguest"]
+
+  # check for updates of the base image
+  config.vm.box_check_update = true
+
+  # wait a while longer
+  config.vm.boot_timeout = 1200
+
+  # disable update guest additions
+  if Vagrant.has_plugin?("vagrant-vbguest")
+    config.vbguest.auto_update = false
+  end
+
+  # enable ssh agent forwarding
+  config.ssh.forward_agent = true
+
+  # use the standard vagrant ssh key
+  config.ssh.insert_key = false
+
+  # manage vms in the system file /etc/hosts
+  config.hostmanager.enabled = true
+  config.hostmanager.include_offline = true
+  config.hostmanager.manage_guest = true
+  config.hostmanager.manage_host = true
+
+  # -- iterate through entries in JSON file - create a vm for each entry
+  f.each do |g|
+
+    # -- creating one vm with the specified parameters
+    config.vm.define g['name'] do |s|
+
+      s.vm.box = g['box']
+      s.vm.hostname = g['name']
+
+      # -- vm network
+      s.vm.network 'private_network', ip: g['ip_addr']
+      s.vm.network :forwarded_port, host: g['forwarded_port'], guest: g['app_port']
+
+      # set no_share to false to enable file sharing
+      s.vm.synced_folder ".", "/vagrant", disabled: g['no_share']
+
+      # -- set virtualbox parameters (customization) for each machine
+      s.vm.provider :virtualbox do |virtualbox|
+        virtualbox.customize ["modifyvm", :id,
+          "--audio", "none",
+          "--cpus", g['cpus'],
+          "--memory", g['memory'],
+          "--graphicscontroller", "VMSVGA",
+          "--vram", "64"
+        ]
+        virtualbox.gui = g['gui']
+        virtualbox.name = g['name']
+      end # end of customization of the virtualbox for each vm
+
+    end # end of creating one vm
+
+  end # end of for cycle - iteration over JSON
+
+  # # -- install ansible locally on each vm (check???)
+  # config.vm.provision "ansible_local" do |ansible|
+  #   ansible.compatibility_mode = "2.0"
+  #   ansible.galaxy_role_file = "roles/requirements.yml"
+  #   ansible.galaxy_roles_path = "roles"
+  #   ansible.playbook = "playbook.yml"
+  #   ansible.verbose = "vv"
+  # end
+
+end
