@@ -169,6 +169,11 @@
             <name>primefaces-themes</name>
             <url>https://repository.primefaces.org/</url>
         </repository>
+        <repository>
+            <id>storm</id>
+            <name>storm-repo</name>
+            <url>https://mvnrepository.com/artifact/org.apache.storm/storm-core</url>
+        </repository>
     </repositories>
 
     <!-- Additional Maven repositories for plugins -->

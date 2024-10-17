@@ -118,11 +118,14 @@
             <artifactId>activemq-all</artifactId>
             <version>${activemq.version}</version>
         </dependency>
+
         <!-- Apache Storm dependency -->
         <dependency>
             <groupId>org.apache.storm</groupId>
             <artifactId>storm-core</artifactId>
-            <version>${apache.storm.version}</version>
+            <!-- <version>${apache.storm.version}</version> -->
+            <version>1.2.3</version>
+            <scope>provided</scope>
             <!-- Apache Storm provides log4j-slf4j-impl dependency, the same provides ActiveMQ (activemq-all jar) -->
             <exclusions>
                 <exclusion>
@@ -131,6 +134,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.storm</groupId>
+            <artifactId>storm-server</artifactId>
+            <version>2.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

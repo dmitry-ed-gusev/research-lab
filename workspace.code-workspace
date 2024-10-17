@@ -1,0 +1,31 @@
+{
+  "folders": [
+    {
+      "path": "./",
+      "name": "Research Lab Project (Root)",
+    },
+    // {
+    //   "path": "./_courses and education/Coursera. OOP in Java Specialization/java-oop-code",
+    //   "name": "TMP :: Coursera Java Project"
+    // },
+    // {
+    //   "path": "./java/mvn",
+    //   "name": "Java :: Maven Project"
+    // },
+    // {
+    //     "path": "./java/gradle",
+    //     "name": "Java :: Gradle Project"
+    // }
+  
+  ],
+
+//   "settings": {
+//     "java.configuration.updateBuildConfiguration": "automatic",
+//     "java.compile.nullAnalysis.mode": "automatic",
+//     "java.project.sourcePaths": [],
+//     "java.dependency.packagePresentation": "flat",
+//     "java.saveActions.organizeImports": true,
+//     "java.dependency.syncWithFolderExplorer": true
+//   }
+
+}
