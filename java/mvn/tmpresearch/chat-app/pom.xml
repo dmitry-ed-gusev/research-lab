@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev</groupId>
+        <artifactId>tmpresearch</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dgusev.chat</groupId>
+    <artifactId>chat-app</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <name>Java Research :: Client-server chat app.</name>
+
+    <modules>
+        <module>chat-client</module>
+        <module>chat-server</module>
+    </modules>
+
+    <!-- main classes for chat client and server -->
+    <properties>
+        <chatClientMainClass>gusev.dmitry.chat.client.ChatClient</chatClientMainClass>
+        <chatServerMainClass>gusev.dmitry.chat.server.ChatServer</chatServerMainClass>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

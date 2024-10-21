@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev.chat</groupId>
+        <artifactId>chat-app</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>chat-client</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>Java Research :: Chat app: client.</name>
+
+    <build>
+        <plugins>
+
+            <!-- jar/achiever plugin settings (main class in manifest) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- this option adds classpath to manifest -->
+                            <addClasspath>true</addClasspath>
+                            <!-- prefix for classpath in manifest -->
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <!-- this option adds main class name to manifest -->
+                            <mainClass>${chatClientMainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <version>${maven.plugin.jar}</version>
+            </plugin>
+
+            <!-- This plugin setting will copy module dependencies to lib/ (in build directory) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <!-- execution configuration for this plugin (when this module should be executed - phase, goal) -->
+                <executions>
+                    <execution>
+                        <phase>${prod.build.phase}</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>target/lib</outputDirectory>
+                    <excludeArtifactIds>junit</excludeArtifactIds>
+                </configuration>
+                <version>${maven.plugin.dependency}</version>
+            </plugin>
+        </plugins>
+
+    </build>
+
+</project>

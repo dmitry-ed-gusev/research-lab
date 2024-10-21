@@ -1,0 +1,536 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dgusev</groupId>
+    <artifactId>research</artifactId>
+    <packaging>pom</packaging>
+    <!-- For Apache Maven > 3.6 only allowed expression here is ${revision}  -->
+    <version>${revision}</version>
+    <name>Research project :: research and self-education.</name>
+
+    <properties>
+        <!-- General properties -->
+        <revision>3.0</revision>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.sources.encoding>UTF-8</java.sources.encoding>
+        <java.version>1.8</java.version>
+
+        <!-- Maven plugins settings/versions -->
+        <maven.plugin.compiler>2.3.2</maven.plugin.compiler>
+        <maven.plugin.jar>2.4</maven.plugin.jar>
+        <maven.plugin.resources>2.5</maven.plugin.resources>
+        <maven.plugin.dependency>2.1</maven.plugin.dependency>
+        <maven.plugin.antrun>1.8</maven.plugin.antrun>
+        <maven.plugin.shade>3.2.1</maven.plugin.shade>
+        <maven.plugin.exec>1.6.0</maven.plugin.exec>
+        <maven.plugin.war>3.2.0</maven.plugin.war>
+        <maven.plugin.help>2.2</maven.plugin.help>
+        <maven.plugin.jaxws>2.2</maven.plugin.jaxws>
+        <maven.plugin.surefire>2.22.2</maven.plugin.surefire>
+        <maven.plugin.failsafe>2.16</maven.plugin.failsafe>
+        <maven.plugin.buildnumber>1.4</maven.plugin.buildnumber>
+        <maven.plugin.sonar>3.6.0.1398</maven.plugin.sonar>
+
+        <!-- Apache libraries (Lang3/Logging/IO/Log4J/etc...) -->
+        <commons.lang3.version>3.6</commons.lang3.version>
+        <commons.logging.version>1.1.3</commons.logging.version>
+        <commons.io.version>2.5</commons.io.version>
+        <commons.cli.version>1.4</commons.cli.version>
+        <apache.httpclient.version>4.5.2</apache.httpclient.version>
+        <apache.dbcp.version>1.4</apache.dbcp.version>
+        <apache.commons.csv.version>1.5</apache.commons.csv.version>
+        <apache.commons.configuration2.version>2.5</apache.commons.configuration2.version>
+        <apache.poi.version>4.1.0</apache.poi.version>
+
+        <!-- Logging libraries -->
+        <log4j.version>1.2.17</log4j.version>
+        <slf4j.version>1.7.21</slf4j.version>
+
+        <!-- BigData libraries versions -->
+        <hadoop.version>2.7.1</hadoop.version>
+
+        <!-- J2EE libraries versions -->
+        <javaee.api.version>7.0</javaee.api.version>
+        <java.mail.version>1.4.5</java.mail.version>
+        <marklogic.java.api.version>3.0.4</marklogic.java.api.version>
+        <activemq.version>5.13.2</activemq.version>
+        <!--<version.glassfish>4.1.1.162</version.glassfish>-->
+        <version.glassfish>5.193.1</version.glassfish>
+        <version.javaee>7.0</version.javaee>
+        <version.weld>2.4.4.Final</version.weld>
+
+        <!-- Jersey client/server libraries versions -->
+        <!-- general jersey version - used for j2ee module -->
+<!--        <version.jersey>2.22.2</version.jersey>-->
+        <version.jersey>2.29.1</version.jersey>
+        <!-- precise versions of jersey client -->
+<!--        <version.jersey.client>1.19.4</version.jersey.client>-->
+<!--        <version.jersey.server>2.28</version.jersey.server>-->
+<!--        <version.jersey.common>2.28</version.jersey.common>-->
+<!--        <version.jersey.containers>2.28</version.jersey.containers>-->
+        <version.jersey.client>2.29.1</version.jersey.client>
+        <version.jersey.server>2.29.1</version.jersey.server>
+        <version.jersey.common>2.29.1</version.jersey.common>
+        <version.jersey.containers>2.29.1</version.jersey.containers>
+
+        <!--<eclipse.persistance.eclipselink.version>2.6.4</eclipse.persistance.eclipselink.version>-->
+        <eclipse.persistance.eclipselink.version>2.7.5</eclipse.persistance.eclipselink.version>
+        <eclipse.persistence.moxy.version>2.7.5</eclipse.persistence.moxy.version>
+        <version.el>3.0.1-b03</version.el>
+        <version.json>1.0.4</version.json>
+        <google.json-simple.version>1.1</google.json-simple.version>
+        <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
+        <primefaces.version>4.0</primefaces.version>
+        <primefaces.themes.version>1.0.10</primefaces.themes.version>
+        <javax.faces.version>2.0</javax.faces.version>
+
+        <!-- 3rd party libraries versions -->
+        <jsch.version>0.1.54</jsch.version>
+        <ant.jsch.version>1.10.1</ant.jsch.version>
+        <org.jsoup.version>1.10.1</org.jsoup.version>
+        <cglib.version>2.2.2</cglib.version>
+        <lombok.version>1.18.24</lombok.version>
+        <jopt.simple.version>5.0.4</jopt.simple.version>
+
+        <!-- Test frameworks versions (JUnit/Hamcrest/Mockito/etc) -->
+        <junit.version>5.4.2</junit.version>
+        <mockito.version>2.28.2</mockito.version>
+        <hamcrest.version>2.1</hamcrest.version>
+        <xmlunit.version>1.4</xmlunit.version>
+        <jacoco.plugin.version>0.8.8</jacoco.plugin.version>
+        <mock.server.version>5.5.4</mock.server.version>
+
+        <!-- Spring framework components versions -->
+        <spring.version>4.3.2.RELEASE</spring.version>
+        <spring.context.version>4.3.3.RELEASE</spring.context.version>
+        <spring.boot.version>2.1.3.RELEASE</spring.boot.version>
+
+        <!-- Hibernate framework components version -->
+        <hibernate.version>5.0.6.Final</hibernate.version>
+        <hibernate.validate.version>6.0.15.Final</hibernate.validate.version>
+
+        <!-- DBMS drivers/connection pools versions -->
+        <dbms.derby.version>10.13.1.1</dbms.derby.version>
+        <dbms.oracle.version>12.2.0.1.0</dbms.oracle.version>
+        <dbms.mysql.version>5.1.42</dbms.mysql.version>
+        <dbms.c3p0.version>0.9.1.2</dbms.c3p0.version>
+
+        <!-- my own (local) utilities library useful version -->
+        <dgusev.utilities.version>3.0</dgusev.utilities.version>
+        <dgusev.dbpilot.version>1.0</dgusev.dbpilot.version>
+
+        <!-- skip tests coverage statistics collect (-DskipCoverageReport=true) -->
+        <skipCoverageReport>false</skipCoverageReport>
+        <!-- don't skip python unit tests (skip: -DskipPythonTests=true) -->
+        <!--<skipPythonTests>true</skipPythonTests>-->
+        <!-- some common (project) settings/defaults -->
+        <dependencies.output.dir>libs</dependencies.output.dir>
+        <common.libraries.prefix>libs</common.libraries.prefix>
+
+        <rawdata.dir>rawdata</rawdata.dir>
+    </properties>
+
+    <!-- Additional Maven repositories for artifacts/dependencies -->
+    <repositories>
+        <repository>
+            <id>alt-repo-1</id>
+            <name>Alt repo #1</name>
+            <url>http://www.datanucleus.org/downloads/maven2/</url>
+        </repository>
+        <repository>
+            <id>alt-repo-2</id>
+            <name>Alt repo #2</name>
+            <url>https://mvnrepository.com/artifact/org.apache.ant/ant-jsch</url>
+        </repository>
+        <repository>
+            <id>alt-repo-3</id>
+            <name>Alt repo #3</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>alt-repo-4</id>
+            <name>Alt repo #4</name>
+            <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
+        </repository>
+        <repository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
+        </repository>
+        <!-- Nexus repository -->
+        <repository>
+            <id>jvnet-nexus-releases</id>
+            <name>jvnet-nexus-releases</name>
+            <url>https://maven.java.net/content/repositories/releases/</url>
+        </repository>
+        <!-- Primefaces repository -->
+        <repository>
+            <id>primefaces-themes</id>
+            <name>primefaces-themes</name>
+            <url>https://repository.primefaces.org/</url>
+        </repository>
+        <repository>
+            <id>storm</id>
+            <name>storm-repo</name>
+            <url>https://mvnrepository.com/artifact/org.apache.storm/storm-core</url>
+        </repository>
+    </repositories>
+
+    <!-- Additional Maven repositories for plugins -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>alt-plugins-repo-1</id>
+            <url>https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- dummy SCM for proper work of maven buildnumber plugin (it requires SCM to be set up) -->
+    <scm>
+        <connection>scm:git:http://127.0.0.1/dummy</connection>
+        <developerConnection>scm:git:https://127.0.0.1/dummy</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/dummy</url>
+    </scm>
+
+    <build>
+
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.plugin.compiler}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${java.sources.encoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.plugin.resources}</version>
+                <configuration>
+                    <encoding>${java.sources.encoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- JaCoCo report creation -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>report</goal>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipCoverageReport}</skip>
+                        </configuration>
+                    </execution>
+                </executions>
+                <version>${jacoco.plugin.version}</version>
+            </plugin>
+
+            <!-- build number plugin (build number + timestamp) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>${maven.plugin.buildnumber}</version>
+                <!-- turn off generation of buildNumber file for submodules -->
+                <inherited>false</inherited>
+                <executions>
+                    <!-- execution for generating sequential build number -->
+                    <execution>
+                        <id>generate-buildnumber</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <format>{0,number}</format>
+                            <items>
+                                <item>buildNumber</item>
+                            </items>
+                            <!-- use this property like: ${buildNumberSeq} -->
+                            <buildNumberPropertyName>buildNumberSeq</buildNumberPropertyName>
+                        </configuration>
+                    </execution>
+                    <!-- execution for generating current build timestamp -->
+                    <execution>
+                        <id>generate-timestamp</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <format>{0,date,dd-MMM-yyyy HH:mm:ss}</format>
+                            <items>
+                                <item>timestamp</item>
+                            </items>
+                            <!-- use this property like: ${buildDate} -->
+                            <buildNumberPropertyName>buildDate</buildNumberPropertyName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven.plugin.war}</version>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${maven.plugin.sonar}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <!-- jacoco reporting tool -->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <!-- Here are common dependencies inherited by all child modules (mostly - testing). All other dependencies should be put in child modules. -->
+    <dependencies>
+        <!-- JUnit 5 dependency -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Hamcrest dependencies -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>${hamcrest.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Mockito library dependency -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Mock Server for WEB/REST integration testing -->
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>${mock.server.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>${xmlunit.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- lombok framework - provided dependency -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- Management of dependencies versions for all children POMs - we may use these dependencies without version specified -->
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Logging libraries -->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <!-- Common utility libraries -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3.version}</version>
+            </dependency>
+
+            <!-- Internal dependencies (proprietary libraries) -->
+            <dependency>
+                <groupId>dgusev</groupId>
+                <artifactId>utilities</artifactId>
+                <version>${dgusev.utilities.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dgusev</groupId>
+                <artifactId>dbpilot</artifactId>
+                <version>${dgusev.dbpilot.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <profiles>
+
+        <!-- Development profile, active by default. -->
+        <profile>
+            <id>env-dev-all</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <env>dev</env>
+                <prod.build.phase>none</prod.build.phase>
+                <prod.deploy.phase>none</prod.deploy.phase>
+            </properties>
+            <!-- All modules to build -->
+            <modules>
+                <module>utilities</module>
+                <module>dbpilot</module>
+                <module>marklogic</module>
+                <module>tmpresearch</module>
+                <module>bigdata</module>
+                <module>socialnet</module>
+                <module>j2ee</module>
+                <module>nlp</module>
+                <module>rest-springboot-docker</module>
+                <module>rest-j2ee-docker</module>
+            </modules>
+        </profile>
+
+        <!-- Production profile, inactive by default. -->
+        <profile>
+            <id>env-prod-all</id>
+            <properties>
+                <env>prod</env>
+                <prod.build.phase>package</prod.build.phase>
+                <prod.deploy.phase>none</prod.deploy.phase>
+            </properties>
+            <!-- All modules to build -->
+            <modules>
+                <module>utilities</module>
+                <module>dbpilot</module>
+                <module>marklogic</module>
+                <module>tmpresearch</module>
+                <module>bigdata</module>
+                <module>socialnet</module>
+                <module>j2ee</module>
+                <module>nlp</module>
+                <module>rest-springboot-docker</module>
+                <module>rest-j2ee-docker</module>
+            </modules>
+        </profile>
+
+        <!-- Simple build profile - quick build for project, skips some of modules. It's a dev profile. -->
+        <profile>
+            <id>env-dev-simple</id>
+            <properties>
+                <env>dev</env>
+                <prod.build.phase>none</prod.build.phase>
+                <prod.deploy.phase>none</prod.deploy.phase>
+            </properties>
+            <!-- Some of modules to build -->
+            <modules>
+                <!--<module>scripts</module>-->
+                <module>utilities</module>
+                <!--<module>dbpilot</module>-->
+                <!--<module>tmpresearch</module>-->
+                <!--<module>nlp</module>-->
+                <!--<module>bigdata</module>-->
+                <!--<module>socialnet</module>-->
+                <!--<module>j2ee</module>-->
+                <!--<module>rest-springboot-docker</module>-->
+                <!--<module>rest-j2ee-docker</module>-->
+            </modules>
+        </profile>
+
+        <!-- Simple production profile, inactive by default. -->
+        <profile>
+            <id>env-prod-simple</id>
+            <properties>
+                <env>prod</env>
+                <prod.build.phase>package</prod.build.phase>
+                <prod.deploy.phase>install</prod.deploy.phase>
+                <!--<prod.deploy.phase>none</prod.deploy.phase>-->
+            </properties>
+            <!-- modules to build -->
+            <modules>
+                <!--<module>scripts</module>-->
+                <module>utilities</module>
+                <!--<module>dbpilot</module>-->
+                <!--<module>tmpresearch</module>-->
+                <!--<module>bigdata</module>-->
+                <!--<module>j2ee</module>-->
+                <!--<module>nlp</module>-->
+            </modules>
+        </profile>
+
+        <!--
+            Sonar profile (for analysis). Active by default.
+            IMPORTANT: if explicitly specified another profile (-P<profile>) this profile won't
+                        be used, need to specify it too (-P<profile>,sonar).
+        -->
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Optional URL to server. Default value is http://localhost:9000 -->
+                <!--<sonar.host.url>http://myserver:9000</sonar.host.url>-->
+
+                <!-- Project properties (see sonar docs) -->
+                <sonar.python.coverage.reportPaths>coverage.xml</sonar.python.coverage.reportPaths>
+            </properties>
+        </profile>
+
+    </profiles>
+
+</project>

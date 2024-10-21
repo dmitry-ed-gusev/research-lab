@@ -1,0 +1,10 @@
+<?xml version = '1.0'?>
+<db-settings>
+
+ <db>
+  <type>derby_embedd</type>
+  <dbname>c:/stormDB</dbname>
+  <params_>create=true;</params_>
+ </db>
+
+</db-settings>

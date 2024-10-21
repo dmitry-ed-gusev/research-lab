@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- Properties placeholder file -->
+    <context:property-placeholder location="classpath:spring/SSH.properties" />
+    <!-- Activates various annotations to be detected in Spring bean classes. -->
+    <context:annotation-config />
+    <!-- Scans within the base package of the application for @Component/@Repository to configure as beans -->
+    <context:component-scan base-package="gusev.dmitry.research.net.ssh" />
+
+    <!-- XML beans definitions - all used beans -->
+    <import resource="_SSHbeans.xml" />
+    <!-- Some utility data - utility information -->
+    <import resource="_SSHutil.xml" />
+    <!-- Quarz beans/configs/jobs/triggers -->
+    <import resource="_SSHquartz.xml" />
+
+</beans>

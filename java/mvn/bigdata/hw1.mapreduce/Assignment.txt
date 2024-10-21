@@ -1,0 +1,15 @@
+=========================================================
+                  Home work #1. Assignment.
+=========================================================
+Write MapReduce program which takes text file as an input,
+searches the longest word and writes this word to the output.
+
+Think and discuss with mentor how to improve performance
+of this program and apply it for multiple files.
+
+In Hadoop HW 1 should be
+•	2 screenshots
+•	Several text files and outputs
+•	your code/shell command for counting task
+
+Passed: YES

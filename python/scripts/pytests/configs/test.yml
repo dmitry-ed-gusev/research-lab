@@ -1,0 +1,39 @@
+logging:
+  file_log_level: DEBUG
+  console_log_level: INFO
+  log_file_location: /home/mantisetls/logs
+
+landing_dir: /home/mantisetls
+
+odbc_dsn_name: BDPTEST
+
+abstract_user: abstract
+abstract_env: test
+
+hdfs:
+  knox_hdfs_uri: https://knox-01.bdptest.gin.merck.com:8443/gateway/default/webhdfs/v1/
+
+hive_config:
+  hive.execution.engine: tez
+
+yarn:
+  service_user_name: yarn
+  remote_execution_dir: /user/mantisetls/remote-execution
+  # Artifact data for tools is updated during install
+  tools:
+    keytab:
+      path: keytab
+      artifact: mantisetls.headless.keytab
+      type: FILE
+    csv2hive:
+      path: csv2hive
+      artifact: csv2hive-tool.tar.gz
+      type: ARCHIVE
+    remote-yarn-runner:
+      path: remote-yarn-runner
+      artifact: remote-yarn-runner.tar.gz
+      type: ARCHIVE
+    sqoop-msd:
+      path: sqoop-msd/sqoop-msd-bin
+      artifact: sqoop-msd-bin.tar.gz
+      type: ARCHIVE

@@ -1,0 +1,6 @@
+name1, DAY,     3
+name2, Month, -3
+name3, yEAr  , -1
+# commented line ->   , quaRTER, 2
+name4, hour, -1
+name5, hour, 1

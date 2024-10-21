@@ -1,0 +1,9 @@
+###############################################################################
+#
+#     Docker Composer file for local PHP dev/test farm up and running. Farm
+#     contains apps: Mysql -> PHP-FPM -> Nginx.
+#
+#     Created:  Dmitrii Gusev, 06.04.2019
+#     Modified: Dmitrii Gusev, 09.04.2019
+#
+###############################################################################

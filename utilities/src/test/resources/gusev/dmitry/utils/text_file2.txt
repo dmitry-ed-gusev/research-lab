@@ -1,4 +1,0 @@
-
-
-
-String from file2

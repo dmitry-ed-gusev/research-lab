@@ -1,0 +1,18 @@
+<?xml version = '1.0'?>
+<app-settings>
+
+ <db>
+  <type>informix</type>
+  <host>appserver:3306</host>
+  <server>hercules</server>
+  <dbname>storm</dbname>
+  <user>informix</user>
+  <pwd>ifx_dba_019</pwd>
+  <params/>
+  <info/>
+  <connNumber>10</connNumber>
+  <opsCounter>200</opsCounter>
+  <multiThreads>true</multiThreads>
+ </db>
+
+</app-settings>

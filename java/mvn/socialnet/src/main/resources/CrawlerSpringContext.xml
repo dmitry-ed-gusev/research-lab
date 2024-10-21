@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- Properties placeholder file -->
+    <context:property-placeholder location="classpath:CrawlerSpring.properties" />
+
+    <!-- Activates various annotations to be detected in Spring bean classes. -->
+    <context:annotation-config />
+    <!-- Scans within the base package of the application for @Component/@Repository to configure as beans -->
+    <context:component-scan base-package="dg.social.crawler" />
+
+    <!-- exceptions translator bean -->
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    <!-- implementation of exception translator for hibernate 5 -->
+    <bean class="org.springframework.orm.hibernate5.HibernateExceptionTranslator"/>
+    <!-- Spring controlled Hibernate 5 transaction manager (bean) for database -->
+    <bean id="crawlerTXManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="crawlerHsqlSessionFactory"/>
+    </bean>
+
+    <!--
+        Annotation-driven tx manager config (annotation @Transactional for classes/methods - enables
+        the Hibernate @Transactional programming model)
+    -->
+    <tx:annotation-driven transaction-manager="crawlerTXManager" proxy-target-class="true"/>
+
+    <!-- hsql dbms config for application -->
+    <import resource="_hsqlConfig.xml" />
+    <!-- some additional beans definitions (Spring container) -->
+    <import resource="_beans.xml" />
+
+</beans>

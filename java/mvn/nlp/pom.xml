@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev</groupId>
+        <artifactId>research</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>nlp</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <name>NLP :: Natural language processing module.</name>
+
+	<modules>
+		<module>nlp-webapp</module>
+		<module>nlp-standalone</module>
+	</modules>
+
+    <properties>
+        <app.base.name>panalyzer</app.base.name>
+        <app.assembly.dir>${project.basedir}/../${app.base.name}</app.assembly.dir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>dgusev</groupId>
+            <artifactId>utilities</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+</project>

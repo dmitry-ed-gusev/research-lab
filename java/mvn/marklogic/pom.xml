@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>dgusev</groupId>
+        <artifactId>research</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>marklogic</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>MarkLogic server :: examples (cookbook).</name>
+
+    <properties>
+        <marklogic.java.api.version>3.0.4</marklogic.java.api.version>
+    </properties>
+
+    <build>
+    </build>
+
+    <dependencies>
+        <!-- MarkLogic Java client API dependency -->
+        <dependency>
+            <groupId>com.marklogic</groupId>
+            <artifactId>java-client-api</artifactId>
+            <version>${marklogic.java.api.version}</version>
+        </dependency>
+        <!-- XOM - XML Object Model. Dependency for MarkLogic examples. -->
+        <dependency>
+            <groupId>com.io7m.xom</groupId>
+            <artifactId>xom</artifactId>
+            <version>1.2.10</version>
+        </dependency>
+        <!-- JDOM2. Dependency for MarkLogic examples. -->
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom2</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+        <!-- DOM4J. Dependency for MarkLogic examples. -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <!-- HTML Cleaner. Dependency for MarkLogic examples. -->
+        <dependency>
+            <groupId>net.sourceforge.htmlcleaner</groupId>
+            <artifactId>htmlcleaner</artifactId>
+            <version>2.29</version>
+        </dependency>
+        <!-- Google GSON library (JSON). Dependency for MarkLogic examples. -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+    </dependencies>
+
+</project>
