@@ -1,0 +1,67 @@
+/*
+    Gradle settings script for Reasearch application project.
+
+    Created:  Dmitrii Gusev, 29.09.2019
+    Modified:
+*/
+
+rootProject.name = 'research'
+
+include(':utilities')
+include(':dbpilot')
+
+/*
+include(':pyutilities')
+include(':scripts')
+include(':marklogic')
+include(':tmpresearch:xml')
+include(':tmpresearch:hibernate')
+include(':tmpresearch:jsf2-example')
+include(':tmpresearch:unsorted')
+include(':tmpresearch:chat-app:chat-client')
+include(':tmpresearch:chat-app:chat-server')
+include(':tmpresearch:chat-app')
+include(':tmpresearch')
+include(':bigdata')
+include(':bigdata:storm')
+include(':bigdata:hw1.mapreduce')
+include(':bigdata:hw2.hdfs')
+include(':bigdata:hw3.mapreduce')
+include(':bigdata:hw4.mapreduce')
+include(':bigdata:hw5.yarn')
+include(':socialnet')
+include(':j2ee:cdi')
+include(':j2ee:validation')
+include(':j2ee:rest:consumer')
+include(':j2ee:rest:samples')
+include(':j2ee:rest:service')
+include(':j2ee:rest')
+include(':j2ee')
+include(':nlp:nlp-webapp')
+include(':nlp:nlp-standalone')
+include(':nlp')
+include(':rest-springboot-docker')
+include(':rest-j2ee-docker')
+include(':elastic')
+project(':tmpresearch:xml').projectDir = file('tmpresearch/xml')
+project(':tmpresearch:hibernate').projectDir = file('tmpresearch/hibernate')
+project(':tmpresearch:jsf2-example').projectDir = file('tmpresearch/jsf2-example')
+project(':tmpresearch:unsorted').projectDir = file('tmpresearch/unsorted')
+project(':tmpresearch:chat-app:chat-client').projectDir = file('tmpresearch/chat-app/chat-client')
+project(':tmpresearch:chat-app:chat-server').projectDir = file('tmpresearch/chat-app/chat-server')
+project(':tmpresearch:chat-app').projectDir = file('tmpresearch/chat-app')
+project(':bigdata:storm').projectDir = file('bigdata/storm')
+project(':bigdata:hw1.mapreduce').projectDir = file('bigdata/hw1.mapreduce')
+project(':bigdata:hw2.hdfs').projectDir = file('bigdata/hw2.hdfs')
+project(':bigdata:hw3.mapreduce').projectDir = file('bigdata/hw3.mapreduce')
+project(':bigdata:hw4.mapreduce').projectDir = file('bigdata/hw4.mapreduce')
+project(':bigdata:hw5.yarn').projectDir = file('bigdata/hw5.yarn')
+project(':j2ee:cdi').projectDir = file('j2ee/cdi')
+project(':j2ee:validation').projectDir = file('j2ee/validation')
+project(':j2ee:rest:consumer').projectDir = file('j2ee/rest/consumer')
+project(':j2ee:rest:samples').projectDir = file('j2ee/rest/samples')
+project(':j2ee:rest:service').projectDir = file('j2ee/rest/service')
+project(':j2ee:rest').projectDir = file('j2ee/rest')
+project(':nlp:nlp-webapp').projectDir = file('nlp/nlp-webapp')
+project(':nlp:nlp-standalone').projectDir = file('nlp/nlp-standalone')
+ */

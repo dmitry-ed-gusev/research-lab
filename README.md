@@ -4,10 +4,14 @@ Copyright Dmitrii Gusev, 1996-2024 (C)
 
 [TOC]
 
-## Lab's Rooms
+## Laboratory's Tour
 
 TBD
 
 ## Tech Stack
+
+TBD
+
+### Working Environment Setup
 
 TBD

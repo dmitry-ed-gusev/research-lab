@@ -1,0 +1,14 @@
+{
+
+  "folders": [
+    {
+      "path": "..",
+      "name": "Research Lab :: Root Project",
+    },
+    {
+      "path": "../java/mvn",
+      "name": "Research Lab :: Java Maven Project"
+    },  
+  ],
+
+}

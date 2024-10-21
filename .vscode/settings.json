@@ -1,6 +1,7 @@
 {
+
+    // By default: all java projects are excluded from workspace.
     "files.exclude" : {
-      "_courses and education/Coursera. OOP in Java Specialization/java-oop-code/**": true, 
       "java/**": true,
     },
 
