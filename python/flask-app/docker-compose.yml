@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  flask-app:
+    container_name: flask-app-container
+    build: .
+    restart: always
+#    command: flask run --host 0.0.0.0
+    command: python webhook.py
+    volumes:
+      - .:/usr/src/app/
+    ports:
+#      - 5001:5000
+      - "9099:9099"
+    # env_file:
+    #   - ./.env.dev
