@@ -1,0 +1,1 @@
+Try this guide: https://www.sitepoint.com/bundle-static-site-webpack/

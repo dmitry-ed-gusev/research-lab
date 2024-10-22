@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+    <title>Alan - Resume / CV / vCard Template v1.4</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Alan - Resume / CV / vCard Template" />
+    <meta name="keywords" content="vcard, resposnive, retina, resume, jquery, css3, bootstrap, material, portfolio" />
+    <meta name="author" content="lmtheme" />
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css" type="text/css">
+  </head>
+
+  <body>
+    <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="title">
+              <h1>Alan - Resume / CV / vCard Template.</h1> 
+              <h4>Complete Documentation</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <h3>Thank you very much for purchasing from LMPixels!</h3>
+            <p>If you have any issue or question that this document does not cover, you can contact us via email <a href="mailto:help@lmpixels.com">help@lmpixels.com</a>.</p>
+
+            <h2>Table of Contents</h2>
+            <ol>
+              <li><a href="#installing">Template Installation</a></li>
+              <li><a href="#html_structure">HTML Structure</a></li>
+              <li><a href="#css_structure">CSS Files and Structure</a></li>
+              <li><a href="#scripts">Scripts</a></li>
+              <li><a href="#php_integration">PHP Integration (Contact Form)</a></li>
+              <li><a href="#fonts">Fonts</a></li>
+              <li><a href="#credits">Credits</a></li>
+              <li><a href="#customization">Customization</a></li>
+              <li><a href="#faq">FAQ</a></li>
+            </ol>
+
+
+            <h2 id="installing">Template Installation</h2>
+            <p>You can view this template in any web browser from your computer, mobile device. Because the files are written in HTML, you do not need an internet connection in order to display or edit the template.</p>
+            <p>All of the HTML files are given a descriptive name to make it easier to distingish what each file will display.</p>
+            <h3 style="margin-bottom:10px;">Upload to The Server</h3>
+            <ol>
+              <li>It's important to understand that you must either have your own server space or use someone elses. The server space can be purchased at many different places around the internet. You need somewhere to put the files that you purchased so others can find them online.</li>
+              <li>Select several files with the extension labeled <em>.html</em>. This is where all your content will. In addition to .html you should see a file labeled <em>.css</em>. <em>.css</em> files are going to be the files that will tell the .html how to to be styled. CSS is simply a way to take text, images, and other elements and change the look of them. It's very important to keep the <em>.css</em> file with the HTML or the HTML will not look how the design is meant to look. Along with the HTML and CSS files, you will also have three additional folders to upload: <em>images, js and php</em>.</li>
+              <li>Start your FTP client (I persoanlly use Filezila which is free) and login. Login to your server. You will need your server name (often times this will be your domain name), username, and password that you setup with the hosting company.</li>
+              <li>Locate the domain folder you wish to upload your template files to on your server. You are going to want to click and drag every file that you have labeled <em>.html, .css, .js, .php</em> into your FTP client.</li>
+              <li>Once the files are done uploading, you can try access your website via browser.</li>
+            </ol>
+
+            <h2 id="html_structure">HTML Structure</h2>
+
+            <p>This site template has a Responsive and Mobile-Friendly layout based on Bootstrap Boilerplate.</p>
+
+            <h3>HTML files</h3>
+            <ol>
+              <li><strong>index.html</strong> - main HTML file of this site template.
+                <div><img src="images/html_structure.jpg" alt="Html Structure"></div>
+              </li>
+
+              <li><strong>index-2.html</strong> - main page with the second version of the top of the page (block with a photo and text).</li>
+
+              <li><strong>resume.html</strong> - Resume page.</li>
+
+              <li><strong>portfolio.html</strong> - Portfolio page - 3 Columns.</li>
+
+              <li><strong>blog.html</strong> - Blog page - 2 Columns.</li>
+
+              <li><strong>contact.html</strong> - Contact page.</li>
+
+              <li><strong>portfolio-project-1.html</strong> - HTML file with Portfolio page content.</li>
+
+              <li><strong>blog-post-1.html</strong> - HTML file with Blog post page content.</li>
+            </ol>
+
+
+            <h2 id="css_structure">CSS Files and Structure</h2>
+
+            <p>We are using one main CSS file <em>(main.css)</em> in this template which you are free to modify depending on the customization you require.</p>
+
+            <p>If you would like to edit the color, font, or style of any elements, you would do the following in <em>css/main.css</em> :</p>
+
+            <div><img src="images/main_css.jpg" alt="main.css"></div>
+
+            <p>If you would like to edit a specific section or page of the site, simply find the appropriate label in the CSS file, and then scroll down until you find the appropriate style that needs to be edited.</p>
+
+            <p>There are also five additional style sheets that I do not recommend changing. Those style sheets reside in the <em>'css'</em> folder. The 5 style sheets are:</p>
+
+            <ul class="square">
+              <li><strong>normalize.css</strong> - CSS file that makes browsers render all elements more consistently and in line with modern standards.</li>
+              <li><strong>bootstrap.min.css</strong> - Minified version of <strong>Bootstrap 4</strong>.</li>
+              <li><strong>owl.carousel.css</strong> - The main stylesheet for Carousels (Testimonials block on About me subpage &amp; Portfolio details page).</li>
+              <li><strong>magnific-popup.css</strong> -  The main stylesheet for styling the lightbox.</li>
+            </ul>
+
+            <p>These files are included in the <strong>'head'</strong> of <strong>index.html</strong> and <strong>blog-post-1.html</strong>:</p>
+            <div><img src="images/head_css.jpg" alt=""></div>
+
+            <h2 id="scripts">Scripts</h2>
+            <p>This template uses several scripts. If you're a developer, you will find this particularly useful.</p>
+
+            <ul class="circle">
+              <li><strong>jquery-2.1.3.min.js</strong> (version 2.1.3) - used by the various JS files as a library.</li>
+              <li><strong>imagesloaded.pkgd.min.js</strong> - <a href="http://imagesloaded.desandro.com/">Detect when images have been loaded.</a></li>
+              <li><strong>jquery.shuffle.min.js</strong> - <a href="https://vestride.github.io/Shuffle/">Categorize, sort, and filter a responsive grid of items.</a></li>
+              <li><strong>jquery.magnific-popup.min.js</strong> - <a href="http://dimsemenov.com/plugins/magnific-popup/">Magnific Popup is a responsive lightbox & dialog script with focus on performance and providing best experience for user with any device.</a></li>
+              <li><strong>masonry.pkgd.min.js</strong> - <a href="http://masonry.desandro.com/">Cascading grid layout library</a></li>
+              <li><strong>modernizr.custom.js</strong> - <a href="http://modernizr.com/">Modernizr is a JavaScript library that detects HTML5 and CSS3 features in the user’s browser</a></li>
+              <li><strong>owl.carousel.min.js</strong> - <a href="https://owlcarousel2.github.io/OwlCarousel2/">Touch enabled jQuery plugin that lets you create a beautiful responsive carousel slider.</a></li>
+              <li><strong>validator.js</strong> - <a href="https://github.com/1000hz/bootstrap-validator">Contact form validator.</a></li>
+              <li><strong>main.js</strong> - jQuery Plugins Initialisation, mobile menu, page loading animation.</li>
+            </ul>
+
+            <h2 id="php_integration">PHP Integration (Contact Form)</h2>
+            <p>This template also use the PHP engine for activate the contact form. <strong>Important:</strong> For the functioning of the contact form on <strong>your hosting</strong> should be <strong>PHP</strong>.</p>
+            <p>Please replace the email address with your email address, this address will receive messages from the contact form in the <em>/contact_form/contact_form.php</em> file.</p>
+            <div><img src="images/contact_form.jpg" alt=""></div>
+
+            <h2 id="fonts">Fonts</h2>
+            <ul class="circle">         
+              <li>Helvetica, Sans-serif (both should be on your system as standard fonts)</li> 
+              <li>Google Fonts <a href="http://www.google.com/webfonts/specimen/Poppins">Poppins</a>.</li>
+              <li><a href="https://fontawesome.com/icons?d=gallery&m=free">Font Awesome Free version 5.12.1 </a>(The complete set of 1,557 icons).</li>
+              <li><a href="https://linearicons.com/free">Linearicons Free Font</a>.</li>
+            </ul>
+
+            <h2 id="credits">Credits</h2>
+
+            <p>Images (Just on live preview, not included in download package):
+            <ul>
+               <li><a href="https://pixabay.com/">https://pixabay.com/</a></li>
+            </ul>
+
+            <p>Videos</p>
+            <ul>
+              <li><a href="https://vimeo.com/channels/staffpicks" target="_blank">https://vimeo.com/channels/staffpicks</a></li>
+            </ul>
+
+
+            <h2 id="customization">Customization</h2>
+            <ol>
+              <li><a href="#custom_files-editing">About files editing</a></li>
+              <li><a href="#custom_header-logo">Header logo</a></li>
+              <li><a href="#custom_main-menu">Main menu</a></li>
+              <li><a href="#custom_animation-effects">Page content</a></li>
+              <li><a href="#custom_resume-skills">Edit skills</a></li>
+              <li><a href="#custom_services">Edit services</a></li>
+              <li><a href="#custom_portfolio-subpage">Edit portfolio page</a></li>
+              <li><a href="#custom_video-embeding">YouTube and Vimeo Video Embedding</a></li>
+              <li><a href="#custom_recaptcha">Google Recaptcha V2 options</a></li>
+              <li><a href="#custom_maps">Google Map</a></li>
+            </ol>
+
+            <h3 id="custom_files-editing">1. About files editing</h3>
+            <p>For editing files I recommend you use <a href="https://sublimetext.com/2" target="_blank">Sublime Text 2</a> or similar program. Convenient following functions: syntax highlighting, find and replace function (to accelerate editing), etc.</p>
+
+            <hr>
+
+            <h3 id="custom_header-logo">2. Header logo</h3>
+            <h4>2.1. Text Logo + Symbol</h4>
+            <ol>
+              <li>Open index.html or another HTML file of our template.</li>
+              <li>Go to lines with <pre>
+&lt;!-- Text Logo --&gt;
+&lt;div class="header-titles"&gt;
+  &lt;a href="#"&gt;
+    &lt;h2&gt;AS&lt;/h2&gt;
+  &lt;/a&gt;
+&lt;/div&gt;
+&lt;!-- Text Logo --&gt;</pre></li>
+              <li>Change text.</li>
+              <li>Save file.</li>
+            </ol>
+
+            <h4>2.2. Image Logo</h4>
+            <ol>
+              <li>Open index.html or another HTML file of our template.</li>
+              <li>Go to lines with <pre>
+&lt;!-- Text Logo --&gt;
+&lt;div class="header-titles"&gt;
+  &lt;a href="#"&gt;
+    &lt;h2&gt;AS&lt;/h2&gt;
+  &lt;/a&gt;
+&lt;/div&gt;
+&lt;!-- Text Logo --&gt;</pre></li>
+              <li>Replace them with these lines:</li>
+&lt;!-- Personal Photo or Site Logo --&gt;
+  &lt;div class="header-photo"&gt;
+    &lt;a href="#"&gt;
+      &lt;img src="./img/profile_img.jpg" alt="image"&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+&lt;!-- /Personal Photo or Site Logo --&gt;</pre></li>
+            </ol>
+
+
+
+            <h3 id="custom_main-menu">3. Main menu</h3>
+            <h4>3.1. Main menu code</h4>
+            <ol>
+              <li>Open index.html or another HTML file of our template.</li>
+              <li>Main menu lines: <pre>
+&lt;!-- Main Menu --&gt;
+&lt;ul class="alan-classic-menu main-menu dl-menu dl-menuopen"&gt;
+  &lt;li class="menu-item current-menu-item current-menu-parent menu-item-has-children"&gt;
+    &lt;a href="index.html"&gt;About Me&lt;/a&gt;
+    &lt;ul class="sub-menu"&gt;
+      &lt;li class="menu-item current-menu-item"&gt;
+        &lt;a href="index.html"&gt;About Me&lt;/a&gt;
+      &lt;/li&gt;
+      
+      &lt;li class="menu-item"&gt;
+        &lt;a href="index-2.html"&gt;About Me 2&lt;/a&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  
+  &lt;li class="menu-item"&gt;
+    &lt;a href="resume.html"&gt;Resume&lt;/a&gt;
+  &lt;/li&gt;
+
+  &lt;li class="menu-item"&gt;
+    &lt;a href="portfolio.html"&gt;Portfolio&lt;/a&gt;
+  &lt;/li&gt;
+
+  &lt;li class="menu-item"&gt;
+    &lt;a href="blog.html"&gt;Blog&lt;/a&gt;
+  &lt;/li&gt;
+  
+  &lt;li class="menu-item"&gt;
+    &lt;a href="contact.html"&gt;Contact&lt;/a&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- /Main Menu --&gt;
+</pre>
+              <li>Main menu item example: <pre>
+&lt;li class="menu-item"&gt;
+  &lt;a href="contact.html"&gt;Contact&lt;/a&gt;
+&lt;/li&gt;
+</pre>
+              </li>
+              <li>Main menu item with submenu:
+                <pre>
+&lt;li class="menu-item current-menu-item current-menu-parent menu-item-has-children"&gt;
+  &lt;a href="index.html"&gt;About Me&lt;/a&gt;
+  &lt;ul class="sub-menu"&gt;
+    &lt;li class="menu-item current-menu-item"&gt;
+      &lt;a href="index.html"&gt;About Me&lt;/a&gt;
+    &lt;/li&gt;
+    
+    &lt;li class="menu-item"&gt;
+      &lt;a href="index-2.html"&gt;About Me 2&lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/li&gt;
+                </pre>
+              </li>
+              <li>This class is added to a menu item that has a submenu: <strong>"menu-item-has-children"</strong></li>
+              <li>Active main menu item: <pre>
+&lt;li class="menu-item current-menu-item current-menu-parent menu-item-has-children"&gt;
+  &lt;a href="index.html"&gt;About Me&lt;/a&gt;
+  &lt;ul class="sub-menu"&gt;
+    &lt;li class="menu-item current-menu-item"&gt;
+      &lt;a href="index.html"&gt;About Me&lt;/a&gt;
+    &lt;/li&gt;
+    
+    &lt;li class="menu-item"&gt;
+      &lt;a href="index-2.html"&gt;About Me 2&lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/li&gt;
+              </pre></li>
+              <li>This class is added to the active menu item: <strong>current-menu-item</strong></li>
+            </ol>
+
+            <hr>
+
+            <h3 id="custom_animation-effects">4. Page content</h3>
+            <p>The main content of the page is placed in the following structure:</p>
+<pre>
+&lt;div class="content-area single-page-area" data-animation="animated-section-rotateRoomBottomIn"&gt;
+  &lt;div class="single-page-content"&gt;
+    &lt;div class="content-wrapper"&gt;
+
+        There will be a row and bootstrap columns with content
+
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+      </pre>
+            
+            <hr>
+
+            <h3 id="custom_resume-skills">5. Edit skills</h3>
+
+
+            <p>Skill block:</p>
+<pre>
+&lt;div class="clearfix"&gt;
+  &lt;h4&gt;Web Design&lt;/h4&gt;
+  &lt;div class="skill-value"&gt;90%&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id="skill_1" data-value="90" class="skill-container"&gt;
+  &lt;div class="skill-percentage"&gt;&lt;/div&gt;
+&lt;/div&gt;</pre>
+
+            <p>The value for the skill <strong>data-value="95"</strong></p>
+
+            <hr>
+
+            <h3 id="custom_services">6. Edit services</h3>
+
+            <ol>
+              <li>Open index.html or index-2.html file.</li>
+              <li>Find <em>'div'</em> with <em>'class="info-list-w-icon"</em></li>
+              <li>Edit text in the following <em>'div'</em>:<pre>
+&lt;div class="info-list-w-icon"&gt;
+  &lt;div class="info-block-w-icon"&gt;
+    &lt;div class="ci-icon"&gt;
+      &lt;i class="lnr lnr-store"&gt;&lt;/i&gt;
+    &lt;/div&gt;
+
+    &lt;div class="ci-text"&gt;
+      &lt;h4&gt;Ecommerce&lt;/h4&gt;
+      &lt;p&gt;Pellentesque pellentesque, ipsum sit amet auctor accumsan, odio tortor bibendum massa, sit amet ultricies ex lectus scelerisque nibh. Ut non sodales.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="info-list-w-icon"&gt;
+  &lt;div class="info-block-w-icon"&gt;
+    &lt;div class="ci-icon"&gt;
+      &lt;i class="lnr lnr-laptop-phone">&lt;/i&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="ci-text"&gt;
+      &lt;h4&gt;Web Design&lt;/h4&gt;
+      &lt;p&gt;Pellentesque pellentesque, ipsum sit amet auctor accumsan, odio tortor bibendum massa, sit amet ultricies ex lectus scelerisque nibh. Ut non sodales.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+                You can choose an icon <pre>&lt;i class="lnr lnr-store">&lt;/i&gt;</pre> from the following fonts: <a href="https://fontawesome.com/icons?d=gallery&m=free">Font Awesome Free version 5.12.1 </a>(The complete set of 1,341 icons), <a href="https://linearicons.com/free">Linearicons Free Font</a></a>.
+              </li>
+              
+              <li>Save file.</li>
+
+              <li>If you want to use an icon image instead of a font icon, you need to do the following:</li>
+
+              <li>Replace this code:<pre>
+&lt;div class="ci-icon"&gt;
+  &lt;i class="lnr lnr-laptop-phone">&lt;/i&gt;
+&lt;/div&gt;</pre>
+              </li>
+
+              <li>With this code:<pre>
+&lt;div class="ci-icon"&gt;
+  &lt;img src="img/service/web_design_icon.png" alt="Service"&gt;
+&lt;/div&gt;</pre>
+              Where you need to replace the <em>'src'</em> to the path to your image (icon).
+              </li>
+            </ol>
+
+            <hr>
+
+            <h3 id="custom_portfolio-subpage">7. Edit portfolio page</h3>
+            <p>The structure of the "Portfolio" page:</p>
+<pre>&lt;!-- Portfolio Content --&gt;
+&lt;div id="portfolio_content_q" class="portfolio-content"&gt;
+
+  &lt;ul class="portfolio-filters"&gt;
+    &lt;li class="active"&gt;
+      &lt;a class="filter btn btn-sm btn-link" data-group="category_all"&gt;All&lt;/a&gt;
+    &lt;/li&gt;
+    
+    &lt;li&gt;
+      &lt;a class="filter btn btn-sm btn-link" data-group="category_detailed"&gt;Detailed&lt;/a&gt;
+    &lt;/li&gt;
+    
+    &lt;li&gt;
+      &lt;a class="filter btn btn-sm btn-link" data-group="category_direct-url"&gt;Direct URL&lt;/a&gt;
+    &lt;/li&gt;
+    
+    &lt;li&gt;
+      &lt;a class="filter btn btn-sm btn-link" data-group="category_image"&gt;Image&lt;/a&gt;
+    &lt;/li&gt;
+    
+    &lt;li&gt;
+      &lt;a class="filter btn btn-sm btn-link" data-group="category_soundcloud"&gt;SoundCloud&lt;/a&gt;
+    &lt;/li&gt;
+
+    &lt;li&gt;
+      &lt;a class="filter btn btn-sm btn-link" data-group="category_video"&gt;Video&lt;/a&gt;
+    &lt;/li&gt;
+    
+    &lt;li&gt;
+      &lt;a class="filter btn btn-sm btn-link" data-group="category_vimeo-video"&gt;Vimeo Video&lt;/a&gt;
+    &lt;/li&gt;
+    
+    &lt;li&gt;
+      &lt;a class="filter btn btn-sm btn-link" data-group="category_youtube-video"&gt;YouTube Video&lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+
+
+  &lt;!-- Portfolio Grid --&gt;
+  &lt;div class="portfolio-grid three-columns shuffle"&gt;
+
+    &lt;!-- Portfolio Item 1 --&gt;
+    &lt;figure class="item standard" data-groups='["category_all", "category_detailed"]'&gt;
+      &lt;a href="portfolio-project-2.html" class="ajax-page-load"&gt;
+        &lt;div class="portfolio-item-img"&gt;
+          &lt;img src="./img/portfolio/1.jpg" alt="Full Project 2" title="" /&gt;
+        &lt;/div&gt;
+
+        &lt;div class="project-desc"&gt;
+          &lt;div class="project-desc-text"&gt;
+            &lt;h4 class="name">Full Project 2&lt;/h4&gt;
+            &lt;span class="category">Detailed&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/a&gt;
+    &lt;/figure&gt;
+    &lt;!-- /Portfolio Item 1 --&gt;
+    ...
+  &lt;/div&gt;
+  &lt;!-- /Portfolio Content --&gt;
+&lt;/div&gt;</pre>
+            <p>Each item in the portfolio grid should be wrapped in the HTML tag &lt;figure&gt;...&lt;/figure&gt;</p>
+            <p>You can add two types of content:</p>
+              <ol>
+                <li>Page loaded via Ajax (page containing the image, carousel, video, etc., and a full description). <em>portfolio-1.html</em> a file content.</li>
+                <li>Content displayed via LightBox (Full image or video and caption).</li>
+              </ol>
+
+            <h4>7.1. Portfolio details page loaded via Ajax</h4>
+            <p>Link will have a class of <em>"ajax-page-load"</em> and the href attribute with a path to the HTML page (portfolio-1.html etc.):</p>
+<pre>
+&lt;figure class="item standard" data-groups='["category_all", "category_detailed"]'&gt;
+  &lt;a href="portfolio-project-2.html" class="ajax-page-load"&gt;
+    &lt;div class="portfolio-item-img"&gt;
+      &lt;img src="./img/portfolio/1.jpg" alt="Full Project 2" title="" /&gt;
+    &lt;/div&gt;
+
+    &lt;div class="project-desc"&gt;
+      &lt;div class="project-desc-text"&gt;
+        &lt;h4 class="name">Full Project 2&lt;/h4&gt;
+        &lt;span class="category">Detailed&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;</pre>
+
+            <div class="alert alert-warning">
+              <p><strong>Note :</strong> To test this Ajax loading you need to place the HTML files on a web server. You can set up a local web server on your PC by installing WampServer or XAMPP. You must open the portfolio page (example portfolio-1.html) file using "http://" since Ajax makes HTTP requests.</p>
+
+              <p>Ajax request can be made only to the files that exist on the same web server that servers the page from which the Ajax request is sent, not to external or remote servers for security reasons. This is called same-origin policy.</p>
+            </div>
+
+            <h4>7.2. Content displayed via LightBox</h4>
+            <ol>
+              <li>To display the <strong>image</strong> link will have a class of <em>"lightbox"</em> and the href attribute with a path to the image: <pre>
+&lt;figure class="item lbimage" data-groups='["category_all", "category_image"]'&gt;
+  &lt;a class="lightbox" title="Image 2" href="./img/portfolio/full/3.jpg"&gt;
+    &lt;div class="portfolio-item-img"&gt;
+      &lt;img src="./img/portfolio/3.jpg" alt="Image 2" title="" /&gt;
+    &lt;/div&gt;
+
+    &lt;div class="project-desc"&gt;
+      &lt;div class="project-desc-text"&gt;
+        &lt;h4 class="name">Image 2&lt;/h4&gt;
+        &lt;span class="category">Image&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;</pre>
+              </li>
+
+              <li>To display the <strong>video</strong> link will have a classes of <em>"lightbox mfp-iframe"</em> and the href attribute with a URL to the video:<pre>
+&lt;figure class="item lbvideo" data-groups='["category_all", "category_video", "category_youtube-video"]'&gt;
+  &lt;a href="https://www.youtube.com/embed/F-1weFCiYBA" class="lightbox mfp-iframe" title="YouTube Video 2"&gt;
+    &lt;div class="portfolio-item-img"&gt;
+      &lt;img src="./img/portfolio/2.jpg" alt="YouTube Video 2" title="" /&gt;
+    &lt;/div&gt;
+
+    &lt;div class="project-desc"&gt;
+      &lt;div class="project-desc-text"&gt;
+        &lt;h4 class="name">YouTube Video 2&lt;/h4&gt;
+        &lt;span class="category">Video, YouTube Video&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;</pre>
+              </li>
+            </ol>
+
+            <hr>
+
+            <h3 id="custom_video-embeding">8. YouTube and Vimeo Video Embedding</h3>
+            <p>Link format for embedding videos:</p>
+            <p><strong>YouTube</strong>: https://www.youtube.com/embed/id. Example: https://www.youtube.com/embed/w5tWYmIOWGk</p>
+            <p><strong>Vimeo</strong>: https://player.vimeo.com/video/id. Example: https://player.vimeo.com/video/97102654</p>
+
+            <div class="alert alert-warning">
+              <p><strong>Note :</strong> To test video loading you need to place the HTML files on a web server. You can set up a local web server on your PC by installing WampServer or XAMPP.</p>
+            </div>
+
+            <hr>
+
+            <h3 id="custom_recaptcha">9. Google Recaptcha V2 options</h3>
+            <p>By default, the template uses global Google Recaptcha V2 keys, if you want to use your keys, then you can create new keys <a href="https://www.google.com/recaptcha/admin" target="_blank">here</a>.</p>
+            <p>1. Replace site key in the index.html:</p>
+            <img src="images/site-key.png" alt="Google Recaptcha V2 Site Key">
+            <p>2. Replace Site secret key in the contact_form/contact_form.php:</p>
+            <img src="images/site-secret-key.png" alt="Google Recaptcha V2 Site Secret Key">
+
+            <hr>
+
+            <h3 id="custom_maps">10. Google Map</h3>
+            <h4>Change of address</h4>
+            <ol>
+              <li>Open js/main.js file</li>
+              <li>Go to lines:
+<pre>
+var address = 'San Francisco, S601 Townsend Street, California, USA', //Replace with Your Address</pre> and replace "San Francisco, S601 Townsend Street, California, USA" with your address.</li>
+              <li>Save file.</li>
+            </ol>
+
+            <hr>
+            <h2 id="faq">FAQ</h2>
+            <ul>
+              <li><p><strong>Q:</strong> I work with the template on the local computer without using a server or local server and the following problem arose - the portfolio Media projects are not opened.</p></li>
+              <li><p><strong>A:</strong> These portfolio projects are opened with the help of Ajax technology, for correct operation of Ajax you need to use a server or a local server, i.e. the page of the template should be opened through the protocol <em>https://</em> or <em>https://</em>, and not throught the protocol <em>file://</em>. These are the rules of browsers. But there is one exception, it's the Mozilla Firefox browser.</p></li>
+            </ul>
+            <hr>
+
+            <p>Once again, thank you so much for purchasing this template. As I said at the beginning, I'd be glad to help you if you have any questions relating to this template.</p>
+
+          </div>
+        </div>
+    </div>
+    <footer class="container bottom copyright">
+      <div class="row">
+        <div class="col-md-12">
+         <p>Copyright © 2020 <a href="http://themeforest.net/user/lmpixels" target="_blank">lmpixels</a>, All Rights Reserved.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
