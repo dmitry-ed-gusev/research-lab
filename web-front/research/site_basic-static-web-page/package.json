@@ -1,0 +1,46 @@
+{
+  "name": "basic-static-site",
+  "version": "1.0.0",
+  "description": "Basic static site example with Node + Webpack 5",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --progress",
+    "watch": "webpack --watch",
+    "start": "webpack serve --open"
+  },
+  "author": "Dmitrii Gusev",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.2.2",
+    "babel-preset-env": "^1.7.0",
+    "bootstrap": "^5.0.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^7.0.0",
+    "css-loader": "^5.0.1",
+    "del-cli": "^3.0.1",
+    "extract-loader": "^5.1.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^4.5.0",
+    "less": "^4.0.0",
+    "less-loader": "^7.2.1",
+    "mini-css-extract-plugin": "^1.3.3",
+    "node-sass": "^9.0.0",
+    "postcss": "^8.2.13",
+    "postcss-loader": "^7.2.4",
+    "raw-loader": "^4.0.2",
+    "ref-loader": "^1.0.3",
+    "sass": "^1.32.0",
+    "sass-loader": "^10.1.0",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^4.15.0"
+  },
+  "dependencies": {
+    "jquery": "^3.5.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4"
+  }
+}

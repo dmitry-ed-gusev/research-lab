@@ -1,0 +1,31 @@
+# git files
+.git
+.gitattributes
+.gitignore
+
+# python files
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# virtual environments files
+.venv
+env
+
+# other files
+README.md

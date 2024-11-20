@@ -1,0 +1,10 @@
+<% var data = {
+  title: "Заголовок | Проект",
+  author: "Harrix"
+}; %>
+<%= _.template(require('./../includes/header.html').default)(data) %>
+
+<div class="container">Первая страница.</div>
+<h1>Hello from HTML!</h1>
+
+<%= _.template(require('./../includes/footer.html').default)(data) %>
