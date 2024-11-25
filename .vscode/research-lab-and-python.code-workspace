@@ -5,6 +5,19 @@
       "path": "..",
       "name": "Research Lab :: Root Project",
     },
+    {
+      "path": "../python/app-flask",
+      "name": "Research Lab :: Flask Application",
+    },
+    {
+      "path": "../python/app-django",
+      "name": "Research Lab :: Django Application",
+    },
+    {
+      "path": "../python/scripting-lab",
+      "name": "Research Lab :: Python Scripting",
+    },
+
   ],
 
 }

@@ -1,6 +1,9 @@
 {
 
     // By default: all java projects are excluded from workspace.
+    // Root cause: we used different build tools for two java projects - Maven and Gradle,
+    //             in case these tools are in one workspace - there is a conflict between.
+    //             so we need to open them separately and ignore in the root project.
     "files.exclude" : {
       "java/**": true,
     },

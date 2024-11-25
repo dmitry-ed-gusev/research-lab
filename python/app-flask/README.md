@@ -1,6 +1,6 @@
 <!-- cspell:ignore flaskenv -->
 
-# Simple Flask Application
+# Flask Application - Research Module
 
 [TOC]
 
@@ -8,12 +8,12 @@
 
 This application is based on the guides:
 
-- [Flask 3.0 docs](https://flask.palletsprojects.com/en/3.0.x/)
-- [Flask for beginners I](https://habr.com/ru/articles/783574/)
-- [Flask for beginners II](https://habr.com/ru/articles/784770/)
-- [Mega Flask Book (2018)](https://habr.com/ru/articles/346306/)
-- [Mega Flask Book (2024)](https://habr.com/ru/articles/804245/)
-- [Flask + Prometheus](https://habr.com/ru/articles/518122/)
+- [Flask Framework Docs](https://flask.palletsprojects.com/en/stable/)
+- [Habr :: Flask for beginners I](https://habr.com/ru/articles/783574/)
+- [Habr :: Flask for beginners II](https://habr.com/ru/articles/784770/)
+- [Habr :: Mega Flask Book (2018)](https://habr.com/ru/articles/346306/)
+- [Habr :: Mega Flask Book (2024)](https://habr.com/ru/articles/804245/)
+- [Habr :: Flask + Prometheus](https://habr.com/ru/articles/518122/)
 - [Flask Tutorial](https://www.geeksforgeeks.org/flask-tutorial/)
 - [Flask Tutorial](https://otus.ru/journal/flask-vvedenie/)
 - [Flask Tutorial](https://proglib.io/p/samouchitel-po-python-dlya-nachinayushchih-chast-23-osnovy-veb-razrabotki-na-flask-2023-06-27?ysclid=lxyaghvvrm969774221)
