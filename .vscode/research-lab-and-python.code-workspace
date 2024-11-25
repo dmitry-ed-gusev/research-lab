@@ -5,10 +5,6 @@
       "path": "..",
       "name": "Research Lab :: Root Project",
     },
-    {
-      "path": "../java/gradle",
-      "name": "Research Lab :: Java Gradle Project"
-    },  
   ],
 
 }
