@@ -1,4 +1,4 @@
-<!-- cspell:ignore flaskenv -->
+<!-- cspell:ignore flaskenv, Habr, loguru -->
 
 # Flask Application - Research Module
 
@@ -12,6 +12,7 @@ This application is based on the guides:
 - [Habr :: Flask for beginners I](https://habr.com/ru/articles/783574/)
 - [Habr :: Flask for beginners II](https://habr.com/ru/articles/784770/)
 - [Habr :: Mega Flask Book (2018)](https://habr.com/ru/articles/346306/)
+- [Habr :: Git for Mega Flask Book (2018)](https://github.com/miguelgrinberg/microblog-2018)
 - [Habr :: Mega Flask Book (2024)](https://habr.com/ru/articles/804245/)
 - [Habr :: Flask + Prometheus](https://habr.com/ru/articles/518122/)
 - [Flask Tutorial](https://www.geeksforgeeks.org/flask-tutorial/)
@@ -25,23 +26,14 @@ This application is based on the guides:
 ## Environment Setup
 
 ```bash
-    # 1. create virtual environment
-    python -m venv .venv --prompt .venv-flask
+    # 1. - create virtual environment and activate it
+    python -m venv .venv --prompt .venv-flask-app
     source .venv/Scripts/activate
-
-    # 2. optional - after creating virtual environment - you may update pip
+    # 2. - optional - after creating virtual environment - you may upgrade pip
     (.venv-flask) $ python -m pip install --upgrade pip
-
-    # 3a. optional - if dependencies are not installed - install them and
-    #     save dependencies list to file
-    (.venv-flask) $ pip install flask
-    (.venv-flask) $ pip install python-dotenv
-    (.venv-flask) $ pip freeze > requirements.txt
-
-    # 3b. install dependencies from file
+    # 3. - install dependencies from file - preferred way
     (.venv-flask) $ pip install -r requirements.txt
-
-    # 3c. update/upgrade dependencies from requirements.txt file
+    # 4. - optional - reinstall dependencies from requirements.txt file
     (.venv-flask) pip install --upgrade --force-reinstall --no-cache-dir -r requirements.txt
 ```
 
