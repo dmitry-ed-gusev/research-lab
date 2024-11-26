@@ -6,7 +6,7 @@
 #
 #   Python virtual environment (venv) initialization script for git bash (MinGW). Script does
 #   the following:
-#       - deactivate the current virtual environment
+#       - (off) deactivate the current virtual environment
 #       - removes the current virtual environment (if exists - delete folder)
 #       - upgrade global pip
 #       - upgrade global dependencies: virtualenv, pipenv, pytest, jupyter, jupyterlab,
@@ -30,11 +30,11 @@ export REQUIREMENTS_FILE='requirements.txt'
 clear
 
 # -- deactivate the current virtual environment
-printf "\n-- Deactivating virtual environment --\n"
+# printf "\n-- Deactivating virtual environment --\n"
 # suppressed error output to /dev/null
 # deactivate 2> /dev/null || printf "\tNo active virtual environment!\n"
 # deactivate
-printf "\tDone.\n"
+# printf "\tDone.\n"
 
 # -- remove existing virtual environment
 printf "\n-- Removing existing virtual environment --\n"
@@ -50,8 +50,9 @@ printf "\tDone.\n"
 
 # -- create new virtual environment
 printf "\n-- Creating new virtual environment + activating --\n"
-python -m venv .venv --prompt "${VENV_NAME}"
-source .venv/Scripts/activate
+python -m venv "${VENV_FOLDER}" --prompt "${VENV_NAME}"
+# shellcheck disable=SC1091
+source "${VENV_FOLDER}"/Scripts/activate
 printf "\tDone.\n"
 
 # -- installing dependencies in a virtual environment

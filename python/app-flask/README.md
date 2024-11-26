@@ -18,9 +18,7 @@ This application is based on the guides:
 - [Flask Tutorial](https://www.geeksforgeeks.org/flask-tutorial/)
 - [Flask Tutorial](https://otus.ru/journal/flask-vvedenie/)
 - [Flask Tutorial](https://proglib.io/p/samouchitel-po-python-dlya-nachinayushchih-chast-23-osnovy-veb-razrabotki-na-flask-2023-06-27?ysclid=lxyaghvvrm969774221)
-
 - [REST API and Flask](https://habr.com/ru/articles/246699/)
-
 - [Dockerize flask app](https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/)
 
 ## Environment Setup
@@ -40,14 +38,14 @@ This application is based on the guides:
 ## Run Development Server
 
 ```bash
-    # you don't need the following line in case you have .flaskenv file and
-    #  module python-dotenv installed
+    # - optional - you don't need the following line in case you have .flaskenv file and
+    #  module python-dotenv installed (you should specify the env variable there -> .flaskenv)
     (.venv-flask) $ export FLASK_APP=flask-app.py
 
-    # run development server
-    (.venv-flask) $ flask run
+    # run dev server with the defined (default) configuration, optional - you may change the default port=5000
+    (.venv-flask) $ flask run [--port 5001]
 
-    # run dev server with specified .env file (package python-dotenv should be installed)
+    # run dev server with the specified .env file (package python-dotenv should be installed)
     (.venv-flask) $ flask --env-file .env.dev run
 ```
 

@@ -1,5 +1,8 @@
+<!-- cSpell:ignore Microblog, nbsp -->
+
 <!doctype html>
-<html>
+<html lang="en">
+
     <head>
         {% if title %}
             <title>{{ title }} - Microblog</title>
@@ -7,9 +10,17 @@
             <title>Welcome to Microblog</title>
         {% endif %}
     </head>
+
     <body>
-        <div>Microblog: <a href="/index">Home</a></div>
+        <div>
+            Microblog:
+                <a href="/index">Home</a>
+                &nbsp;|&nbsp;
+                <a href="/login">Login</a>
+        </div>
+
         <hr>
         {% block content %}{% endblock %}
     </body>
+
 </html>

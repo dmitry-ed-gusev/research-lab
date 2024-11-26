@@ -1,0 +1,32 @@
+<!-- cspell:ignore novalidate -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h1>Sign In</h1>
+
+  <form action="" method="post" novalidate>
+
+    <!--
+        hidden field with CSRF-token - in order to make it sense you have to add to the app configuration
+        the environment variable SECRET_KEY (Flask configuration)
+    -->
+    {{ form.hidden_tag() }}
+
+    <p>
+      {{ form.username.label }}<br>
+      {{ form.username(size=32) }}
+    </p>
+
+    <p>
+      {{ form.password.label }}<br>
+      {{ form.password(size=32) }}
+    </p>
+
+    <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+    <p>{{ form.submit() }}</p>
+
+  </form>
+
+{% endblock %}

@@ -2,6 +2,6 @@
 
 from loguru import logger
 
-from app import app  # import variable app from module app
+from app import app  # import variable (!) app from module (!) app
 
 logger.info("Starting simple Flask application...")

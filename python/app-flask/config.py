@@ -13,4 +13,7 @@ class Config:
     NAME = os.environ.get('NAME') or 'UNDEFINED'
 
     def __init__(self) -> None:
-        logger.debug("Created instance of Config class (application configuration).")
+        logger.debug("__init()__: created instance of Config class (application configuration).")
+
+    def __new__(cls) -> None:
+        logger.debug("__new()__: created instance of Config class (application configuration).")
