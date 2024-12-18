@@ -6,16 +6,16 @@
 #
 #   Python virtual environment (venv) initialization script for git bash (MinGW). Script does
 #   the following:
-#       - (off) deactivate the current virtual environment
+#       - (off) deactivates the current virtual environment
 #       - removes the current virtual environment (if exists - delete folder)
-#       - upgrade global pip
-#       - upgrade global dependencies: virtualenv, pipenv, pytest, jupyter, jupyterlab,
-#                                       notebook, pip, setuptools build twine
-#       - create new virtual environment
-#       - upgrade pip and install dependencies into virtual environment (requirements.txt)
+#       - upgrades global pip
+#       - upgrades global dependencies: virtualenv, pipenv, pytest, jupyter, jupyterlab,
+#                                       notebook, pip, setuptools, build, twine
+#       - creates new virtual environment
+#       - upgrades pip and install dependencies into created virtual environment (requirements.txt)
 #
 #   Created:  Dmitrii Gusev, 11.11.2024
-#   Modified: Dmitrii Gusev, 25.11.2024
+#   Modified: Dmitrii Gusev, 18.12.2024
 #
 ###################################################################################################
 
@@ -24,8 +24,8 @@ set -euf -o pipefail
 
 # -- general setup - some variables
 export LANG='en_US.UTF-8'
-export VENV_FOLDER='.venv'
-export VENV_NAME='.venv-flask-app'
+export VENV_FOLDER='.venv-flask'
+export VENV_NAME='.venv-flask'
 export REQUIREMENTS_FILE='requirements.txt'
 clear
 
@@ -41,7 +41,7 @@ printf "\n-- Removing existing virtual environment --\n"
 rm -rf ${VENV_FOLDER} || printf "\tNo virtual environment to remove!\n"
 printf "\tDone.\n"
 
-# -- update pip (if necessary)
+# -- upgrade pip (if necessary) and global dependencies
 printf "\n-- Upgrading pip and other core dependencies --\n"
 python -m pip install --upgrade --no-cache-dir --verbose pip
 pip install --upgrade --no-cache-dir --verbose virtualenv pipenv pytest jupyter jupyterlab notebook \
@@ -55,7 +55,7 @@ python -m venv "${VENV_FOLDER}" --prompt "${VENV_NAME}"
 source "${VENV_FOLDER}"/Scripts/activate
 printf "\tDone.\n"
 
-# -- installing dependencies in a virtual environment
+# -- installing dependencies into the virtual environment
 printf "\n-- Upgrade pip + Install dependencies into virtual env --\n"
 # - pip upgrade
 python -m pip install --upgrade --no-cache-dir --verbose pip

@@ -8,12 +8,13 @@
 
 This application is based on the guides:
 
+- [Habr :: Mega Flask Book (2024)](https://habr.com/ru/articles/804245/)
+  (Chapter 1)
 - [Flask Framework Docs](https://flask.palletsprojects.com/en/stable/)
 - [Habr :: Flask for beginners I](https://habr.com/ru/articles/783574/)
 - [Habr :: Flask for beginners II](https://habr.com/ru/articles/784770/)
 - [Habr :: Mega Flask Book (2018)](https://habr.com/ru/articles/346306/)
 - [Habr :: Git for Mega Flask Book (2018)](https://github.com/miguelgrinberg/microblog-2018)
-- [Habr :: Mega Flask Book (2024)](https://habr.com/ru/articles/804245/)
 - [Habr :: Flask + Prometheus](https://habr.com/ru/articles/518122/)
 - [Flask Tutorial](https://www.geeksforgeeks.org/flask-tutorial/)
 - [Flask Tutorial](https://otus.ru/journal/flask-vvedenie/)

@@ -6,3 +6,5 @@ max-complexity = 10
 # - adjustment for [flake8] to align with line length for [black] tool (it uses 88 chars by default)
 # - we use the value = 110 as a default for the project
 max-line-length = 110
+per-file-ignores =
+    app/__init__.py: E402
