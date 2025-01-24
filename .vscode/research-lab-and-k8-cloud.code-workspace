@@ -1,0 +1,17 @@
+{
+
+  "folders": [
+
+    {
+      "path": "..",
+      "name": "Research Lab :: Root Project",
+    },
+
+    {
+      "path": "../k8-cloud",
+      "name": "Research Lab :: k8 and cloud"
+    },
+
+  ],
+
+}

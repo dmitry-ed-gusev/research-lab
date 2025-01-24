@@ -1,0 +1,27 @@
+{
+  "name": "nodejs-simple-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "node src/hello.js",
+    "webpack-version": "webpack --version",
+    "sass-dev": "sass scss:dist/css",
+    "sass-watch": "sass --watch scss:dist/css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "jquery": "^3.7.1",
+    "nodejs-simple-app": "file:",
+    "popper.js": "^1.16.1"
+  },
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "sass-loader": "^16.0.1",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
