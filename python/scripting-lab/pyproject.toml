@@ -1,0 +1,23 @@
+[project]
+name = "scilab"
+version = "0.1.0"
+description = "Research and Science Laboratory in python."
+authors = [
+    {name = "Гусев Дмитрий Эдуардович",email = "de.gusev@severstal.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "loguru (>=0.7.3,<0.8.0)"
+]
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.0.2,<10.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
