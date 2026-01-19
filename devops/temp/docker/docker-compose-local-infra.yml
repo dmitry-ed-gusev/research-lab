@@ -1,0 +1,191 @@
+#############################################################################################################
+#
+#   Docker Compose file for starting up AZIM local infrastructure:
+#     - PostgreSql DBMS 17
+#     - PostgreSql PGAdmin 9.1
+#     - Zabbix 7 (Zabbix Web UI + Zabbix Server with postgres support)
+#     - ???
+#
+#   Notes:
+#       - ???
+#
+#   Tech link:
+#       - https://dzen.ru/a/ZvPSWLRMMDPoqugW
+#
+#   Created:  Dmitrii Gusev, 02.03.2025
+#   Modified: Dmitrii Gusev, 25.03.2025
+#
+###############################################################################
+
+name: azim-infrastructure-local
+
+# docker services
+services:
+
+    # postgresql dbms service
+    postgres:
+        container_name: zabbix-postgres
+        image: postgres:17.4-bullseye
+        # set shared memory limit when using docker-compose
+        shm_size: 128mb
+        # attach some local resources to container
+        volumes:
+            # attach init scripts to container (execution in alphabetical order!)
+            #- ./db/prod-pgsql-1-init-schema.sql:/docker-entrypoint-initdb.d/prod-pgsql-1-init-schema.sql
+            #- ./db/prod-pgsql-2-init-data.sql:/docker-entrypoint-initdb.d/prod-pgsql-2-init-data.sql
+            # postgres data catalog (empty it if you need to re-run init scripts)
+            - ./.tmp_data/postgresql/data:/var/lib/postgresql/data:z
+        # user: 1000:1000
+        restart: unless-stopped
+        deploy:
+            resources:
+                limits: # upper boundary for resources
+                    cpus: '0.25'
+                    memory: 1G
+                reservations: # at least this amount should be allocated
+                    cpus: '0.15'
+                    memory: 512M
+        environment:
+            POSTGRES_USER: zabbix
+            POSTGRES_PASSWORD: zabbix
+            POSTGRES_DB: zabbix_db
+            # PGDATA: /pg_data
+        ports:
+            - "5432:5432"
+        stop_grace_period: 1m
+        networks:
+            - azim_network
+
+
+    # postgres admin tool, url: http://localhost:5050; dbms host: zabbix-postgres (pg container name)
+    pgadmin:
+        container_name: zabbix-pgadmin
+        image: dpage/pgadmin4:9.1.0
+        environment:
+            # email used as user name
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+        ports:
+            - "${PGADMIN_PORT:-5050}:80" # format is <local port>:<container port>
+        networks:
+            - azim_network
+        restart: unless-stopped
+        deploy:
+            resources:
+                limits: # upper boundary for resources
+                    cpus: '0.15'
+                    memory: 256M
+                reservations: # at least this amount should be allocated
+                    cpus: '0.05'
+                    memory: 128M
+        depends_on:
+            - postgres
+
+    # zabbix server with postgres support
+    zabbix-server:
+        container_name: zabbix-server-pgsql
+        image: zabbix/zabbix-server-pgsql:alpine-7.2-latest
+        init: true
+        environment:
+            DB_SERVER_HOST: zabbix-postgres
+            DB_SERVER_PORT: 5432
+            POSTGRES_USER: zabbix
+            POSTGRES_PASSWORD: zabbix
+            POSTGRES_DB: zabbix_db
+        networks:
+            - azim_network
+        restart: unless-stopped
+        deploy:
+            resources:
+                limits: # upper boundary for resources
+                    cpus: '0.35'
+                    memory: 1G
+                reservations: # at least this amount should be allocated
+                    cpus: '0.25'
+                    memory: 512M
+        depends_on:
+            - postgres
+
+    # zabbix web ui with postgres support
+    zabbix-webui:
+        container_name: zabbix-webui-nginx
+        image: zabbix/zabbix-web-nginx-pgsql:alpine-7.2-latest
+        environment:
+            DB_SERVER_HOST: zabbix-postgres
+            DB_SERVER_PORT: 5432
+            POSTGRES_USER: zabbix
+            POSTGRES_PASSWORD: zabbix
+            POSTGRES_DB: zabbix_db
+            ZBX_SERVER_HOST: zabbix-server-pgsql
+            ZBX_SERVER_PORT: 10051  # 10051 - default server port
+            # ZBX_SERVER_NAME: <name>
+            PHP_TZ: "Europe/Moscow"
+        ports:
+            - "8080:8080"
+        networks:
+            - azim_network
+        restart: unless-stopped
+        deploy:
+            resources:
+                limits: # upper boundary for resources
+                    cpus: '0.25'
+                    memory: 1G
+                reservations: # at least this amount should be allocated
+                    cpus: '0.15'
+                    memory: 512M
+        depends_on:
+            - postgres
+            - zabbix-server
+
+#   prometheus:
+#     image: prom/prometheus:v2.53.0
+#     container_name: prometheus
+#     restart: unless-stopped
+#     privileged: true
+#     volumes:
+#       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#       - ./prometheus/alertmanager/alert.rules:/alertmanager/alert.rules
+#     command:
+#       - '--config.file=/etc/prometheus/prometheus.yml'
+#       - '--log.level=debug'
+#     ports:
+#       - '9090:9090'
+#     networks:
+#       - prom-network
+
+#   node-exporter:
+#     image: prom/node-exporter:v1.8.1
+#     container_name: node-exporter
+#     restart: unless-stopped
+#     privileged: true
+#     ports:
+#       - '9100:9100'
+#     networks:
+#       - prom-network
+
+#   alertmanager:
+#     image: prom/alertmanager:v0.27.0
+#     container_name: alertmanager
+#     restart: unless-stopped
+#     privileged: true
+#     volumes:
+#       - ./prometheus/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+#       - ./prom_env/alertmanager-data:/data
+#     command:
+#       - '--config.file=/etc/alertmanager/alertmanager.yml'
+#       - '--log.level=debug'
+#     ports:
+#       - '9093:9093'
+#     networks:
+#       - prom-network
+#     extra_hosts:
+#       - "host.docker.internal:host-gateway"
+
+# networks configuration
+networks:
+    azim_network:
+        driver: bridge
+        name: azim_app_network
+    # prom-network:
+    #     driver: bridge
+    #     name: prom_network

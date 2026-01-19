@@ -1,0 +1,26 @@
+## global definitions
+projects:
+  - project1:
+      name: "zzz"
+      verbose: no
+      debugging:
+        detailed: no
+        header: "debugging started"
+
+  - project2:
+      name: "xxx"
+      verbose: no
+      debugging:
+        detailed: no
+        header: "debugging started"
+
+  - project3:
+      name: "yyy"
+      verbose: no
+      debugging:
+        detailed: no
+        header: "debugging started"
+
+## output
+output:
+   file: "yes"

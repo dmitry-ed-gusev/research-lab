@@ -1,0 +1,43 @@
+name: fleetinfo-postgresql
+
+# docker services
+services:
+
+    # postgresql dbms service
+    postgres:
+        container_name: fleet-postgres-prod
+        image: postgres:17.4-bullseye
+        # set shared memory limit when using docker-compose
+        shm_size: 512mb
+        # attach some local resources to container
+        volumes:
+            # postgres data catalog (empty it if you need to re-run init scripts)
+            #- ./.tmp_data/postgresql/data:/var/lib/postgresql/data:z
+            - /data/postgres/fleetinfo/prod/data:/var/lib/postgresql/data
+            - /data/postgres/fleetinfo/prod/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+        # user: 1000:1000
+        restart: always
+        deploy:
+            resources:
+                limits: # upper boundary for resources
+                    cpus: '3'
+                    memory: 16G
+                reservations: # at least this amount should be allocated
+                    cpus: '2'
+                    memory: 12G
+        environment:
+            POSTGRES_USER: dba
+            POSTGRES_PASSWORD: fTrV8f9KdFESDxLsNjCJ
+            POSTGRES_DB: fleet_info
+            # PGDATA: /pg_data
+        ports:
+            - "5432:5432"
+        stop_grace_period: 1m
+        networks:
+            - postgres_prod_network
+
+# networks configuration
+networks:
+    postgres_prod_network:
+        driver: bridge
+        name: postgres_prod_network

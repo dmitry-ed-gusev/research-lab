@@ -1,0 +1,15 @@
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./data/prometheus-data:/prometheus
+    mem_limit: 256m
+    mem_reservation: 128M
+    cpus: 0.5

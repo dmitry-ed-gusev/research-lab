@@ -1,0 +1,78 @@
+name: fleetinfo-postgresql
+
+# docker services
+services:
+
+    # # postgresql dbms service
+    # postgres:
+    #     container_name: fleet-postgres-prod
+    #     image: postgres:17.4-bullseye
+    #     # set shared memory limit when using docker-compose
+    #     shm_size: 512mb
+    #     # attach some local resources to container
+    #     volumes:
+    #         # postgres data catalog (empty it if you need to re-run init scripts)
+    #         #- ./.tmp_data/postgresql/data:/var/lib/postgresql/data:z
+    #         - /data/postgres/fleetinfo/prod/data:/var/lib/postgresql/data
+    #         - /data/postgres/fleetinfo/prod/postgresql.conf:/etc/postgresql/postgresql.conf
+    #     # user: 1000:1000
+    #     restart: always
+    #     deploy:
+    #         resources:
+    #             limits: # upper boundary for resources
+    #                 cpus: '3'
+    #                 memory: 16G
+    #             reservations: # at least this amount should be allocated
+    #                 cpus: '2'
+    #                 memory: 12G
+    #     environment:
+    #         POSTGRES_USER: dba
+    #         POSTGRES_PASSWORD: fTrV8f9KdFESDxLsNjCJ
+    #         POSTGRES_DB: fleet_info
+    #         # PGDATA: /pg_data
+    #     ports:
+    #         - "5432:5432"
+    #     stop_grace_period: 1m
+    #     networks:
+    #         - postgres_prod_network
+
+    # socks5 proxy service
+    socks5:
+        container_name: reverse-proxy-socks5
+        image: serjs/go-socks5-proxy
+        restart: always
+        environment:
+            PROXY_USER: cw8NoX33
+            PROXY_PASSWORD: O1zID7Iw
+            PROXY_PORT: 1080
+        ports:
+            - "1080:1080"
+        # networks:
+        #     - reverse_proxy_network
+
+    # dumb proxy service (socks5/http)
+    dumbproxy:
+        container_name: dumb-proxy-http
+        image: ghcr.io/senseunit/dumbproxy
+        restart: always
+        security_opt:
+            - "no-new-privileges"
+        command: -auth 'static://?username=admin&password=123456'
+        ports:
+            - "8080:8080"
+        # networks:
+        #     - dumbproxy_network
+
+# networks configuration
+networks:
+    postgres_prod_network:
+        driver: bridge
+        name: postgres_prod_network
+
+    reverse_proxy_network:
+        driver: bridge
+        name: reverse_proxy_network
+
+    dumbproxy_network:
+        driver: bridge
+        name: dumbproxy_network

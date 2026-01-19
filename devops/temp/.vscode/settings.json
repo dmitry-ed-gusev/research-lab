@@ -1,0 +1,9 @@
+{
+
+    // By default SAM (Scriptor Automation Mode) is excluded from the workspace
+    "files.exclude" : {
+      "scriptor/**": true,
+    },
+    "ansible.python.interpreterPath": "/bin/python",
+
+}

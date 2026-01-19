@@ -1,0 +1,17 @@
+{
+
+    "folders": [
+      {
+        "path": "..",
+        "name": "Auto-Sec-Ops :: Root Project",
+      },
+      {
+      "path": "../scriptor",
+      "name": "Auto-Sec-Ops :: Scriptor Project"
+      },
+    ],
+    "settings": {
+        "ansible.python.interpreterPath": "c:\\Users\\dmitr\\.pyenv\\pyenv-win\\versions\\3.13.7\\python.exe"
+    },
+
+}

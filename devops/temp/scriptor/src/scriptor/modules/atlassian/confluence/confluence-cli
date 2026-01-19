@@ -1,0 +1,276 @@
+#!/usr/bin/env python
+# Copyright (C) 2013  Remy van Elst
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import sys, xmlrpclib, argparse, string, logging
+
+from confluence import Api
+
+#
+# Logging
+#
+
+logger = logging.getLogger(__name__.rpartition('.')[0])
+logger.setLevel(logging.DEBUG)
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(levelname)s: [%(name)s] %(message)s')
+console_handler.setFormatter(formatter)
+logger.addHandler(console_handler)
+
+
+def error_out(error_message):
+    print("Error: ")
+    print(error_message)
+    exit()
+
+
+def Parser():
+    parser = argparse.ArgumentParser(description="Confluence wiki API")
+    parser.add_argument("-w", "--wikiurl", help="Wiki URL (only FQDN, no / and such)", required=True)
+    parser.add_argument("-u", "--username", help="Login Username", required=True)
+    parser.add_argument("-p", "--password", help="Login Password", required=True)
+    parser.add_argument("-v", "--verbose", help="Enable debug logging", action="store_true")
+    subparsers = parser.add_subparsers(dest="action")
+    
+    parser_addpage = subparsers.add_parser('addpage', help='Add a page')
+    parser_addpage.add_argument("-n", "--name", help="(New) page name", required=True)
+    parser_addpage.add_argument("-P", "--parentpage", help="Parent page ID", default="0")
+    parser_addpage.add_argument("-l", "--label", help="Page label", default="created_via_api")
+    parser_addpage.add_argument("-s", "--spacekey", help="Space Key", required=True)
+    files_addpage = parser_addpage.add_mutually_exclusive_group()
+    files_addpage.add_argument("-f", "--file", help="Read content from this file")
+    files_addpage.add_argument("-S", "--stdin", help="Read content from STDIN", action="store_true")
+
+    parser_updatepage = subparsers.add_parser('updatepage', help='Update a page')
+    parser_updatepage.add_argument("-n", "--name", help="Page name", required=True)
+    parser_updatepage.add_argument("-s", "--spacekey", help="Space Key", required=True)
+    parser_updatepage.add_argument("-P", "--parentpage", help="Parent page ID", default="0")
+    parser_updatepage.add_argument("-l", "--label", help="Page label", default="created_via_api")
+    files_updatepage = parser_updatepage.add_mutually_exclusive_group()
+    files_updatepage.add_argument("-f", "--file", help="Read content from this file")
+    files_updatepage.add_argument("-S", "--stdin", help="Read content from STDIN", action="store_true")
+
+    parser_listpages = subparsers.add_parser('listpages', help='List pages in one or all spaces')
+    parser_listpages.add_argument("-s", "--spacekey", help="Space Key", default="")
+    parser_listpages.add_argument("-d", "--delimiter", help="Field delimiter", default=", ")
+
+    parser_removepage = subparsers.add_parser('removepage', help='Remove a page')
+    parser_removepage.add_argument("-n", "--name", help="Page name", required=True)
+    parser_removepage.add_argument("-s", "--spacekey", help="Space Key", required=True)
+
+    parser_getpage = subparsers.add_parser('getpagecontent', help='Get page content')
+    parser_getpage.add_argument("-n", "--name", help="Page name", required=True)
+    parser_getpage.add_argument("-s", "--spacekey", help="Space Key", required=True)
+
+    parser_getpagesummary = subparsers.add_parser('getpagesummary', help='Get page summary')
+    parser_getpagesummary.add_argument("-s", "--spacekey", help="Space Key", required=True)
+    parser_getpagesummary.add_argument("-n", "--name", help="Page name", required=True)
+    parser_getpagesummary.add_argument("-d", "--delimiter", help="Field delimiter", default=", ")
+
+    parser_listspaces = subparsers.add_parser('listspaces', help='List all spaces')
+
+    parser_addspace = subparsers.add_parser('addspace', help='Add a space')
+    parser_addspace.add_argument("-s", "--spacekey", help="Space Key", required=True)
+    parser_addspace.add_argument("-D", "--description", help="Space description", required=True)
+
+    parser_removespace = subparsers.add_parser('removespace', help='Remove a space')
+    parser_removespace.add_argument("-s", "--spacekey", help="Space Key", required=True)
+
+    parser_adduser = subparsers.add_parser('adduser', help='Add a user')
+    parser_adduser.add_argument("-U", "--newusername", help="Username to perform action on.", required=True)
+    parser_adduser.add_argument("-N", "--fullname", help="Full name for new user", required=True)
+    parser_adduser.add_argument("-E", "--email", help="Email address for new user", required=True)
+    parser_adduser.add_argument("-X", "--userpassword", help="Password for new user", required=True)
+
+    parser_removeuser = subparsers.add_parser('removeuser', help='Remove a user')
+    parser_removeuser.add_argument("-U", "--newusername", help="Username to perform action on.", required=True)
+
+    parser_deactuser = subparsers.add_parser('deactivateuser', help='Deactivate a user')
+    parser_deactuser.add_argument("-U", "--newusername", help="Username to perform action on.", required=True)
+
+    parser_reactuser = subparsers.add_parser('reactivateuser', help='Reactivate a user')
+    parser_reactuser.add_argument("-U", "--newusername", help="Username to perform action on.", required=True)
+
+    parser_changepass = subparsers.add_parser('changeuserpassword', help='Change user password')
+    parser_changepass.add_argument("-U", "--newusername", help="Username to perform action on.", required=True)
+    parser_changepass.add_argument("-X", "--userpassword", help="Password for user", required=True)
+
+    parser_addgroup = subparsers.add_parser('addgroup', help='Add a goup')
+    parser_addgroup.add_argument("-G", "--groupname", help="Group name to perform action on.", required=True)
+
+    parser_removegroup = subparsers.add_parser('removegroup', help='Remove a goup')
+    parser_removegroup.add_argument("-G", "--groupname", help="Group name to perform action on.", required=True)
+
+    parser_listgroups = subparsers.add_parser('listgroups', help='List all goup')
+
+    parser_usersgroups = subparsers.add_parser('listusers', help='List all users')
+
+    parser_allpages = subparsers.add_parser('getallpages', help='Save all pages to local files.')
+
+    parser_addutog = subparsers.add_parser('addusertogroup', help='Add user to a group')
+    parser_addutog.add_argument("-G", "--groupname", help="Group name to perform action on.", required=True)
+    parser_addutog.add_argument("-U", "--newusername", help="Username to perform action on.", required=True)
+
+    parser_removeufromg = subparsers.add_parser('removeusergromgroup', help='Remove user from a group')
+    parser_removeufromg.add_argument("-G", "--groupname", help="Group name to perform action on.", required=True)
+    parser_removeufromg.add_argument("-U", "--newusername", help="Username to perform action on.", required=True)
+
+    parser_listusergroups = subparsers.add_parser('listusergroups', help='List groups user is in')
+    parser_listusergroups.add_argument("-U", "--newusername", help="Username to perform action on.", required=True)
+    
+    args = parser.parse_args()
+    return args
+
+def Content(args):
+    if not hasattr(args, 'file') or not hasattr(args, 'stdin'):
+        content = ""
+    elif args.file:
+        try:
+            content = open(args.file, 'rb').read()
+        except:
+            error = "Cannot open file: ", args.file
+            raise
+    elif args.stdin:
+        content = sys.stdin.read()
+    else:
+        content = ""
+    return content
+
+def Connect(args):
+    try:
+        api = Api(args.wikiurl, args.username, args.password)
+    except xmlrpclib.Fault as err:
+        error_out("%d: %s" % (err.faultCode, err.faultString))
+    return api
+
+
+def Actions(api, args, content):
+
+    try:
+        if args.action == "addpage":
+            logger.debug('Command: "addpage", args.name = "{}", args.label = "{}"'.format(
+                args.name, args.label))
+            new_page = api.addpage(args.name, args.spacekey, content, args.label, args.parentpage)
+            print(new_page.get()["url"])
+   
+        elif args.action == "updatepage":
+            page = api.updatepage(args.name, args.spacekey, content, args.parentpage, args.label)
+            print(page.get()['url'])
+       
+        elif args.action == "getpagecontent":
+            content = api.getpagecontent(args.name, args.spacekey)
+            print(content)
+
+        elif args.action == "getpagesummary":
+            page = api.getpage(args.name, args.spacekey)
+            print args.delimiter.join((
+             page['id'], page['space'], page['parentId'], page['title'], page['url']))
+
+        elif args.action == "listpages":
+            all_pages = api.listpages(args.spacekey)
+            for page, _ in all_pages:
+                print args.delimiter.join((
+                 page['id'], page['space'], page['parentId'], page['title'], page['url']))
+       
+        elif args.action == "removepage":
+            removed_page = api.removepage(args.name, args.spacekey)
+       
+        elif args.action == "addspace":
+            add_space = api.addspace(args.spacekey, args.name)
+       
+        elif args.action == "removespace":
+            remove_space = api.removespace(args.spacekey)
+       
+        elif args.action == "listspaces":
+            all_spaces = api.listspaces()
+            for space in all_spaces:
+                print(("%s, %s, %s") % (
+                 space['key'], space['name'], space['url']))
+       
+        elif args.action == "getallpages":
+            all_pages = api.getallpages()
+            for page, page_content in all_pages:
+                valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+                page_filename = page['space'] + "_" + page['title'] + ".html"
+                page_filename = ''.join(c for c in page_filename if c in valid_chars)
+                with open(page_filename, "w") as page_file:
+                    try:
+                        page_file.write(page_content)
+                        page_file.close()
+                        print("Saved page: %s" % page_filename)
+                    except IOError:
+                        error_out('Could not write file: %s' % page['title'])
+
+        elif args.action == "adduser":
+            add_user = api.adduser(args.newusername, args.fullname, args.email, args.userpassword)
+       
+        elif args.action == "removeuser":
+            remove_user = api.removeuser(args.newusername)
+       
+        elif args.action == "deactivateuser":
+            deactivate_user = api.deactivateuser(args.newusername)
+       
+        elif args.action == "reactivateuser":
+            reactivate_user = api.reactivateuser(args.newusername)
+   
+        elif args.action == "changeuserpassword":
+            change_pass = api.changeuserpassword(args.newusername, args.userpassword)
+       
+        elif args.action == "listuserinfo":
+            user_info = api.getuserinfo(args.newusername)
+            for key,value in user_info.items():
+                print(("%s: %s") % (key,value))
+
+        elif args.action == "addgroup":
+            add_group = api.addgroup(args.groupname)
+
+        elif args.action == "removegroup":
+            remove_group = api.removegroup(args.groupname)
+
+        elif args.action == "addusertogroup":
+            add_user_to_group = api.addusertogroup(args.newusername, args.groupname)
+
+        elif args.action == "removeuserfromgroup":
+            remove_user_from_group = api.removeuserfromgroup(args.newusername, args.groupname)
+
+        elif args.action == "listgroups":
+            allgroups = api.getgroups()
+            for group in allgroups:
+                print(group)
+
+        elif args.action == "listusers":
+            allusers = api.getusers()
+            for user in allusers:
+                print(user)
+
+        elif args.action == "listusergroups":
+            user_groups = api.getusergroups(args.newusername)
+            for group in user_groups:
+                print(group)
+
+    except xmlrpclib.Fault as err:
+        print(("Error: %d: %s") % (err.faultCode, err.faultString))
+
+
+if __name__ == "__main__":
+    args = Parser()
+
+    if args.verbose:
+        console_handler.setLevel(logging.DEBUG)
+
+    content = Content(args)
+    api = Connect(args)
+    Actions(api, args, content)

@@ -1,0 +1,9 @@
+version: '3'
+services:
+  proxy:
+    image: serjs/go-socks5-proxy
+    ports:
+      - "9090:1080"
+    environment:
+      - USERNAME=myuser
+      - PASSWORD=mypassword

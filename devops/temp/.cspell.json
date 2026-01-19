@@ -1,0 +1,37 @@
+//##############################################################################
+//
+//   cSpell Settings (spelling) JSON file (whole project configuration).
+//
+//   Created:  Dmitrii Gusev, 08.06.2025
+//   Modified: Dmitrii Gusev, 09.10.2025
+//
+//##############################################################################
+
+{
+
+    // version of the setting file, always 0.2
+    "version": "0.2",
+
+    // current active spelling language
+    "language": "en, ru",
+
+    // a list of words to be always considered correct
+    "words": [
+        "sdkman", "distros", "vlab", "hostmanager", "vbguest", "vmachine", "modifyvm",
+        "graphicscontroller", "VMSVGA"
+    ],
+
+    // a list of words to be always considered incorrect
+    "flagWords": [
+        "hte",
+    ],
+
+    // a list of words to be ignored (even if they are in the flagWords)
+    "ignoreWords": [
+    ],
+
+    // a list of globs to specify which files are to be ignored
+    "ignorePaths": [
+    ]
+
+}

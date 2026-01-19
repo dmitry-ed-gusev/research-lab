@@ -1,0 +1,132 @@
+{
+  "Connections": [
+    {
+      "WebBrowserApplication": 3,
+      "WebBrowserUrl": "http://37.110.243.71:33099",
+      "AppVersion": "2025.1",
+      "ConnectionSubType": "GoogleChrome",
+      "ConnectionType": 5,
+      "CredentialConnectionID": "c9d4a10b-0451-4a6a-8d4f-f70a2d3e2501",
+      "CredentialConnectionSavedPath": "Mini Servers\\Main Host - Credentials",
+      "Group": "Mini Servers",
+      "ID": "2620d833-1cb6-4b52-9bae-e1d4883311a3",
+      "Name": "Fedora mini-Server #3 Cockpit",
+      "Security": {
+        "RoleOverride": 2
+      },
+      "Web": {
+        "AuthenticationMode": 1,
+        "UseBasicAuthentication": true
+      }
+    },
+    {
+      "AppVersion": "2025.1",
+      "ConnectionType": 95,
+      "CredentialConnectionID": "c9d4a10b-0451-4a6a-8d4f-f70a2d3e2501",
+      "CredentialConnectionSavedPath": "Mini Servers\\Main Host - Credentials",
+      "Group": "Mini Servers",
+      "HostConnectionID": "5e233d6e-8d22-4158-8de8-47a4035eab19",
+      "HostSourceMode": 1,
+      "ID": "d8b65030-dd9c-45f4-ba22-9f40704ef9c8",
+      "Name": "Fedora mini-Server #3 SCP",
+      "OpenEmbedded": true,
+      "Scp": {
+        "Port": 33214
+      }
+    },
+    {
+      "AppVersion": "2025.1",
+      "ConnectionType": 77,
+      "CredentialConnectionID": "c9d4a10b-0451-4a6a-8d4f-f70a2d3e2501",
+      "CredentialConnectionSavedPath": "Mini Servers\\Main Host - Credentials",
+      "Group": "Mini Servers",
+      "HostConnectionID": "5e233d6e-8d22-4158-8de8-47a4035eab19",
+      "HostSourceMode": 1,
+      "ID": "78de896e-c40a-4e82-b5ac-96b925395d29",
+      "Name": "Fedora mini-Server #3 SSH",
+      "OpenEmbedded": true,
+      "MetaInformation": {
+        "PasswordHistory": [
+          {
+            "LoggedModifiedBy": "DMITRII-PC\\dmitr",
+            "ModifiedBy": "DMITRII-PC\\dmitr",
+            "ModifiedDateTimeString": "2025-05-11T08:24:15",
+            "SafePassword": "9ilsdKFRwsDOCLWph4U0qQ=="
+          }
+        ]
+      },
+      "Terminal": {
+        "HostPort": 33214,
+        "PrivateKeyPromptForPassPhrase": false
+      },
+      "TerminalMac": {}
+    },
+    {
+      "AppVersion": "2025.1",
+      "ConnectionType": 53,
+      "Group": "Mini Servers",
+      "ID": "5e233d6e-8d22-4158-8de8-47a4035eab19",
+      "Name": "Main Host",
+      "OpenEmbedded": true,
+      "HostDetails": {
+        "Host": "37.110.243.71"
+      }
+    },
+    {
+      "AppVersion": "2025.1",
+      "ConnectionType": 26,
+      "Group": "Mini Servers",
+      "ID": "c9d4a10b-0451-4a6a-8d4f-f70a2d3e2501",
+      "Name": "Main Host - Credentials",
+      "Credentials": {
+        "PleasantPasswordServerPort": 10001.0,
+        "SafePassword": "CBVeIPLJ0CF1BXBP0Alt9g==",
+        "UserName": "dmitrii"
+      },
+      "MetaInformation": {
+        "PasswordHistory": [
+          {
+            "LoggedModifiedBy": "DMITRII-PC\\dmitr",
+            "ModifiedBy": "DMITRII-PC\\dmitr",
+            "ModifiedDateTimeString": "2025-05-11T19:27:22",
+            "SafePassword": "9ilsdKFRwsDOCLWph4U0qQ=="
+          }
+        ]
+      }
+    },
+    {
+      "AppVersion": "2025.1",
+      "ConnectionType": 25,
+      "Group": "Mini Servers",
+      "ID": "5902e0d7-c9a4-4a23-aa59-49bc95f15dad",
+      "Name": "Mini Servers",
+      "TemplateSourceID": "e9566f33-dad4-468c-9c72-73af55c3b7dc"
+    },
+    {
+      "AppVersion": "2025.1",
+      "ConnectionType": 77,
+      "ID": "f92f1d61-d8f3-4121-a1bc-21e0a72af34d",
+      "Name": "Local VM (Fedora)",
+      "OpenEmbedded": true,
+      "MetaInformation": {
+        "PasswordHistory": [
+          {
+            "LoggedModifiedBy": "DMITRII-PC\\dmitr",
+            "ModifiedBy": "DMITRII-PC\\dmitr",
+            "ModifiedDateTimeString": "2025-05-08T20:05:13",
+            "SafePassword": "TBJYKHdCZ3o="
+          }
+        ]
+      },
+      "Terminal": {
+        "Host": "192.168.1.96",
+        "PrivateKeyPromptForPassPhrase": false,
+        "SafePassword": "akoa0xurqzw=",
+        "Username": "dmitrii"
+      },
+      "TerminalMac": {}
+    }
+  ],
+  "DatabaseID": "a65cf9b2-8749-44c8-9b5d-94d6e64a70fe",
+  "Version": 2
+}
