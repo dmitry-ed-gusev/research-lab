@@ -1,0 +1,30 @@
+{
+
+  "folders": [
+
+    {
+      "path": "..",
+      "name": "Research Lab :: Root Project",
+    },
+
+    {
+      "path": "../devops-cloud",
+      "name": "Research Lab :: DevOps :: Virt/K8S/Cloud"
+    },
+
+    {
+      "path": "../python/app-flask",
+      "name": "Research Lab :: Py :: Flask App",
+    },
+    {
+      "path": "../python/app-django",
+      "name": "Research Lab :: Py :: Django App",
+    },
+    {
+      "path": "../python/scripting-lab",
+      "name": "Research Lab :: Py :: Scripting Lab",
+    },
+
+  ],
+
+}
