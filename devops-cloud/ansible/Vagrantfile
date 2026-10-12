@@ -1,0 +1,428 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+####################################################################################################
+#
+#   Vagrant config file for the Virtual Laboratory and multiple virtual environment options - sets
+#   of virtual machines / v-labs / standalone machines on the Oracle Virtual Box hypervisor.
+#
+#   Notes:
+#       - implemented for the provider -> virtualbox
+#
+#   Created:  Dmitrii Gusev, 09.11.2025
+#   Modified: Dmitrii Gusev, 13.09.2026
+#
+####################################################################################################
+
+# - useful global constants
+VG_API_VERSION = "2"
+VG_JSON_VLAB = "./.vagrant-data/vms-vlab-config.json"
+VG_JSON_VLAB_SMALL = "./.vagrant-data/vms-vlab-small-config.json"
+VG_JSON_VLAB_SAMPLE = "./.vagrant-data/vms-sample-config.json"
+VG_PROVIDER_VBOX = "virtualbox"
+VG_PROVIDER_LVIRT = "libvirt"
+VG_DEFAULT_BOX_NAME = "server/fedora-cloud37-vbox"
+# VG_DEFAULT_BOX_NAME = "server/fedora-cloud43-vbox"
+
+# --- GROUP 1 DEFINITIONS ---
+WEB_SERVERS = [
+  { name: "web-01", ip: "192.168.56.11" },
+  { name: "web-02", ip: "192.168.56.12" }
+]
+
+# --- GROUP 2 DEFINITIONS ---
+APP_SERVERS = [
+  { name: "app-01", ip: "192.168.56.21" },
+  { name: "app-02", ip: "192.168.56.22" }
+]
+
+Vagrant.configure(VG_API_VERSION) do |config|
+
+  # Используем официальный актуальный образ Fedora Cloud - global fallback config
+  config.vm.box = "fedora/40-cloud-base"
+  # config.vm.box = "ubuntu/focal64"
+
+  # =========================================================================
+  # GROUP 1: Web Servers
+  # =========================================================================
+  WEB_SERVERS.each do |server|
+    config.vm.define server[:name] do |web|
+      web.vm.network "private_network", ip: server[:ip]
+      web.vm.provider VG_PROVIDER_VBOX do |vb|
+        vb.memory = "1024"
+        vb.name = server[:name]
+      end
+    end
+  end
+
+  # Конфигурируем 5 виртуальных машин в цикле
+  (1..5).each do |i|
+    config.vm.define "fedora-node-#{i}" do |node|
+      
+      # Задаем уникальное имя внутри операционной системы
+      node.vm.hostname = "fedora-node-#{i}.local"
+      
+      # Выделяем статические IP-адреса в изолированной приватной сети
+      # Машины получат IP: 192.168.56.11, 192.168.56.12, ..., 192.168.56.15
+      node.vm.network "private_network", ip: "192.168.56.#{10 + i}"
+      # Настройки аппаратных ресурсов для VirtualBox
+      node.vm.provider "virtualbox" do |vb|
+        vb.name = "Fedora-Node-#{i}" # Имя ВМ в интерфейсе VirtualBox
+        vb.memory = "2048"           # Оперативная память (2 ГБ на каждую ВМ)
+        vb.cpus = 2                  # Количество процессорных ядер
+        
+        # Отключаем GUI (графический интерфейс), машины работают в фоне
+        vb.gui = false
+        
+        # Оптимизация сети VirtualBox для избежания проблем с производительностью
+        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      end
+
+      # Базовая автоматизация: обновление пакетов при первом запуске (по желанию)
+      # node.vm.provision "shell", inline: "sudo dnf update -y"
+    end
+  end
+end
+
+
+# # All Vagrant configuration is done below. The "2" in Vagrant.configure
+# # configures the configuration version (we support older styles for
+# # backwards compatibility). Please don't change it unless you know what
+# # you're doing.
+# Vagrant.configure("2") do |config|
+#   # The most common configuration options are documented and commented below.
+#   # For a complete reference, please see the online documentation at
+#   # https://docs.vagrantup.com.
+
+#   # Every Vagrant development environment requires a box. You can search for
+#   # boxes at https://vagrantcloud.com/search.
+#   config.vm.box = "fedora-vg-vbox"
+
+#   # Disable automatic box update checking. If you disable this, then
+#   # boxes will only be checked for updates when the user runs
+#   # `vagrant box outdated`. This is not recommended.
+#   # config.vm.box_check_update = false
+
+#   # Create a forwarded port mapping which allows access to a specific port
+#   # within the machine from a port on the host machine. In the example below,
+#   # accessing "localhost:8080" will access port 80 on the guest machine.
+#   # NOTE: This will enable public access to the opened port
+#   # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+#   # Create a forwarded port mapping which allows access to a specific port
+#   # within the machine from a port on the host machine and only allow access
+#   # via 127.0.0.1 to disable public access
+#   # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+
+#   # Create a private network, which allows host-only access to the machine
+#   # using a specific IP.
+#   # config.vm.network "private_network", ip: "192.168.33.10"
+
+#   # Create a public network, which generally matched to bridged network.
+#   # Bridged networks make the machine appear as another physical device on
+#   # your network.
+#   # config.vm.network "public_network"
+
+#   # Share an additional folder to the guest VM. The first argument is
+#   # the path on the host to the actual folder. The second argument is
+#   # the path on the guest to mount the folder. And the optional third
+#   # argument is a set of non-required options.
+#   # config.vm.synced_folder "../data", "/vagrant_data"
+
+#   # Provider-specific configuration so you can fine-tune various
+#   # backing providers for Vagrant. These expose provider-specific options.
+#   # Example for VirtualBox:
+#   #
+#   # config.vm.provider "virtualbox" do |vb|
+#   #   # Display the VirtualBox GUI when booting the machine
+#   #   vb.gui = true
+#   #
+#   #   # Customize the amount of memory on the VM:
+#   #   vb.memory = "1024"
+#   # end
+#   #
+#   # View the documentation for the provider you are using for more
+#   # information on available options.
+
+#   # Enable provisioning with a shell script. Additional provisioners such as
+#   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
+#   # documentation for more information about their specific syntax and use.
+#   # config.vm.provision "shell", inline: <<-SHELL
+#   #   apt-get update
+#   #   apt-get install -y apache2
+#   # SHELL
+# end
+
+# # -*- mode: ruby -*-
+# # vi: set ft=ruby :
+
+
+# # Vagrant.configure("2") do |config|
+# #   # Global fallback configuration
+# 
+
+
+# #   # =========================================================================
+# #   # GROUP 2: App Servers
+# #   # =========================================================================
+# #   APP_SERVERS.each do |server|
+# #     config.vm.define server[:name] do |app|
+# #       app.vm.network "private_network", ip: server[:ip]
+# #       app.vm.provider "virtualbox" do |vb|
+# #         vb.memory = "2048"
+# #         vb.name = server[:name]
+# #       end
+# #     end
+# #   end
+
+# #   # =========================================================================
+# #   # STANDALONE MACHINES
+# #   # =========================================================================
+  
+# #   # Standalone 1: Primary Database
+# #   config.vm.define "db-primary" do |db|
+# #     db.vm.network "private_network", ip: "192.168.56.30"
+# #     db.vm.provider "virtualbox" do |vb|
+# #       vb.memory = "2048"
+# #       vb.name = "db-primary"
+# #     end
+# #   end
+
+# #   # Standalone 2: Load Balancer
+# #   config.vm.define "load-balancer" do |lb|
+# #     lb.vm.network "private_network", ip: "192.168.56.10"
+# #     lb.vm.provider "virtualbox" do |vb|
+# #       vb.memory = "512"
+# #       vb.name = "load-balancer"
+# #     end
+# #   end
+
+# #   # Standalone 3: Monitoring Instance
+# #   config.vm.define "monitoring" do |mon|
+# #     mon.vm.network "private_network", ip: "192.168.56.40"
+# #     mon.vm.provider "virtualbox" do |vb|
+# #       vb.memory = "1024"
+# #       vb.name = "monitoring"
+# #     end
+# #   end
+
+# # end
+
+
+# # =========
+# # single VM
+# # =======
+
+# # Vagrantfile
+# VAGRANT_API_VERSION = "2"
+
+# # # All Vagrant configuration is done below. The "2" in Vagrant.configure
+# # # configures the configuration version (we support older styles for
+# # # backwards compatibility). Please don't change it unless you know what
+# # # you're doing.
+# # Vagrant.configure(VAGRANT_API_VERSION) do |config|
+
+# #   # - use the same key for all machines (multi vms config)
+# #   # config.ssh.insert_key = false
+
+# #   # The most common configuration options are documented and commented below.
+# #   # For a complete reference, please see the online documentation at
+# #   # https://docs.vagrantup.com.
+
+# #   # Every Vagrant development environment requires a box. You can search for
+# #   # boxes at https://vagrantcloud.com/search.
+
+# #   # Disable automatic box update checking. If you disable this, then
+# #   # boxes will only be checked for updates when the user runs
+# #   # `vagrant box outdated`. This is not recommended.
+# #   # config.vm.box_check_update = false
+
+# #   # Create a forwarded port mapping which allows access to a specific port
+# #   # within the machine from a port on the host machine. In the example below,
+# #   # accessing "localhost:8080" will access port 80 on the guest machine.
+# #   # NOTE: This will enable public access to the opened port
+# #   # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+# #   # - configuring the single host in vagrant
+# #   config.vm.box = "ubuntu-22"
+# #   config.vm.hostname = "test-vm1"
+# #   # - network ports forwarding for single host
+# #   config.vm.network "forwarded_port",
+# #     id: 'ssh', guest: 22, host: 2202, host_ip: "127.0.0.1", auto_correct: false
+# #   config.vm.network "forwarded_port",
+# #     id: 'http', guest: 80, host: 8080, host_ip: "127.0.0.1"
+# #   config.vm.network "forwarded_port",
+# #     id: 'https', guest: 443, host: 8443, host_ip: "127.0.0.1"
+# #   # - private network for single host machine
+# #   config.vm.network "private_network", ip: "192.168.56.10"
+
+# #   # Create a forwarded port mapping which allows access to a specific port
+# #   # within the machine from a port on the host machine and only allow access
+# #   # via 127.0.0.1 to disable public access
+# #   # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+
+# #   # Create a private network, which allows host-only access to the machine
+# #   # using a specific IP.
+# #   # config.vm.network "private_network", ip: "192.168.33.10"
+# #   # config.vm.network "private_network", ip: "192.168.33.10"
+
+# #   # Create a public network, which generally matched to bridged network.
+# #   # Bridged networks make the machine appear as another physical device on
+# #   # your network.
+# #   # config.vm.network "public_network"
+
+# #   # - multiple hosts configuration
+# #   # config.vm.define "vagrant1" do |vagrant1|
+# #   #   vagrant1.vm.box = "ubuntu-22"
+# #   #   vagrant1.vm.network "forwarded_port", guest: 80, host: 8080
+# #   #   vagrant1.vm.network "forwarded_port", guest: 443, host: 8443
+# #   # end
+# #   # config.vm.define "vagrant2" do |vagrant2|
+# #   #   vagrant2.vm.box = "ubuntu-22"
+# #   #   vagrant2.vm.network "forwarded_port", guest: 80, host: 8081
+# #   #   vagrant2.vm.network "forwarded_port", guest: 443, host: 8444
+# #   # end
+# #   # config.vm.define "vagrant3" do |vagrant3|
+# #   #   vagrant3.vm.box = "centos-8"
+# #   #   vagrant3.vm.network "forwarded_port", guest: 80, host: 8082
+# #   #   vagrant3.vm.network "forwarded_port", guest: 443, host: 8445
+# #   # end
+
+# #   # Share an additional folder to the guest VM. The first argument is
+# #   # the path on the host to the actual folder. The second argument is
+# #   # the path on the guest to mount the folder. And the optional third
+# #   # argument is a set of non-required options.
+# #   # config.vm.synced_folder "../data", "/vagrant_data"
+
+# #   # Disable the default share of the current code directory. Doing this
+# #   # provides improved isolation between the vagrant box and your host
+# #   # by making sure your Vagrantfile isn't accessible to the vagrant box.
+# #   # If you use this you may want to enable additional shared subfolders as
+# #   # shown above.
+# #   # config.vm.synced_folder ".", "/vagrant", disabled: true
+
+# #   # Provider-specific configuration so you can fine-tune various
+# #   # backing providers for Vagrant. These expose provider-specific options.
+# #   # Example for VirtualBox:
+# #   #
+# #   # config.vm.provider "virtualbox" do |vb|
+# #   #   # Display the VirtualBox GUI when booting the machine
+# #   #   vb.gui = true
+# #   #
+# #   #   # Customize the amount of memory on the VM:
+# #   #   vb.memory = "1024"
+# #   # end
+
+# #   config.vm.provider "virtualbox" do |vb|
+# #     vb.name = "ubuntu-22-vagrant-server"
+# #     vb.gui = true
+# #     vb.cpus = 2 # 2 CPU's per host
+# #     vb.memory = "1024" # 1Gb memory per host
+# #   end
+
+# #   # View the documentation for the provider you are using for more
+# #   # information on available options.
+
+# #   # Enable provisioning with a shell script. Additional provisioners such as
+# #   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
+# #   # documentation for more information about their specific syntax and use.
+# #   # config.vm.provision "shell", inline: <<-SHELL
+# #   #   apt-get update
+# #   #   apt-get install -y apache2
+# #   # SHELL
+
+# #   # SSH agent forwarding
+# #   # config.ssh.forward_agent = true
+
+# #   # configuring vagrant plugins
+# #   # config.vagrant.plugins = ["vagrant-hostmanager", "vagrant-vbguest"]
+
+# #   # enable/disable guest additions updates
+# #   if Vagrant.has_plugin?("vagrant-vbguest")
+# #     config.vbguest.auto_update = true
+# #   end
+
+# # end
+
+
+# # # - initial requirements
+# # Vagrant.require_version ">= 2.0.0" # Vagrant requirement
+# # require 'json' # required JSON module
+
+# # # -- read JSON file with config details
+# # machines = JSON.parse(File.read(File.join(File.dirname(__FILE__), VAGRANT_JSON_CONFIG)))
+# # # -- local PATH_SRC for mounting
+# # $PathSrc = ENV['PATH_SRC'] || "."
+
+# # # -- start of the vagrant configuration
+# # Vagrant.configure(VAGRANT_API_VERSION) do |config|
+
+# #   # -- Vagrant plugins settings
+# #   config.vagrant.plugins = ["vagrant-hostmanager", "vagrant-vbguest"]
+# #   if Vagrant.has_plugin?("vagrant-vbguest") # disable auto-update for the 'vb guest additions'
+# #     config.vbguest.auto_update = false
+# #   end
+
+# #   # -- common system settings
+# #   config.vm.box_check_update = false # don't check for updates of the base image
+# #   config.vm.boot_timeout = 1200 # wait a while longer for vm to boot
+
+# #   # -- common SSH settings
+# #   config.ssh.forward_agent = true # disable auto-update for the 'vb guest additions'
+# #   config.ssh.insert_key = false # use the standard vagrant ssh key (same key for all machines)
+
+# #   # -- common settings - manage vms in the system file /etc/hosts
+# #   config.hostmanager.enabled = true
+# #   config.hostmanager.include_offline = true
+# #   config.hostmanager.manage_guest = true
+# #   config.hostmanager.manage_host = true
+
+# #   # -- iterate through entries in JSON file - create a vm for each entry
+# #   machines.each do |machine|
+
+# #     # -- creating one vm with the specified parameters
+# #     config.vm.define machine['name'] do |vmachine|
+
+# #       # -- VM base parameters
+# #       vmachine.vm.box = machine['box']
+# #       vmachine.vm.hostname = machine['name']
+
+# #       # -- VM network
+# #       vmachine.vm.network 'private_network', ip: machine['ip_addr']
+# #       vmachine.vm.network :forwarded_port, id: 'http', host: machine['forwarded_port'], guest: machine['app_port']
+# #       vmachine.vm.network :forwarded_port, id: 'https', host: machine['forwarded_port'], guest: machine['app_port']
+# #       vmachine.vm.network :forwarded_port, id: 'ssh', host: machine['forwarded_port'], guest: machine['app_port']
+
+# #       # -- VM files sharing: set 'no_share' value to false to enable file sharing (description: the first
+# #       #     argument is the path on the host to the actual folder, the second argument is the path on the
+# #       #     guest to mount the folder and the optional third argument is a set of non-required options)
+# #       vmachine.vm.synced_folder ".", "/vagrant", disabled: machine['no_share']
+
+# #       # -- VM - set virtualbox parameters (customization) for each machine
+# #       vmachine.vm.provider :virtualbox do |virtualbox|
+# #         virtualbox.customize [
+# #           "modifyvm", :id,
+# #           "--audio", "none",
+# #           "--cpus", machine['cpus'],
+# #           "--memory", machine['memory'],
+# #           "--graphicscontroller", "VMSVGA",
+# #           "--vram", "64"
+# #         ]
+# #         virtualbox.gui = machine['gui']
+# #         virtualbox.name = machine['name']
+# #       end # end of customization of the virtualbox for each vm
+
+# #     end # end of creating one vm
+
+# #   end # end of for cycle - iteration over JSON
+
+# #   # # -- install ansible locally on each vm (check???)
+# #   # config.vm.provision "ansible_local" do |ansible|
+# #   #   ansible.compatibility_mode = "2.0"
+# #   #   ansible.galaxy_role_file = "roles/requirements.yml"
+# #   #   ansible.galaxy_roles_path = "roles"
+# #   #   ansible.playbook = "playbook.yml"
+# #   #   ansible.verbose = "vv"
+# #   # end
+
+# # end
